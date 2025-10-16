@@ -1,18 +1,44 @@
 // src/lib/supabase.ts
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+let browserClient: SupabaseClient | undefined;
+let adminClient: SupabaseClient | undefined;
 
-// Client-side Supabase client (for browser)
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const getEnv = (key: string) => {
+  const v = process.env[key];
+  if (!v) throw new Error(`${key} is required.`);
+  return v;
+};
 
-// Server-side Supabase client (for API routes)
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  }
-});
+// Client-side Supabase client (created lazily)
+export const supabase = (() => {
+  return new Proxy({} as SupabaseClient, {
+    get(_t, prop) {
+      if (!browserClient) {
+        const url = getEnv('NEXT_PUBLIC_SUPABASE_URL');
+        const anon = getEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY');
+        browserClient = createClient(url, anon);
+      }
+      // @ts-ignore dynamic proxy
+      return (browserClient as any)[prop];
+    }
+  }) as unknown as SupabaseClient;
+})();
+
+// Server-side Supabase client (created lazily)
+export const supabaseAdmin = (() => {
+  return new Proxy({} as SupabaseClient, {
+    get(_t, prop) {
+      if (!adminClient) {
+        const url = getEnv('NEXT_PUBLIC_SUPABASE_URL');
+        const service = getEnv('SUPABASE_SERVICE_ROLE_KEY');
+        adminClient = createClient(url, service, {
+          auth: { autoRefreshToken: false, persistSession: false }
+        });
+      }
+      // @ts-ignore dynamic proxy
+      return (adminClient as any)[prop];
+    }
+  }) as unknown as SupabaseClient;
+})();
 
