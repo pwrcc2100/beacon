@@ -1,0 +1,17 @@
+/* src/styles/tokens.css */
+:root {
+  --icon-good: #64afac;
+  --bg-good: #f4f4ee;
+  --icon-okay: #5d89a9;
+  --bg-okay: #eeefec;
+  --icon-attn: #ea9999;
+  --bg-attn: #f6f2ef;
+
+  --text-primary: #2E2E38;
+  --text-muted: #737A8C;
+  --navy: #2B4162;
+  --sage: #A7D6A2;
+
+  --radius: 14px;
+}
+
