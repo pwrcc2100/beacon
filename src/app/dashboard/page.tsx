@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 import { supabaseAdmin } from '@/lib/supabase';
 import { TrendCard } from '@/components/charts/TrendCard';
 
@@ -63,7 +65,7 @@ export default async function Dashboard(){
         <div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Executive Dashboard</h1>
           <p className="text-[var(--text-muted)]">Client: {clientId}</p>
-          <form action={`/api/export.csv?client_id=${clientId}`} method="get" className="mt-3">
+          <form action={`/api/export?client_id=${clientId}`} method="get" className="mt-3">
             <button
               className="px-3 py-2 bg-[var(--navy)] text-white rounded disabled:opacity-50"
               disabled={recent.length === 0}
