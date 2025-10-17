@@ -63,6 +63,17 @@ export default async function Dashboard(){
         <div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Executive Dashboard</h1>
           <p className="text-[var(--text-muted)]">Client: {clientId}</p>
+          <form action={`/api/export.csv?client_id=${clientId}`} method="get" className="mt-3">
+            <button
+              className="px-3 py-2 bg-[var(--navy)] text-white rounded disabled:opacity-50"
+              disabled={recent.length === 0}
+            >
+              Download CSV
+            </button>
+            {recent.length === 0 && (
+              <span className="ml-2 text-sm text-[var(--text-muted)]">No responses yet</span>
+            )}
+          </form>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
