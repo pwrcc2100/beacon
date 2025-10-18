@@ -30,7 +30,6 @@ async function getData(clientId: string){
 }
 
 export default async function Dashboard(){
-  // For now, read client id from env for simplicity; later wire to auth
   const clientId = process.env.NEXT_PUBLIC_DASHBOARD_CLIENT_ID ?? '';
   if(!clientId) {
     return (
@@ -65,7 +64,7 @@ export default async function Dashboard(){
         <div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Executive Dashboard</h1>
           <p className="text-[var(--text-muted)]">Client: {clientId}</p>
-          <form action={`/api/export?client_id=${clientId}`} method="get" className="mt-3">
+          <form action={`/api/download?client_id=${clientId}`} method="get" className="mt-3">
             <button
               className="px-3 py-2 bg-[var(--navy)] text-white rounded disabled:opacity-50"
               disabled={recent.length === 0}
@@ -117,5 +116,3 @@ export default async function Dashboard(){
     </main>
   );
 }
-
-
