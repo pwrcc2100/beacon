@@ -8,16 +8,14 @@ export default function ThanksPage() {
             ✓
           </div>
           <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
-            Thank You!
+            Thank you!
           </h1>
           <p className="text-[var(--text-muted)]">
-            Your feedback has been submitted successfully. Your responses help us create a better workplace for everyone.
+            Your response has been recorded. Your feedback helps leaders improve clarity, safety, workload and support.
           </p>
         </div>
         
-        <div className="text-sm text-[var(--text-muted)]">
-          <p>This survey link has been used and is no longer active.</p>
-        </div>
+        <a href="/" className="inline-block mt-4 px-4 py-2 rounded bg-[var(--navy)] text-white">Return to home</a>
       </div>
     </main>
   );
