@@ -5,6 +5,9 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { Kpi } from '@/components/charts/Kpi';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Table, THead, TBody, TR, TH, TD } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { DashboardShell } from '@/components/layout/DashboardShell';
 import { OverviewDonut } from '@/components/charts/OverviewDonut';
 import { TrendCard } from '@/components/charts/TrendCard';
@@ -158,21 +161,16 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
           <div className="mt-3 flex items-center gap-2">
             <form action={`/api/download`} method="get" className="flex items-center gap-2">
               <input type="hidden" name="client_id" value={clientId} />
-              <label className="text-sm text-[var(--text-muted)]">From</label>
-              <input type="date" name="from" defaultValue={from} className="border rounded px-2 py-1 text-sm" />
-              <label className="text-sm text-[var(--text-muted)]">To</label>
-              <input type="date" name="to" defaultValue={to} className="border rounded px-2 py-1 text-sm" />
-              <button
-                className="px-3 py-2 bg-[var(--navy)] text-white rounded disabled:opacity-50"
-                disabled={recent.length === 0}
-              >
-                Download CSV
-              </button>
+              <Label className="text-sm text-[var(--text-muted)]">From</Label>
+              <Input type="date" name="from" defaultValue={from} className="w-[160px]" />
+              <Label className="text-sm text-[var(--text-muted)]">To</Label>
+              <Input type="date" name="to" defaultValue={to} className="w-[160px]" />
+              <Button type="submit" disabled={recent.length === 0}>Download CSV</Button>
             </form>
             {process.env.ADMIN_DASH_TOKEN && (
               <form action={`/api/demo/seed`} method="post" className="ml-2">
                 <input type="hidden" name="client_id" value={clientId} />
-                <button className="px-3 py-2 bg-[var(--icon-okay)] text-white rounded">Generate Demo Data</button>
+                <Button variant="secondary">Generate Demo Data</Button>
               </form>
             )}
           </div>

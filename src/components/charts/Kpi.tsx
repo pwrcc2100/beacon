@@ -1,4 +1,5 @@
 'use client';
+import { Badge } from '@/components/ui/badge';
 
 type Props = {
   label: string;
@@ -16,9 +17,7 @@ export function Kpi({ label, value, delta, color = '#2B4162' }: Props) {
       <div className="text-[12px] text-[var(--text-muted)] mb-1">{label}</div>
       <div className="flex items-baseline gap-2">
         <div className="text-3xl font-semibold" style={{ color }}>{show ? value!.toFixed(2) : '–'}</div>
-        {deltaText && (
-          <span className="text-xs font-medium px-2 py-0.5 rounded-full" style={{ background:'#f3f4f6', color: deltaColor }}>{deltaText} vs last wk</span>
-        )}
+        {deltaText && (<Badge variant="secondary" style={{ color: deltaColor }}>{deltaText} vs last wk</Badge>)}
       </div>
     </div>
   );
