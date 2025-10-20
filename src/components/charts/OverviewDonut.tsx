@@ -7,10 +7,10 @@ export function OverviewDonut({ data }:{ data: Slice[] }){
   const total = data.reduce((a,b)=>a+b.value,0) || 1;
   const pct = (v:number)=> Math.round((v/total)*100);
   return (
-    <div style={{height:220}} className="flex items-center gap-6">
-      <div className="w-[160px] h-[160px]">
-        <PieChart width={160} height={160}>
-          <Pie data={data} innerRadius={50} outerRadius={78} dataKey="value">
+    <div style={{height:260}} className="flex items-center gap-6">
+      <div className="w-[200px] h-[200px]">
+        <PieChart width={200} height={200}>
+          <Pie data={data} innerRadius={70} outerRadius={90} dataKey="value">
             {data.map((s, i)=>(<Cell key={i} fill={s.color}/>))}
           </Pie>
           <Tooltip/>
