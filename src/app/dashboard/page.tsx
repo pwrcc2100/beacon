@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
 import { Kpi } from '@/components/charts/Kpi';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Table, THead, TBody, TR, TH, TD } from '@/components/ui/table';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -212,28 +212,28 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
           <CardContent>
             <div className="overflow-x-auto">
               <Table>
-                <THead>
-                  <TR>
-                    <TH>Submitted</TH>
-                    <TH>Sentiment</TH>
-                    <TH>Clarity</TH>
-                    <TH>Workload</TH>
-                    <TH>Safety</TH>
-                    <TH>Leadership</TH>
-                  </TR>
-                </THead>
-                <TBody>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Submitted</TableHead>
+                    <TableHead>Sentiment</TableHead>
+                    <TableHead>Clarity</TableHead>
+                    <TableHead>Workload</TableHead>
+                    <TableHead>Safety</TableHead>
+                    <TableHead>Leadership</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {recent.map((r:any, i:number)=> (
-                    <TR key={i}>
-                      <TD>{new Date(r.submitted_at).toLocaleString()}</TD>
-                      <TD>{r.sentiment_5}</TD>
-                      <TD>{r.clarity_5}</TD>
-                      <TD>{r.workload_5}</TD>
-                      <TD>{r.safety_5}</TD>
-                      <TD>{r.leadership_5}</TD>
-                    </TR>
+                    <TableRow key={i}>
+                      <TableCell>{new Date(r.submitted_at).toLocaleString()}</TableCell>
+                      <TableCell>{r.sentiment_5}</TableCell>
+                      <TableCell>{r.clarity_5}</TableCell>
+                      <TableCell>{r.workload_5}</TableCell>
+                      <TableCell>{r.safety_5}</TableCell>
+                      <TableCell>{r.leadership_5}</TableCell>
+                    </TableRow>
                   ))}
-                </TBody>
+                </TableBody>
               </Table>
             </div>
           </CardContent>
