@@ -1,5 +1,7 @@
 'use client';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 type Props = {
   label: string;
@@ -10,16 +12,26 @@ type Props = {
 
 export function Kpi({ label, value, delta, color = '#2B4162' }: Props) {
   const show = typeof value === 'number';
-  const deltaText = typeof delta === 'number' ? (delta > 0 ? `+${delta.toFixed(2)}` : `${delta.toFixed(2)}`) : undefined;
-  const deltaColor = typeof delta === 'number' ? (delta >= 0 ? '#16a34a' : '#dc2626') : '#6b7280';
+  const deltaText = typeof delta === 'number' ? Math.abs(delta).toFixed(2) : undefined;
+  const deltaVariant = typeof delta === 'number' ? (delta > 0 ? 'default' : delta < 0 ? 'destructive' : 'secondary') : 'secondary';
+  const TrendIcon = typeof delta === 'number' ? (delta > 0 ? TrendingUp : delta < 0 ? TrendingDown : Minus) : Minus;
+  
   return (
-    <div className="rounded-xl bg-white shadow-sm border border-black/5 p-4" style={{ borderLeftColor: color, borderLeftWidth: 4 }}>
-      <div className="text-[12px] text-[var(--text-muted)] mb-1">{label}</div>
-      <div className="flex items-baseline gap-2">
-        <div className="text-3xl font-semibold" style={{ color }}>{show ? value!.toFixed(2) : '–'}</div>
-        {deltaText && (<Badge variant="secondary" style={{ color: deltaColor }}>{deltaText} vs last wk</Badge>)}
-      </div>
-    </div>
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">{label}</CardTitle>
+        <div className="h-4 w-4 rounded-full" style={{ backgroundColor: color }} />
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold" style={{ color }}>{show ? value!.toFixed(2) : '–'}</div>
+        {deltaText && (
+          <Badge variant={deltaVariant} className="mt-2 gap-1">
+            <TrendIcon className="h-3 w-3" />
+            {deltaText} vs last wk
+          </Badge>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 

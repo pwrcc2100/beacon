@@ -1,30 +1,46 @@
 'use client';
-import { PieChart, Pie, Cell, Tooltip } from 'recharts';
+import { useEffect, useState } from 'react';
+import ReactECharts from 'echarts-for-react';
 
 type Slice = { label: string; value: number; color: string };
 
 export function OverviewDonut({ data }:{ data: Slice[] }){
-  const total = data.reduce((a,b)=>a+b.value,0) || 1;
-  const pct = (v:number)=> Math.round((v/total)*100);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  const option = {
+    tooltip: {
+      trigger: 'item',
+      formatter: '{b}: {c} ({d}%)',
+      backgroundColor: 'rgba(255,255,255,0.95)',
+      borderColor: '#e5e7eb',
+      textStyle: { color: '#374151', fontSize: 12 }
+    },
+    legend: {
+      orient: 'vertical',
+      right: 10,
+      top: 'center',
+      textStyle: { fontSize: 12, color: '#6b7280' },
+      itemGap: 12
+    },
+    series: [{
+      type: 'pie',
+      radius: ['50%', '70%'],
+      center: ['35%', '50%'],
+      avoidLabelOverlap: false,
+      label: { show: false },
+      labelLine: { show: false },
+      data: data.map(s => ({ name: s.label, value: s.value, itemStyle: { color: s.color } }))
+    }]
+  };
+
   return (
-    <div style={{height:260}} className="flex items-center gap-6">
-      <div className="w-[200px] h-[200px]">
-        <PieChart width={200} height={200}>
-          <Pie data={data} innerRadius={70} outerRadius={90} dataKey="value">
-            {data.map((s, i)=>(<Cell key={i} fill={s.color}/>))}
-          </Pie>
-          <Tooltip/>
-        </PieChart>
-      </div>
-      <div className="space-y-2">
-        {data.map((s,i)=> (
-          <div key={i} className="flex items-center gap-2 text-sm">
-            <span className="inline-block w-3 h-3 rounded-full" style={{background:s.color}}/>
-            <span className="text-[var(--text-primary)] mr-2">{s.label}</span>
-            <span className="text-[var(--text-muted)]">{pct(s.value)}%</span>
-          </div>
-        ))}
-      </div>
+    <div style={{height:240}}>
+      {!mounted ? (
+        <div className="w-full h-full flex items-center justify-center text-sm text-[var(--text-muted)]">Loading overview...</div>
+      ) : (
+        <ReactECharts option={option} style={{ height: '100%' }} opts={{ renderer: 'svg' }} />
+      )}
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 import { DashboardShell } from '@/components/layout/DashboardShell';
 import { OverviewDonut } from '@/components/charts/OverviewDonut';
 import { TrendCard } from '@/components/charts/TrendCard';
@@ -207,7 +208,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
 
         <Card>
           <CardHeader>
-            <div className="text-lg font-semibold text-[var(--text-primary)]">Recent Responses</div>
+            <CardTitle>Recent Responses</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
@@ -223,16 +224,19 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {recent.map((r:any, i:number)=> (
-                    <TableRow key={i}>
-                      <TableCell>{new Date(r.submitted_at).toLocaleString()}</TableCell>
-                      <TableCell>{r.sentiment_5}</TableCell>
-                      <TableCell>{r.clarity_5}</TableCell>
-                      <TableCell>{r.workload_5}</TableCell>
-                      <TableCell>{r.safety_5}</TableCell>
-                      <TableCell>{r.leadership_5}</TableCell>
-                    </TableRow>
-                  ))}
+                  {recent.map((r:any, i:number)=> {
+                    const getBadgeVariant = (val:number) => val >= 4 ? 'default' : val >= 3 ? 'secondary' : 'destructive';
+                    return (
+                      <TableRow key={i}>
+                        <TableCell className="font-medium">{new Date(r.submitted_at).toLocaleDateString()}</TableCell>
+                        <TableCell><Badge variant={getBadgeVariant(r.sentiment_5)}>{r.sentiment_5}</Badge></TableCell>
+                        <TableCell><Badge variant={getBadgeVariant(r.clarity_5)}>{r.clarity_5}</Badge></TableCell>
+                        <TableCell><Badge variant={getBadgeVariant(r.workload_5)}>{r.workload_5}</Badge></TableCell>
+                        <TableCell><Badge variant={getBadgeVariant(r.safety_5)}>{r.safety_5}</Badge></TableCell>
+                        <TableCell><Badge variant={getBadgeVariant(r.leadership_5)}>{r.leadership_5}</Badge></TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>
