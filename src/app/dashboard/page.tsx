@@ -189,7 +189,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
           <Kpi label="Leadership" value={last('leadership_avg')} delta={delta('leadership_avg')} color="#A7D6A2"/>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card>
             <CardHeader><div className="text-lg font-semibold text-[var(--text-primary)]">Overview</div></CardHeader>
             <CardContent>
