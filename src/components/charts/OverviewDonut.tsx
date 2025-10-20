@@ -1,5 +1,5 @@
 'use client';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 
 type Slice = { label: string; value: number; color: string };
 
@@ -9,14 +9,12 @@ export function OverviewDonut({ data }:{ data: Slice[] }){
   return (
     <div style={{height:220}} className="flex items-center gap-6">
       <div className="w-[160px] h-[160px]">
-        <ResponsiveContainer>
-          <PieChart>
-            <Pie data={data} innerRadius={50} outerRadius={78} dataKey="value">
-              {data.map((s, i)=>(<Cell key={i} fill={s.color}/>))}
-            </Pie>
-            <Tooltip/>
-          </PieChart>
-        </ResponsiveContainer>
+        <PieChart width={160} height={160}>
+          <Pie data={data} innerRadius={50} outerRadius={78} dataKey="value">
+            {data.map((s, i)=>(<Cell key={i} fill={s.color}/>))}
+          </Pie>
+          <Tooltip/>
+        </PieChart>
       </div>
       <div className="space-y-2">
         {data.map((s,i)=> (
