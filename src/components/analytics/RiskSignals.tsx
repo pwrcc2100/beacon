@@ -165,7 +165,7 @@ export function RiskSignals({ responses }: Props) {
         <div className="mt-6 bg-slate-50 border border-slate-200 rounded-lg p-4 text-sm">
           <div className="font-semibold mb-2">Using Risk Signals Effectively:</div>
           <ul className="space-y-1 text-slate-700">
-            <li>• <strong>High Risk (>30%):</strong> Urgent action required. Assign leadership owner and set 48-hour follow-up.</li>
+            <li>• <strong>High Risk (&gt;30%):</strong> Urgent action required. Assign leadership owner and set 48-hour follow-up.</li>
             <li>• <strong>Moderate Risk (15-30%):</strong> Monitor closely. Plan intervention within 1 week.</li>
             <li>• <strong>Low Risk (&lt;15%):</strong> Maintain current approach. Continue regular check-ins.</li>
           </ul>
