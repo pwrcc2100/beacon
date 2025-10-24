@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Wellbeing Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: #2E2E38;
+      background: white;
+    }
+
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: 100;
+      font-style: normal;
+      line-height: 1;
+      display: inline-block;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      font-size: 40px;
+      color: #64afac;
+    }
+
+    .logo-text h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: #2B4162;
+    }
+
+    .logo-text p {
+      font-size: 0.875rem;
+      color: #737A8C;
+    }
+
+    .print-btn {
+      background: #2B4162;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .print-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Title Section */
+    .title-section {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .title-section h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #2B4162;
+      margin-bottom: 0.75rem;
+    }
+
+    .title-section p {
+      font-size: 1.25rem;
+      color: #737A8C;
+    }
+
+    /* Content */
+    .content {
+      max-width: 100%;
+    }
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2B4162;
+      margin: 3rem 0 1.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2B4162;
+      margin: 2rem 0 1rem 0;
+    }
+
+    h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #2B4162;
+      margin: 1.5rem 0 0.75rem 0;
+    }
+
+    p {
+      margin: 1rem 0;
+      color: #737A8C;
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+    }
+
+    li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: #737A8C;
+      font-size: 0.875rem;
+    }
+
+    li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #2B4162;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    strong {
+      color: #2B4162;
+      font-weight: 600;
+    }
+
+    /* Card Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .card {
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.2s;
+    }
+
+    .card:hover {
+      border-color: #2B4162;
+      box-shadow: 0 4px 12px rgba(43, 65, 98, 0.1);
+    }
+
+    .card-slate {
+      background: #eeefec;
+      border-color: #2B4162;
+    }
+
+    .card h4 {
+      margin: 0 0 0.75rem 0;
+    }
+
+    .card p {
+      font-size: 0.875rem;
+      margin: 0.5rem 0;
+    }
+
+    .card ul {
+      margin: 0.5rem 0 0 0;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 2px solid #e5e7eb;
+      text-align: center;
+      color: #737A8C;
+      font-size: 0.875rem;
+    }
+
+    /* Print Styles */
+    @media print {
+      @page {
+        size: A4;
+        margin: 1.5cm;
+      }
+
+      body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-btn {
+        display: none !important;
+      }
+
+      .container {
+        padding: 0;
+      }
+
+      h2 {
+        page-break-after: avoid;
+      }
+
+      .card {
+        page-break-inside: avoid;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .title-section h2 {
+        font-size: 2rem;
+      }
+
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <a href="/" class="logo">
+        <span class="material-symbols-outlined logo-icon">health_and_safety</span>
+        <div class="logo-text">
+          <h1>Beacon</h1>
+          <p>Wellbeing Platform</p>
+        </div>
+      </a>
+      <button class="print-btn" onclick="window.print()">
+        <span class="material-symbols-outlined" style="font-size: 20px;">print</span>
+        Print / Save PDF
+      </button>
+    </div>
+
+    <!-- Title Section -->
+    <div class="title-section">
+      <h2>Complete Wellbeing Platform</h2>
+      <p>From survey to insights—everything you need in one place</p>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">dashboard</span> Product Overview for Clients</h2>
+<h3>**What is Beacon?**</h3>
+<p>Beacon is a validated psychosocial pulse survey designed for early detection of workplace wellbeing risks. It measures the key predictors of work stress, psychological safety, and organisational health through a quick, confidential check-in.</p>
+<p><strong>This is about your systems and culture, not individual mental health assessments.</strong></p>
+<h3>**The 5 Core Questions** (2 minutes to complete)</h3>
+<p>Each question uses a 3-point scale for quick, honest responses:</p>
+<p>| # | Dimension | Question | Purpose |</p>
+<p>|---|-----------|----------|---------|</p>
+<p>| 1 | <strong>Sentiment / Overall</strong> | "How are you feeling overall?" | Captures overall wellbeing and mood |</p>
+<p>| 2 | <strong>Workload / Capacity</strong> | "How's your workload?" | Identifies unsustainable job demands |</p>
+<p>| 3 | <strong>Psychological Safety</strong> | "Do you feel safe speaking up?" | Measures trust and voice in the organisation |</p>
+<p>| 4 | <strong>Leadership Support</strong> | "Do you feel supported by leadership?" | Assesses management responsiveness |</p>
+<p>| 5 | <strong>Clarity / Direction</strong> | "Are you clear on what's expected?" | Evaluates role clarity and expectations |</p>
+<p><strong>Response Options:</strong></p>
+<ul>
+<li>✅ Positive (e.g., "Good – I'm doing well")</li>
+<li>😐 Neutral (e.g., "Okay – Getting by")</li>
+<li>❌ Negative (e.g., "Not great – I'm struggling")</li>
+</ul>
+<h3>**Intelligent Survey Flow**</h3>
+<h4>**Standard Path** (All employees)</h4>
+<ul>
+<li><strong>Confidentiality Notice</strong> → Explains privacy protections</li>
+<li><strong>5 Core Questions</strong> → With progress indicator</li>
+<li><strong>Optional Comments</strong> → Free text field (confidential)</li>
+<li><strong>Thank You</strong> → Clear next steps</li>
+</ul>
+<h4>**Support Path** (Triggered by high-risk responses)</h4>
+<p>If any response indicates struggling (workload unsustainable, don't feel safe, not supported):</p>
+<ul>
+<li><strong>Support Request</strong> → "Would you like someone to reach out?"</li>
+<li><strong>Yes</strong> → Proceed to Support Options</li>
+<li><strong>No</strong> → Skip to Comments</li>
+<li><strong>Tell me more</strong> → Show available support, then ask again</li>
+</ul>
+<ul>
+<li><strong>Support Options</strong> <em>(Only if "Yes" selected)</em></li>
+<li><strong>Who</strong>: Select from HR, WHS Leader, Manager, EAP, Other (configurable per client)</li>
+<li><strong>How</strong>: Choose contact method (work email, personal email, phone, anonymous meeting)</li>
+<li><strong>When</strong>: Preferred timeframe (24 hours, this week, flexible)</li>
+</ul>
+<ul>
+<li><strong>Crisis Resources</strong> <em>(Shown for all high-risk responses)</em></li>
+<li>Clickable buttons for immediate help:</li>
+<li>Lifeline (13 11 14)</li>
+<li>Beyond Blue (1300 22 4636)</li>
+<li>SafeWork Australia</li>
+<li>Your EAP provider</li>
+<li>HR contact</li>
+</ul>
+<ul>
+<li><strong>Thank You</strong> → Confirms next steps and support timeline</li>
+</ul>
+<h3>**Privacy & Confidentiality**</h3>
+<p>✓ <strong>Individual responses are confidential</strong> - Only aggregated data shared with leadership</p>
+<p>✓ <strong>No performance link</strong> - This measures organisational health, not individual capability</p>
+<p>✓ <strong>Support requests controlled by employee</strong> - They choose who contacts them and how</p>
+<p>✓ <strong>Anonymous option available</strong> - For employees who need help but want anonymity</p>
+<p>✓ <strong>Secure data handling</strong> - Bank-level encryption, Australian data sovereignty</p>
+<h3>**What Leadership Sees**</h3>
+
+<!-- Dashboard Visual Examples -->
+<div class="grid-2" style="margin: 2rem 0 3rem 0;">
+  <!-- Overall Wellbeing Score -->
+  <div class="card" style="border: 3px solid #ea9999; background: linear-gradient(135deg, #fff5f5 0%, white 100%);">
+    <h4 style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+      <span>Overall Wellbeing Score</span>
+      <span style="width: 12px; height: 12px; background: #ea9999; border-radius: 50%;"></span>
+    </h4>
+    <div style="text-align: center; padding: 1.5rem 0;">
+      <div style="font-size: 3.5rem; font-weight: 800; color: #ea9999; line-height: 1;">52%</div>
+      <div style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.75rem; color: #737A8C;">
+        <span>0</span><span>50</span><span>100</span>
+      </div>
+    </div>
+    <div style="background: #fff; padding: 1rem; border-radius: 8px;">
+      <div style="font-size: 0.75rem; color: #737A8C; margin-bottom: 0.5rem;">Weighting:</div>
+      <ul style="font-size: 0.75rem; margin: 0;">
+        <li>Sentiment: 25% • Workload: 25%</li>
+        <li>Safety: 20% • Leadership: 20% • Clarity: 10%</li>
+      </ul>
+      <div style="color: #ea9999; font-size: 0.875rem; margin-top: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+        <span class="material-symbols-outlined" style="font-size: 16px;">trending_down</span>
+        <span>16.0% vs last week</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Psychological Safety -->
+  <div class="card card-slate">
+    <h4 style="margin-bottom: 1rem;">Psychological Safety</h4>
+    <div style="display: flex; justify-content: space-around; margin: 1rem 0;">
+      <div style="text-align: center;">
+        <div style="width: 56px; height: 56px; border: 3px solid #64afac; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem;">
+          <span class="material-symbols-outlined" style="font-size: 28px; color: #64afac;">check</span>
+        </div>
+        <div style="font-size: 0.75rem; color: #737A8C;">Yes, safe</div>
+        <div style="font-size: 1.75rem; font-weight: 700; color: #64afac;">9</div>
+        <div style="font-size: 0.7rem; color: #737A8C;">45%</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="width: 56px; height: 56px; border: 3px solid #5d89a9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem;">
+          <span class="material-symbols-outlined" style="font-size: 28px; color: #5d89a9;">help</span>
+        </div>
+        <div style="font-size: 0.75rem; color: #737A8C;">Sometimes</div>
+        <div style="font-size: 1.75rem; font-weight: 700; color: #5d89a9;">7</div>
+        <div style="font-size: 0.7rem; color: #737A8C;">35%</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="width: 56px; height: 56px; border: 3px solid #ea9999; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.5rem;">
+          <span class="material-symbols-outlined" style="font-size: 28px; color: #ea9999;">close</span>
+        </div>
+        <div style="font-size: 0.75rem; color: #737A8C;">No</div>
+        <div style="font-size: 1.75rem; font-weight: 700; color: #ea9999;">4</div>
+        <div style="font-size: 0.7rem; color: #737A8C;">20%</div>
+      </div>
+    </div>
+    <div style="background: linear-gradient(135deg, #e8f4f3 0%, #f4f4ee 100%); padding: 0.75rem; border-radius: 8px; border-left: 4px solid #2B4162; margin-top: 1rem;">
+      <div style="font-size: 0.75rem; color: #2B4162;">
+        <strong>What this means:</strong> 4 people don't feel safe - indicates cultural issues needing attention.
+      </div>
+    </div>
+  </div>
+</div>
+
+<p><strong>Executive Dashboard Features:</strong></p>
+<ul>
+<li>Overall wellbeing score (0-100)</li>
+<li>Trends over time (weekly/monthly)</li>
+<li>Department/division comparisons</li>
+<li>High-risk alerts (aggregated, anonymous)</li>
+<li>Support request metrics</li>
+</ul>
+
+<p><strong>What Leadership DOESN'T See:</strong></p>
+<ul>
+<li>Individual survey responses</li>
+<li>Who requested support (unless employee opts in)</li>
+<li>Comments from specific people</li>
+<li>Raw scores by employee</li>
+</ul>
+<p><strong>Exception:</strong> If an employee requests support and provides contact details, only their chosen contact person receives this information.</p>
+<h3>**Support Request Workflow**</h3>
+<p><code>`</code></p>
+<p>Employee Requests Support</p>
+<p>↓</p>
+<p>Notification sent to selected contact(s)</p>
+<p>↓</p>
+<p>Contact person sees:</p>
+<ul>
+<li>Request date/time</li>
+<li>Preferred contact method</li>
+<li>Timeframe preference</li>
+<li>General concern area (optional)</li>
+</ul>
+<p>↓</p>
+<p>Contact reaches out within timeframe</p>
+<p>↓</p>
+<p>Status tracked: Pending → Contacted → Resolved</p>
+<p><code>`</code></p>
+<p><strong>Dashboard alerts:</strong> "3 support requests pending this week"</p>
+<p><strong>Response tracking:</strong> Average time to contact, resolution rates</p>
+<p><strong>No personal details shared</strong> unless employee explicitly provides them</p>
+<h3>**Delivery Methods**</h3>
+<p><strong>SMS</strong> (Recommended)</p>
+<ul>
+<li>Personalised link sent to mobile</li>
+<li>Opens directly in phone browser</li>
+<li>Single-use token (no login required)</li>
+<li>2-minute completion time</li>
+</ul>
+<p><strong>Email</strong></p>
+<ul>
+<li>Personalised link sent to work or personal email</li>
+<li>Desktop or mobile friendly</li>
+<li>Single-use token</li>
+</ul>
+<p><strong>QR Code</strong> (For in-person/poster campaigns)</p>
+<ul>
+<li>Scan to access survey</li>
+<li>Useful for shift workers, frontline staff</li>
+</ul>
+<h3>**Mobile-Optimised Design**</h3>
+<p>✓ Works on any smartphone (iOS/Android)</p>
+<p>✓ Large touch targets (easy to tap)</p>
+<p>✓ Minimal scrolling required</p>
+<p>✓ Progress indicator shows completion</p>
+<p>✓ No app download needed</p>
+<p>✓ Works offline (saves on reconnect)</p>
+<h3>**Reporting & Analytics**</h3>
+<h4>**For Executives:**</h4>
+<ul>
+<li><strong>Overview Dashboard</strong> - Current status, quick alerts</li>
+<li><strong>Trends Page</strong> - Historical patterns, early warning signals</li>
+<li><strong>Predictive Analytics</strong> - Which factors predict wellbeing issues</li>
+<li><strong>Drill-down</strong> - Filter by division → department → team</li>
+</ul>
+<h4>**Key Metrics:**</h4>
+<ul>
+<li>Overall Wellbeing Score</li>
+<li>Response rate by department</li>
+<li>Lead indicators (what predicts problems)</li>
+<li>Support request rates</li>
+<li>Time-to-resolution for support</li>
+</ul>
+<h4>**Automated Insights:**</h4>
+<ul>
+<li>"Engineering team scores dropped 15% this week - workload appears to be the driver"</li>
+<li>"Psychological safety declining 3 weeks before sentiment - intervene now"</li>
+<li>"Sales team thriving despite high workload - leadership support is strong"</li>
+</ul>
+<h3>**Compliance & Validation**</h3>
+<p>✓ <strong>Aligned with:</strong> COPSOQ-III, SafeWork Australia WHS Hazards</p>
+<p>✓ <strong>ISO 45003</strong> Psychological Health & Safety principles</p>
+<p>✓ <strong>Privacy Act 1988</strong> compliant</p>
+<p>✓ <strong>GDPR-ready</strong> for international operations</p>
+<p>✓ <strong>Psychometric validation</strong> - Questions tested for reliability and validity</p>
+<h3>**Frequency & Cadence**</h3>
+<p><strong>Recommended:</strong> Weekly pulse (same 5 questions)</p>
+<ul>
+<li>Low survey fatigue (2 minutes)</li>
+<li>Early detection (spot issues within days, not months)</li>
+<li>Trend visibility (see what's working)</li>
+</ul>
+<p><strong>Flexible:</strong> Can be configured for fortnightly or monthly</p>
+<h3>**Implementation**</h3>
+<p><strong>Week 1:</strong> Setup & Configuration</p>
+<ul>
+<li>Configure org structure (divisions, departments, teams)</li>
+<li>Define support contacts (HR, WHS, EAP, etc.)</li>
+<li>Customise resources (your EAP provider, internal contacts)</li>
+<li>Import employee data (name, mobile, email)</li>
+</ul>
+<p><strong>Week 2:</strong> Pilot</p>
+<ul>
+<li>Test with one team (20-50 people)</li>
+<li>Refine support workflows</li>
+<li>Train support contacts</li>
+</ul>
+<p><strong>Week 3:</strong> Full Rollout</p>
+<ul>
+<li>Send to all employees</li>
+<li>Monitor response rates</li>
+<li>Dashboard training for leadership</li>
+</ul>
+<p><strong>Ongoing:</strong> Weekly cadence</p>
+<ul>
+<li>Auto-send every Monday morning</li>
+<li>Dashboard updates in real-time</li>
+<li>Support requests tracked and resolved</li>
+</ul>
+<h3>**Pricing Structure**</h3>
+<p><em>(Your pricing model here)</em></p>
+<p><strong>Included:</strong></p>
+<ul>
+<li>Unlimited surveys</li>
+<li>Real-time dashboard</li>
+<li>Support request management</li>
+<li>Trend analysis & reporting</li>
+<li>SMS delivery</li>
+<li>Email delivery</li>
+<li>Data security & privacy</li>
+<li>Australian data hosting</li>
+</ul>
+<p><strong>Optional Add-ons:</strong></p>
+<ul>
+<li>Power BI integration</li>
+<li>Custom branding</li>
+<li>API access</li>
+<li>Advanced analytics</li>
+</ul>
+<h3>**Case Study Example**</h3>
+<p><strong>Client:</strong> Mid-size professional services firm (400 employees)</p>
+<p><strong>Challenge:</strong> High turnover in Engineering, exit interviews showing "burnout"</p>
+<p><strong>Beacon Implementation:</strong></p>
+<ul>
+<li>Weekly pulse survey (90% response rate)</li>
+<li>Dashboard showed Engineering workload score dropping 3 weeks before sentiment</li>
+<li>Leadership redistributed projects, hired 2 contractors</li>
+<li>Engineering scores recovered within 6 weeks</li>
+<li>Turnover dropped 40% over 6 months</li>
+</ul>
+<p><strong>Key Insight:</strong> "We used to find out about problems in exit interviews. Now we see them coming and fix them before people leave."</p>
+<h3>**Why Beacon Works**</h3>
+<p>✓ <strong>Fast</strong> - 2 minutes, high completion rates</p>
+<p>✓ <strong>Predictive</strong> - Early warning system, not post-mortem</p>
+<p>✓ <strong>Action-oriented</strong> - Built-in support pathways</p>
+<p>✓ <strong>Evidence-based</strong> - Validated questions, research-backed</p>
+<p>✓ <strong>Private</strong> - Employees trust it, leadership gets insights</p>
+<p>✓ <strong>Mobile-first</strong> - Works where your people are</p>
+<h3>**Next Steps**</h3>
+<p><strong>Demo:</strong> Try the survey yourself at [demo link]</p>
+<p><strong>Dashboard Preview:</strong> See sample executive dashboard</p>
+<p><strong>Pilot Program:</strong> 4-week trial with one team</p>
+<p><strong>Questions:</strong> Contact us at [contact details]</p>
+<p><em>Beacon: Early detection for workplace wellbeing. Measure the system, not the person.</em></p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p><strong>Beacon Effect</strong></p>
+      <p>hello@beaconeffect.com.au | 1300 BEACON (232 266) | www.beaconeffect.com.au</p>
+      <p style="margin-top: 0.5rem;">© 2025 Beacon Effect. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

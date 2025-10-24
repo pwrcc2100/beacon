@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive Intelligence Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: #2E2E38;
+      background: white;
+    }
+
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: 100;
+      font-style: normal;
+      line-height: 1;
+      display: inline-block;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      font-size: 40px;
+      color: #64afac;
+    }
+
+    .logo-text h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: #2B4162;
+    }
+
+    .logo-text p {
+      font-size: 0.875rem;
+      color: #737A8C;
+    }
+
+    .print-btn {
+      background: #2B4162;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .print-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Title Section */
+    .title-section {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .title-section h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #2B4162;
+      margin-bottom: 0.75rem;
+    }
+
+    .title-section p {
+      font-size: 1.25rem;
+      color: #737A8C;
+    }
+
+    /* Content */
+    .content {
+      max-width: 100%;
+    }
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2B4162;
+      margin: 3rem 0 1.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2B4162;
+      margin: 2rem 0 1rem 0;
+    }
+
+    h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #2B4162;
+      margin: 1.5rem 0 0.75rem 0;
+    }
+
+    p {
+      margin: 1rem 0;
+      color: #737A8C;
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+    }
+
+    li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: #737A8C;
+      font-size: 0.875rem;
+    }
+
+    li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #2B4162;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    strong {
+      color: #2B4162;
+      font-weight: 600;
+    }
+
+    /* Card Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .card {
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.2s;
+    }
+
+    .card:hover {
+      border-color: #2B4162;
+      box-shadow: 0 4px 12px rgba(43, 65, 98, 0.1);
+    }
+
+    .card-slate {
+      background: #eeefec;
+      border-color: #2B4162;
+    }
+
+    .card h4 {
+      margin: 0 0 0.75rem 0;
+    }
+
+    .card p {
+      font-size: 0.875rem;
+      margin: 0.5rem 0;
+    }
+
+    .card ul {
+      margin: 0.5rem 0 0 0;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 2px solid #e5e7eb;
+      text-align: center;
+      color: #737A8C;
+      font-size: 0.875rem;
+    }
+
+    /* Print Styles */
+    @media print {
+      @page {
+        size: A4;
+        margin: 1.5cm;
+      }
+
+      body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-btn {
+        display: none !important;
+      }
+
+      .container {
+        padding: 0;
+      }
+
+      h2 {
+        page-break-after: avoid;
+      }
+
+      .card {
+        page-break-inside: avoid;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .title-section h2 {
+        font-size: 2rem;
+      }
+
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <a href="/" class="logo">
+        <span class="material-symbols-outlined logo-icon">health_and_safety</span>
+        <div class="logo-text">
+          <h1>Beacon</h1>
+          <p>Wellbeing Platform</p>
+        </div>
+      </a>
+      <button class="print-btn" onclick="window.print()">
+        <span class="material-symbols-outlined" style="font-size: 20px;">print</span>
+        Print / Save PDF
+      </button>
+    </div>
+
+    <!-- Title Section -->
+    <div class="title-section">
+      <h2>Executive Intelligence Dashboard</h2>
+      <p>Transform data into action with real-time wellbeing insights</p>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">lightbulb</span> Executive Intelligence for Proactive Wellbeing Management</h2>
+<p>The Beacon Dashboard transforms anonymous survey responses into actionable intelligence, enabling leadership to identify risks early and respond with precision.</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">dashboard</span> Dashboard Overview</h2>
+
+<!-- Dashboard Visual Examples -->
+<h3>Example: Executive Dashboard View</h3>
+<div class="grid-2" style="margin-bottom: 3rem;">
+  <!-- Overall Wellbeing Score Card -->
+  <div class="card" style="border: 3px solid #ea9999; background: linear-gradient(135deg, #fff5f5 0%, white 100%);">
+    <h4 style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+      <span>Overall Wellbeing Score</span>
+      <span style="width: 12px; height: 12px; background: #ea9999; border-radius: 50%; display: inline-block;"></span>
+    </h4>
+    <div style="text-align: center; padding: 2rem 0;">
+      <div style="font-size: 4rem; font-weight: 800; color: #ea9999; line-height: 1;">52%</div>
+      <div style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.75rem; color: #737A8C;">
+        <span>0</span>
+        <span>50</span>
+        <span>100</span>
+      </div>
+    </div>
+    <div style="background: #fff; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+      <div style="font-size: 0.75rem; color: #737A8C; margin-bottom: 0.5rem;">Weighting Formula:</div>
+      <ul style="font-size: 0.75rem; margin: 0;">
+        <li>Sentiment: 25% • Workload: 25%</li>
+        <li>Safety: 20% • Leadership: 20%</li>
+        <li>Clarity: 10%</li>
+      </ul>
+      <div style="color: #ea9999; font-size: 0.875rem; margin-top: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+        <span class="material-symbols-outlined" style="font-size: 16px;">trending_down</span>
+        <span>16.0% vs last week</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Last Month Card -->
+  <div class="card card-slate">
+    <h4 style="margin-bottom: 1rem;">About Last Month</h4>
+    <p style="font-size: 0.875rem; margin-bottom: 1rem;">This page shows wellbeing trends over the selected time period, helping you identify patterns and changes in team sentiment.</p>
+    <div style="background: linear-gradient(135deg, #e8f4f3 0%, #f4f4ee 100%); padding: 1rem; border-radius: 8px; border-left: 4px solid #5d89a9;">
+      <div style="font-size: 0.75rem; color: #2B4162; display: flex; gap: 0.5rem;">
+        <span class="material-symbols-outlined" style="font-size: 16px; color: #5d89a9;">lightbulb</span>
+        <div>
+          <strong>Tip:</strong> Look for sudden drops or consistent declines in any measure - these may indicate areas requiring immediate attention.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Status Summary Cards -->
+<h3>Quick Status Overview</h3>
+<div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 3rem;">
+  <div class="card" style="text-align: center; padding: 1.5rem;">
+    <div style="font-size: 3rem; margin-bottom: 0.5rem;">😔</div>
+    <div style="font-size: 1.25rem; font-weight: 600; color: #ea9999; margin-bottom: 0.25rem;">No</div>
+    <div style="font-size: 0.875rem; color: #737A8C; margin-bottom: 0.5rem;">How are people feeling?</div>
+    <div style="font-size: 1.5rem; font-weight: 700; color: #2B4162;">40/100</div>
+    <div style="width: 100%; height: 8px; background: #f4f4ee; border-radius: 4px; margin-top: 0.5rem; overflow: hidden;">
+      <div style="width: 40%; height: 100%; background: #ea9999;"></div>
+    </div>
+  </div>
+
+  <div class="card" style="text-align: center; padding: 1.5rem;">
+    <div style="font-size: 3rem; margin-bottom: 0.5rem;">💼</div>
+    <div style="font-size: 1.25rem; font-weight: 600; color: #64afac; margin-bottom: 0.25rem;">Yes</div>
+    <div style="font-size: 0.875rem; color: #737A8C; margin-bottom: 0.5rem;">Is workload manageable?</div>
+    <div style="font-size: 1.5rem; font-weight: 700; color: #2B4162;">80/100</div>
+    <div style="width: 100%; height: 8px; background: #f4f4ee; border-radius: 4px; margin-top: 0.5rem; overflow: hidden;">
+      <div style="width: 80%; height: 100%; background: #64afac;"></div>
+    </div>
+  </div>
+
+  <div class="card" style="text-align: center; padding: 1.5rem;">
+    <div style="font-size: 3rem; margin-bottom: 0.5rem;">👥</div>
+    <div style="font-size: 1.25rem; font-weight: 600; color: #ea9999; margin-bottom: 0.25rem;">No</div>
+    <div style="font-size: 0.875rem; color: #737A8C; margin-bottom: 0.5rem;">Do people feel supported?</div>
+    <div style="font-size: 1.5rem; font-weight: 700; color: #2B4162;">20/100</div>
+    <div style="width: 100%; height: 8px; background: #f4f4ee; border-radius: 4px; margin-top: 0.5rem; overflow: hidden;">
+      <div style="width: 20%; height: 100%; background: #ea9999;"></div>
+    </div>
+  </div>
+
+  <div class="card" style="text-align: center; padding: 1.5rem;">
+    <div style="font-size: 3rem; margin-bottom: 0.5rem;">⭐</div>
+    <div style="font-size: 1.25rem; font-weight: 600; color: #64afac; margin-bottom: 0.25rem;">Yes</div>
+    <div style="font-size: 0.875rem; color: #737A8C; margin-bottom: 0.5rem;">Do people feel valued?</div>
+    <div style="font-size: 1.5rem; font-weight: 700; color: #2B4162;">100/100</div>
+    <div style="width: 100%; height: 8px; background: #f4f4ee; border-radius: 4px; margin-top: 0.5rem; overflow: hidden;">
+      <div style="width: 100%; height: 100%; background: #64afac;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Overall Team Status -->
+<h3>Overall Team Status Example</h3>
+<div class="grid-3" style="margin-bottom: 3rem;">
+  <div class="card" style="text-align: center; padding: 2rem; background: linear-gradient(135deg, #f4f4ee 0%, white 100%);">
+    <span class="material-symbols-outlined" style="font-size: 64px; color: #64afac; margin-bottom: 1rem;">star</span>
+    <div style="font-size: 1.25rem; font-weight: 600; color: #2B4162; margin-bottom: 0.5rem;">Thriving</div>
+    <div style="font-size: 3rem; font-weight: 700; color: #64afac; margin-bottom: 0.25rem;">7</div>
+    <div style="font-size: 0.875rem; color: #737A8C;">35% of team</div>
+  </div>
+
+  <div class="card" style="text-align: center; padding: 2rem; background: linear-gradient(135deg, #eeefec 0%, white 100%);">
+    <span class="material-symbols-outlined" style="font-size: 64px; color: #5d89a9; margin-bottom: 1rem;">thumb_up</span>
+    <div style="font-size: 1.25rem; font-weight: 600; color: #2B4162; margin-bottom: 0.5rem;">Managing OK</div>
+    <div style="font-size: 3rem; font-weight: 700; color: #5d89a9; margin-bottom: 0.25rem;">7</div>
+    <div style="font-size: 0.875rem; color: #737A8C;">35% of team</div>
+  </div>
+
+  <div class="card" style="text-align: center; padding: 2rem; background: linear-gradient(135deg, #fff5f5 0%, white 100%);">
+    <span class="material-symbols-outlined" style="font-size: 64px; color: #ea9999; margin-bottom: 1rem;">warning</span>
+    <div style="font-size: 1.25rem; font-weight: 600; color: #2B4162; margin-bottom: 0.5rem;">Need Support</div>
+    <div style="font-size: 3rem; font-weight: 700; color: #ea9999; margin-bottom: 0.25rem;">6</div>
+    <div style="font-size: 0.875rem; color: #737A8C;">30% of team</div>
+  </div>
+</div>
+
+<h3>Real-Time Executive Dashboard Features</h3>
+<p>A single-screen view designed for board-level stakeholders and senior leadership, providing:</p>
+<ul>
+<li><strong>Overall Wellbeing Score</strong> - Composite metric (0-100) calculated from five validated dimensions</li>
+<li><strong>Trend Analysis</strong> - Week-over-week and historical tracking</li>
+<li><strong>Risk Indicators</strong> - Traffic-light system highlighting areas requiring attention</li>
+<li><strong>Response Rates</strong> - Participation tracking to ensure representative data</li>
+<li><strong>Organisational Drill-Down</strong> - View by division, department, or team</li>
+</ul>
+
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">analytics</span> Key Metrics Displayed</h2>
+<h3>1. Overall Wellbeing Score</h3>
+<p><strong>What It Measures:</strong></p>
+<p>A weighted composite of five evidence-based dimensions, providing a single metric for organisational health.</p>
+<p><strong>Weighting Formula:</strong></p>
+<ul>
+<li>Sentiment / Overall Mood: 25%</li>
+<li>Workload / Capacity: 25%</li>
+<li>Psychological Safety: 20%</li>
+<li>Leadership Support: 20%</li>
+<li>Clarity / Direction: 10%</li>
+</ul>
+<p><strong>Why It Matters:</strong></p>
+<p>Provides a consistent benchmark for tracking wellbeing over time and comparing across organisational units.</p>
+<p><strong>Traffic Light System:</strong></p>
+<ul>
+<li>🟢 <strong>Green (70-100):</strong> Healthy, sustainable environment</li>
+<li>🟡 <strong>Amber (50-69):</strong> Monitor closely, early intervention recommended</li>
+<li>🔴 <strong>Red (0-49):</strong> Immediate action required</li>
+</ul>
+<h3>2. Sentiment / Overall Mood (25% weighting)</h3>
+<p><strong>What We Ask:</strong></p>
+<p>"How are you feeling about work overall?"</p>
+<p><strong>What It Reveals:</strong></p>
+<ul>
+<li>Early indicator of engagement and satisfaction</li>
+<li>Predictor of discretionary effort</li>
+<li>Leading indicator for turnover risk</li>
+</ul>
+<p><strong>Dashboard Display:</strong></p>
+<ul>
+<li>Current week score vs. previous week</li>
+<li>4-week trend line</li>
+<li>Distribution histogram (how many people selected each response)</li>
+</ul>
+<h3>3. Workload / Capacity (25% weighting)</h3>
+<p><strong>What We Ask:</strong></p>
+<p>"Is your current workload sustainable?"</p>
+<p><strong>What It Reveals:</strong></p>
+<ul>
+<li>Risk of burnout</li>
+<li>Resource allocation issues</li>
+<li>Capacity planning needs</li>
+</ul>
+<p><strong>Dashboard Display:</strong></p>
+<ul>
+<li>Percentage reporting unsustainable workload</li>
+<li>Trend over time</li>
+<li>Comparison across departments (identifies hotspots)</li>
+</ul>
+<p><strong>Action Triggers:</strong></p>
+<ul>
+<li>>30% reporting unsustainable workload = immediate review required</li>
+<li>Sustained upward trend = systemic issue</li>
+</ul>
+<h3>4. Psychological Safety (20% weighting)</h3>
+<p><strong>What We Ask:</strong></p>
+<p>"Do you feel safe speaking up about concerns or problems?"</p>
+<p><strong>What It Reveals:</strong></p>
+<ul>
+<li>Culture of openness and trust</li>
+<li>Risk of hidden problems</li>
+<li>Innovation capacity</li>
+</ul>
+<p><strong>Dashboard Display:</strong></p>
+<ul>
+<li>Percentage feeling safe vs. unsafe</li>
+<li>Trend analysis</li>
+<li>Team-level comparison</li>
+</ul>
+<p><strong>Why It's Critical:</strong></p>
+<p>Research shows psychological safety is the #1 predictor of high-performing teams (Google's Project Aristotle).</p>
+<h3>5. Leadership Support (20% weighting)</h3>
+<p><strong>What We Ask:</strong></p>
+<p>"Do you feel supported by your manager/leadership?"</p>
+<p><strong>What It Reveals:</strong></p>
+<ul>
+<li>Management effectiveness</li>
+<li>Retention risk</li>
+<li>Team morale</li>
+</ul>
+<p><strong>Dashboard Display:</strong></p>
+<ul>
+<li>Support score by department/division</li>
+<li>Identifies specific leadership gaps</li>
+<li>Correlation with turnover data</li>
+</ul>
+<p><strong>Action Triggers:</strong></p>
+<ul>
+<li>Low scores in specific teams = targeted leadership coaching</li>
+<li>Declining trend = review management practices</li>
+</ul>
+<h3>6. Clarity / Direction (10% weighting)</h3>
+<p><strong>What We Ask:</strong></p>
+<p>"Do you have clarity about your role and what's expected?"</p>
+<p><strong>What It Reveals:</strong></p>
+<ul>
+<li>Communication effectiveness</li>
+<li>Role ambiguity</li>
+<li>Organisational alignment</li>
+</ul>
+<p><strong>Dashboard Display:</strong></p>
+<ul>
+<li>Clarity score over time</li>
+<li>Comparison across teams</li>
+<li>Correlation with performance metrics</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> Advanced Analytics</h2>
+<h3>Distribution Histograms</h3>
+<p>Instead of showing only averages, the dashboard displays <strong>how responses are distributed</strong>:</p>
+<ul>
+<li>Identifies polarisation (some very happy, some very unhappy)</li>
+<li>Reveals whether issues are widespread or isolated</li>
+<li>Shows whether interventions are moving the needle</li>
+</ul>
+<p><strong>Example Insight:</strong></p>
+<p>"Average score is 65 (amber), but histogram shows 40% of team in red zone—targeted intervention needed for at-risk group."</p>
+<h3>Correlation Heat Map</h3>
+<p>Visual matrix showing relationships between dimensions:</p>
+<ul>
+<li><strong>High correlation between Workload and Mood</strong> → Capacity issue driving dissatisfaction</li>
+<li><strong>Low correlation between Support and Clarity</strong> → Independent issues requiring different interventions</li>
+</ul>
+<p><strong>Why It Matters:</strong></p>
+<p>Identifies root causes rather than symptoms, enabling more effective interventions.</p>
+<h3>Individual Journey Tracking</h3>
+<p>Anonymised longitudinal view showing how individuals' scores change over time:</p>
+<ul>
+<li>Identifies patterns (e.g., gradual decline vs. sudden drop)</li>
+<li>Measures intervention effectiveness</li>
+<li>Highlights at-risk individuals for proactive support</li>
+</ul>
+<p><strong>Privacy Protection:</strong></p>
+<p>Individual data is anonymised and only shown in aggregate when team size is >5 people.</p>
+<h3>Response Rate Tracking</h3>
+<p>Monitors participation over time:</p>
+<ul>
+<li>Identifies survey fatigue</li>
+<li>Highlights teams with low engagement</li>
+<li>Ensures data is representative</li>
+</ul>
+<p><strong>Benchmark:</strong></p>
+<p>Beacon surveys typically achieve 70-85% response rates (vs. 30-40% for traditional annual surveys).</p>
+<h3>Statistical Process Control (SPC) Charts</h3>
+<p>Goes beyond simple trend lines to show:</p>
+<ul>
+<li><strong>Upper and Lower Control Limits</strong> - Natural variation vs. significant change</li>
+<li><strong>Trend Signals</strong> - 7+ consecutive points in one direction = systemic shift</li>
+<li><strong>Outliers</strong> - Scores outside control limits = investigate immediately</li>
+</ul>
+<p><strong>Why It Matters:</strong></p>
+<p>Distinguishes between normal fluctuation and meaningful change, preventing over-reaction to noise.</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> Organisational Drill-Down</h2>
+<h3>Hierarchical View</h3>
+<p>Navigate from whole-of-business down to team level:</p>
+<ul>
+<li><strong>Enterprise View</strong> - Overall organisational health</li>
+<li><strong>Division View</strong> - Compare divisions (e.g., Operations vs. Corporate)</li>
+<li><strong>Department View</strong> - Identify specific problem areas</li>
+<li><strong>Team View</strong> - Pinpoint teams requiring support</li>
+</ul>
+<p><strong>Minimum Team Size:</strong></p>
+<p>Results only shown when team size is ≥5 to protect anonymity.</p>
+<h3>Comparative Analysis</h3>
+<p><strong>"Which Teams Need Attention?"</strong></p>
+<p>Bar chart ranking teams by wellbeing score:</p>
+<ul>
+<li>Quickly identifies outliers (high and low)</li>
+<li>Enables peer learning (what are high-performing teams doing differently?)</li>
+<li>Prioritises leadership attention</li>
+</ul>
+<p><strong>Example Use Case:</strong></p>
+<p>"Team A has consistently high scores—interview their manager to identify best practices. Team B shows declining trend—schedule 1:1 with team lead."</p>
+
+<!-- Key Insights Section -->
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">lightbulb</span> Key Insights Widget</h2>
+<div class="card" style="border: 2px solid #2B4162; padding: 2rem; margin-bottom: 3rem;">
+  <h3 style="margin-top: 0; margin-bottom: 1.5rem;">Key Insights</h3>
+  
+  <div style="display: grid; gap: 1rem;">
+    <!-- Positive Insight -->
+    <div style="display: flex; gap: 1rem; padding: 1rem; background: linear-gradient(135deg, #e8f4f3 0%, #f4f4ee 100%); border-radius: 8px; border-left: 4px solid: #64afac;">
+      <span class="material-symbols-outlined" style="font-size: 24px; color: #64afac;">trending_up</span>
+      <div>
+        <div style="font-weight: 600; color: #2B4162; margin-bottom: 0.25rem;">Workload has improved consistently over 4 periods, indicating positive momentum.</div>
+        <div style="font-size: 0.875rem; color: #737A8C;">→ Document and share successful practices with other teams.</div>
+      </div>
+    </div>
+
+    <!-- Positive Insight -->
+    <div style="display: flex; gap: 1rem; padding: 1rem; background: linear-gradient(135deg, #e8f4f3 0%, #f4f4ee 100%); border-radius: 8px; border-left: 4px solid #64afac;">
+      <span class="material-symbols-outlined" style="font-size: 24px; color: #64afac;">trending_up</span>
+      <div>
+        <div style="font-weight: 600; color: #2B4162; margin-bottom: 0.25rem;">Clarity has improved consistently over 3 periods, indicating positive momentum.</div>
+        <div style="font-size: 0.875rem; color: #737A8C;">→ Implement similar practices with other teams to boost performance.</div>
+      </div>
+    </div>
+
+    <!-- Stable Insight -->
+    <div style="display: flex; gap: 1rem; padding: 1rem; background: linear-gradient(135deg, #eeefec 0%, white 100%); border-radius: 8px; border-left: 4px solid #5d89a9;">
+      <span class="material-symbols-outlined" style="font-size: 24px; color: #5d89a9;">check_circle</span>
+      <div>
+        <div style="font-weight: 600; color: #2B4162; margin-bottom: 0.25rem;">Clarity is performing exceptionally well (5.0/5).</div>
+        <div style="font-size: 0.875rem; color: #737A8C;">→ Maintain current practices and use as benchmark for other areas.</div>
+      </div>
+    </div>
+
+    <!-- Warning Insight -->
+    <div style="display: flex; gap: 1rem; padding: 1rem; background: linear-gradient(135deg, #fff5f5 0%, white 100%); border-radius: 8px; border-left: 4px solid #ea9999;">
+      <span class="material-symbols-outlined" style="font-size: 24px; color: #ea9999;">trending_down</span>
+      <div>
+        <div style="font-weight: 600; color: #2B4162; margin-bottom: 0.25rem;">Sentiment has declined for 3 consecutive periods, indicating potential team disengagement or systemic issues.</div>
+        <div style="font-size: 0.875rem; color: #737A8C;">→ Investigate recent organisational changes and relevant factors affecting morale. Conduct pulse check-in or team hall meeting.</div>
+      </div>
+    </div>
+
+    <!-- Critical Alert -->
+    <div style="display: flex; gap: 1rem; padding: 1rem; background: linear-gradient(135deg, #fff0f0 0%, white 100%); border-radius: 8px; border-left: 4px solid #dc2626; border: 2px solid #ea9999;">
+      <span class="material-symbols-outlined" style="font-size: 24px; color: #dc2626;">warning</span>
+      <div>
+        <div style="font-weight: 600; color: #dc2626; margin-bottom: 0.25rem;">Rapid 28% drop in Sentiment this period could indicate a critical incident or significant change.</div>
+        <div style="font-size: 0.875rem; color: #737A8C;">→ Immediate manager engagement recommended. Conduct pulse check-in or team hall meeting.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Which Teams Need Attention -->
+<h3>Which Teams Need Attention?</h3>
+<div class="card" style="margin-bottom: 3rem;">
+  <div style="padding: 1rem; background: #fff5f5; border-left: 4px solid #ea9999; border-radius: 8px; margin-bottom: 1rem;">
+    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+      <span class="material-symbols-outlined" style="font-size: 20px; color: #ea9999;">error</span>
+      <strong style="color: #2B4162;">Action needed:</strong>
+    </div>
+    <div style="font-size: 0.875rem; color: #737A8C; margin-bottom: 0.5rem;">
+      <strong>Sales</strong> shows lowest wellbeing scores (52/100). Consider workload redistribution or additional resources for lower-scoring teams.
+    </div>
+    <div style="font-size: 0.875rem; color: #5d89a9;">
+      → <a href="#" style="color: #5d89a9; text-decoration: none; font-weight: 500;">View Sales details</a>
+    </div>
+  </div>
+  
+  <div style="display: flex; gap: 1rem; align-items: center; padding: 1rem; background: #f4f4ee; border-radius: 8px;">
+    <div style="flex: 1;">
+      <div style="font-weight: 600; color: #2B4162; margin-bottom: 0.5rem;">Team Comparison</div>
+      <div style="height: 200px; background: white; border-radius: 8px; padding: 1rem; display: flex; align-items: flex-end; gap: 1rem;">
+        <div style="flex: 1; text-align: center;">
+          <div style="background: #ea9999; height: 52%; border-radius: 4px 4px 0 0; margin-bottom: 0.5rem;"></div>
+          <div style="font-size: 0.75rem; color: #737A8C;">Sales</div>
+          <div style="font-size: 0.875rem; font-weight: 600; color: #ea9999;">52</div>
+        </div>
+        <div style="flex: 1; text-align: center;">
+          <div style="background: #5d89a9; height: 75%; border-radius: 4px 4px 0 0; margin-bottom: 0.5rem;"></div>
+          <div style="font-size: 0.75rem; color: #737A8C;">Engineering</div>
+          <div style="font-size: 0.875rem; font-weight: 600; color: #5d89a9;">75</div>
+        </div>
+        <div style="flex: 1; text-align: center;">
+          <div style="background: #64afac; height: 88%; border-radius: 4px 4px 0 0; margin-bottom: 0.5rem;"></div>
+          <div style="font-size: 0.75rem; color: #737A8C;">Marketing</div>
+          <div style="font-size: 0.875rem; font-weight: 600; color: #64afac;">88</div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 1rem;">
+      <div style="font-size: 0.75rem; color: #737A8C; margin-bottom: 0.5rem;">Legend:</div>
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+        <span style="width: 12px; height: 12px; background: #ea9999; border-radius: 2px;"></span>
+        <span style="font-size: 0.75rem;">High Risk (<55)</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+        <span style="width: 12px; height: 12px; background: #fbbf24; border-radius: 2px;"></span>
+        <span style="font-size: 0.75rem;">Moderate (55-69)</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="width: 12px; height: 12px; background: #64afac; border-radius: 2px;"></span>
+        <span style="font-size: 0.75rem;">Thriving (70+)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> Executive Summary Widget</h2>
+<p><strong>AI-Generated Insights</strong></p>
+<p>The dashboard includes a natural-language summary highlighting:</p>
+<ul>
+<li><strong>Key Risks:</strong> "Workload scores in Engineering have declined 15% over 4 weeks—burnout risk"</li>
+<li><strong>Positive Trends:</strong> "Psychological Safety scores up 12% following leadership training"</li>
+<li><strong>Comparative Insights:</strong> "Sales team reports 20% higher support scores than company average"</li>
+<li><strong>Action Recommendations:</strong> "Consider workload review for Project Delivery team"</li>
+</ul>
+<p><strong>Why It Matters:</strong></p>
+<p>Busy executives get the story behind the numbers without manual analysis.</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">gavel</span> Compliance & Reporting</h2>
+<h3>Australian Standards Alignment</h3>
+<p>Dashboard metrics map directly to:</p>
+<ul>
+<li><strong>ISO 45003</strong> - Psychological health and safety at work</li>
+<li><strong>Safe Work Australia</strong> - Model Code of Practice: Managing psychosocial hazards</li>
+<li><strong>Work Health and Safety Act 2011</strong> - Duty of care obligations</li>
+</ul>
+<h3>Audit-Ready Documentation</h3>
+<ul>
+<li>Timestamped records of all survey waves</li>
+<li>Evidence of proactive risk identification</li>
+<li>Documented intervention responses</li>
+<li>Trend analysis demonstrating continuous improvement</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">gavel</span> Data Security & Privacy</h2>
+<h3>Anonymity Protection</h3>
+<ul>
+<li>No personally identifiable information collected</li>
+<li>Responses aggregated before display</li>
+<li>Minimum team size thresholds enforced</li>
+<li>No IP address or device tracking</li>
+</ul>
+<h3>Data Storage</h3>
+<ul>
+<li>Australian-hosted infrastructure (AWS Sydney)</li>
+<li>Encrypted at rest and in transit</li>
+<li>Role-based access control</li>
+<li>Audit logs for all data access</li>
+</ul>
+<h3>Compliance</h3>
+<ul>
+<li>GDPR compliant</li>
+<li>Privacy Act 1988 (Cth) compliant</li>
+<li>ISO 27001 aligned</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> Integration Capabilities</h2>
+<h3>Power BI / Tableau</h3>
+<p>Export data for custom reporting:</p>
+<ul>
+<li>Direct database connection (read-only)</li>
+<li>Scheduled data exports (CSV/JSON)</li>
+<li>Pre-built dashboard templates</li>
+</ul>
+<h3>HRIS Integration</h3>
+<p>Connect with existing systems:</p>
+<ul>
+<li>Workday, BambooHR, Deputy, etc.</li>
+<li>Automatic employee list synchronisation</li>
+<li>Turnover correlation analysis</li>
+</ul>
+<h3>Communication Platforms</h3>
+<p>Automated alerts via:</p>
+<ul>
+<li>Microsoft Teams</li>
+<li>Slack</li>
+<li>Email</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> Typical Use Cases</h2>
+<h3>Weekly Leadership Review (15 minutes)</h3>
+<ul>
+<li>Review Overall Wellbeing Score and trend</li>
+<li>Check "Teams Needing Attention" widget</li>
+<li>Read Executive Summary for key insights</li>
+<li>Assign follow-up actions to relevant managers</li>
+</ul>
+<h3>Monthly Board Reporting</h3>
+<ul>
+<li>Export dashboard as PDF</li>
+<li>Include trend analysis and comparative data</li>
+<li>Demonstrate proactive risk management</li>
+<li>Evidence of continuous improvement</li>
+</ul>
+<h3>Quarterly Strategic Planning</h3>
+<ul>
+<li>Deep dive into correlation analysis</li>
+<li>Review intervention effectiveness</li>
+<li>Identify systemic issues requiring policy changes</li>
+<li>Set targets for next quarter</li>
+</ul>
+<h3>Ad-Hoc Investigation</h3>
+<ul>
+<li>Drill down to specific teams when issues arise</li>
+<li>Compare before/after intervention scores</li>
+<li>Identify root causes using correlation heat map</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">analytics</span> ROI & Impact Metrics</h2>
+<h3>Organisations Using Beacon Report:</h3>
+<p><strong>Reduced Turnover:</strong></p>
+<ul>
+<li>10-15% reduction in voluntary resignations</li>
+<li>Cost saving: $3,500-$5,000 per prevented resignation</li>
+</ul>
+<p><strong>Earlier Intervention:</strong></p>
+<ul>
+<li>Issues identified 6-8 weeks earlier than traditional surveys</li>
+<li>Prevents escalation to formal grievances or workers' compensation claims</li>
+</ul>
+<p><strong>Improved Engagement:</strong></p>
+<ul>
+<li>12-18% increase in employee engagement scores</li>
+<li>Correlated with productivity improvements</li>
+</ul>
+<p><strong>Compliance Confidence:</strong></p>
+<ul>
+<li>Demonstrable evidence of proactive psychosocial risk management</li>
+<li>Reduced liability exposure</li>
+</ul>
+<p><strong>Time Savings:</strong></p>
+<ul>
+<li>80% reduction in time spent on survey administration</li>
+<li>Real-time insights vs. 2-3 month delay for traditional surveys</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> What Makes Beacon Different</h2>
+<h3>Traditional Annual Surveys</h3>
+<ul>
+<li>❌ 30-40% response rates</li>
+<li>❌ Results available 2-3 months after survey closes</li>
+<li>❌ Generic questions don't identify specific risks</li>
+<li>❌ Snapshot in time, no trend analysis</li>
+<li>❌ Low actionability—too many questions, unclear priorities</li>
+</ul>
+<h3>Beacon Wellbeing</h3>
+<ul>
+<li>✅ 70-85% response rates (60-second survey)</li>
+<li>✅ Real-time dashboard updates</li>
+<li>✅ Evidence-based questions targeting psychosocial hazards</li>
+<li>✅ Continuous monitoring with trend analysis</li>
+<li>✅ Clear priorities and action triggers</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> Getting Started</h2>
+<h3>Implementation Timeline</h3>
+<p><strong>Week 1-2:</strong> Setup & Configuration</p>
+<ul>
+<li>Dashboard customisation</li>
+<li>Organisational hierarchy mapping</li>
+<li>User access provisioning</li>
+</ul>
+<p><strong>Week 3:</strong> First Survey Wave</p>
+<ul>
+<li>Employee communication</li>
+<li>Survey distribution</li>
+<li>Initial data collection</li>
+</ul>
+<p><strong>Week 4:</strong> Dashboard Training</p>
+<ul>
+<li>Executive walkthrough</li>
+<li>Manager training</li>
+<li>Interpretation guidance</li>
+</ul>
+<p><strong>Ongoing:</strong> Weekly Pulse + Monthly Reviews</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">support</span> Support & Training</h2>
+<h3>Included with Platform</h3>
+<ul>
+<li>Dashboard training for executives and managers</li>
+<li>Interpretation guides and action frameworks</li>
+<li>Quarterly review sessions</li>
+<li>Ongoing email/phone support</li>
+</ul>
+<h3>Optional Add-Ons</h3>
+<ul>
+<li>Customised reporting templates</li>
+<li>Integration with existing BI tools</li>
+<li>Change management consulting</li>
+<li>Leadership coaching based on insights</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> Next Steps</h2>
+<p><strong>See the Dashboard in Action:</strong></p>
+<p>Schedule a live demo with real (anonymised) data to see how insights drive action.</p>
+<p><strong>Pilot Program:</strong></p>
+<p>Start with one division or department to demonstrate value before enterprise rollout.</p>
+<p><strong>Contact:</strong></p>
+<p>Beacon Wellbeing</p>
+<p>hello@beaconwellbeing.com.au</p>
+<p>1300 BEACON (232 266)</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> Research Foundation</h2>
+<p>The Beacon Dashboard is built on decades of peer-reviewed research:</p>
+<p><strong>Amy Edmondson (Harvard)</strong> - Psychological safety as predictor of team performance</p>
+<p><strong>Karasek & Theorell</strong> - Job Demand-Control model for work stress</p>
+<p><strong>Christina Maslach</strong> - Burnout measurement and prevention</p>
+<p><strong>Google's Project Aristotle</strong> - Five keys to effective teams (psychological safety #1)</p>
+<p><strong>© 2025 Beacon Effect. All rights reserved.</strong></p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p><strong>Beacon Effect</strong></p>
+      <p>hello@beaconeffect.com.au | 1300 BEACON (232 266) | www.beaconeffect.com.au</p>
+      <p style="margin-top: 0.5rem;">© 2025 Beacon Effect. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

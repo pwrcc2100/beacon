@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beacon Survey Questions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: #2E2E38;
+      background: white;
+    }
+
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: 100;
+      font-style: normal;
+      line-height: 1;
+      display: inline-block;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      font-size: 40px;
+      color: #64afac;
+    }
+
+    .logo-text h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: #2B4162;
+    }
+
+    .logo-text p {
+      font-size: 0.875rem;
+      color: #737A8C;
+    }
+
+    .print-btn {
+      background: #64afac;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .print-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Title Section */
+    .title-section {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .title-section h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #2B4162;
+      margin-bottom: 0.75rem;
+    }
+
+    .title-section p {
+      font-size: 1.25rem;
+      color: #737A8C;
+    }
+
+    /* Content */
+    .content {
+      max-width: 100%;
+    }
+
+    .content > h1:first-child {
+      display: none;
+    }
+
+    .content h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2B4162;
+      margin: 3rem 0 1.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .content h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2B4162;
+      margin: 2rem 0 1rem 0;
+    }
+
+    .content h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #2B4162;
+      margin: 1.5rem 0 0.75rem 0;
+    }
+
+    .content p {
+      margin: 1rem 0;
+      color: #737A8C;
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    .content ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+    }
+
+    .content li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: #737A8C;
+      font-size: 0.875rem;
+    }
+
+    .content li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #64afac;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    .content strong {
+      color: #2B4162;
+      font-weight: 600;
+    }
+
+    .content em {
+      font-style: italic;
+      color: #5d89a9;
+    }
+
+    .content code {
+      background: #f4f4ee;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Monaco', monospace;
+      font-size: 0.9em;
+      color: #2B4162;
+    }
+
+    .content pre {
+      background: #f4f4ee;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    .content pre code {
+      background: none;
+      padding: 0;
+    }
+
+    .content blockquote {
+      background: linear-gradient(135deg, #e8f4f3 0%, #f4f4ee 100%);
+      border-left: 4px solid #64afac;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+    }
+
+    .content blockquote p {
+      margin: 0;
+      color: #2B4162;
+    }
+
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .content thead {
+      background: #2B4162;
+      color: white;
+    }
+
+    .content th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .content td {
+      padding: 1rem;
+      border-bottom: 1px solid #e5e7eb;
+      color: #737A8C;
+    }
+
+    .content tbody tr:hover {
+      background: #f4f4ee;
+    }
+
+    .content a {
+      color: #64afac;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .content a:hover {
+      text-decoration: underline;
+    }
+
+    /* Grid Layouts for better space utilization */
+    .content > h2 + p + h3,
+    .content > h2 + h3 {
+      margin-top: 1.5rem;
+    }
+
+    /* Make lists use columns when appropriate */
+    .content ul {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 0.5rem 2rem;
+    }
+
+    .content h3 + p + ul,
+    .content h4 + ul {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.5rem 1.5rem;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 2px solid #e5e7eb;
+      text-align: center;
+      color: #737A8C;
+      font-size: 0.875rem;
+    }
+
+    .footer p {
+      margin: 0.25rem 0;
+    }
+
+    /* Print Styles */
+    @media print {
+      @page {
+        size: A4;
+        margin: 1.5cm;
+      }
+
+      body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-btn {
+        display: none !important;
+      }
+
+      .container {
+        padding: 0;
+      }
+
+      .content h2,
+      .content h3 {
+        page-break-after: avoid;
+      }
+
+      .content ul {
+        page-break-inside: avoid;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .title-section h2 {
+        font-size: 2rem;
+      }
+
+      .content h2 {
+        font-size: 1.5rem;
+      }
+
+      .content ul {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <a href="/" class="logo">
+        <span class="material-symbols-outlined logo-icon">health_and_safety</span>
+        <div class="logo-text">
+          <h1>Beacon</h1>
+          <p>Wellbeing Platform</p>
+        </div>
+      </a>
+      <button class="print-btn" onclick="window.print()">
+        <span class="material-symbols-outlined" style="font-size: 20px;">print</span>
+        Print / Save PDF
+      </button>
+    </div>
+
+    <!-- Title Section -->
+    <div class="title-section">
+      <h2>Survey Methodology</h2>
+      <p>Evidence-based questions designed for actionable insights</p>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+<h1 id="beacon-survey-questions-flow">Beacon Survey Questions &amp;
+Flow</h1>
+<h2 id="current-survey-questions-5-core-questions">Current Survey
+Questions (5 Core Questions)</h2>
+<h3 id="sentiment-overall">1. <strong>Sentiment / Overall</strong></h3>
+<p><em>“How are you feeling overall?”</em> - ✅ Good – I’m doing well -
+😐 Okay – Getting by<br />
+- ❌ Not great – I’m struggling</p>
+<h3 id="workload-capacity">2. <strong>Workload / Capacity</strong></h3>
+<p><em>“How’s your workload?”</em> - ✅ Manageable - 😐 Busy but okay -
+❌ Unsustainable</p>
+<h3 id="psychological-safety-voice">3. <strong>Psychological Safety /
+Voice</strong></h3>
+<p><em>“Do you feel safe speaking up?”</em> - ✅ Comfortable speaking up
+- 😐 Sometimes hesitate - ❌ Don’t feel safe raising issues</p>
+<h3 id="leadership-support">4. <strong>Leadership Support</strong></h3>
+<p><em>“Do you feel supported by leadership?”</em> - ✅ Supported - 😐
+Somewhat supported - ❌ Not supported</p>
+<h3 id="clarity-direction">5. <strong>Clarity / Direction</strong></h3>
+<p><em>“Are you clear on what’s expected?”</em> - ✅ Clear on what’s
+expected - 😐 Mostly clear - ❌ Unclear about priorities</p>
+<hr />
+<h2 id="enhanced-survey-flow-new">Enhanced Survey Flow (NEW)</h2>
+<h3 id="intro-screen"><strong>INTRO SCREEN</strong></h3>
+<p><strong>Confidentiality Notice</strong> &gt; This is a confidential
+wellbeing check-in. Your responses help us identify systemic issues and
+improve our workplace culture. &gt; &gt; <strong>How we protect your
+privacy:</strong> &gt; - Individual responses are confidential &gt; -
+Only aggregated data is shared with leadership &gt; - If you request
+support, only your designated contact person will know &gt; - This is
+about organisational health, not individual performance &gt; &gt;
+[Continue to Survey] button</p>
+<hr />
+<h3 id="questions-1-5-core-survey"><strong>QUESTIONS 1-5</strong> (Core
+Survey)</h3>
+<ul>
+<li>Standard 3-option questions as above</li>
+<li>Progress indicator (1 of 7, 2 of 7, etc.)</li>
+</ul>
+<hr />
+<h3 id="question-6-support-request-conditional"><strong>QUESTION 6:
+Support Request</strong> (Conditional)</h3>
+<p><strong>Trigger:</strong> IF any answer is “struggling” / “not safe”
+/ “not supported” / “unsustainable” / “unclear”</p>
+<p><strong>Screen:</strong> &gt; “Thank you for sharing. Would you like
+someone to reach out to offer support?”</p>
+<ul>
+<li>✅ <strong>Yes, I’d like to be contacted</strong> → Go to Support
+Options</li>
+<li>❌ <strong>No thanks, I’m managing</strong> → Go to Comments</li>
+<li>ℹ️ <strong>Tell me more about available support</strong> → Show
+support info, then ask again</li>
+</ul>
+<hr />
+<h3 id="support-options-screen-if-yes-selected"><strong>SUPPORT OPTIONS
+SCREEN</strong> (If “Yes” selected)</h3>
+<blockquote>
+<p>“Who would you like to connect with?”</p>
+<p><em>Select all that apply:</em></p>
+</blockquote>
+<p><strong>Available Contacts:</strong> (Configured per client) - [ ] HR
+Team - [ ] WHS Leader - [ ] My Direct Manager - [ ] Senior Leadership -
+[ ] EAP (Employee Assistance Program) - [ ] Union Representative (if
+applicable) - [ ] Other (please specify): _______</p>
+<p><strong>How should they contact you?</strong> - [ ] My work email
+(pre-filled from employee record) - [ ] Different email: _______ - [ ]
+Mobile phone: _______ - [ ] Request anonymous meeting (HR will
+arrange)</p>
+<p><strong>Preferred timeframe:</strong> - Within 24 hours - Within this
+week - When convenient</p>
+<p>[Continue] button</p>
+<hr />
+<h3 id="question-7-general-comments-always-shown"><strong>QUESTION 7:
+General Comments</strong> (Always shown)</h3>
+<blockquote>
+<p>“Is there anything else you’d like to share? (Optional)”</p>
+</blockquote>
+<p>[Text area - 500 char limit]</p>
+<p><em>Your comments are confidential and help us understand the full
+picture.</em></p>
+<p>[Continue] button</p>
+<hr />
+<h3 id="resources-screen-if-high-risk-scores-detected"><strong>RESOURCES
+SCREEN</strong> (If high-risk scores detected)</h3>
+<p><strong>Trigger:</strong> IF any answer is “struggling” / “not safe”
+/ “not supported” / “unsustainable”</p>
+<p><strong>Screen:</strong> &gt; “Thank you for completing the survey.
+Remember, you’re not alone.” &gt; &gt; <strong>Immediate Support
+Available:</strong></p>
+<p>[Button: 📞 Lifeline - 13 11 14] → tel:131114 [Button: 🌐 Beyond Blue
+- 1300 22 4636] → tel:1300224636<br />
+[Button: 💼 SafeWork Australia] → https://www.safeworkaustralia.gov.au
+[Button: 🏥 EAP - 1300 XXX XXX] → tel:client-specific [Button: 📧 HR
+Support] → mailto:hr@client.com</p>
+<p><em>These services are free and confidential.</em></p>
+<p>[Finish Survey] button</p>
+<hr />
+<h3 id="thank-you-screen-final-screen-for-all-users"><strong>THANK YOU
+SCREEN</strong> (Final screen for all users)</h3>
+<blockquote>
+<p>“Thank you for your feedback”</p>
+<p>Your responses help us build a safer, more supportive workplace for
+everyone.</p>
+<p><strong>What happens next:</strong> - Your individual responses
+remain confidential - Leadership sees only aggregated trends - If you
+requested support, expect contact within your timeframe - The next
+check-in will be sent in 1 week</p>
+<p><strong>Need immediate help?</strong> Contact HR: hr@company.com | 📞
+Internal Extension</p>
+<p>[Close] button</p>
+</blockquote>
+<hr />
+<h2 id="database-schema-updates-needed">Database Schema Updates
+Needed</h2>
+<h3 id="new-fields-in-responses_v3-table">New Fields in
+<code>responses_v3</code> table:</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Support request fields</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>support_requested <span class="dt">BOOLEAN</span> <span class="kw">DEFAULT</span> <span class="kw">FALSE</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>support_contacts TEXT[], <span class="co">-- Array of selected contact types</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>support_contact_method TEXT, <span class="co">-- &#39;work_email&#39;, &#39;personal_email&#39;, &#39;phone&#39;, &#39;anonymous&#39;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>support_contact_value TEXT, <span class="co">-- Email or phone if provided</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>support_timeframe TEXT, <span class="co">-- &#39;24h&#39;, &#39;this_week&#39;, &#39;flexible&#39;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>support_other_details TEXT, <span class="co">-- If &#39;other&#39; selected</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">-- Comments</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>general_comments TEXT,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">-- Risk flags (auto-calculated)</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>high_risk_flag <span class="dt">BOOLEAN</span> <span class="kw">DEFAULT</span> <span class="kw">FALSE</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>risk_factors TEXT[], <span class="co">-- e.g., [&#39;safety&#39;, &#39;workload&#39;]</span></span></code></pre></div>
+<h3 id="new-table-support_requests">New Table:
+<code>support_requests</code></h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode sql"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> support_requests (</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">id</span> UUID <span class="kw">PRIMARY</span> <span class="kw">KEY</span> <span class="kw">DEFAULT</span> uuid_generate_v4(),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  client_id UUID <span class="kw">REFERENCES</span> clients(<span class="kw">id</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  employee_id UUID <span class="kw">REFERENCES</span> employees(<span class="kw">id</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  response_id UUID <span class="kw">REFERENCES</span> responses_v3(<span class="kw">id</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  contact_types TEXT[], <span class="co">-- [&#39;HR&#39;, &#39;EAP&#39;, etc.]</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  contact_method TEXT,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  contact_value TEXT,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  preferred_timeframe TEXT,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  status TEXT <span class="kw">DEFAULT</span> <span class="st">&#39;pending&#39;</span>, <span class="co">-- pending, assigned, contacted, resolved</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  assigned_to TEXT,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  assigned_at TIMESTAMPTZ,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  contacted_at TIMESTAMPTZ,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  resolved_at TIMESTAMPTZ,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  resolution_notes TEXT,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  created_at TIMESTAMPTZ <span class="kw">DEFAULT</span> NOW(),</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  updated_at TIMESTAMPTZ <span class="kw">DEFAULT</span> NOW()</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>);</span></code></pre></div>
+<hr />
+<h2 id="configuration-per-client">Configuration per Client</h2>
+<p>Clients can configure: - Available support contacts (HR, WHS,
+Managers, EAP, etc.) - Contact details (phone, email) - EAP provider
+details - Preferred response timeframes - Custom resource links -
+Branding/messaging</p>
+<hr />
+<h2 id="notification-triggers">Notification Triggers</h2>
+<h3 id="for-support-requests">For Support Requests:</h3>
+<p><strong>Immediate email to:</strong> - Selected contact person(s) -
+Contains: anonymized request details, preferred contact method,
+timeframe</p>
+<p><strong>Dashboard alert:</strong> - Shows pending support requests -
+Allows assignment and status tracking</p>
+<h3 id="for-high-risk-responses-no-support-requested">For High-Risk
+Responses (No support requested):</h3>
+<p><strong>Alert to:</strong> - HR/WHS leadership (aggregated) - “3
+employees flagged high-risk this week, no support requested” - Allows
+proactive outreach planning</p>
+<hr />
+<h2 id="analytics-impact">Analytics Impact</h2>
+<p>New dashboard widgets: - <strong>Support Request Rate</strong>: % of
+respondents requesting help - <strong>Response Time</strong>: Average
+time to contact after request - <strong>Resolution Rate</strong>: % of
+support requests resolved - <strong>Resource Usage</strong>: Which
+support channels are most used - <strong>Risk Detection</strong>: Early
+warning system for team wellbeing decline</p>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p><strong>Beacon Effect</strong></p>
+      <p>hello@beaconeffect.com.au | www.beaconeffect.com.au</p>
+      <p style="margin-top: 0.5rem;">© 2025 Beacon Effect. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

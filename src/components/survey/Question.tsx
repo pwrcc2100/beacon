@@ -13,6 +13,14 @@ export function Question({
   value?: 1 | 2 | 3;
   onChange: (v: 1 | 2 | 3) => void;
 }) {
+  const questionText = {
+    sentiment: 'How are you feeling overall about your work situation?',
+    clarity: 'How clear are you about your priorities and what\'s expected of you?',
+    workload: 'How manageable is your current workload?',
+    safety: 'How comfortable do you feel speaking up about concerns or ideas?',
+    leadership: 'How supported do you feel by your immediate leadership?'
+  }[id];
+
   const labels = {
     sentiment: [
       'Good – I\'m doing well',
@@ -42,9 +50,11 @@ export function Question({
   }[id];
 
   return (
-    <fieldset className="space-y-2">
-      <legend className="mb-2 text-sm font-medium text-[var(--text-muted)]">
-        {label}
+    <fieldset className="space-y-3">
+      <legend className="mb-3">
+        <div className="text-lg font-semibold text-[var(--text-primary)]">
+          {questionText}
+        </div>
       </legend>
       <Option
         value3={1}

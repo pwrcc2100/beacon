@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>README</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">README</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#beacon---team-wellbeing-surveys"
+id="toc-beacon---team-wellbeing-surveys">Beacon - Team Wellbeing
+Surveys</a>
+<ul>
+<li><a href="#features" id="toc-features">Features</a></li>
+<li><a href="#quick-start" id="toc-quick-start">Quick Start</a>
+<ul>
+<li><a href="#prerequisites"
+id="toc-prerequisites">Prerequisites</a></li>
+<li><a href="#installation" id="toc-installation">Installation</a></li>
+</ul></li>
+<li><a href="#project-structure" id="toc-project-structure">Project
+Structure</a></li>
+<li><a href="#api-usage" id="toc-api-usage">API Usage</a>
+<ul>
+<li><a href="#issue-survey-token" id="toc-issue-survey-token">Issue
+Survey Token</a></li>
+<li><a href="#submit-survey-response"
+id="toc-submit-survey-response">Submit Survey Response</a></li>
+</ul></li>
+<li><a href="#design-system" id="toc-design-system">Design
+System</a></li>
+<li><a href="#security" id="toc-security">Security</a></li>
+<li><a href="#deployment" id="toc-deployment">Deployment</a></li>
+<li><a href="#next-steps" id="toc-next-steps">Next Steps</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="beacon---team-wellbeing-surveys">Beacon - Team Wellbeing
+Surveys</h1>
+<p>A Next.js application for anonymous team wellbeing surveys with
+Supabase backend.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li>✅ Anonymous survey responses with tokenized links</li>
+<li>✅ 3-point UX mapped to 5-point analytics</li>
+<li>✅ Rate limiting and security</li>
+<li>✅ Supabase integration with RLS</li>
+<li>✅ Modern UI with consistent design tokens</li>
+<li>✅ TypeScript throughout</li>
+</ul>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li>Node.js 18+</li>
+<li>pnpm (recommended) or npm</li>
+<li>Supabase account</li>
+<li>Upstash Redis account (for rate limiting)</li>
+</ul>
+<h3 id="installation">Installation</h3>
+<ol type="1">
+<li><p><strong>Install dependencies:</strong></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> beacon</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pnpm</span> install</span></code></pre></div></li>
+<li><p><strong>Set up environment variables:</strong></p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> env.template .env.local</span></code></pre></div>
+<p>Fill in your Supabase and Upstash credentials in
+<code>.env.local</code></p></li>
+<li><p><strong>Set up Supabase:</strong></p>
+<ul>
+<li>Create a new Supabase project</li>
+<li>Run the SQL from <code>database-schema.sql</code> in your Supabase
+SQL editor</li>
+<li>Get your project URL and keys from Settings &gt; API</li>
+</ul></li>
+<li><p><strong>Start development server:</strong></p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pnpm</span> dev</span></code></pre></div></li>
+</ol>
+<h2 id="project-structure">Project Structure</h2>
+<pre><code>src/
+├── app/                    # Next.js App Router
+│   ├── api/               # API routes
+│   │   ├── responses/     # Survey submission
+│   │   └── surveys/issue/ # Token generation
+│   ├── survey/[token]/    # Survey page
+│   └── thanks/           # Thank you page
+├── components/
+│   └── survey/           # Survey UI components
+├── lib/                  # Utilities and config
+└── styles/               # CSS and design tokens</code></pre>
+<h2 id="api-usage">API Usage</h2>
+<h3 id="issue-survey-token">Issue Survey Token</h3>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">POST</span> /api/surveys/issue</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">{</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;client_id&quot;</span><span class="ex">:</span> <span class="st">&quot;uuid&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;employee_id&quot;</span><span class="ex">:</span> <span class="st">&quot;uuid&quot;</span>, // optional</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;ttl_days&quot;</span><span class="ex">:</span> 7,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;channel&quot;</span><span class="ex">:</span> <span class="st">&quot;web&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<h3 id="submit-survey-response">Submit Survey Response</h3>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">POST</span> /api/responses</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">{</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;token&quot;</span><span class="ex">:</span> <span class="st">&quot;uuid&quot;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;sentiment_3&quot;</span><span class="ex">:</span> 1, <span class="st">&quot;sentiment_5&quot;</span>: 5,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;clarity_3&quot;</span><span class="ex">:</span> 2, <span class="st">&quot;clarity_5&quot;</span>: 3,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="ex">//</span> ... other questions</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;meta&quot;</span><span class="ex">:</span> {}</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<h2 id="design-system">Design System</h2>
+<p>The app uses CSS custom properties for consistent theming:</p>
+<ul>
+<li><strong>Good</strong>: <code>#64afac</code> (teal) with
+<code>✓</code> icon</li>
+<li><strong>Okay</strong>: <code>#5d89a9</code> (blue) with
+<code>–</code> icon<br />
+</li>
+<li><strong>Attention</strong>: <code>#ea9999</code> (pink) with
+<code>△</code> icon</li>
+</ul>
+<h2 id="security">Security</h2>
+<ul>
+<li>Row Level Security (RLS) enabled on all tables</li>
+<li>Service role key for server-side operations only</li>
+<li>Rate limiting on survey submissions</li>
+<li>Single-use tokens with TTL</li>
+<li>No direct client access to tokens table</li>
+</ul>
+<h2 id="deployment">Deployment</h2>
+<ol type="1">
+<li>Deploy to Vercel</li>
+<li>Add environment variables in Vercel dashboard</li>
+<li>Set <code>NEXT_PUBLIC_APP_URL</code> to your production domain</li>
+<li>Configure Supabase for production</li>
+</ol>
+<h2 id="next-steps">Next Steps</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Admin dashboard with
+analytics</label></li>
+<li><label><input type="checkbox" />Team hierarchy and manager
+views</label></li>
+<li><label><input type="checkbox" />SMS integration with
+Twilio</label></li>
+<li><label><input type="checkbox" />Automated weekly
+surveys</label></li>
+<li><label><input type="checkbox" />Export functionality</label></li>
+<li><label><input type="checkbox" />Multi-language support</label></li>
+</ul>
+</body>
+</html>

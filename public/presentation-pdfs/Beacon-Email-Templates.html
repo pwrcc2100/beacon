@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Communication Templates</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: #2E2E38;
+      background: white;
+    }
+
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: 100;
+      font-style: normal;
+      line-height: 1;
+      display: inline-block;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      font-size: 40px;
+      color: #64afac;
+    }
+
+    .logo-text h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: #2B4162;
+    }
+
+    .logo-text p {
+      font-size: 0.875rem;
+      color: #737A8C;
+    }
+
+    .print-btn {
+      background: #2B4162;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .print-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Title Section */
+    .title-section {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .title-section h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #2B4162;
+      margin-bottom: 0.75rem;
+    }
+
+    .title-section p {
+      font-size: 1.25rem;
+      color: #737A8C;
+    }
+
+    /* Content */
+    .content {
+      max-width: 100%;
+    }
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2B4162;
+      margin: 3rem 0 1.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2B4162;
+      margin: 2rem 0 1rem 0;
+    }
+
+    h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #2B4162;
+      margin: 1.5rem 0 0.75rem 0;
+    }
+
+    p {
+      margin: 1rem 0;
+      color: #737A8C;
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+    }
+
+    li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: #737A8C;
+      font-size: 0.875rem;
+    }
+
+    li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #2B4162;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    strong {
+      color: #2B4162;
+      font-weight: 600;
+    }
+
+    /* Card Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .card {
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.2s;
+    }
+
+    .card:hover {
+      border-color: #2B4162;
+      box-shadow: 0 4px 12px rgba(43, 65, 98, 0.1);
+    }
+
+    .card-slate {
+      background: #eeefec;
+      border-color: #2B4162;
+    }
+
+    .card h4 {
+      margin: 0 0 0.75rem 0;
+    }
+
+    .card p {
+      font-size: 0.875rem;
+      margin: 0.5rem 0;
+    }
+
+    .card ul {
+      margin: 0.5rem 0 0 0;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 2px solid #e5e7eb;
+      text-align: center;
+      color: #737A8C;
+      font-size: 0.875rem;
+    }
+
+    /* Print Styles */
+    @media print {
+      @page {
+        size: A4;
+        margin: 1.5cm;
+      }
+
+      body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-btn {
+        display: none !important;
+      }
+
+      .container {
+        padding: 0;
+      }
+
+      h2 {
+        page-break-after: avoid;
+      }
+
+      .card {
+        page-break-inside: avoid;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .title-section h2 {
+        font-size: 2rem;
+      }
+
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <a href="/" class="logo">
+        <span class="material-symbols-outlined logo-icon">health_and_safety</span>
+        <div class="logo-text">
+          <h1>Beacon</h1>
+          <p>Wellbeing Platform</p>
+        </div>
+      </a>
+      <button class="print-btn" onclick="window.print()">
+        <span class="material-symbols-outlined" style="font-size: 20px;">print</span>
+        Print / Save PDF
+      </button>
+    </div>
+
+    <!-- Title Section -->
+    <div class="title-section">
+      <h2>Communication Templates</h2>
+      <p>Ready-to-use email templates for client engagement</p>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> 1. Initial Cold Outreach Email</h2>
+<p><strong>Subject:</strong> Early detection for workplace wellbeing risks</p>
+<p><strong>Body:</strong></p>
+<p>Hi [First Name],</p>
+<p>I noticed [Company Name] has been growing rapidly—congratulations! With that growth often comes hidden challenges around team wellbeing and psychosocial safety.</p>
+<p>I wanted to share <strong>Beacon</strong>, a platform we've built specifically for organisations like yours that want to stay ahead of workplace stress issues before they become crises.</p>
+<p>Unlike annual engagement surveys that tell you what went wrong last year, Beacon provides:</p>
+<ul>
+<li><strong>Weekly 60-second pulse checks</strong> on team wellbeing</li>
+<li><strong>Real-time dashboards</strong> showing which teams need support</li>
+<li><strong>Early warning system</strong> for burnout and disengagement</li>
+<li><strong>Anonymous responses</strong> to encourage honesty</li>
+</ul>
+<p>We're already working with [similar company/industry] organisations and seeing impressive results—10-15% reduction in turnover within the first year.</p>
+<p>Would you be open to a quick 15-minute call to see if Beacon could help [Company Name]? I can show you the dashboard and walk through how it works.</p>
+<p><strong>[Book a time](https://calendly.com/beacon/demo)</strong> that suits you, or just reply to this email.</p>
+<p>Best regards,</p>
+<p>[Your Name]</p>
+<p>Beacon Wellbeing Platform</p>
+<p>hello@beaconwellbeing.com.au | 1300 BEACON</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> 2. Follow-Up Email (7 days later)</h2>
+<p><strong>Subject:</strong> Re: Early detection for workplace wellbeing risks</p>
+<p><strong>Body:</strong></p>
+<p>Hi [First Name],</p>
+<p>Following up on my email last week about Beacon.</p>
+<p>I know you're busy, so I'll keep this brief:</p>
+<p><strong>3 reasons why HR leaders are switching to Beacon:</strong></p>
+<ul>
+<li><strong>Early detection</strong> — Spot team issues within weeks, not years</li>
+<li><strong>Real-time data</strong> — Make decisions based on what's happening now</li>
+<li><strong>Compliance made easy</strong> — Meet your psychosocial safety obligations effortlessly</li>
+</ul>
+<p>We're offering a <strong>free 2-week trial</strong> for up to 50 employees—no credit card, no obligation. Just a chance to see if Beacon would be valuable for [Company Name].</p>
+<p>Would you like to give it a try?</p>
+<p>Best regards,</p>
+<p>[Your Name]</p>
+<p>Beacon Wellbeing Platform</p>
+<p>P.S. Here's a <strong>[2-minute video](https://www.youtube.com/watch?v=example)</strong> showing how Beacon works in action.</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> 3. Demo Follow-Up Email</h2>
+<p><strong>Subject:</strong> Great connecting today—Beacon demo materials</p>
+<p><strong>Body:</strong></p>
+<p>Hi [First Name],</p>
+<p>Thanks for taking the time to chat today! It was great to learn more about [Company Name]'s approach to wellbeing and the challenges you're facing with [specific challenge mentioned].</p>
+<p>As promised, I've attached:</p>
+<ul>
+<li>📄 <strong>Beacon Client Proposal</strong> with pricing and implementation timeline</li>
+<li>📊 <strong>Sample Dashboard Screenshots</strong> showing what you'll see</li>
+<li>📋 <strong>Implementation Checklist</strong> to help you plan internally</li>
+</ul>
+<p>Based on our conversation, I think the <strong>[Professional/Enterprise] Plan</strong> would be the best fit for [Company Name], especially given [specific reason from conversation].</p>
+<p><strong>Next Steps:</strong></p>
+<ul>
+<li><strong>Review the proposal</strong> and share with your leadership team</li>
+<li><strong>Book a follow-up call</strong> if you have questions: [Calendar Link]</li>
+<li><strong>Start your free trial</strong> whenever you're ready: [Trial Signup Link]</li>
+</ul>
+<p>I'm here to help if you need anything—just reply to this email or give me a call.</p>
+<p>Looking forward to working with you!</p>
+<p>Best regards,</p>
+<p>[Your Name]</p>
+<p>Beacon Wellbeing Platform</p>
+<p>[Direct Phone Number]</p>
+<p>hello@beaconwellbeing.com.au</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> 4. Trial Activation Email</h2>
+<p><strong>Subject:</strong> 🎉 Your Beacon trial starts today—let's get set up!</p>
+<p><strong>Body:</strong></p>
+<p>Hi [First Name],</p>
+<p>Welcome to Beacon! Your 2-week trial starts today, and we're excited to help [Company Name] gain real-time visibility into team wellbeing.</p>
+<p><strong>Here's what happens next:</strong></p>
+<p><strong>This Week:</strong></p>
+<ul>
+<li>[ ] Your dedicated onboarding specialist will reach out within 24 hours</li>
+<li>[ ] We'll schedule a 30-minute setup call to configure your organisational structure</li>
+<li>[ ] You'll receive your dashboard login credentials</li>
+</ul>
+<p><strong>Next Week:</strong></p>
+<ul>
+<li>[ ] We'll send the first pulse survey to your selected trial group</li>
+<li>[ ] You'll see live data flowing into your dashboard</li>
+<li>[ ] We'll schedule a check-in to review initial insights</li>
+</ul>
+<p><strong>To prepare for our setup call, please have ready:</strong></p>
+<ul>
+<li>Employee list (names, emails, and/or phone numbers)</li>
+<li>Organisational structure (divisions, departments, teams)</li>
+<li>Preferred survey delivery method (SMS, email, or both)</li>
+</ul>
+<p><strong>Access your dashboard now:</strong> [Dashboard URL]</p>
+<p><strong>Username:</strong> [Email]</p>
+<p><strong>Password:</strong> [Temporary Password]</p>
+<p>If you have any questions before our call, don't hesitate to reach out.</p>
+<p>Let's illuminate your team's wellbeing together!</p>
+<p>Best regards,</p>
+<p>[Your Name]</p>
+<p>Customer Success Team</p>
+<p>Beacon Wellbeing Platform</p>
+<p>support@beaconwellbeing.com.au</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> 5. Trial Check-In Email (Day 7)</h2>
+<p><strong>Subject:</strong> Your first week with Beacon—what do you think?</p>
+<p><strong>Body:</strong></p>
+<p>Hi [First Name],</p>
+<p>You're halfway through your Beacon trial! How's it going?</p>
+<p><strong>What you should be seeing by now:</strong></p>
+<ul>
+<li>✅ First survey responses in your dashboard</li>
+<li>✅ Overall wellbeing score for your trial group</li>
+<li>✅ Individual dimension breakdowns (mood, workload, safety, etc.)</li>
+<li>✅ Trends starting to emerge</li>
+</ul>
+<p><strong>Quick questions for you:</strong></p>
+<ul>
+<li>Have you logged into the dashboard? Any issues navigating?</li>
+<li>What's your response rate looking like? (Aiming for 70%+)</li>
+<li>Have any insights surprised you?</li>
+<li>Do you need help interpreting the data?</li>
+</ul>
+<p>I'd love to jump on a quick 15-minute call to answer questions and make sure you're getting the most out of Beacon.</p>
+<p><strong>[Book a time here](https://calendly.com/beacon/trial-check-in)</strong> or just reply with your availability.</p>
+<p>Also, here's a quick tip: If your response rates are lower than expected, try sending a reminder message to your team emphasizing the anonymity and 60-second completion time.</p>
+<p>Talk soon!</p>
+<p>Best regards,</p>
+<p>[Your Name]</p>
+<p>Customer Success Team</p>
+<p>Beacon Wellbeing Platform</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> 6. Trial Ending Soon Email (Day 12)</h2>
+<p><strong>Subject:</strong> Your Beacon trial ends in 2 days—let's chat about next steps</p>
+<p><strong>Body:</strong></p>
+<p>Hi [First Name],</p>
+<p>Your Beacon trial wraps up in 2 days, and I wanted to check in to see how it's been going.</p>
+<p><strong>What we've learned about [Company Name] over the past 2 weeks:</strong></p>
+<ul>
+<li>Overall wellbeing score: <strong>[XX%]</strong></li>
+<li>Response rate: <strong>[XX%]</strong></li>
+<li>Teams thriving: <strong>[X]</strong> | Teams needing support: <strong>[X]</strong></li>
+<li>Key insight: <strong>[One specific insight from their data]</strong></li>
+</ul>
+<p>Based on your trial data, here are my recommendations:</p>
+<ul>
+<li><strong>[Specific action]</strong> for [specific team/department]</li>
+<li>Continue weekly surveys to track <strong>[specific metric]</strong> over time</li>
+<li>Set up alerts for scores dropping below <strong>[threshold]</strong></li>
+</ul>
+<p><strong>Ready to continue?</strong></p>
+<p>I've prepared a proposal with pricing for [Company Name]:</p>
+<ul>
+<li><strong>[Recommended Plan]</strong>: $[Price]/month for [Number] employees</li>
+<li>Includes: [Key features most relevant to them]</li>
+</ul>
+<p><strong>[View full proposal](link)</strong> | <strong>[Schedule a call to discuss](calendar link)</strong></p>
+<p>If you're not quite ready, no worries—I'm happy to extend your trial for another week while you finalize internally.</p>
+<p>What works best for you?</p>
+<p>Best regards,</p>
+<p>[Your Name]</p>
+<p>Beacon Wellbeing Platform</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> 7. Trial to Paid Conversion Email</h2>
+<p><strong>Subject:</strong> 🎉 Welcome to Beacon—you're all set!</p>
+<p><strong>Body:</strong></p>
+<p>Hi [First Name],</p>
+<p>Fantastic news—[Company Name] is officially live with Beacon!</p>
+<p>Here's what you can expect:</p>
+<p><strong>This Week:</strong></p>
+<ul>
+<li>Your full employee roster has been imported</li>
+<li>All teams are now active in the system</li>
+<li>Next survey goes out [Day/Date] at [Time]</li>
+<li>Your leadership team has been granted dashboard access</li>
+</ul>
+<p><strong>Ongoing:</strong></p>
+<ul>
+<li>Weekly surveys every [Day] at [Time]</li>
+<li>Dashboard updates in real-time</li>
+<li>Monthly reports delivered to your inbox</li>
+<li>Quarterly strategy calls with our wellbeing experts</li>
+</ul>
+<p><strong>Your Success Team:</strong></p>
+<ul>
+<li><strong>Account Manager:</strong> [Name] ([Email])</li>
+<li><strong>Technical Support:</strong> support@beaconwellbeing.com.au</li>
+<li><strong>Emergency Line:</strong> 1300 BEACON (24/7 for Enterprise clients)</li>
+</ul>
+<p><strong>Resources to bookmark:</strong></p>
+<ul>
+<li>Dashboard: [URL]</li>
+<li>Knowledge Base: [URL]</li>
+<li>Best Practices Guide: [URL]</li>
+<li>Community Forum: [URL]</li>
+</ul>
+<p>Thank you for trusting Beacon to help [Company Name] build a healthier, more resilient workplace. We're excited to be part of your journey!</p>
+<p>Let's do great things together.</p>
+<p>Best regards,</p>
+<p>[Your Name]</p>
+<p>Customer Success Team</p>
+<p>Beacon Wellbeing Platform</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> 8. Monthly Check-In Email (For Active Clients)</h2>
+<p><strong>Subject:</strong> Your monthly Beacon insights are ready</p>
+<p><strong>Body:</strong></p>
+<p>Hi [First Name],</p>
+<p>Your monthly Beacon report for [Month] is ready! Here's a quick snapshot:</p>
+<p><strong>📊 This Month's Highlights:</strong></p>
+<ul>
+<li>Overall wellbeing score: <strong>[XX%]</strong> (↑↓ [X]% vs last month)</li>
+<li>Response rate: <strong>[XX%]</strong></li>
+<li>Teams thriving: <strong>[X]</strong></li>
+<li>Teams needing attention: <strong>[X]</strong></li>
+<li>Most improved: <strong>[Team Name]</strong> (↑ [X]%)</li>
+<li>Biggest concern: <strong>[Dimension]</strong> (↓ [X]%)</li>
+</ul>
+<p><strong>💡 Key Insight:</strong></p>
+<p>[One specific, actionable insight from their data. E.g., "Workload scores have dropped 8% across the Sales department over the past 3 weeks, suggesting resource strain ahead of Q4."]</p>
+<p><strong>🎯 Recommended Actions:</strong></p>
+<ul>
+<li>[Specific action item]</li>
+<li>[Specific action item]</li>
+<li>[Specific action item]</li>
+</ul>
+<p><strong>Want to dive deeper?</strong></p>
+<p>Let's schedule a 30-minute strategy call to discuss:</p>
+<ul>
+<li>What's driving the trends you're seeing</li>
+<li>Intervention strategies for at-risk teams</li>
+<li>How to communicate these insights to leadership</li>
+</ul>
+<p><strong>[Book a call](calendar link)</strong> or reply with questions.</p>
+<p><strong>[View Full Report](link to PDF)</strong></p>
+<p>Keep up the great work monitoring your team's wellbeing!</p>
+<p>Best regards,</p>
+<p>[Your Name]</p>
+<p>Customer Success Team</p>
+<p>Beacon Wellbeing Platform</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> 9. Renewal Email (30 days before)</h2>
+<p><strong>Subject:</strong> Your Beacon renewal is coming up—let's review your year</p>
+<p><strong>Body:</strong></p>
+<p>Hi [First Name],</p>
+<p>Can you believe it's been almost a year since [Company Name] started using Beacon? Time flies when you're proactively managing wellbeing! 😊</p>
+<p>Your subscription renews on <strong>[Date]</strong>, and I wanted to reach out personally to:</p>
+<ul>
+<li><strong>Celebrate your wins</strong> 🎉</li>
+<li><strong>Review your impact</strong> 📊</li>
+<li><strong>Plan for next year</strong> 🚀</li>
+</ul>
+<p><strong>Your Year with Beacon:</strong></p>
+<ul>
+<li>Total surveys sent: <strong>[X,XXX]</strong></li>
+<li>Average response rate: <strong>[XX%]</strong></li>
+<li>Overall wellbeing improvement: <strong>↑ [X]%</strong></li>
+<li>Teams supported: <strong>[X]</strong></li>
+<li>Estimated turnover prevented: <strong>[X] employees</strong></li>
+<li>Estimated cost savings: <strong>$[XXX,XXX]</strong></li>
+</ul>
+<p><strong>What's New:</strong></p>
+<p>We've launched several new features that might interest you:</p>
+<ul>
+<li>AI-powered insights and recommendations</li>
+<li>Predictive alerts for at-risk teams</li>
+<li>Manager self-service reports</li>
+<li>Integration with Microsoft Teams/Slack</li>
+</ul>
+<p>Would you like to schedule a call to review your year and discuss renewal options? I can also explore if a different plan would better suit your needs as you've grown.</p>
+<p><strong>[Schedule a review call](calendar link)</strong></p>
+<p>Looking forward to another great year together!</p>
+<p>Best regards,</p>
+<p>[Your Name]</p>
+<p>Account Manager</p>
+<p>Beacon Wellbeing Platform</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> 10. Re-Engagement Email (For Lapsed Clients)</h2>
+<p><strong>Subject:</strong> We miss you at Beacon—what changed?</p>
+<p><strong>Body:</strong></p>
+<p>Hi [First Name],</p>
+<p>I noticed [Company Name] hasn't been using Beacon for a while, and I wanted to reach out personally.</p>
+<p><strong>Was it us?</strong> 🤔</p>
+<p>I'd love to understand what happened. Was it:</p>
+<ul>
+<li>Budget constraints?</li>
+<li>Not getting enough value?</li>
+<li>Too hard to use?</li>
+<li>Leadership buy-in challenges?</li>
+<li>Something else entirely?</li>
+</ul>
+<p>Your honest feedback would be incredibly valuable—even if you have no intention of coming back. We're always looking to improve.</p>
+<p><strong>If you're open to it</strong>, I'd also like to share what's changed since you left:</p>
+<ul>
+<li>Simpler dashboard with better insights</li>
+<li>Lower pricing tiers for smaller teams</li>
+<li>Faster setup (now under 1 week)</li>
+<li>New integrations with [HRIS platforms]</li>
+</ul>
+<p>Would you be willing to jump on a 15-minute call? No sales pitch, I promise—just a genuine conversation.</p>
+<p><strong>[Book a time](calendar link)</strong> or just reply to this email.</p>
+<p>Thanks for your time, and I hope [Company Name] is thriving!</p>
+<p>Best regards,</p>
+<p>[Your Name]</p>
+<p>Beacon Wellbeing Platform</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> 11. Referral Request Email</h2>
+<p><strong>Subject:</strong> Know anyone who'd love Beacon?</p>
+<p><strong>Body:</strong></p>
+<p>Hi [First Name],</p>
+<p>Quick question: Do you know any other HR leaders or executives who might benefit from Beacon?</p>
+<p>We're looking to partner with more forward-thinking organisations like [Company Name], and referrals from happy clients like you are the best way for us to grow.</p>
+<p><strong>Here's what's in it for you:</strong></p>
+<ul>
+<li><strong>$500 credit</strong> on your next invoice for each referral that starts a trial</li>
+<li><strong>$2,000 credit</strong> for each referral that becomes a paying customer</li>
+<li><strong>Free upgrade to next tier</strong> if you refer 5+ customers in a year</li>
+</ul>
+<p><strong>Here's what's in it for them:</strong></p>
+<ul>
+<li><strong>Extended 4-week trial</strong> (instead of 2 weeks)</li>
+<li><strong>Free implementation support</strong> ($3,000 value)</li>
+<li><strong>20% off first 3 months</strong></li>
+</ul>
+<p>All you need to do is:</p>
+<ul>
+<li>Send me their name and email</li>
+<li>I'll reach out with a personalized introduction mentioning you</li>
+<li>We'll take it from there!</li>
+</ul>
+<p>No pressure at all—but if anyone comes to mind, I'd appreciate the connection.</p>
+<p>Thank you for being a Beacon champion!</p>
+<p>Best regards,</p>
+<p>[Your Name]</p>
+<p>Beacon Wellbeing Platform</p>
+<p><strong>[Submit a referral](form link)</strong></p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> 12. Survey Launch Announcement (For Client to Send to Employees)</h2>
+<p><strong>Subject:</strong> 📊 New initiative: Weekly wellbeing pulse check</p>
+<p><strong>Body:</strong></p>
+<p>Hi team,</p>
+<p>We're launching a new initiative to help us better support your wellbeing at work.</p>
+<p><strong>Starting this week</strong>, you'll receive a short survey every [Monday/frequency] via [SMS/email]. It takes just <strong>60 seconds</strong> to complete and asks 5 simple questions about:</p>
+<ul>
+<li>How you're feeling</li>
+<li>Your workload</li>
+<li>Whether you feel supported</li>
+<li>Clarity around your role</li>
+<li>Psychological safety</li>
+</ul>
+<p><strong>Why we're doing this:</strong></p>
+<p>We want to spot challenges early and address them before they become bigger issues. This isn't about surveillance—it's about support.</p>
+<p><strong>Your privacy is guaranteed:</strong></p>
+<ul>
+<li>Responses are completely anonymous</li>
+<li>Leadership only sees aggregated team data (minimum 5 responses)</li>
+<li>No individual responses are ever shared</li>
+<li>You can skip any question you're uncomfortable answering</li>
+</ul>
+<p><strong>What happens with the data:</strong></p>
+<p>Your leadership team will use these insights to:</p>
+<ul>
+<li>Identify where teams need more support</li>
+<li>Make better decisions about workload and resources</li>
+<li>Improve workplace culture and psychological safety</li>
+</ul>
+<p><strong>Your first survey arrives [Day/Date].</strong></p>
+<p>Please take the 60 seconds to share your honest feedback—it really helps us create a better workplace for everyone.</p>
+<p>Questions? Reach out to [HR Contact].</p>
+<p>Thanks for your participation!</p>
+<p>[Your Leadership Team]</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> 13. Reminder to Complete Survey (For Client to Send)</h2>
+<p><strong>Subject:</strong> 👋 Quick reminder: This week's wellbeing check (60 sec)</p>
+<p><strong>Body:</strong></p>
+<p>Hi team,</p>
+<p>Just a friendly reminder that this week's Beacon survey is waiting for you.</p>
+<p><strong>Takes 60 seconds | Completely anonymous | Really valuable</strong></p>
+<p>If you've already completed it—thank you! If not, here's your link:</p>
+<p><strong>[Survey Link]</strong></p>
+<p>Your honest feedback helps us create a better work environment for everyone.</p>
+<p>The survey closes [tomorrow/this Friday] at 5pm.</p>
+<p>Thanks!</p>
+<p>[Your HR Team]</p>
+<p><em>All email templates can be customized with your branding, tone, and specific details.</em></p>
+<p><strong>Document Version:</strong> 1.0</p>
+<p><strong>Last Updated:</strong> October 2025</p>
+<p><strong>Usage:</strong> Internal sales and marketing team</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p><strong>Beacon Effect</strong></p>
+      <p>hello@beaconeffect.com.au | 1300 BEACON (232 266) | www.beaconeffect.com.au</p>
+      <p style="margin-top: 0.5rem;">© 2025 Beacon Effect. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

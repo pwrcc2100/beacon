@@ -11,7 +11,7 @@ export default function ThanksPage() {
             Thank you!
           </h1>
           <p className="text-[var(--text-muted)]">
-            Your response has been recorded. Your feedback helps leaders improve clarity, safety, workload and support.
+            Your feedback has been submitted successfully. Your responses help us create a better workplace for everyone.
           </p>
         </div>
         

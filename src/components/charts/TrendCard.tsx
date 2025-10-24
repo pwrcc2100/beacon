@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 
 type Point = { wk: string; value: number };
 
-export function TrendCard({ title, data, color }:{ title:string; data:Point[]; color:string }){
+export function TrendCard({ heading, description, data, color }:{ heading:string; description:string; data:Point[]; color:string }){
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
 
@@ -50,13 +50,16 @@ export function TrendCard({ title, data, color }:{ title:string; data:Point[]; c
 
   return (
     <div className="bg-white rounded-lg p-4 shadow-sm border border-black/5">
-      <div className="flex items-center justify-between mb-2">
-        <div className="text-sm font-medium text-[var(--text-primary)]">{title}</div>
-        {delta !== undefined && (
-          <Badge variant="secondary" style={{ color: deltaColor }}>
-            {deltaLabel} vs last wk
-          </Badge>
-        )}
+      <div className="mb-3">
+        <div className="flex items-center justify-between mb-1">
+          <div className="text-sm font-medium text-[var(--text-primary)]">{heading}</div>
+          {delta !== undefined && (
+            <Badge variant="secondary" style={{ color: deltaColor }}>
+              {deltaLabel} vs last wk
+            </Badge>
+          )}
+        </div>
+        <div className="text-xs text-muted-foreground">{description}</div>
       </div>
       {!mounted ? (
         <div style={{height:180}} className="flex items-center justify-center text-sm text-[var(--text-muted)]">Loading chart...</div>

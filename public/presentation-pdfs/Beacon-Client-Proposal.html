@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner with Beacon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: #2E2E38;
+      background: white;
+    }
+
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: 100;
+      font-style: normal;
+      line-height: 1;
+      display: inline-block;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      font-size: 40px;
+      color: #64afac;
+    }
+
+    .logo-text h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: #2B4162;
+    }
+
+    .logo-text p {
+      font-size: 0.875rem;
+      color: #737A8C;
+    }
+
+    .print-btn {
+      background: #2B4162;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .print-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Title Section */
+    .title-section {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .title-section h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #2B4162;
+      margin-bottom: 0.75rem;
+    }
+
+    .title-section p {
+      font-size: 1.25rem;
+      color: #737A8C;
+    }
+
+    /* Content */
+    .content {
+      max-width: 100%;
+    }
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2B4162;
+      margin: 3rem 0 1.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2B4162;
+      margin: 2rem 0 1rem 0;
+    }
+
+    h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #2B4162;
+      margin: 1.5rem 0 0.75rem 0;
+    }
+
+    p {
+      margin: 1rem 0;
+      color: #737A8C;
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+    }
+
+    li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: #737A8C;
+      font-size: 0.875rem;
+    }
+
+    li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #2B4162;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    strong {
+      color: #2B4162;
+      font-weight: 600;
+    }
+
+    /* Card Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .card {
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.2s;
+    }
+
+    .card:hover {
+      border-color: #2B4162;
+      box-shadow: 0 4px 12px rgba(43, 65, 98, 0.1);
+    }
+
+    .card-slate {
+      background: #eeefec;
+      border-color: #2B4162;
+    }
+
+    .card h4 {
+      margin: 0 0 0.75rem 0;
+    }
+
+    .card p {
+      font-size: 0.875rem;
+      margin: 0.5rem 0;
+    }
+
+    .card ul {
+      margin: 0.5rem 0 0 0;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 2px solid #e5e7eb;
+      text-align: center;
+      color: #737A8C;
+      font-size: 0.875rem;
+    }
+
+    /* Print Styles */
+    @media print {
+      @page {
+        size: A4;
+        margin: 1.5cm;
+      }
+
+      body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-btn {
+        display: none !important;
+      }
+
+      .container {
+        padding: 0;
+      }
+
+      h2 {
+        page-break-after: avoid;
+      }
+
+      .card {
+        page-break-inside: avoid;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .title-section h2 {
+        font-size: 2rem;
+      }
+
+      .grid-2, .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <a href="/" class="logo">
+        <span class="material-symbols-outlined logo-icon">health_and_safety</span>
+        <div class="logo-text">
+          <h1>Beacon</h1>
+          <p>Wellbeing Platform</p>
+        </div>
+      </a>
+      <button class="print-btn" onclick="window.print()">
+        <span class="material-symbols-outlined" style="font-size: 20px;">print</span>
+        Print / Save PDF
+      </button>
+    </div>
+
+    <!-- Title Section -->
+    <div class="title-section">
+      <h2>Partner with Beacon</h2>
+      <p>Transform workplace wellbeing with evidence-based insights</p>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> Client Proposal</h2>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> Executive Summary</h2>
+<p><strong>Beacon</strong> is a validated psychosocial pulse survey platform designed to help organisations proactively monitor and improve workplace wellbeing. Unlike generic engagement surveys, Beacon focuses on <strong>early detection</strong> of psychosocial risks—covering the key predictors of work stress, clarity, voice, and support.</p>
+<h3>The Problem</h3>
+<ul>
+<li><strong>1 in 5</strong> employees experience work-related stress</li>
+<li>Traditional annual surveys detect problems <strong>too late</strong></li>
+<li>Leaders lack real-time visibility into team wellbeing</li>
+<li>Compliance with psychosocial safety regulations is increasingly complex</li>
+</ul>
+<h3>The Solution</h3>
+<p>Beacon provides:</p>
+<ul>
+<li>✅ <strong>Weekly pulse surveys</strong> (60 seconds, 5 questions)</li>
+<li>✅ <strong>Real-time executive dashboards</strong> with actionable insights</li>
+<li>✅ <strong>Confidential, anonymous responses</strong> to encourage honesty</li>
+<li>✅ <strong>Early warning system</strong> for at-risk teams</li>
+<li>✅ <strong>Evidence-based methodology</strong> aligned with research</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> Why Beacon?</h2>
+<h3>🎯 Validated Framework</h3>
+<p>Beacon's 5-dimension model is built on established workplace psychology research:</p>
+<ul>
+<li><strong>Sentiment/Overall Mood</strong> (25% weight)</li>
+<li><strong>Workload/Capacity</strong> (25% weight)</li>
+<li><strong>Psychological Safety</strong> (20% weight)</li>
+<li><strong>Leadership Support</strong> (20% weight)</li>
+<li><strong>Clarity/Direction</strong> (10% weight)</li>
+</ul>
+<h3>📊 Real-Time Insights</h3>
+<ul>
+<li>Executive dashboard with drill-down by division, department, and team</li>
+<li>Track trends over time (weekly, monthly, quarterly)</li>
+<li>Automated alerts when scores drop below critical thresholds</li>
+<li>Compare performance across organisational units</li>
+</ul>
+<h3>🔒 Privacy First</h3>
+<ul>
+<li>Anonymous responses with no identifying information</li>
+<li>Single-use survey links with short expiry</li>
+<li>Aggregated reporting only (minimum 5 responses per team)</li>
+<li>Compliant with privacy regulations</li>
+</ul>
+<h3>⚡ Quick to Deploy</h3>
+<ul>
+<li>Set up in under 1 week</li>
+<li>No employee training required</li>
+<li>SMS/email delivery of survey links</li>
+<li>Integrates with existing HRIS systems</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">star</span> Key Features</h2>
+<h3>For Employees</h3>
+<ul>
+<li><strong>60-second surveys</strong> delivered weekly via SMS or email</li>
+<li>Simple, relatable questions about their work experience</li>
+<li>Complete anonymity—no login required</li>
+<li>Option to flag urgent concerns for immediate follow-up</li>
+</ul>
+<h3>For Leaders & Executives</h3>
+<ul>
+<li><strong>Real-time dashboard</strong> showing overall wellbeing scores</li>
+<li><strong>Drill-down capability</strong> by division, department, or team</li>
+<li><strong>Trend analysis</strong> to spot patterns early</li>
+<li><strong>Key insights summary</strong> highlighting what needs attention</li>
+<li><strong>Response rate tracking</strong> to ensure representative data</li>
+</ul>
+<h3>For HR & Safety Teams</h3>
+<ul>
+<li><strong>Compliance reporting</strong> for psychosocial safety obligations</li>
+<li><strong>Benchmark comparisons</strong> across teams and time periods</li>
+<li><strong>CSV export</strong> for deeper analysis in Power BI or Excel</li>
+<li><strong>Evidence base</strong> for intervention decisions</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> Pricing</h2>
+<h3>Starter Plan</h3>
+<p><strong>Best for small to medium organisations (up to 100 employees)</strong></p>
+<p><strong>$2,500 AUD per month</strong></p>
+<ul>
+<li>Up to 100 active employees</li>
+<li>Weekly pulse surveys</li>
+<li>Executive dashboard access (3 users)</li>
+<li>Email & SMS delivery</li>
+<li>Basic analytics & reporting</li>
+<li>Standard support (email, 48hr response)</li>
+</ul>
+<h3>Professional Plan</h3>
+<p><strong>Best for growing organisations (100-500 employees)</strong></p>
+<p><strong>$6,500 AUD per month</strong></p>
+<ul>
+<li>Up to 500 active employees</li>
+<li>Weekly pulse surveys</li>
+<li>Executive dashboard access (10 users)</li>
+<li>Email & SMS delivery</li>
+<li>Advanced analytics with drill-downs</li>
+<li>Power BI integration</li>
+<li>Priority support (email & phone, 24hr response)</li>
+<li>Quarterly consultation with wellbeing expert</li>
+</ul>
+<h3>Enterprise Plan</h3>
+<p><strong>Best for large organisations (500+ employees)</strong></p>
+<p><strong>Custom Pricing</strong> (starting at $12,000 AUD per month)</p>
+<ul>
+<li>Unlimited employees</li>
+<li>Weekly pulse surveys</li>
+<li>Unlimited dashboard users</li>
+<li>Email & SMS delivery</li>
+<li>Full analytics suite with custom reports</li>
+<li>API access for HRIS integration</li>
+<li>Dedicated account manager</li>
+<li>Monthly strategy sessions</li>
+<li>Custom branding & white-labelling</li>
+<li>24/7 priority support</li>
+</ul>
+<h3>Add-Ons</h3>
+<ul>
+<li><strong>Historical data migration</strong>: $2,000 one-time</li>
+<li><strong>Custom survey questions</strong>: $500/question per month</li>
+<li><strong>Additional SMS credits</strong>: $0.08 per SMS</li>
+<li><strong>Training workshops</strong>: $1,500 per session</li>
+<li><strong>On-site implementation support</strong>: $3,000 per day</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">rocket_launch</span> Implementation Timeline</h2>
+<h3>Week 1: Setup & Configuration</h3>
+<ul>
+<li>[ ] Client onboarding call</li>
+<li>[ ] Configure organisational structure (divisions, departments, teams)</li>
+<li>[ ] Import employee data (names, phone numbers, emails)</li>
+<li>[ ] Set up dashboard access for leadership team</li>
+<li>[ ] Customise branding (optional)</li>
+</ul>
+<h3>Week 2: Pilot Launch</h3>
+<ul>
+<li>[ ] Send pilot survey to selected team (20-50 employees)</li>
+<li>[ ] Monitor response rates and engagement</li>
+<li>[ ] Review initial dashboard data with client</li>
+<li>[ ] Refine messaging and delivery timing</li>
+</ul>
+<h3>Week 3: Full Rollout</h3>
+<ul>
+<li>[ ] Communicate launch to all employees</li>
+<li>[ ] Send first company-wide pulse survey</li>
+<li>[ ] Train leadership team on dashboard usage</li>
+<li>[ ] Establish weekly cadence</li>
+</ul>
+<h3>Week 4: Review & Optimise</h3>
+<ul>
+<li>[ ] Review first month of data</li>
+<li>[ ] Identify early trends and insights</li>
+<li>[ ] Adjust survey frequency if needed</li>
+<li>[ ] Plan intervention strategies for at-risk teams</li>
+</ul>
+<p><strong>Total time from contract to full deployment: 3-4 weeks</strong></p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> ROI & Business Impact</h2>
+<h3>Measurable Outcomes</h3>
+<ul>
+<li><strong>Reduced absenteeism</strong>: Early intervention prevents burnout</li>
+<li><strong>Improved retention</strong>: Address issues before employees resign</li>
+<li><strong>Increased productivity</strong>: Happy teams perform better</li>
+<li><strong>Compliance assurance</strong>: Meet psychosocial safety obligations</li>
+<li><strong>Data-driven decisions</strong>: Stop guessing, start knowing</li>
+</ul>
+<h3>Industry Benchmarks</h3>
+<ul>
+<li><strong>10-15%</strong> reduction in voluntary turnover after 12 months</li>
+<li><strong>20-30%</strong> improvement in employee engagement scores</li>
+<li><strong>25%</strong> faster identification of at-risk teams vs annual surveys</li>
+<li><strong>$3,500</strong> average cost savings per prevented resignation</li>
+</ul>
+<h3>Case Study Example</h3>
+<p><em>"After implementing Beacon, we identified a department with declining wellbeing scores within 3 weeks. A simple workload redistribution prevented what would have been a wave of resignations. We estimate Beacon saved us $150,000 in recruitment costs in the first 6 months alone."</em></p>
+<p>— HR Director, Tech Company (500 employees)</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">gavel</span> Compliance & Standards</h2>
+<p>Beacon helps organisations meet their obligations under:</p>
+<ul>
+<li><strong>Work Health & Safety Act</strong> (psychosocial hazards)</li>
+<li><strong>ISO 45003</strong> (Occupational health and safety management — Psychological health and safety at work)</li>
+<li><strong>Safe Work Australia</strong> guidelines on psychosocial hazards</li>
+<li><strong>Model WHS Regulations</strong> for managing psychosocial risks</li>
+</ul>
+<p>Our methodology is informed by research from:</p>
+<ul>
+<li>Amy Edmondson (Harvard) - Psychological Safety</li>
+<li>Karasek & Theorell - Job Demand-Control-Support Model</li>
+<li>Christina Maslach - Burnout & Wellbeing Research</li>
+<li>Google's Project Aristotle - Team Effectiveness</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">gavel</span> Security & Privacy</h2>
+<h3>Data Protection</h3>
+<ul>
+<li>✅ All data encrypted in transit (TLS 1.3) and at rest (AES-256)</li>
+<li>✅ Hosted in Australian data centres (AWS Sydney)</li>
+<li>✅ ISO 27001 certified infrastructure</li>
+<li>✅ Regular security audits and penetration testing</li>
+</ul>
+<h3>Privacy Guarantees</h3>
+<ul>
+<li>✅ Anonymous responses—no personally identifiable information stored</li>
+<li>✅ Aggregated reporting only (minimum 5 responses per view)</li>
+<li>✅ Single-use survey tokens with 7-day expiry</li>
+<li>✅ No tracking cookies or analytics on survey pages</li>
+<li>✅ Full compliance with Australian Privacy Act</li>
+</ul>
+<h3>Access Controls</h3>
+<ul>
+<li>✅ Role-based access (executive, manager, HR admin)</li>
+<li>✅ Multi-factor authentication available</li>
+<li>✅ Audit logs for all dashboard access</li>
+<li>✅ Data retention policies configurable</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">support</span> Support & Training</h2>
+<h3>Included with All Plans</h3>
+<ul>
+<li><strong>Onboarding documentation</strong> and video tutorials</li>
+<li><strong>Email support</strong> with guaranteed response times</li>
+<li><strong>Knowledge base</strong> with FAQs and best practices</li>
+<li><strong>Regular product updates</strong> and feature releases</li>
+<li><strong>Quarterly webinars</strong> on wellbeing trends and insights</li>
+</ul>
+<h3>Premium Support Options</h3>
+<ul>
+<li><strong>Dedicated account manager</strong> (Enterprise only)</li>
+<li><strong>Priority phone support</strong> (Professional & Enterprise)</li>
+<li><strong>Monthly strategy calls</strong> with wellbeing experts</li>
+<li><strong>On-site training workshops</strong> for leadership teams</li>
+<li><strong>Custom reporting</strong> and data analysis services</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">article</span> Getting Started</h2>
+<h3>Ready to transform your workplace wellbeing?</h3>
+<p><strong>Step 1:</strong> Book a 30-minute demo</p>
+<ul>
+<li>See the dashboard in action</li>
+<li>Walk through sample survey experience</li>
+<li>Discuss your organisation's specific needs</li>
+</ul>
+<p><strong>Step 2:</strong> Free 2-week trial</p>
+<ul>
+<li>Test with up to 50 employees</li>
+<li>Full access to all features</li>
+<li>No credit card required</li>
+</ul>
+<p><strong>Step 3:</strong> Choose your plan & launch</p>
+<ul>
+<li>We handle all setup and configuration</li>
+<li>Full rollout in under 4 weeks</li>
+<li>Ongoing support every step of the way</li>
+</ul>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">mail</span> Contact Us</h2>
+<p><strong>Email:</strong> hello@beaconwellbeing.com.au</p>
+<p><strong>Phone:</strong> 1300 BEACON (1300 232 266)</p>
+<p><strong>Website:</strong> www.beaconwellbeing.com.au</p>
+<p><strong>Schedule a Demo:</strong> [calendly.com/beacon/demo](https://calendly.com/beacon/demo)</p>
+<h2><span class="material-symbols-outlined" style="font-size: 28px; color: #2B4162;">help</span> Frequently Asked Questions</h2>
+<h3>How long do surveys take?</h3>
+<p><strong>60 seconds.</strong> We've designed Beacon to be quick and non-intrusive. Employees answer 5 simple questions and can complete it during a coffee break.</p>
+<h3>How often are surveys sent?</h3>
+<p><strong>Weekly by default</strong>, but frequency is customizable. Some clients prefer fortnightly or monthly. We recommend weekly for early detection.</p>
+<h3>What if response rates are low?</h3>
+<p>We provide best-practice guidance on communication and timing. Typical response rates are 70-85% when surveys are well-communicated and leadership is engaged.</p>
+<h3>Can we add custom questions?</h3>
+<p><strong>Yes</strong>, custom questions are available as an add-on. We recommend starting with the core 5 questions to establish baseline data.</p>
+<h3>How is this different from engagement surveys?</h3>
+<p>Traditional engagement surveys are retrospective and infrequent (annual). Beacon is <strong>proactive and continuous</strong>, designed for early detection of psychosocial risks, not just measuring satisfaction.</p>
+<h3>What happens if a team scores poorly?</h3>
+<p>The dashboard highlights at-risk teams automatically. We provide intervention guides and can connect you with workplace psychologists if needed.</p>
+<h3>Can we integrate with our HRIS?</h3>
+<p><strong>Yes</strong>, Enterprise plans include API access for automatic employee data sync with platforms like BambooHR, Workday, and SAP SuccessFactors.</p>
+<h3>Is there a minimum contract term?</h3>
+<p><strong>No lock-in contracts</strong>. We offer month-to-month plans. Most clients see value within the first 3 months and continue long-term.</p>
+<h3>How do you ensure anonymity?</h3>
+<p>Survey responses contain no identifying information—only the aggregated team/department they belong to. Single-use tokens prevent linking responses to individuals.</p>
+<h3>Can managers see individual responses?</h3>
+<p><strong>No.</strong> Managers only see aggregated data for their team (minimum 5 responses). This ensures psychological safety for honest feedback.</p>
+<p><em>Beacon: Illuminate your team's wellbeing, before problems become crises.</em></p>
+<p><strong>Document Version:</strong> 1.0</p>
+<p><strong>Last Updated:</strong> October 2025</p>
+<p><strong>Prepared For:</strong> Prospective Clients</p>
+<p><strong>Validity:</strong> Pricing valid for 90 days from proposal date</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p><strong>Beacon Effect</strong></p>
+      <p>hello@beaconeffect.com.au | 1300 BEACON (232 266) | www.beaconeffect.com.au</p>
+      <p style="margin-top: 0.5rem;">© 2025 Beacon Effect. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

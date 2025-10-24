@@ -1,0 +1,152 @@
+====================================================================
+HOW TO CONVERT HTML FILES TO PDF
+====================================================================
+
+Your presentation materials have been converted to HTML format.
+These can easily be converted to professional PDFs using your browser.
+
+====================================================================
+METHOD 1: Print to PDF from Browser (Easiest)
+====================================================================
+
+For each HTML file:
+
+1. Open the HTML file in your browser:
+   - Double-click the .html file
+   - Or drag it into your browser window
+
+2. Print the page:
+   - Mac: Press Cmd+P
+   - Windows: Press Ctrl+P
+
+3. Save as PDF:
+   - Choose "Save as PDF" or "Microsoft Print to PDF"
+   - Click "Save"
+   - Choose where to save it
+
+4. Repeat for all 5 files:
+   ✓ Beacon-Client-Proposal.html
+   ✓ Beacon-Email-Templates.html
+   ✓ Beacon-Platform-Summary.html
+   ✓ Beacon-Survey-Questions.html
+   ✓ Beacon-Google-Slides-Setup.html
+
+====================================================================
+METHOD 2: Use Online Converter
+====================================================================
+
+Fast and free online tools:
+
+1. **Sejda** (Recommended)
+   https://www.sejda.com/html-to-pdf
+   - Upload HTML files
+   - Download PDFs
+
+2. **CloudConvert**
+   https://cloudconvert.com/html-to-pdf
+   - Batch convert multiple files
+   - High quality output
+
+3. **PDFCrowd**
+   https://pdfcrowd.com/html-to-pdf/
+   - Professional formatting
+   - Free for basic use
+
+====================================================================
+METHOD 3: Install LaTeX for Direct PDF Conversion
+====================================================================
+
+If you want to convert directly from Markdown to PDF:
+
+1. Install BasicTeX:
+   - Download from: https://www.tug.org/mactex/morepackages.html
+   - Or use Homebrew: brew install --cask basictex
+
+2. After installation, restart your terminal and run:
+   cd /Users/peta/Documents/Beacon/webapp/beacon
+   ./scripts/convert-to-pdf.sh
+
+====================================================================
+TIPS FOR BEST PDF QUALITY
+====================================================================
+
+When printing to PDF from browser:
+
+✓ Use "Save as PDF" not "Print"
+✓ Select "Background graphics" option
+✓ Set margins to "Default" or "Minimum"
+✓ Use "Letter" or "A4" paper size
+✓ Enable "Print background colors"
+✓ Set scale to "100%" or "Fit to page"
+
+====================================================================
+QUICK ACCESS
+====================================================================
+
+Your HTML files are located at:
+/Users/peta/Documents/Beacon/webapp/beacon/presentation-pdfs/
+
+To open the folder:
+- Mac: Open Finder → Go → Go to Folder → paste path above
+- Or: Double-click any HTML file to open it
+
+====================================================================
+WHAT TO DO WITH THE PDFs
+====================================================================
+
+Once you have PDFs:
+
+1. Upload to Google Drive for sharing
+2. Attach to emails (use EMAIL_TEMPLATES.md for copy)
+3. Share via Dropbox or OneDrive
+4. Upload to your presentation website
+5. Print for in-person meetings
+
+====================================================================
+FILE DESCRIPTIONS
+====================================================================
+
+Beacon-Client-Proposal.html → PDF
+  Complete 20-page proposal with pricing, ROI, and implementation
+  Best for: Sending to decision makers
+
+Beacon-Email-Templates.html → PDF
+  13 ready-to-use templates for client outreach
+  Best for: Your internal sales team
+
+Beacon-Platform-Summary.html → PDF
+  Technical overview and methodology
+  Best for: Technical stakeholders, IT teams
+
+Beacon-Survey-Questions.html → PDF
+  All survey questions and workflows
+  Best for: HR teams, implementation planning
+
+Beacon-Google-Slides-Setup.html → PDF
+  Guide for creating slide presentations
+  Best for: Internal reference
+
+====================================================================
+ESTIMATED TIME
+====================================================================
+
+Converting all 5 files to PDF: ~5-10 minutes
+(About 1-2 minutes per file)
+
+====================================================================
+NEED HELP?
+====================================================================
+
+If you have issues:
+
+1. Check that HTML files display correctly in browser
+2. Try a different browser (Chrome, Firefox, Safari)
+3. Use an online converter instead (Method 2 above)
+4. Review PRESENTATION_SETUP_README.md for troubleshooting
+
+====================================================================
+
+Good luck with your presentations! 🚀
+
+
+

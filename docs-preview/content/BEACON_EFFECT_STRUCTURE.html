@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>BEACON_EFFECT_STRUCTURE</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">BEACON_EFFECT_STRUCTURE</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#beacon-effect---website-structure"
+id="toc-beacon-effect---website-structure">🌟 Beacon Effect - Website
+Structure</a>
+<ul>
+<li><a href="#overview" id="toc-overview">Overview</a></li>
+<li><a href="#main-landing-page" id="toc-main-landing-page">🏠 Main
+Landing Page</a>
+<ul>
+<li><a href="#beacon-effect-home"
+id="toc-beacon-effect-home"><code>/</code> - Beacon Effect Home</a></li>
+</ul></li>
+<li><a href="#beacon-advisory-branch" id="toc-beacon-advisory-branch">🎯
+Beacon Advisory Branch</a>
+<ul>
+<li><a href="#advisory---advisory-services-landing"
+id="toc-advisory---advisory-services-landing"><code>/advisory</code> -
+Advisory Services Landing</a></li>
+</ul></li>
+<li><a href="#beacon-wellbeing-branch"
+id="toc-beacon-wellbeing-branch">💚 Beacon Wellbeing Branch</a>
+<ul>
+<li><a href="#wellbeing---wellbeing-platform-landing"
+id="toc-wellbeing---wellbeing-platform-landing"><code>/wellbeing</code>
+- Wellbeing Platform Landing</a></li>
+</ul></li>
+<li><a href="#application-pages" id="toc-application-pages">🎨
+Application Pages</a>
+<ul>
+<li><a href="#dashboard---executive-dashboard"
+id="toc-dashboard---executive-dashboard"><code>/dashboard</code> -
+Executive Dashboard</a></li>
+<li><a href="#analytics---advanced-analytics"
+id="toc-analytics---advanced-analytics"><code>/analytics</code> -
+Advanced Analytics</a></li>
+<li><a href="#methodology---research-methodology"
+id="toc-methodology---research-methodology"><code>/methodology</code> -
+Research &amp; Methodology</a></li>
+<li><a href="#surveytoken---user-survey"
+id="toc-surveytoken---user-survey"><code>/survey/[token]</code> - User
+Survey</a></li>
+</ul></li>
+<li><a href="#admin-section" id="toc-admin-section">🔐 Admin Section</a>
+<ul>
+<li><a href="#adminlogin---admin-login"
+id="toc-adminlogin---admin-login"><code>/admin/login</code> - Admin
+Login</a></li>
+<li><a href="#adminmaterials---internal-materials-hub"
+id="toc-adminmaterials---internal-materials-hub"><code>/admin/materials</code>
+- Internal Materials Hub</a></li>
+</ul></li>
+<li><a href="#additional-pages" id="toc-additional-pages">📄 Additional
+Pages</a>
+<ul>
+<li><a href="#one-pager---executive-summary"
+id="toc-one-pager---executive-summary"><code>/one-pager</code> -
+Executive Summary</a></li>
+</ul></li>
+<li><a href="#site-map" id="toc-site-map">🗺️ Site Map</a></li>
+<li><a href="#user-journeys" id="toc-user-journeys">🎯 User Journeys</a>
+<ul>
+<li><a href="#journey-1-consulting-client"
+id="toc-journey-1-consulting-client">Journey 1: Consulting
+Client</a></li>
+<li><a href="#journey-2-wellbeing-platform-prospect"
+id="toc-journey-2-wellbeing-platform-prospect">Journey 2: Wellbeing
+Platform Prospect</a></li>
+<li><a href="#journey-3-client-meeting"
+id="toc-journey-3-client-meeting">Journey 3: Client Meeting</a></li>
+<li><a href="#journey-4-internal-user-you"
+id="toc-journey-4-internal-user-you">Journey 4: Internal User
+(You)</a></li>
+</ul></li>
+<li><a href="#brand-identity" id="toc-brand-identity">🎨 Brand
+Identity</a>
+<ul>
+<li><a href="#beacon-effect" id="toc-beacon-effect">Beacon
+Effect</a></li>
+<li><a href="#beacon-advisory" id="toc-beacon-advisory">Beacon
+Advisory</a></li>
+<li><a href="#beacon-wellbeing" id="toc-beacon-wellbeing">Beacon
+Wellbeing</a></li>
+</ul></li>
+<li><a href="#contact-information" id="toc-contact-information">📞
+Contact Information</a></li>
+<li><a href="#whats-different-now" id="toc-whats-different-now">✅
+What’s Different Now</a>
+<ul>
+<li><a href="#before-old-structure" id="toc-before-old-structure">Before
+(Old Structure)</a></li>
+<li><a href="#after-new-structure" id="toc-after-new-structure">After
+(New Structure)</a></li>
+</ul></li>
+<li><a href="#live-urls" id="toc-live-urls">🚀 Live URLs</a>
+<ul>
+<li><a href="#main-sites" id="toc-main-sites">Main Sites</a></li>
+<li><a href="#wellbeing-sub-pages"
+id="toc-wellbeing-sub-pages">Wellbeing Sub-Pages</a></li>
+<li><a href="#application" id="toc-application">Application</a></li>
+<li><a href="#admin" id="toc-admin">Admin</a></li>
+<li><a href="#tools" id="toc-tools">Tools</a></li>
+</ul></li>
+<li><a href="#next-steps" id="toc-next-steps">🎯 Next Steps</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="beacon-effect---website-structure">🌟 Beacon Effect - Website
+Structure</h1>
+<h2 id="overview">Overview</h2>
+<p><strong>Beacon Effect</strong> is the parent company with two main
+service branches: 1. <strong>Beacon Advisory</strong> - Strategic
+consulting and technology solutions 2. <strong>Beacon Wellbeing</strong>
+- Psychosocial safety platform</p>
+<hr />
+<h2 id="main-landing-page">🏠 Main Landing Page</h2>
+<h3 id="beacon-effect-home"><code>/</code> - Beacon Effect Home</h3>
+<p><strong>Purpose:</strong> Choose your service path</p>
+<p><strong>Content:</strong> - Hero: “Transform Your Business” - Two
+main service cards (Advisory &amp; Wellbeing) - About Beacon Effect -
+Our Approach (Evidence-Based, Partnership-Focused, Results-Driven) - CTA
+and contact information</p>
+<p><strong>Actions:</strong> - Link to <code>/advisory</code> (Beacon
+Advisory) - Link to <code>/wellbeing</code> (Beacon Wellbeing)</p>
+<hr />
+<h2 id="beacon-advisory-branch">🎯 Beacon Advisory Branch</h2>
+<h3 id="advisory---advisory-services-landing"><code>/advisory</code> -
+Advisory Services Landing</h3>
+<p><strong>Purpose:</strong> Showcase consulting services and
+expertise</p>
+<p><strong>Content:</strong> - Hero: Corporate Concierge positioning -
+Recognition &amp; Awards (HammerTech 2024, RCC, Thought Leader) - 4
+Service Types: - Strategic Consulting - Technology Solutions - Interim
+Leadership - Corporate Concierge - 8 Areas of Expertise - Client
+testimonials - 3 Engagement Models (Project-Based, Retainer, Interim
+Executive) - CTA and LinkedIn integration</p>
+<p><strong>Key Features:</strong> - Your professional achievements
+highlighted - Award recognition - Testimonials from colleagues/clients -
+LinkedIn profile link</p>
+<hr />
+<h2 id="beacon-wellbeing-branch">💚 Beacon Wellbeing Branch</h2>
+<h3 id="wellbeing---wellbeing-platform-landing"><code>/wellbeing</code>
+- Wellbeing Platform Landing</h3>
+<p><strong>Purpose:</strong> Introduce the psychosocial safety
+platform</p>
+<p><strong>Content:</strong> - Hero: Early Detection messaging - Key
+stats (60s, 70-85%, 10-15%) - Navigation cards to: - Features - Pricing
+- About - Live Demo - Why organizations choose Beacon - How it works (4
+steps) - Social proof testimonial - CTA for free trial</p>
+<p><strong>Sub-Pages:</strong></p>
+<h4 id="wellbeingfeatures"><code>/wellbeing/features</code></h4>
+<ul>
+<li>For Employees (4 features)</li>
+<li>For Leaders &amp; Executives (6 features)</li>
+<li>For HR &amp; Safety Teams (4 features)</li>
+<li>Security &amp; Privacy (4 pillars)</li>
+<li>Integrations</li>
+</ul>
+<h4 id="wellbeingpricing"><code>/wellbeing/pricing</code></h4>
+<ul>
+<li>3 pricing tiers (Starter, Professional, Enterprise)</li>
+<li>Add-ons</li>
+<li>ROI calculator</li>
+<li>Implementation timeline</li>
+<li>FAQ</li>
+</ul>
+<h4 id="wellbeingabout"><code>/wellbeing/about</code></h4>
+<ul>
+<li>The challenge</li>
+<li>How Beacon helps</li>
+<li>5 evidence-based dimensions</li>
+<li>Legal compliance</li>
+<li>Research foundation</li>
+</ul>
+<hr />
+<h2 id="application-pages">🎨 Application Pages</h2>
+<h3 id="dashboard---executive-dashboard"><code>/dashboard</code> -
+Executive Dashboard</h3>
+<p><strong>Purpose:</strong> Live demo of the wellbeing platform</p>
+<p><strong>Features:</strong> - Real-time wellbeing data - Drill-down by
+division/department/team - KPI cards - Trend charts - Response table</p>
+<h3 id="analytics---advanced-analytics"><code>/analytics</code> -
+Advanced Analytics</h3>
+<p><strong>Purpose:</strong> Deep-dive analytics and insights</p>
+<p><strong>Features:</strong> - Distribution histograms - Heat map
+matrix - Individual journey paths - Response rate tracking - Segmented
+box plots - Statistical process control charts</p>
+<h3 id="methodology---research-methodology"><code>/methodology</code> -
+Research &amp; Methodology</h3>
+<p><strong>Purpose:</strong> Detailed explanation of the science</p>
+<p><strong>Features:</strong> - Weighting rationale - Formula
+explanation - Research references - Interpretation guide</p>
+<h3 id="surveytoken---user-survey"><code>/survey/[token]</code> - User
+Survey</h3>
+<p><strong>Purpose:</strong> Employee survey interface</p>
+<p><strong>Features:</strong> - 60-second completion - 5 questions -
+Mobile-optimized - Anonymous</p>
+<hr />
+<h2 id="admin-section">🔐 Admin Section</h2>
+<h3 id="adminlogin---admin-login"><code>/admin/login</code> - Admin
+Login</h3>
+<p><strong>Purpose:</strong> Secure access to internal materials</p>
+<p><strong>Features:</strong> - Password gate (default:
+<code>beacon2025</code>) - Beautiful login UI - Session management</p>
+<h3
+id="adminmaterials---internal-materials-hub"><code>/admin/materials</code>
+- Internal Materials Hub</h3>
+<p><strong>Purpose:</strong> All internal docs and resources</p>
+<p><strong>Content:</strong> - Client presentations (HTML) - Email
+templates - Survey design docs - Marketing materials - Demo links -
+Quick actions</p>
+<hr />
+<h2 id="additional-pages">📄 Additional Pages</h2>
+<h3 id="one-pager---executive-summary"><code>/one-pager</code> -
+Executive Summary</h3>
+<p><strong>Purpose:</strong> Print-ready one-page overview</p>
+<p><strong>Features:</strong> - Print-optimized layout - All key
+information - PDF-ready - Wellbeing platform focus</p>
+<hr />
+<h2 id="site-map">🗺️ Site Map</h2>
+<pre><code>/                           → Beacon Effect Home (choose your path)
+├── /advisory               → Beacon Advisory (consulting services)
+├── /wellbeing              → Beacon Wellbeing (platform landing)
+│   ├── /features           → Platform features
+│   ├── /pricing            → Pricing &amp; ROI
+│   └── /about              → About &amp; methodology
+├── /dashboard              → Live demo dashboard
+├── /analytics              → Advanced analytics
+├── /methodology            → Research methodology
+├── /one-pager              → Print-ready summary
+├── /admin
+│   ├── /login              → Admin login
+│   └── /materials          → Internal materials
+└── /survey/[token]         → User survey interface</code></pre>
+<hr />
+<h2 id="user-journeys">🎯 User Journeys</h2>
+<h3 id="journey-1-consulting-client">Journey 1: Consulting Client</h3>
+<ol type="1">
+<li>Land on <code>/</code> (Beacon Effect)</li>
+<li>Click “Explore Advisory Services”</li>
+<li>View <code>/advisory</code> page</li>
+<li>See expertise, awards, testimonials</li>
+<li>Contact via email or LinkedIn</li>
+</ol>
+<h3 id="journey-2-wellbeing-platform-prospect">Journey 2: Wellbeing
+Platform Prospect</h3>
+<ol type="1">
+<li>Land on <code>/</code> (Beacon Effect)</li>
+<li>Click “Explore Wellbeing Platform”</li>
+<li>View <code>/wellbeing</code> landing page</li>
+<li>Navigate to:
+<ul>
+<li><code>/wellbeing/features</code> (see capabilities)</li>
+<li><code>/wellbeing/pricing</code> (understand costs)</li>
+<li><code>/dashboard</code> (view live demo)</li>
+</ul></li>
+<li>Start free trial via CTA</li>
+</ol>
+<h3 id="journey-3-client-meeting">Journey 3: Client Meeting</h3>
+<ol type="1">
+<li>Print <code>/one-pager</code> before meeting</li>
+<li>Show <code>/dashboard</code> live demo</li>
+<li>Walk through <code>/wellbeing/features</code></li>
+<li>Discuss <code>/wellbeing/pricing</code></li>
+<li>Send follow-up email (from <code>/admin/materials</code>)</li>
+</ol>
+<h3 id="journey-4-internal-user-you">Journey 4: Internal User (You)</h3>
+<ol type="1">
+<li>Login at <code>/admin/login</code></li>
+<li>Access <code>/admin/materials</code></li>
+<li>View all presentations, templates, docs</li>
+<li>Copy email templates</li>
+<li>Access demo links</li>
+</ol>
+<hr />
+<h2 id="brand-identity">🎨 Brand Identity</h2>
+<h3 id="beacon-effect">Beacon Effect</h3>
+<ul>
+<li><strong>Icon:</strong> <code>auto_awesome</code> (Material
+Icon)</li>
+<li><strong>Colors:</strong> Navy <code>#2B4162</code>, Slate
+<code>#5d89a9</code></li>
+<li><strong>Positioning:</strong> Parent company, strategic
+solutions</li>
+</ul>
+<h3 id="beacon-advisory">Beacon Advisory</h3>
+<ul>
+<li><strong>Icon:</strong> <code>psychology</code> (Material Icon)</li>
+<li><strong>Colors:</strong> Slate <code>#5d89a9</code>, Navy
+<code>#2B4162</code></li>
+<li><strong>Positioning:</strong> Corporate concierge, consulting</li>
+</ul>
+<h3 id="beacon-wellbeing">Beacon Wellbeing</h3>
+<ul>
+<li><strong>Icon:</strong> <code>health_and_safety</code> (Material
+Icon)</li>
+<li><strong>Colors:</strong> Teal <code>#64afac</code>, Navy
+<code>#2B4162</code></li>
+<li><strong>Positioning:</strong> Psychosocial safety, early
+detection</li>
+</ul>
+<hr />
+<h2 id="contact-information">📞 Contact Information</h2>
+<p><strong>All Pages Include:</strong> - Email:
+hello@beaconeffect.com.au - Phone: 1300 BEACON (232 266) - LinkedIn:
+https://www.linkedin.com/in/peta-wilson-4769361</p>
+<hr />
+<h2 id="whats-different-now">✅ What’s Different Now</h2>
+<h3 id="before-old-structure">Before (Old Structure)</h3>
+<ul>
+<li>Home page focused only on wellbeing platform</li>
+<li>No clear parent brand</li>
+<li>Advisory services buried in one page</li>
+</ul>
+<h3 id="after-new-structure">After (New Structure)</h3>
+<ul>
+<li><strong>Beacon Effect</strong> as parent company</li>
+<li>Clear choice between two services</li>
+<li><strong>Beacon Advisory</strong> gets equal prominence</li>
+<li><strong>Beacon Wellbeing</strong> has its own landing page</li>
+<li>Better navigation and user journeys</li>
+<li>Professional corporate structure</li>
+</ul>
+<hr />
+<h2 id="live-urls">🚀 Live URLs</h2>
+<h3 id="main-sites">Main Sites</h3>
+<ul>
+<li>http://localhost:3002/ - <strong>Beacon Effect Home</strong> (START
+HERE)</li>
+<li>http://localhost:3002/advisory - Beacon Advisory</li>
+<li>http://localhost:3002/wellbeing - Beacon Wellbeing</li>
+</ul>
+<h3 id="wellbeing-sub-pages">Wellbeing Sub-Pages</h3>
+<ul>
+<li>http://localhost:3002/wellbeing/features</li>
+<li>http://localhost:3002/wellbeing/pricing</li>
+<li>http://localhost:3002/wellbeing/about</li>
+</ul>
+<h3 id="application">Application</h3>
+<ul>
+<li>http://localhost:3002/dashboard - Live demo</li>
+<li>http://localhost:3002/analytics - Analytics</li>
+<li>http://localhost:3002/methodology - Methodology</li>
+</ul>
+<h3 id="admin">Admin</h3>
+<ul>
+<li>http://localhost:3002/admin/login - Admin login</li>
+<li>http://localhost:3002/admin/materials - Materials (after login)</li>
+</ul>
+<h3 id="tools">Tools</h3>
+<ul>
+<li>http://localhost:3002/one-pager - Print-ready summary</li>
+</ul>
+<hr />
+<h2 id="next-steps">🎯 Next Steps</h2>
+<ol type="1">
+<li><strong>Visit the new home page:</strong>
+http://localhost:3002/</li>
+<li><strong>Test both paths:</strong>
+<ul>
+<li>Click “Explore Advisory Services”</li>
+<li>Click “Explore Wellbeing Platform”</li>
+</ul></li>
+<li><strong>Review content and customize as needed</strong></li>
+<li><strong>Update email addresses</strong> if needed (currently:
+hello@beaconeffect.com.au)</li>
+</ol>
+<hr />
+<p><strong>Last Updated:</strong> October 21, 2025<br />
+<strong>Status:</strong> ✅ RESTRUCTURED &amp; READY<br />
+<strong>Version:</strong> 2.0.0</p>
+</body>
+</html>

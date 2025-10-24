@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Slides Setup Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: #2E2E38;
+      background: white;
+    }
+
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: 100;
+      font-style: normal;
+      line-height: 1;
+      display: inline-block;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      font-size: 40px;
+      color: #64afac;
+    }
+
+    .logo-text h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: #2B4162;
+    }
+
+    .logo-text p {
+      font-size: 0.875rem;
+      color: #737A8C;
+    }
+
+    .print-btn {
+      background: #64afac;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .print-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Title Section */
+    .title-section {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .title-section h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #2B4162;
+      margin-bottom: 0.75rem;
+    }
+
+    .title-section p {
+      font-size: 1.25rem;
+      color: #737A8C;
+    }
+
+    /* Content */
+    .content {
+      max-width: 100%;
+    }
+
+    .content > h1:first-child {
+      display: none;
+    }
+
+    .content h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2B4162;
+      margin: 3rem 0 1.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .content h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2B4162;
+      margin: 2rem 0 1rem 0;
+    }
+
+    .content h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #2B4162;
+      margin: 1.5rem 0 0.75rem 0;
+    }
+
+    .content p {
+      margin: 1rem 0;
+      color: #737A8C;
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    .content ul {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+    }
+
+    .content li {
+      padding: 0.5rem 0;
+      padding-left: 1.5rem;
+      position: relative;
+      color: #737A8C;
+      font-size: 0.875rem;
+    }
+
+    .content li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #64afac;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    .content strong {
+      color: #2B4162;
+      font-weight: 600;
+    }
+
+    .content em {
+      font-style: italic;
+      color: #5d89a9;
+    }
+
+    .content code {
+      background: #f4f4ee;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Monaco', monospace;
+      font-size: 0.9em;
+      color: #2B4162;
+    }
+
+    .content pre {
+      background: #f4f4ee;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    .content pre code {
+      background: none;
+      padding: 0;
+    }
+
+    .content blockquote {
+      background: linear-gradient(135deg, #e8f4f3 0%, #f4f4ee 100%);
+      border-left: 4px solid #64afac;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+    }
+
+    .content blockquote p {
+      margin: 0;
+      color: #2B4162;
+    }
+
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .content thead {
+      background: #2B4162;
+      color: white;
+    }
+
+    .content th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .content td {
+      padding: 1rem;
+      border-bottom: 1px solid #e5e7eb;
+      color: #737A8C;
+    }
+
+    .content tbody tr:hover {
+      background: #f4f4ee;
+    }
+
+    .content a {
+      color: #64afac;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .content a:hover {
+      text-decoration: underline;
+    }
+
+    /* Grid Layouts for better space utilization */
+    .content > h2 + p + h3,
+    .content > h2 + h3 {
+      margin-top: 1.5rem;
+    }
+
+    /* Make lists use columns when appropriate */
+    .content ul {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 0.5rem 2rem;
+    }
+
+    .content h3 + p + ul,
+    .content h4 + ul {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.5rem 1.5rem;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 2px solid #e5e7eb;
+      text-align: center;
+      color: #737A8C;
+      font-size: 0.875rem;
+    }
+
+    .footer p {
+      margin: 0.25rem 0;
+    }
+
+    /* Print Styles */
+    @media print {
+      @page {
+        size: A4;
+        margin: 1.5cm;
+      }
+
+      body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-btn {
+        display: none !important;
+      }
+
+      .container {
+        padding: 0;
+      }
+
+      .content h2,
+      .content h3 {
+        page-break-after: avoid;
+      }
+
+      .content ul {
+        page-break-inside: avoid;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .title-section h2 {
+        font-size: 2rem;
+      }
+
+      .content h2 {
+        font-size: 1.5rem;
+      }
+
+      .content ul {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <a href="/" class="logo">
+        <span class="material-symbols-outlined logo-icon">health_and_safety</span>
+        <div class="logo-text">
+          <h1>Beacon</h1>
+          <p>Wellbeing Platform</p>
+        </div>
+      </a>
+      <button class="print-btn" onclick="window.print()">
+        <span class="material-symbols-outlined" style="font-size: 20px;">print</span>
+        Print / Save PDF
+      </button>
+    </div>
+
+    <!-- Title Section -->
+    <div class="title-section">
+      <h2>Presentation Resources</h2>
+      <p>Create compelling client presentations with Beacon branding</p>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+<h1 id="converting-beacon-documents-to-google-slides">Converting Beacon
+Documents to Google Slides</h1>
+<p>This guide shows you how to convert the Beacon markdown documents
+into professional Google Slides presentations.</p>
+<hr />
+<h2 id="option-1-use-google-docs-slides-recommended">Option 1: Use
+Google Docs + Slides (Recommended)</h2>
+<h3 id="step-1-import-to-google-docs">Step 1: Import to Google Docs</h3>
+<ol type="1">
+<li>Go to <a href="https://docs.google.com">Google Docs</a></li>
+<li>Click <strong>File → Import</strong></li>
+<li>Upload the markdown files:
+<ul>
+<li><code>BEACON_CLIENT_PROPOSAL.md</code></li>
+<li><code>EMAIL_TEMPLATES.md</code></li>
+<li><code>BEACON_CLIENT_SUMMARY.md</code></li>
+<li><code>SURVEY_QUESTIONS.md</code></li>
+</ul></li>
+</ol>
+<h3 id="step-2-format-in-google-docs">Step 2: Format in Google Docs</h3>
+<ol type="1">
+<li>Apply heading styles (Heading 1, 2, 3)</li>
+<li>Add Beacon colors:
+<ul>
+<li>Teal: <code>#64afac</code> (for highlights)</li>
+<li>Navy: <code>#2B4162</code> (for headings)</li>
+<li>Slate: <code>#5d89a9</code> (for subheadings)</li>
+</ul></li>
+<li>Insert logo/branding at the top</li>
+</ol>
+<h3 id="step-3-convert-to-slides">Step 3: Convert to Slides</h3>
+<ol type="1">
+<li>Open a new <a href="https://slides.google.com">Google Slides</a>
+presentation</li>
+<li>Choose a clean, professional template</li>
+<li>Copy sections from Google Docs → paste into slides</li>
+<li>One section per slide (use headings as slide titles)</li>
+</ol>
+<hr />
+<h2 id="option-2-use-online-markdown-to-slides-converters">Option 2: Use
+Online Markdown to Slides Converters</h2>
+<h3 id="recommended-tools">Recommended Tools:</h3>
+<h4 id="marp-best-for-technical-presentations">1. <strong>Marp</strong>
+(Best for technical presentations)</h4>
+<ul>
+<li>Website: https://marp.app/</li>
+<li>Free, open-source</li>
+<li>Create slides directly from markdown</li>
+</ul>
+<p><strong>Setup:</strong></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install Marp CLI</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install <span class="at">-g</span> @marp-team/marp-cli</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert markdown to PowerPoint</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">marp</span> BEACON_CLIENT_PROPOSAL.md <span class="at">--pptx</span> <span class="at">-o</span> Beacon-Proposal.pptx</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to PDF</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">marp</span> BEACON_CLIENT_PROPOSAL.md <span class="at">--pdf</span> <span class="at">-o</span> Beacon-Proposal.pdf</span></code></pre></div>
+<h4 id="slidev-interactive-web-based-slides">2. <strong>Slidev</strong>
+(Interactive web-based slides)</h4>
+<ul>
+<li>Website: https://sli.dev/</li>
+<li>Modern, developer-friendly</li>
+<li>Can export to PDF</li>
+</ul>
+<h4 id="reveal.js-html-based-presentations">3.
+<strong>Reveal.js</strong> (HTML-based presentations)</h4>
+<ul>
+<li>Website: https://revealjs.com/</li>
+<li>Web-based slides</li>
+<li>Can be embedded in your website</li>
+</ul>
+<hr />
+<h2 id="option-3-manual-slide-creation-template">Option 3: Manual Slide
+Creation Template</h2>
+<h3 id="slide-structure-for-client-proposal">Slide Structure for Client
+Proposal</h3>
+<p><strong>Slide 1: Title</strong> - Title: “Beacon: Psychosocial
+Wellbeing Platform” - Subtitle: “Early Detection for Workplace
+Wellbeing” - Logo: Beacon icon (health_and_safety Material Icon) -
+Background: Gradient from navy to teal</p>
+<p><strong>Slide 2: The Problem</strong> - Bullet points: - 1 in 5
+employees experience work-related stress - Traditional surveys detect
+problems too late - Leaders lack real-time visibility - Compliance is
+increasingly complex</p>
+<p><strong>Slide 3: The Solution</strong> - 5 key features with icons: -
+✅ Weekly pulse surveys (60 seconds) - ✅ Real-time executive dashboards
+- ✅ Confidential, anonymous responses - ✅ Early warning system - ✅
+Evidence-based methodology</p>
+<p><strong>Slide 4: Why Beacon?</strong> - 3 columns: - Validated
+Framework - Real-Time Insights - Privacy First</p>
+<p><strong>Slide 5: Key Features</strong> - Split into 3 sections: - For
+Employees - For Leaders - For HR Teams</p>
+<p><strong>Slide 6: Pricing</strong> - 3 pricing tiers in cards: -
+Starter: $2,500/mo - Professional: $6,500/mo - Enterprise: Custom</p>
+<p><strong>Slide 7: Implementation Timeline</strong> - 4-week visual
+timeline - Week 1: Setup - Week 2: Pilot - Week 3: Rollout - Week 4:
+Optimize</p>
+<p><strong>Slide 8: ROI &amp; Business Impact</strong> - Key metrics: -
+10-15% reduction in turnover - 20-30% improvement in engagement - 25%
+faster issue identification - $3,500 savings per prevented
+resignation</p>
+<p><strong>Slide 9: Case Study</strong> - Quote + stats from sample
+client - Before/After comparison</p>
+<p><strong>Slide 10: Security &amp; Compliance</strong> - Icons with
+checkmarks: - Encrypted data - Australian data centres - ISO 27001
+certified - Privacy Act compliant</p>
+<p><strong>Slide 11: Getting Started</strong> - 3 steps: 1. Book a demo
+2. Free 2-week trial 3. Choose your plan &amp; launch</p>
+<p><strong>Slide 12: Contact</strong> - Email:
+hello@beaconwellbeing.com.au - Phone: 1300 BEACON - Website:
+www.beaconwellbeing.com.au - CTA: “Start Your Free Trial”</p>
+<hr />
+<h2 id="beacon-brand-colors-for-slides">Beacon Brand Colors for
+Slides</h2>
+<pre><code>Primary Colors:
+- Navy: #2B4162 (headings, dark backgrounds)
+- Teal: #64afac (CTAs, highlights, good status)
+- Slate: #5d89a9 (subheadings, neutral elements)
+- Coral: #ea9999 (warnings, attention items)
+
+Background Colors:
+- Light Teal: #f4f4ee
+- Light Slate: #eeefec
+- Light Coral: #f6f2ef
+- White: #ffffff
+
+Text Colors:
+- Primary Text: #2E2E38
+- Muted Text: #737A8C</code></pre>
+<hr />
+<h2 id="fonts-to-use">Fonts to Use</h2>
+<p><strong>Google Fonts (Free):</strong> - <strong>Headings:</strong>
+Inter Bold (700) - <strong>Body:</strong> Inter Regular (400) -
+<strong>Subheadings:</strong> Inter Medium (500)</p>
+<p><strong>Download:</strong>
+https://fonts.google.com/specimen/Inter</p>
+<hr />
+<h2 id="icons-to-use">Icons to Use</h2>
+<p><strong>Material Symbols (Weight 100):</strong></p>
+<pre><code>Core Icons:
+- health_and_safety (Beacon logo)
+- sentiment_satisfied (positive)
+- work_history (workload)
+- diversity_3 (teams)
+- grade (valued)
+- check_circle (confirmed)
+- insights (analytics)
+- security (privacy)
+- trending_up (growth)
+- download (downloads)</code></pre>
+<p><strong>Add to slides:</strong> 1. Visit
+https://fonts.google.com/icons 2. Search for icon name 3. Download as
+SVG or PNG 4. Insert into slide</p>
+<hr />
+<h2 id="google-slides-templates-pre-made">Google Slides Templates
+(Pre-made)</h2>
+<h3 id="where-to-find-templates">Where to Find Templates:</h3>
+<ol type="1">
+<li><strong>Slides Carnival</strong> -
+https://www.slidescarnival.com/</li>
+<li><strong>Slide Hunter</strong> - https://slidehunter.com/</li>
+<li><strong>Google Slides Themes</strong> - Built into Google
+Slides</li>
+</ol>
+<h3 id="recommended-templates-for-beacon">Recommended Templates for
+Beacon:</h3>
+<ul>
+<li><strong>Professional/Corporate</strong> style</li>
+<li><strong>Clean/Minimal</strong> design</li>
+<li><strong>Navy or Teal</strong> color scheme</li>
+<li><strong>Left-aligned</strong> text layouts</li>
+</ul>
+<hr />
+<h2 id="creating-a-shareable-google-slides-link">Creating a Shareable
+Google Slides Link</h2>
+<h3 id="step-1-upload-to-google-drive">Step 1: Upload to Google
+Drive</h3>
+<ol type="1">
+<li>Go to <a href="https://drive.google.com">Google Drive</a></li>
+<li>Create a folder called “Beacon Presentations”</li>
+<li>Upload your slides</li>
+</ol>
+<h3 id="step-2-set-sharing-permissions">Step 2: Set Sharing
+Permissions</h3>
+<ol type="1">
+<li>Right-click on the file → <strong>Share</strong></li>
+<li>Change to “Anyone with the link can view”</li>
+<li>Or: “Anyone with the link can make a copy”</li>
+</ol>
+<h3 id="step-3-get-shareable-link">Step 3: Get Shareable Link</h3>
+<ol type="1">
+<li><p>Click <strong>Copy link</strong></p></li>
+<li><p>The link will look like:</p>
+<pre><code>https://docs.google.com/presentation/d/[ID]/edit</code></pre></li>
+</ol>
+<h3 id="step-4-make-it-a-make-a-copy-link">Step 4: Make it a “Make a
+Copy” Link</h3>
+<p>Replace <code>/edit</code> with <code>/copy</code> at the end:</p>
+<pre><code>https://docs.google.com/presentation/d/[ID]/copy</code></pre>
+<p>This allows clients to automatically create their own copy!</p>
+<hr />
+<h2 id="pdf-export-settings">PDF Export Settings</h2>
+<h3 id="from-google-slides">From Google Slides:</h3>
+<ol type="1">
+<li><strong>File → Download → PDF Document</strong></li>
+<li>Settings:
+<ul>
+<li>Include: All slides</li>
+<li>Format: Letter or A4</li>
+<li>Quality: High</li>
+</ul></li>
+</ol>
+<h3 id="from-marpmarkdown">From Marp/Markdown:</h3>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">marp</span> document.md <span class="at">--pdf</span> <span class="at">--allow-local-files</span> <span class="at">-o</span> output.pdf</span></code></pre></div>
+<h3 id="pdf-compression-if-needed">PDF Compression (if needed):</h3>
+<p>Use: https://www.ilovepdf.com/compress_pdf</p>
+<hr />
+<h2 id="quick-start-checklist">Quick Start Checklist</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Convert markdown files to Google
+Docs</label></li>
+<li><label><input type="checkbox" />Format with Beacon colors and
+fonts</label></li>
+<li><label><input type="checkbox" />Create Google Slides presentation
+from docs</label></li>
+<li><label><input type="checkbox" />Add Material Icons as
+images</label></li>
+<li><label><input type="checkbox" />Apply consistent styling to all
+slides</label></li>
+<li><label><input type="checkbox" />Export as PDF for email
+attachments</label></li>
+<li><label><input type="checkbox" />Create shareable Google Slides
+links</label></li>
+<li><label><input type="checkbox" />Test downloads and copying
+functionality</label></li>
+<li><label><input type="checkbox" />Add to presentation website at
+<code>/presentation</code></label></li>
+</ul>
+<hr />
+<h2 id="automation-tools">Automation Tools</h2>
+<h3 id="for-regular-updates">For Regular Updates:</h3>
+<p><strong>Pandoc</strong> (Markdown → PowerPoint):</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install pandoc</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install pandoc  <span class="co"># Mac</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># or: apt-get install pandoc  # Linux</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to PowerPoint</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="ex">pandoc</span> BEACON_CLIENT_PROPOSAL.md <span class="at">-o</span> Beacon-Proposal.pptx</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to PDF</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="ex">pandoc</span> BEACON_CLIENT_PROPOSAL.md <span class="at">-o</span> Beacon-Proposal.pdf <span class="at">--pdf-engine</span><span class="op">=</span>xelatex</span></code></pre></div>
+<p><strong>Google Apps Script</strong> (Auto-update slides from Google
+Docs): - Can sync content automatically - Requires some programming</p>
+<hr />
+<h2 id="support-resources">Support Resources</h2>
+<ul>
+<li><strong>Google Slides Help:</strong>
+https://support.google.com/docs/topic/19431</li>
+<li><strong>Markdown to Slides:</strong> https://remarkjs.com/</li>
+<li><strong>Design Tips:</strong>
+https://www.canva.com/learn/presentation-design/</li>
+<li><strong>Icon Resources:</strong> https://fonts.google.com/icons</li>
+</ul>
+<hr />
+<p><em>Last Updated: October 2025</em> <em>For Beacon Marketing
+Team</em></p>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p><strong>Beacon Effect</strong></p>
+      <p>hello@beaconeffect.com.au | www.beaconeffect.com.au</p>
+      <p style="margin-top: 0.5rem;">© 2025 Beacon Effect. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

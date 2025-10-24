@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>HOW_TO_USE_DOCUMENTS</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">HOW_TO_USE_DOCUMENTS</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#how-to-use-your-beacon-documents"
+id="toc-how-to-use-your-beacon-documents">How to Use Your Beacon
+Documents</a>
+<ul>
+<li><a href="#what-are-.md-files" id="toc-what-are-.md-files">📄 What
+Are .md Files?</a></li>
+<li><a href="#your-documents-how-to-use-them"
+id="toc-your-documents-how-to-use-them">🎯 Your Documents &amp; How to
+Use Them</a>
+<ul>
+<li><a href="#for-clients-share-these"
+id="toc-for-clients-share-these"><strong>For Clients (Share
+These)</strong></a></li>
+<li><a href="#for-you-only-internal"
+id="toc-for-you-only-internal"><strong>For You Only
+(Internal)</strong></a></li>
+</ul></li>
+<li><a href="#how-to-print-documents-to-pdf"
+id="toc-how-to-print-documents-to-pdf">🖨️ How to Print Documents to
+PDF</a>
+<ul>
+<li><a href="#method-1-from-browser-easiest"
+id="toc-method-1-from-browser-easiest">Method 1: From Browser
+(Easiest)</a></li>
+<li><a href="#method-2-from-terminal-advanced"
+id="toc-method-2-from-terminal-advanced">Method 2: From Terminal
+(Advanced)</a></li>
+</ul></li>
+<li><a href="#quick-reference-what-to-use-when"
+id="toc-quick-reference-what-to-use-when">📋 Quick Reference: What to
+Use When</a>
+<ul>
+<li><a href="#client-meeting-tomorrow"
+id="toc-client-meeting-tomorrow"><strong>Client Meeting
+Tomorrow?</strong></a></li>
+<li><a href="#sending-email-to-prospect"
+id="toc-sending-email-to-prospect"><strong>Sending Email to
+Prospect?</strong></a></li>
+<li><a href="#formal-proposal" id="toc-formal-proposal"><strong>Formal
+Proposal?</strong></a></li>
+<li><a href="#technical-discussion"
+id="toc-technical-discussion"><strong>Technical
+Discussion?</strong></a></li>
+</ul></li>
+<li><a href="#what-not-to-share" id="toc-what-not-to-share">🔐 What NOT
+to Share</a></li>
+<li><a href="#where-everything-lives" id="toc-where-everything-lives">📂
+Where Everything Lives</a>
+<ul>
+<li><a href="#online-browser-access"
+id="toc-online-browser-access"><strong>Online (Browser
+Access)</strong></a></li>
+<li><a href="#on-your-computer" id="toc-on-your-computer"><strong>On
+Your Computer</strong></a></li>
+</ul></li>
+<li><a href="#pro-tips" id="toc-pro-tips">🎯 Pro Tips</a>
+<ul>
+<li><a href="#for-client-meetings"
+id="toc-for-client-meetings"><strong>For Client
+Meetings</strong></a></li>
+<li><a href="#for-email-campaigns"
+id="toc-for-email-campaigns"><strong>For Email
+Campaigns</strong></a></li>
+<li><a href="#for-proposals" id="toc-for-proposals"><strong>For
+Proposals</strong></a></li>
+</ul></li>
+<li><a href="#quick-actions" id="toc-quick-actions">🚀 Quick Actions</a>
+<ul>
+<li><a href="#right-now" id="toc-right-now"><strong>Right
+Now:</strong></a></li>
+<li><a href="#before-your-next-client-meeting"
+id="toc-before-your-next-client-meeting"><strong>Before Your Next Client
+Meeting:</strong></a></li>
+<li><a href="#this-week" id="toc-this-week"><strong>This
+Week:</strong></a></li>
+</ul></li>
+<li><a href="#common-questions" id="toc-common-questions">❓ Common
+Questions</a></li>
+<li><a href="#need-help" id="toc-need-help">📞 Need Help?</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="how-to-use-your-beacon-documents">How to Use Your Beacon
+Documents</h1>
+<h2 id="what-are-.md-files">📄 What Are .md Files?</h2>
+<p><code>.md</code> files are <strong>Markdown</strong> documents -
+plain text files with simple formatting. They’re great for: -
+Documentation you edit frequently - Version control (Git) - Easy editing
+in any text editor</p>
+<p>But clients can’t easily read them, so you need to convert them.</p>
+<hr />
+<h2 id="your-documents-how-to-use-them">🎯 Your Documents &amp; How to
+Use Them</h2>
+<h3 id="for-clients-share-these"><strong>For Clients (Share
+These)</strong></h3>
+<h4 id="survey-overview---client-facing-ip-safe">1. <strong>Survey
+Overview</strong> - Client-facing, IP-safe</h4>
+<ul>
+<li><strong>File:</strong>
+<code>WELLBEING_SURVEY_OVERVIEW.md</code></li>
+<li><strong>View Online:</strong>
+http://localhost:3002/presentation-pdfs/Beacon-Survey-Overview.html</li>
+<li><strong>Use For:</strong> Sales meetings, proposals, initial
+discussions</li>
+<li><strong>Print to PDF:</strong> Open in browser → Cmd+P → Save as
+PDF</li>
+<li><strong>Safe to share:</strong> ✅ Yes (no IP disclosure)</li>
+</ul>
+<h4 id="platform-summary">2. <strong>Platform Summary</strong></h4>
+<ul>
+<li><strong>View Online:</strong>
+http://localhost:3002/presentation-pdfs/Beacon-Platform-Summary.html</li>
+<li><strong>Use For:</strong> Technical overview, feature
+discussions</li>
+<li><strong>Print to PDF:</strong> Yes</li>
+</ul>
+<h4 id="client-proposal-template">3. <strong>Client Proposal
+Template</strong></h4>
+<ul>
+<li><strong>View Online:</strong>
+http://localhost:3002/presentation-pdfs/Beacon-Client-Proposal.html</li>
+<li><strong>Use For:</strong> Formal proposals, pricing discussions</li>
+<li><strong>Print to PDF:</strong> Yes</li>
+</ul>
+<h4 id="email-templates">4. <strong>Email Templates</strong></h4>
+<ul>
+<li><strong>View Online:</strong>
+http://localhost:3002/presentation-pdfs/Beacon-Email-Templates.html</li>
+<li><strong>Use For:</strong> Copy/paste for client communications</li>
+<li><strong>Print to PDF:</strong> Yes (for reference)</li>
+</ul>
+<h4 id="one-pager-best-for-meetings">5. <strong>One-Pager</strong> (Best
+for Meetings!)</h4>
+<ul>
+<li><strong>View Online:</strong> http://localhost:3002/one-pager</li>
+<li><strong>Use For:</strong> Print and bring to every client
+meeting</li>
+<li><strong>Print to PDF:</strong> Yes - this is the best one to
+print!</li>
+</ul>
+<hr />
+<h3 id="for-you-only-internal"><strong>For You Only
+(Internal)</strong></h3>
+<h4 id="ip-protection-guide---keep-private">1. <strong>IP Protection
+Guide</strong> - Keep Private!</h4>
+<ul>
+<li><strong>File:</strong> <code>IP_PROTECTION_GUIDE.md</code></li>
+<li><strong>View Online:</strong>
+http://localhost:3002/IP_PROTECTION_GUIDE.html</li>
+<li><strong>Use For:</strong> Your reference on protecting intellectual
+property</li>
+<li><strong>Share:</strong> ❌ No - internal only</li>
+</ul>
+<h4 id="survey-questions-detailed---keep-private">2. <strong>Survey
+Questions</strong> (Detailed) - Keep Private!</h4>
+<ul>
+<li><strong>File:</strong> <code>SURVEY_QUESTIONS.md</code></li>
+<li><strong>View Online:</strong>
+http://localhost:3002/presentation-pdfs/Beacon-Survey-Questions.html</li>
+<li><strong>Use For:</strong> Your reference, development</li>
+<li><strong>Share:</strong> ❌ No - trade secret (use Survey Overview
+instead)</li>
+</ul>
+<h4 id="cleanup-checklist">3. <strong>Cleanup Checklist</strong></h4>
+<ul>
+<li><strong>File:</strong> <code>CLEANUP_CHECKLIST.md</code></li>
+<li><strong>Use For:</strong> Your to-do list for website polish</li>
+<li><strong>Share:</strong> ❌ No - internal only</li>
+</ul>
+<h4 id="website-structure-docs">4. <strong>Website Structure
+Docs</strong></h4>
+<ul>
+<li><strong>Files:</strong> <code>BEACON_EFFECT_STRUCTURE.md</code>,
+<code>WEBSITE_COMPLETE.md</code>, <code>QUICK_START.md</code></li>
+<li><strong>Use For:</strong> Your reference for how the website
+works</li>
+<li><strong>Share:</strong> ❌ No - internal only</li>
+</ul>
+<hr />
+<h2 id="how-to-print-documents-to-pdf">🖨️ How to Print Documents to
+PDF</h2>
+<h3 id="method-1-from-browser-easiest">Method 1: From Browser
+(Easiest)</h3>
+<ol type="1">
+<li>Open the HTML version in your browser (links above)</li>
+<li>Press <strong>Cmd+P</strong> (Mac) or <strong>Ctrl+P</strong>
+(Windows)</li>
+<li>Select “Save as PDF” as printer</li>
+<li>Click “Save”</li>
+<li>Done! ✅</li>
+</ol>
+<h3 id="method-2-from-terminal-advanced">Method 2: From Terminal
+(Advanced)</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /Users/peta/Documents/Beacon/webapp/beacon</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pandoc</span> FILENAME.md <span class="at">-o</span> OUTPUT.pdf <span class="at">--pdf-engine</span><span class="op">=</span>wkhtmltopdf</span></code></pre></div>
+<hr />
+<h2 id="quick-reference-what-to-use-when">📋 Quick Reference: What to
+Use When</h2>
+<h3 id="client-meeting-tomorrow"><strong>Client Meeting
+Tomorrow?</strong></h3>
+<ol type="1">
+<li>Print: http://localhost:3002/one-pager</li>
+<li>Bring laptop to show: http://localhost:3002/dashboard</li>
+<li>Have ready: Survey Overview PDF</li>
+</ol>
+<h3 id="sending-email-to-prospect"><strong>Sending Email to
+Prospect?</strong></h3>
+<ol type="1">
+<li>Use templates from:
+http://localhost:3002/presentation-pdfs/Beacon-Email-Templates.html</li>
+<li>Attach: Survey Overview PDF</li>
+<li>Link to: Your website (once deployed)</li>
+</ol>
+<h3 id="formal-proposal"><strong>Formal Proposal?</strong></h3>
+<ol type="1">
+<li>Use: Client Proposal Template</li>
+<li>Customize pricing and timeline</li>
+<li>Attach: Survey Overview PDF</li>
+<li>Include: One-pager PDF</li>
+</ol>
+<h3 id="technical-discussion"><strong>Technical
+Discussion?</strong></h3>
+<ol type="1">
+<li>Use: Platform Summary</li>
+<li>Show: Live dashboard demo</li>
+<li>Discuss: Features page</li>
+</ol>
+<hr />
+<h2 id="what-not-to-share">🔐 What NOT to Share</h2>
+<p><strong>Never share these with clients (without NDA):</strong> -
+Detailed survey questions (<code>SURVEY_QUESTIONS.md</code>) - Branching
+logic diagrams - Scoring formulas/algorithms - Source code - Internal
+documentation</p>
+<p><strong>Always use instead:</strong> - Survey Overview (client-safe
+version) - One-pager (high-level benefits) - Platform Summary (features,
+not methodology)</p>
+<hr />
+<h2 id="where-everything-lives">📂 Where Everything Lives</h2>
+<h3 id="online-browser-access"><strong>Online (Browser
+Access)</strong></h3>
+<ul>
+<li><strong>Public website:</strong> http://localhost:3002/</li>
+<li><strong>Client materials:</strong>
+http://localhost:3002/admin/materials (password:
+<code>beacon2025</code>)</li>
+<li><strong>Presentations:</strong>
+http://localhost:3002/presentation-pdfs/</li>
+</ul>
+<h3 id="on-your-computer"><strong>On Your Computer</strong></h3>
+<ul>
+<li><strong>All documents:</strong>
+<code>/Users/peta/Documents/Beacon/webapp/beacon/</code></li>
+<li><strong>Markdown files:</strong> <code>*.md</code> files in root
+directory</li>
+<li><strong>HTML versions:</strong> <code>presentation-pdfs/</code>
+folder</li>
+<li><strong>Website code:</strong> <code>src/</code> folder</li>
+</ul>
+<hr />
+<h2 id="pro-tips">🎯 Pro Tips</h2>
+<h3 id="for-client-meetings"><strong>For Client Meetings</strong></h3>
+<ol type="1">
+<li><strong>Always print the one-pager</strong> before meetings</li>
+<li><strong>Bookmark the dashboard</strong> for quick demos</li>
+<li><strong>Keep Survey Overview PDF</strong> on your desktop for quick
+email attachments</li>
+</ol>
+<h3 id="for-email-campaigns"><strong>For Email Campaigns</strong></h3>
+<ol type="1">
+<li><strong>Copy templates</strong> from Email Templates HTML</li>
+<li><strong>Attach Survey Overview PDF</strong> (not the detailed
+questions!)</li>
+<li><strong>Link to your website</strong> (once deployed to Vercel)</li>
+</ol>
+<h3 id="for-proposals"><strong>For Proposals</strong></h3>
+<ol type="1">
+<li><strong>Start with Client Proposal template</strong></li>
+<li><strong>Customize</strong> for each client</li>
+<li><strong>Always include</strong> Survey Overview PDF</li>
+<li><strong>Print one-pager</strong> to bring to follow-up meeting</li>
+</ol>
+<hr />
+<h2 id="quick-actions">🚀 Quick Actions</h2>
+<h3 id="right-now"><strong>Right Now:</strong></h3>
+<ol type="1">
+<li>Open http://localhost:3002/one-pager</li>
+<li>Print to PDF (Cmd+P → Save as PDF)</li>
+<li>Save to Desktop as “Beacon-One-Pager.pdf”</li>
+<li>Bring to your next meeting!</li>
+</ol>
+<h3 id="before-your-next-client-meeting"><strong>Before Your Next Client
+Meeting:</strong></h3>
+<ol type="1">
+<li>Print one-pager ✅</li>
+<li>Bookmark dashboard demo ✅</li>
+<li>Have Survey Overview PDF ready ✅</li>
+<li>Review Email Templates ✅</li>
+</ol>
+<h3 id="this-week"><strong>This Week:</strong></h3>
+<ol type="1">
+<li>Read IP Protection Guide</li>
+<li>Consider trademark registration</li>
+<li>Draft simple NDA template</li>
+<li>Review all client-facing materials</li>
+</ol>
+<hr />
+<h2 id="common-questions">❓ Common Questions</h2>
+<p><strong>Q: Can I edit the .md files?</strong><br />
+A: Yes! Use any text editor. After editing, re-run the pandoc command to
+update the HTML/PDF.</p>
+<p><strong>Q: How do I share documents with clients?</strong><br />
+A: Either: - Print to PDF and email as attachment - Share the HTML link
+(once website is deployed) - Print physical copies for meetings</p>
+<p><strong>Q: Which document should I send first?</strong><br />
+A: Survey Overview PDF - it’s designed to be client-safe and explains
+benefits without revealing IP.</p>
+<p><strong>Q: Can I customize the documents?</strong><br />
+A: Yes! Edit the .md files, then convert to HTML/PDF again.</p>
+<p><strong>Q: Where’s the best place to store PDFs?</strong><br />
+A: Create a folder on your Desktop called “Beacon Client Materials” and
+save all PDFs there for quick access.</p>
+<hr />
+<h2 id="need-help">📞 Need Help?</h2>
+<p>All your documents are accessible at: - <strong>Admin
+portal:</strong> http://localhost:3002/admin/materials -
+<strong>Password:</strong> <code>beacon2025</code></p>
+<hr />
+<p><strong>Last Updated:</strong> October 2025<br />
+<strong>Quick Tip:</strong> Bookmark http://localhost:3002/one-pager for
+fastest access to your best client document!</p>
+</body>
+</html>

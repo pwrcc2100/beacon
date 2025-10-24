@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>PUBLIC_WEBSITE_PLAN</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">PUBLIC_WEBSITE_PLAN</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#beacon-public-website---restructuring-plan"
+id="toc-beacon-public-website---restructuring-plan">Beacon Public
+Website - Restructuring Plan</a>
+<ul>
+<li><a href="#goal" id="toc-goal">🎯 Goal</a></li>
+<li><a href="#new-structure" id="toc-new-structure">📄 New Structure</a>
+<ul>
+<li><a href="#public-pages-shareable-urls"
+id="toc-public-pages-shareable-urls">Public Pages (Shareable
+URLs)</a></li>
+<li><a href="#admin-only-section-password-protected"
+id="toc-admin-only-section-password-protected">Admin-Only Section
+(Password Protected)</a></li>
+</ul></li>
+<li><a href="#key-improvements" id="toc-key-improvements">✨ Key
+Improvements</a></li>
+<li><a href="#implementation-steps" id="toc-implementation-steps">📋
+Implementation Steps</a></li>
+<li><a href="#design-system" id="toc-design-system">🎨 Design
+System</a></li>
+<li><a href="#usage-scenarios" id="toc-usage-scenarios">📧 Usage
+Scenarios</a>
+<ul>
+<li><a href="#scenario-1-quick-overview"
+id="toc-scenario-1-quick-overview">Scenario 1: Quick Overview</a></li>
+<li><a href="#scenario-2-full-details"
+id="toc-scenario-2-full-details">Scenario 2: Full Details</a></li>
+<li><a href="#scenario-3-pricing-discussion"
+id="toc-scenario-3-pricing-discussion">Scenario 3: Pricing
+Discussion</a></li>
+<li><a href="#scenario-4-demo" id="toc-scenario-4-demo">Scenario 4:
+Demo</a></li>
+<li><a href="#scenario-5-internal-use"
+id="toc-scenario-5-internal-use">Scenario 5: Internal Use</a></li>
+</ul></li>
+<li><a href="#migration-path" id="toc-migration-path">🔄 Migration
+Path</a></li>
+<li><a href="#benefits" id="toc-benefits">📊 Benefits</a></li>
+<li><a href="#next-steps" id="toc-next-steps">🚀 Next Steps</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="beacon-public-website---restructuring-plan">Beacon Public
+Website - Restructuring Plan</h1>
+<h2 id="goal">🎯 Goal</h2>
+<p>Create a professional, shareable public website with all information
+formatted beautifully, plus a separate admin-only section for internal
+materials.</p>
+<h2 id="new-structure">📄 New Structure</h2>
+<h3 id="public-pages-shareable-urls">Public Pages (Shareable URLs)</h3>
+<pre><code>/ (Home)
+  - Hero with value proposition
+  - Key stats
+  - Quick overview
+  - CTA buttons
+
+/about
+  - The challenge (current problems)
+  - How Beacon helps
+  - 5 evidence-based dimensions
+  - Legal compliance table
+  - Research foundation
+
+/features
+  - For Employees (60s surveys)
+  - For Leaders (dashboards, insights)
+  - For HR Teams (compliance, reporting)
+  - Security &amp; Privacy
+  - Integration capabilities
+
+/pricing
+  - Starter Plan ($2,500/mo)
+  - Professional Plan ($6,500/mo)
+  - Enterprise Plan (Custom)
+  - Add-ons
+  - ROI calculator
+  - Implementation timeline
+
+/dashboard
+  - Live demo dashboard (existing)
+
+/one-pager (NEW)
+  - Single downloadable page
+  - All key info in one place
+  - Print-optimized
+  - PDF export button</code></pre>
+<h3 id="admin-only-section-password-protected">Admin-Only Section
+(Password Protected)</h3>
+<pre><code>/admin/login
+  - Password gate (uses ADMIN_DASH_TOKEN)
+
+/admin/materials
+  - Email templates (13 templates)
+  - Sales scripts
+  - Internal guides
+  - Client onboarding checklists
+  - Implementation documents</code></pre>
+<h2 id="key-improvements">✨ Key Improvements</h2>
+<ol type="1">
+<li><strong>No More HTML Downloads</strong>
+<ul>
+<li>All content beautifully formatted in-page</li>
+<li>Professional typography</li>
+<li>Responsive design</li>
+<li>Print-friendly</li>
+</ul></li>
+<li><strong>Shareable URLs</strong>
+<ul>
+<li>Send clients: beaconwellbeing.com.au/about</li>
+<li>No attachments needed</li>
+<li>Always up-to-date</li>
+<li>Mobile-friendly</li>
+</ul></li>
+<li><strong>One-Page Overview</strong>
+<ul>
+<li>Executive summary</li>
+<li>All key points</li>
+<li>Downloadable PDF</li>
+<li>Print-optimized</li>
+</ul></li>
+<li><strong>Secure Admin Area</strong>
+<ul>
+<li>Password protected</li>
+<li>Email templates</li>
+<li>Internal documents</li>
+<li>Sales materials</li>
+</ul></li>
+</ol>
+<h2 id="implementation-steps">📋 Implementation Steps</h2>
+<p>COMPLETED: - ✅ Created PublicHeader component - ✅ Created /about
+page with legal compliance</p>
+<p>TODO: - [ ] Create /features page - [ ] Create /pricing page - [ ]
+Create /one-pager page (downloadable overview) - [ ] Update home page
+with better design - [ ] Create /admin/login page - [ ] Create
+/admin/materials page - [ ] Move email templates to admin section - [ ]
+Remove /presentation page (replaced by public pages) - [ ] Update all
+navigation links</p>
+<h2 id="design-system">🎨 Design System</h2>
+<p>Colors: Beacon palette - Teal (#64afac) - Navy (#2B4162) - Slate
+(#5d89a9) - Coral (#ea9999)</p>
+<p>Typography: Inter font Icons: Material Symbols (weight 100) Layout:
+Max-width 6xl, consistent spacing</p>
+<h2 id="usage-scenarios">📧 Usage Scenarios</h2>
+<h3 id="scenario-1-quick-overview">Scenario 1: Quick Overview</h3>
+<ul>
+<li>Share: /one-pager</li>
+<li>They see everything in one page</li>
+<li>Download PDF button</li>
+<li>Print-friendly</li>
+</ul>
+<h3 id="scenario-2-full-details">Scenario 2: Full Details</h3>
+<ul>
+<li>Share: /about</li>
+<li>Professional formatting</li>
+<li>All information visible</li>
+<li>No downloads needed</li>
+</ul>
+<h3 id="scenario-3-pricing-discussion">Scenario 3: Pricing
+Discussion</h3>
+<ul>
+<li>Share: /pricing</li>
+<li>Interactive pricing calculator</li>
+<li>Compare plans</li>
+<li>ROI estimates</li>
+</ul>
+<h3 id="scenario-4-demo">Scenario 4: Demo</h3>
+<ul>
+<li>Share: /dashboard</li>
+<li>Live working dashboard</li>
+<li>Real-time data</li>
+<li>Interactive filters</li>
+</ul>
+<h3 id="scenario-5-internal-use">Scenario 5: Internal Use</h3>
+<ul>
+<li>Login: /admin/login</li>
+<li>Access email templates</li>
+<li>Sales scripts</li>
+<li>Implementation guides</li>
+</ul>
+<h2 id="migration-path">🔄 Migration Path</h2>
+<ol type="1">
+<li>Keep existing /dashboard (it works great)</li>
+<li>Replace /presentation with public pages</li>
+<li>Move internal docs to /admin/materials</li>
+<li>Update all links</li>
+<li>Test everything</li>
+<li>Deploy</li>
+</ol>
+<h2 id="benefits">📊 Benefits</h2>
+<p>✅ Professional appearance ✅ Easy to share ✅ No file management ✅
+Always up-to-date ✅ Mobile friendly ✅ SEO optimized ✅ Secure admin
+area ✅ Print-friendly ✅ Fast loading</p>
+<h2 id="next-steps">🚀 Next Steps</h2>
+<p>Starting implementation now…</p>
+</body>
+</html>

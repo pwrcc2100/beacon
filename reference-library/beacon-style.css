@@ -1,0 +1,322 @@
+/* Beacon Effect Reference Library Styles */
+
+:root {
+    --beacon-teal: #64afac;
+    --beacon-slate: #5d89a9;
+    --beacon-coral: #ea9999;
+    --beacon-navy: #2B4162;
+    --beacon-text: #2E2E38;
+    --beacon-muted: #737A8C;
+    --beacon-bg-good: #f4f4ee;
+    --beacon-bg-okay: #eeefec;
+    --beacon-bg-attn: #f6f2ef;
+}
+
+@page {
+    size: A4;
+    margin: 2cm;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: var(--beacon-text);
+    background: white;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Cover Page */
+.cover-page {
+    background: linear-gradient(135deg, var(--beacon-navy) 0%, var(--beacon-slate) 50%, var(--beacon-teal) 100%);
+    color: white;
+    padding: 100px 60px;
+    text-align: center;
+    border-radius: 15px;
+    margin-bottom: 40px;
+    page-break-after: always;
+}
+
+.cover-page h1 {
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.cover-page .subtitle {
+    font-size: 1.5rem;
+    opacity: 0.9;
+    margin-bottom: 40px;
+}
+
+.cover-page .meta {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+/* Section Headers */
+.section-header {
+    background: linear-gradient(135deg, var(--beacon-navy), var(--beacon-slate));
+    color: white;
+    padding: 40px;
+    border-radius: 10px;
+    margin: 60px 0 40px 0;
+    page-break-before: always;
+}
+
+.section-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.section-header .description {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Document Headers */
+.document-header {
+    background: var(--beacon-bg-good);
+    border-left: 5px solid var(--beacon-teal);
+    padding: 20px 30px;
+    margin: 40px 0 30px 0;
+    border-radius: 5px;
+    page-break-before: always;
+}
+
+.document-header h2 {
+    color: var(--beacon-navy);
+    font-size: 2rem;
+    margin: 0 0 10px 0;
+}
+
+.document-header .doc-meta {
+    color: var(--beacon-muted);
+    font-size: 0.9rem;
+}
+
+/* Content Styling */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--beacon-navy);
+    font-weight: 600;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+h1 { font-size: 2.5rem; border-bottom: 3px solid var(--beacon-teal); padding-bottom: 10px; }
+h2 { font-size: 2rem; border-bottom: 2px solid var(--beacon-slate); padding-bottom: 8px; }
+h3 { font-size: 1.5rem; color: var(--beacon-slate); }
+h4 { font-size: 1.25rem; }
+
+/* Links */
+a {
+    color: var(--beacon-teal);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+}
+
+a:hover {
+    border-bottom-color: var(--beacon-teal);
+}
+
+/* Lists */
+ul, ol {
+    padding-left: 30px;
+    margin: 15px 0;
+}
+
+li {
+    margin: 8px 0;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+th {
+    background: var(--beacon-navy);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+tr:hover {
+    background: var(--beacon-bg-good);
+}
+
+/* Code Blocks */
+code {
+    background: var(--beacon-bg-okay);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 0.9em;
+    color: var(--beacon-navy);
+}
+
+pre {
+    background: var(--beacon-bg-okay);
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid var(--beacon-slate);
+    overflow-x: auto;
+    margin: 20px 0;
+}
+
+pre code {
+    background: none;
+    padding: 0;
+}
+
+/* Blockquotes */
+blockquote {
+    border-left: 4px solid var(--beacon-teal);
+    padding: 15px 25px;
+    margin: 20px 0;
+    background: var(--beacon-bg-good);
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: var(--beacon-text);
+}
+
+/* Alerts/Callouts */
+.alert {
+    padding: 20px 25px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border-left: 5px solid;
+}
+
+.alert-info {
+    background: #e0f2fe;
+    border-color: var(--beacon-slate);
+    color: #0c4a6e;
+}
+
+.alert-warning {
+    background: #fef3c7;
+    border-color: #f59e0b;
+    color: #78350f;
+}
+
+.alert-danger {
+    background: #fee2e2;
+    border-color: var(--beacon-coral);
+    color: #7f1d1d;
+}
+
+.alert-success {
+    background: #d1fae5;
+    border-color: var(--beacon-teal);
+    color: #064e3b;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0 5px 5px 0;
+}
+
+.badge-client {
+    background: var(--beacon-teal);
+    color: white;
+}
+
+.badge-internal {
+    background: var(--beacon-coral);
+    color: white;
+}
+
+.badge-reference {
+    background: var(--beacon-slate);
+    color: white;
+}
+
+/* Table of Contents */
+#TOC {
+    background: var(--beacon-bg-good);
+    padding: 30px;
+    border-radius: 10px;
+    border: 2px solid var(--beacon-teal);
+    margin: 40px 0;
+    page-break-after: always;
+}
+
+#TOC h1 {
+    color: var(--beacon-navy);
+    border: none;
+    margin-top: 0;
+}
+
+#TOC ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+#TOC li {
+    margin: 10px 0;
+}
+
+#TOC a {
+    color: var(--beacon-slate);
+    font-weight: 500;
+}
+
+/* Print Styles */
+@media print {
+    body {
+        max-width: 100%;
+        padding: 0;
+    }
+    
+    .cover-page, .section-header, .document-header {
+        page-break-after: always;
+    }
+    
+    h1, h2, h3 {
+        page-break-after: avoid;
+    }
+    
+    table, figure, img {
+        page-break-inside: avoid;
+    }
+    
+    a {
+        color: var(--beacon-teal);
+        text-decoration: none;
+    }
+    
+    /* Show URLs for external links */
+    a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: var(--beacon-muted);
+    }
+}
+
+/* Footer */
+.page-footer {
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 2px solid var(--beacon-teal);
+    text-align: center;
+    color: var(--beacon-muted);
+    font-size: 0.9rem;
+}

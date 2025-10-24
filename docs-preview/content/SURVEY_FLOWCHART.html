@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>SURVEY_FLOWCHART</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">SURVEY_FLOWCHART</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#beacon-survey-flow---visual-diagram"
+id="toc-beacon-survey-flow---visual-diagram">Beacon Survey Flow - Visual
+Diagram</a>
+<ul>
+<li><a href="#survey-journey-flowchart"
+id="toc-survey-journey-flowchart">Survey Journey Flowchart</a></li>
+<li><a href="#parallel-backend-workflow"
+id="toc-parallel-backend-workflow">Parallel Backend Workflow</a>
+<ul>
+<li><a href="#when-support-is-requested"
+id="toc-when-support-is-requested">When Support is Requested:</a></li>
+</ul></li>
+<li><a href="#what-leadership-sees-dashboard"
+id="toc-what-leadership-sees-dashboard">What Leadership Sees
+(Dashboard):</a></li>
+<li><a href="#mobile-experience" id="toc-mobile-experience">Mobile
+Experience</a></li>
+<li><a href="#key-features-summary" id="toc-key-features-summary">Key
+Features Summary</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="beacon-survey-flow---visual-diagram">Beacon Survey Flow - Visual
+Diagram</h1>
+<h2 id="survey-journey-flowchart">Survey Journey Flowchart</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                    📱 EMPLOYEE RECEIVES SMS/EMAIL                │
+│                  &quot;Your weekly wellbeing check-in&quot;                │
+│                     [Click to start - 2 mins]                    │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                   🔒 CONFIDENTIALITY NOTICE                      │
+│  &quot;Your responses are confidential. Only aggregated data shared   │
+│   with leadership. This measures the system, not you.&quot;          │
+│                                                                   │
+│                    [Continue to Survey]                          │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    📊 5 CORE QUESTIONS                           │
+│                  (Progress: 1/5, 2/5, 3/5...)                   │
+│                                                                   │
+│  Q1: How are you feeling overall?                               │
+│      ✅ Good │ 😐 Okay │ ❌ Struggling                          │
+│                                                                   │
+│  Q2: How&#39;s your workload?                                        │
+│      ✅ Manageable │ 😐 Busy │ ❌ Unsustainable                 │
+│                                                                   │
+│  Q3: Do you feel safe speaking up?                              │
+│      ✅ Comfortable │ 😐 Sometimes hesitate │ ❌ Don&#39;t feel safe│
+│                                                                   │
+│  Q4: Do you feel supported by leadership?                       │
+│      ✅ Supported │ 😐 Somewhat │ ❌ Not supported              │
+│                                                                   │
+│  Q5: Are you clear on what&#39;s expected?                          │
+│      ✅ Clear │ 😐 Mostly clear │ ❌ Unclear                    │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+              ┌───────┴────────┐
+              │  Risk Check    │
+              │  Any ❌ answers?│
+              └───┬────────┬───┘
+                  │        │
+           YES ❌ │        │ NO ✅
+                  │        │
+                  ▼        └────────────────────┐
+┌─────────────────────────────────────┐         │
+│    🤝 SUPPORT REQUEST SCREEN         │         │
+│                                      │         │
+│ &quot;Would you like someone to reach out?&quot;│        │
+│                                      │         │
+│  ✅ Yes, I&#39;d like to be contacted   │         │
+│  ❌ No thanks, I&#39;m managing          │         │
+│  ℹ️ Tell me more about support      │         │
+└────┬──────────────┬──────────────┬──┘         │
+     │              │              │            │
+  YES│           NO │              │INFO        │
+     │              │              │            │
+     ▼              └──────────────┼────────────┤
+┌──────────────────────────┐       │            │
+│  📋 SUPPORT OPTIONS       │       │            │
+│                          │       │            │
+│ Who to contact:          │       │            │
+│ ☐ HR Team                │       │            │
+│ ☐ WHS Leader             │       │            │
+│ ☐ My Manager             │       │            │
+│ ☐ EAP                    │       │            │
+│ ☐ Other                  │       │            │
+│                          │       │            │
+│ Contact method:          │       │            │
+│ ○ Work email             │       │            │
+│ ○ Personal email: ___    │       │            │
+│ ○ Phone: ___             │       │            │
+│ ○ Anonymous meeting      │       │            │
+│                          │       │            │
+│ Timeframe:               │       │            │
+│ ○ Within 24 hours        │       │            │
+│ ○ Within this week       │       │            │
+│ ○ When convenient        │       │            │
+│                          │       │            │
+│      [Continue]          │       │            │
+└────────┬─────────────────┘       │            │
+         │                         │            │
+         └─────────────────────────┼────────────┘
+                                   │
+                                   ▼
+         ┌─────────────────────────────────────────┐
+         │      💬 OPTIONAL COMMENTS                │
+         │                                          │
+         │  &quot;Anything else you&#39;d like to share?&quot;   │
+         │  [Text area - 500 chars, confidential]  │
+         │                                          │
+         │           [Continue]                     │
+         └────────┬────────────────────────────────┘
+                  │
+                  ▼
+          ┌───────┴────────┐
+          │  Risk Check    │
+          │  Any ❌ answers?│
+          └───┬────────┬───┘
+              │        │
+       YES ❌ │        │ NO ✅
+              │        │
+              ▼        └────────────────────┐
+┌─────────────────────────────────┐         │
+│   🆘 CRISIS RESOURCES            │         │
+│                                  │         │
+│ &quot;You&#39;re not alone. Immediate    │         │
+│  support available:&quot;             │         │
+│                                  │         │
+│ [📞 Lifeline - 13 11 14]        │         │
+│ [🌐 Beyond Blue - 1300 22 4636] │         │
+│ [💼 SafeWork Australia]          │         │
+│ [🏥 EAP - Your Provider]        │         │
+│ [📧 HR Support]                  │         │
+│                                  │         │
+│       [Finish Survey]            │         │
+└────────┬────────────────────────┘         │
+         │                                   │
+         └───────────────┬───────────────────┘
+                         │
+                         ▼
+         ┌───────────────────────────────────────┐
+         │       ✅ THANK YOU                     │
+         │                                        │
+         │  &quot;Your feedback helps build a safer,  │
+         │   more supportive workplace.&quot;         │
+         │                                        │
+         │  What happens next:                   │
+         │  • Responses confidential             │
+         │  • Leadership sees trends only        │
+         │  • Support contact within timeframe   │
+         │  • Next check-in in 1 week           │
+         │                                        │
+         │  Need help now?                       │
+         │  HR: hr@company.com | Ext 1234       │
+         └───────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="parallel-backend-workflow">Parallel Backend Workflow</h2>
+<h3 id="when-support-is-requested">When Support is Requested:</h3>
+<pre><code>Employee Submits Support Request
+         │
+         ▼
+┌──────────────────────────────────┐
+│  Notification Sent Immediately   │
+│  To: Selected contact person(s)  │
+│  Contains:                        │
+│  • Request timestamp             │
+│  • Preferred contact method      │
+│  • Timeframe preference          │
+│  • (NOT full survey responses)   │
+└─────────┬────────────────────────┘
+          │
+          ▼
+┌──────────────────────────────────┐
+│  Dashboard Alert                 │
+│  &quot;1 new support request&quot;         │
+│  Status: PENDING                 │
+└─────────┬────────────────────────┘
+          │
+          ▼
+┌──────────────────────────────────┐
+│  Contact Person Reaches Out      │
+│  Within requested timeframe      │
+└─────────┬────────────────────────┘
+          │
+          ▼
+┌──────────────────────────────────┐
+│  Status Updated: CONTACTED       │
+│  Track: Date/time of contact     │
+└─────────┬────────────────────────┘
+          │
+          ▼
+┌──────────────────────────────────┐
+│  Support Provided                │
+│  Status: RESOLVED                │
+│  Notes: (confidential)           │
+└──────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="what-leadership-sees-dashboard">What Leadership Sees
+(Dashboard):</h2>
+<pre><code>┌──────────────────────────────────────────────────────┐
+│  EXECUTIVE WELLBEING DASHBOARD                       │
+├──────────────────────────────────────────────────────┤
+│                                                      │
+│  Overall Wellbeing: 68/100 (↓ 3 from last week)    │
+│                                                      │
+│  [Status Cards: OK/Mixed/No for each dimension]    │
+│                                                      │
+│  Teams Needing Attention:                           │
+│  [Bar Chart: Engineering 45, Marketing 57, HR 78]  │
+│                                                      │
+│  Support Requests This Week: 3                      │
+│  • 1 pending (&lt; 24hrs)                              │
+│  • 2 contacted                                      │
+│                                                      │
+│  Alert: Workload scores dropping in Engineering     │
+│  Action: Consider resource redistribution           │
+│                                                      │
+└──────────────────────────────────────────────────────┘</code></pre>
+<p><strong>Leadership CANNOT see:</strong> - Who submitted which
+responses - Individual survey answers - Comments from specific people -
+Who requested support (unless in HR/WHS role with access)</p>
+<hr />
+<h2 id="mobile-experience">Mobile Experience</h2>
+<pre><code>┌─────────────────┐
+│  iPhone/Android │
+│                 │
+│  ┌───────────┐  │
+│  │ Beacon    │  │  ← Full width, scrollable
+│  │           │  │
+│  │ 🔒 Conf.  │  │  ← Large touch targets
+│  │ Notice    │  │
+│  │           │  │
+│  │ [Continue]│  │  ← Big button
+│  │           │  │
+│  └───────────┘  │
+│                 │
+│  ━━━━━━━━━━━━━  │  ← Progress bar
+│                 │
+│  Question 1/5   │  ← Clear progress
+│                 │
+│  How are you    │
+│  feeling?       │
+│                 │
+│  ┌───────────┐  │
+│  │😊 Good    │  │  ← Tap option
+│  └───────────┘  │     auto-advances
+│  ┌───────────┐  │
+│  │😐 Okay    │  │
+│  └───────────┘  │
+│  ┌───────────┐  │
+│  │😟Struggle │  │
+│  └───────────┘  │
+│                 │
+└─────────────────┘
+
+✓ No zoom needed
+✓ No sideways scrolling
+✓ Fast loading
+✓ Works offline</code></pre>
+<hr />
+<h2 id="key-features-summary">Key Features Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Benefit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2-minute completion</strong></td>
+<td>High response rates (80%+ typical)</td>
+</tr>
+<tr>
+<td><strong>Conditional logic</strong></td>
+<td>Support only offered when needed</td>
+</tr>
+<tr>
+<td><strong>Mobile-optimised</strong></td>
+<td>Works on any smartphone</td>
+</tr>
+<tr>
+<td><strong>Privacy-first</strong></td>
+<td>Employees trust it, share honestly</td>
+</tr>
+<tr>
+<td><strong>Immediate resources</strong></td>
+<td>Crisis support links always available</td>
+</tr>
+<tr>
+<td><strong>Employee-controlled</strong></td>
+<td>They choose if/how to get help</td>
+</tr>
+<tr>
+<td><strong>Action-oriented</strong></td>
+<td>Not just measurement, built-in pathways</td>
+</tr>
+<tr>
+<td><strong>Predictive</strong></td>
+<td>See problems weeks before they escalate</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>For a live demo:</strong> Visit <code>/survey-preview</code>
+in the Beacon dashboard</p>
+</body>
+</html>
