@@ -10,7 +10,7 @@ interface DesktopSurveyProps {
 }
 
 export function DesktopSurvey({ onSubmit, isSubmitting, onSupportRequest }: DesktopSurveyProps) {
-  const [responses, setResponses] = useState<Record<string, number>>({});
+  const [responses, setResponses] = useState<Record<string, 1 | 2 | 3>>({});
   const [supportRequested, setSupportRequested] = useState(false);
 
   const handleSupportRequest = (data: any) => {
