@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Demo responses stored in memory (resets on each deployment)
-let demoResponses: any[] = [];
+// For demo purposes, we'll use a simple approach that works across deployments
+// In a real implementation, this would use a database
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     // Generate a unique employee ID for this demo session
     const demoEmployeeId = `demo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
-    // Store the survey response in memory
+    // Store the survey response
     const response = {
       id: demoEmployeeId,
       employee_id: demoEmployeeId,
@@ -34,11 +34,11 @@ export async function POST(req: NextRequest) {
       created_at: new Date().toISOString()
     };
 
-    demoResponses.push(response);
-
+    // Return success - the client will handle storage
     return NextResponse.json({ 
       success: true, 
       employeeId: demoEmployeeId,
+      response: response,
       message: 'Demo response recorded successfully!' 
     });
 
@@ -50,10 +50,12 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   try {
+    // Return empty array - client will handle storage
     return NextResponse.json({ 
       success: true,
-      responses: demoResponses || [],
-      count: demoResponses?.length || 0
+      responses: [],
+      count: 0,
+      message: 'Demo responses are stored locally in your browser'
     });
 
   } catch (error) {
