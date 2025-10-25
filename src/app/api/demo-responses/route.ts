@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Simple in-memory storage for demo (resets on server restart)
-// In production, this would use a proper database
+// Simple in-memory storage for demo
+// Note: This resets on server restart, but works for demo purposes
 let demoResponses: any[] = [];
 
 export async function POST(req: NextRequest) {
@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     // Generate a unique employee ID for this demo session
     const demoEmployeeId = `demo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
-    // Store the survey response
+    // Create the response object
     const response = {
       id: demoEmployeeId,
       employee_id: demoEmployeeId,
