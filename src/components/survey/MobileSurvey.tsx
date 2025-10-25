@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { MaterialIcon } from '@/components/ui/MaterialIcon';
 
 interface MobileSurveyProps {
-  onSubmit: (responses: Record<string, number>) => void;
+  onSubmit: (responses: Record<string, 1 | 2 | 3>) => void;
   isSubmitting: boolean;
 }
 
