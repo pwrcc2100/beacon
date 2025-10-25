@@ -57,7 +57,7 @@ const questions = [
 
 export function MobileSurvey({ onSubmit, isSubmitting }: MobileSurveyProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [responses, setResponses] = useState<Record<string, number>>({});
+  const [responses, setResponses] = useState<Record<string, 1 | 2 | 3>>({});
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const question = questions[currentQuestion];
