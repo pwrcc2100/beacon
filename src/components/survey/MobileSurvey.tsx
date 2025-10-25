@@ -62,7 +62,7 @@ export function MobileSurvey({ onSubmit, isSubmitting }: MobileSurveyProps) {
   const progress = ((currentQuestion + 1) / questions.length) * 100;
   const question = questions[currentQuestion];
 
-  const handleOptionSelect = (value: number) => {
+  const handleOptionSelect = (value: 1 | 2 | 3) => {
     const newResponses = { ...responses, [question.id]: value };
     setResponses(newResponses);
 
