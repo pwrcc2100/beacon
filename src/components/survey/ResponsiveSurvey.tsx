@@ -5,7 +5,7 @@ import { DesktopSurvey } from './DesktopSurvey';
 import { map3to5 } from '@/lib/scoring';
 
 interface ResponsiveSurveyProps {
-  onSubmit: (responses: Record<string, number>) => void;
+  onSubmit: (responses: any) => void;
   isSubmitting: boolean;
   onSupportRequest: (data: any) => void;
 }
