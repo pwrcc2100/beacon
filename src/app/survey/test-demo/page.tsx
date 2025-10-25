@@ -1,17 +1,12 @@
 'use client';
 import { useState } from 'react';
-import { Question } from '@/components/survey/Question';
-import { SupportRequest } from '@/components/survey/SupportRequest';
-import { map3to5 } from '@/lib/scoring';
+import { ResponsiveSurvey } from '@/components/survey/ResponsiveSurvey';
 
 export default function DemoSurveyPage() {
-  const [v, setV] = useState<
-    Partial<Record<'sentiment' | 'clarity' | 'workload' | 'safety' | 'leadership', 1 | 2 | 3>>
-  >({});
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [supportRequested, setSupportRequested] = useState(false);
+  const [responses, setResponses] = useState<any>(null);
 
   const handleSupportRequest = (data: any) => {
     console.log('Support request:', data);
@@ -19,38 +14,15 @@ export default function DemoSurveyPage() {
     // In a real implementation, this would be sent to your support system
   };
 
-  const submit = async () => {
-    if (!v.sentiment || !v.clarity || !v.workload || !v.safety || !v.leadership) {
-      alert('Please answer all questions');
-      return;
-    }
-
+  const handleSubmit = async (surveyResponses: any) => {
     setIsSubmitting(true);
+    setResponses(surveyResponses);
     
     try {
-      const body = {
-        sentiment_3: v.sentiment,
-        sentiment_5: map3to5(v.sentiment),
-        clarity_3: v.clarity,
-        clarity_5: map3to5(v.clarity),
-        workload_3: v.workload,
-        workload_5: map3to5(v.workload),
-        safety_3: v.safety,
-        safety_5: map3to5(v.safety),
-        leadership_3: v.leadership,
-        leadership_5: map3to5(v.leadership),
-        meta: { 
-          ui_version: 'v3.0', 
-          channel: 'web',
-          demo_session: true,
-          timestamp: new Date().toISOString()
-        }
-      };
-
       const response = await fetch('/api/demo-responses', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify(surveyResponses)
       });
 
       if (!response.ok) {
@@ -91,25 +63,21 @@ export default function DemoSurveyPage() {
                 </div>
               </div>
             )}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <h3 className="font-semibold text-blue-900 mb-2">Demo Summary:</h3>
-              <div className="text-sm text-blue-800 space-y-1">
-                <div>Sentiment: {v.sentiment === 1 ? 'Low' : v.sentiment === 2 ? 'Medium' : 'High'}</div>
-                <div>Clarity: {v.clarity === 1 ? 'Low' : v.clarity === 2 ? 'Medium' : 'High'}</div>
-                <div>Workload: {v.workload === 1 ? 'Low' : v.workload === 2 ? 'Medium' : 'High'}</div>
-                <div>Safety: {v.safety === 1 ? 'Low' : v.safety === 2 ? 'Medium' : 'High'}</div>
-                <div>Leadership: {v.leadership === 1 ? 'Low' : v.leadership === 2 ? 'Medium' : 'High'}</div>
+            {responses && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <h3 className="font-semibold text-blue-900 mb-2">Demo Summary:</h3>
+                <div className="text-sm text-blue-800 space-y-1">
+                  <div>Sentiment: {responses.sentiment_3 === 1 ? 'Good' : responses.sentiment_3 === 2 ? 'Okay' : 'Not great'}</div>
+                  <div>Clarity: {responses.clarity_3 === 1 ? 'Clear' : responses.clarity_3 === 2 ? 'Mostly clear' : 'Unclear'}</div>
+                  <div>Workload: {responses.workload_3 === 1 ? 'Manageable' : responses.workload_3 === 2 ? 'Busy but okay' : 'Unsustainable'}</div>
+                  <div>Safety: {responses.safety_3 === 1 ? 'Comfortable' : responses.safety_3 === 2 ? 'Sometimes hesitate' : 'Don\'t feel safe'}</div>
+                  <div>Leadership: {responses.leadership_3 === 1 ? 'Supported' : responses.leadership_3 === 2 ? 'Somewhat supported' : 'Not supported'}</div>
+                </div>
               </div>
-            </div>
-            <button
-              onClick={() => {
-                setV({});
-                setSubmitted(false);
-              }}
-              className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
-            >
-              Try Again
-            </button>
+            )}
+            <p className="text-sm text-gray-500">
+              You can now view your response on the <a href="/demo-dashboard" className="text-blue-600 hover:underline">Demo Dashboard</a>.
+            </p>
           </div>
         </div>
       </div>
@@ -117,73 +85,10 @@ export default function DemoSurveyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-xl mx-auto px-4 space-y-6 pb-24">
-        <div className="text-center mb-8">
-          <div className="bg-blue-100 border border-blue-200 rounded-lg p-4 mb-4">
-            <h1 className="text-lg font-bold text-blue-900 mb-2">
-              📱 Demo Survey
-            </h1>
-            <p className="text-sm text-blue-800">
-              This is how employees experience the Beacon survey on their mobile device.
-              Takes 2 minutes, completely confidential.
-            </p>
-          </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
-            Team Wellbeing Survey
-          </h2>
-          <p className="text-gray-600">
-            Your feedback helps us create a better workplace
-          </p>
-        </div>
-
-        <Question
-          id="sentiment"
-          label="Sentiment / Overall"
-          value={v.sentiment}
-          onChange={(x) => setV((s) => ({ ...s, sentiment: x }))}
-        />
-        <Question
-          id="clarity"
-          label="Clarity / Direction"
-          value={v.clarity}
-          onChange={(x) => setV((s) => ({ ...s, clarity: x }))}
-        />
-        <Question
-          id="workload"
-          label="Workload / Capacity"
-          value={v.workload}
-          onChange={(x) => setV((s) => ({ ...s, workload: x }))}
-        />
-        <Question
-          id="safety"
-          label="Safety / Voice"
-          value={v.safety}
-          onChange={(x) => setV((s) => ({ ...s, safety: x }))}
-        />
-        <Question
-          id="leadership"
-          label="Leadership Support"
-          value={v.leadership}
-          onChange={(x) => setV((s) => ({ ...s, leadership: x }))}
-        />
-
-        {/* Support Request Workflow */}
-        <SupportRequest onRequestSupport={handleSupportRequest} />
-
-        <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white/90 backdrop-blur px-4 py-3">
-          <div className="max-w-xl mx-auto">
-            <button
-              onClick={submit}
-              disabled={isSubmitting}
-              className="w-full rounded-lg px-4 py-3 text-white font-semibold disabled:opacity-50"
-              style={{ background: '#2B4162' }}
-            >
-              {isSubmitting ? 'Submitting...' : 'Submit Survey'}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ResponsiveSurvey 
+      onSubmit={handleSubmit}
+      isSubmitting={isSubmitting}
+      onSupportRequest={handleSupportRequest}
+    />
   );
 }
