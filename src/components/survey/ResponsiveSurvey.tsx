@@ -29,7 +29,7 @@ export function ResponsiveSurvey({ onSubmit, isSubmitting, onSupportRequest }: R
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const handleSubmit = (responses: Record<string, number>) => {
+  const handleSubmit = (responses: Record<string, 1 | 2 | 3>) => {
     // Convert 3-point scale to 5-point scale for API
     const formattedResponses = {
       sentiment_3: responses.sentiment,
