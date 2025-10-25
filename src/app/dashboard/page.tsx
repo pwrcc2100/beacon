@@ -23,6 +23,7 @@ import { TeamStatus } from '@/components/dashboard/TeamStatus';
 import { QuoteBanner } from '@/components/dashboard/QuoteBanner';
 import { OrganisationFilter } from '@/components/dashboard/OrganisationFilter';
 import { TeamsAttentionChartWrapper } from '@/components/dashboard/TeamsAttentionChartWrapper';
+import DemoDashboardClient from './DemoDashboardClient';
 
 type WellbeingRow = {
   wk: string;
@@ -590,6 +591,11 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
 
         {/* Top Quote Banner */}
         <QuoteBanner position="top" />
+
+        {/* Demo Dashboard - Show when no real data */}
+        {recent.length === 0 && (
+          <DemoDashboardClient />
+        )}
 
         {/* Status Cards */}
         <StatusCards 
