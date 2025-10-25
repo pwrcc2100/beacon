@@ -17,22 +17,21 @@ export default function DemoDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadDemoResponses();
+    fetchDemoResponses();
     // Refresh every 5 seconds to show new responses
-    const interval = setInterval(loadDemoResponses, 5000);
+    const interval = setInterval(fetchDemoResponses, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const loadDemoResponses = () => {
+  const fetchDemoResponses = async () => {
     try {
-      // Load responses from localStorage
-      const storedResponses = localStorage.getItem('beacon-demo-responses');
-      if (storedResponses) {
-        const responses = JSON.parse(storedResponses);
-        setResponses(responses);
+      const response = await fetch('/api/demo-responses');
+      if (response.ok) {
+        const data = await response.json();
+        setResponses(data.responses || []);
       }
     } catch (error) {
-      console.error('Error loading demo responses:', error);
+      console.error('Error fetching demo responses:', error);
     } finally {
       setLoading(false);
     }
@@ -178,10 +177,10 @@ export default function DemoDashboard() {
               <span>Show real-time dashboard updates to demonstrate the platform</span>
             </div>
           </div>
-          <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800">
-              <strong>Note:</strong> This demo stores responses in your browser's local storage. 
-              Responses will only appear on the same device/browser where the survey was completed.
+          <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <p className="text-sm text-green-800">
+              <strong>✅ Cross-Device Demo:</strong> Responses from any device will appear here! 
+              Complete the survey on your phone and refresh this page to see your response.
             </p>
           </div>
         </div>

@@ -60,17 +60,6 @@ export default function DemoSurveyPage() {
       const result = await response.json();
       console.log('Demo response submitted:', result);
       
-      // Store the response in localStorage for the demo dashboard
-      if (result.response) {
-        try {
-          const existingResponses = JSON.parse(localStorage.getItem('beacon-demo-responses') || '[]');
-          existingResponses.push(result.response);
-          localStorage.setItem('beacon-demo-responses', JSON.stringify(existingResponses));
-        } catch (error) {
-          console.error('Error storing demo response:', error);
-        }
-      }
-      
       setSubmitted(true);
     } catch (error) {
       console.error('Submission error:', error);

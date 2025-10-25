@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// For demo purposes, we'll use a simple approach that works across deployments
-// In a real implementation, this would use a database
+// Simple in-memory storage for demo (resets on server restart)
+// In production, this would use a proper database
+let demoResponses: any[] = [];
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,7 +35,9 @@ export async function POST(req: NextRequest) {
       created_at: new Date().toISOString()
     };
 
-    // Return success - the client will handle storage
+    // Store in memory
+    demoResponses.push(response);
+
     return NextResponse.json({ 
       success: true, 
       employeeId: demoEmployeeId,
@@ -50,12 +53,10 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   try {
-    // Return empty array - client will handle storage
     return NextResponse.json({ 
       success: true,
-      responses: [],
-      count: 0,
-      message: 'Demo responses are stored locally in your browser'
+      responses: demoResponses || [],
+      count: demoResponses?.length || 0
     });
 
   } catch (error) {
