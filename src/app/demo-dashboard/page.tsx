@@ -25,10 +25,15 @@ export default function DemoDashboard() {
 
   const fetchDemoResponses = async () => {
     try {
+      console.log('Fetching demo responses...');
       const response = await fetch('/api/demo-responses');
+      console.log('Response status:', response.status);
       if (response.ok) {
         const data = await response.json();
+        console.log('Response data:', data);
         setResponses(data.responses || []);
+      } else {
+        console.error('Response not ok:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Error fetching demo responses:', error);
@@ -73,6 +78,12 @@ export default function DemoDashboard() {
             <div className="text-right">
               <div className="text-2xl font-bold text-blue-600">{responses.length}</div>
               <div className="text-sm text-gray-600">Total Responses</div>
+              <button 
+                onClick={fetchDemoResponses}
+                className="mt-2 px-3 py-1 text-xs bg-blue-100 text-blue-600 rounded hover:bg-blue-200"
+              >
+                Refresh
+              </button>
             </div>
           </div>
 
