@@ -84,7 +84,10 @@ export default function DemoDashboard() {
             <div className="text-center py-8">
               <div className="text-gray-600 mb-4">No demo responses yet</div>
               <div className="text-sm text-gray-500">
-                Have people complete the survey at: https://beacon-demo-2024.loca.lt/survey/test-demo
+                Have people complete the survey at: <br/>
+                <code className="bg-gray-100 px-2 py-1 rounded text-blue-600">
+                  {typeof window !== 'undefined' ? window.location.origin : ''}/survey/test-demo
+                </code>
               </div>
             </div>
           ) : (
@@ -159,22 +162,18 @@ export default function DemoDashboard() {
           <div className="space-y-3 text-sm text-gray-700">
             <div className="flex items-start gap-2">
               <span className="text-blue-600 font-bold">1.</span>
-              <span>Share this URL with demo participants: <code className="bg-gray-100 px-2 py-1 rounded">https://beacon-demo-2024.loca.lt/survey/test-demo</code></span>
+              <span>Share this URL with demo participants: <code className="bg-gray-100 px-2 py-1 rounded">{typeof window !== 'undefined' ? window.location.origin : ''}/survey/test-demo</code></span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-blue-600 font-bold">2.</span>
-              <span>They'll need the tunnel password: <code className="bg-gray-100 px-2 py-1 rounded">119.18.1.233</code></span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-blue-600 font-bold">3.</span>
               <span>Each person completes the 2-minute survey</span>
             </div>
             <div className="flex items-start gap-2">
-              <span className="text-blue-600 font-bold">4.</span>
+              <span className="text-blue-600 font-bold">3.</span>
               <span>Their responses appear here automatically (refreshes every 5 seconds)</span>
             </div>
             <div className="flex items-start gap-2">
-              <span className="text-blue-600 font-bold">5.</span>
+              <span className="text-blue-600 font-bold">4.</span>
               <span>Show real-time dashboard updates to demonstrate the platform</span>
             </div>
           </div>
