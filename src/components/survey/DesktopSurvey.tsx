@@ -4,7 +4,7 @@ import { Question } from './Question';
 import { SupportRequest } from './SupportRequest';
 
 interface DesktopSurveyProps {
-  onSubmit: (responses: Record<string, number>) => void;
+  onSubmit: (responses: Record<string, 1 | 2 | 3>) => void;
   isSubmitting: boolean;
   onSupportRequest: (data: any) => void;
 }
