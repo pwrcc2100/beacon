@@ -150,9 +150,26 @@ export default function DemoDashboardClient() {
       </div>
 
       {/* Use existing dashboard components with demo data */}
-      <StatusCards data={transformedData} />
-      <MoodDistribution data={transformedData} />
-      <TeamStatus data={transformedData} />
+      <StatusCards 
+        sentiment={data.avgSentiment}
+        workload={data.avgWorkload}
+        safety={data.avgSafety}
+        clarity={data.avgClarity}
+      />
+      <MoodDistribution 
+        responses={data.responses.map(r => ({
+          safety_5: r.safety_3 === 1 ? 5 : r.safety_3 === 2 ? 3 : 1
+        }))}
+      />
+      <TeamStatus 
+        responses={data.responses.map(r => ({
+          sentiment_5: r.sentiment_3 === 1 ? 5 : r.sentiment_3 === 2 ? 3 : 1,
+          workload_5: r.workload_3 === 1 ? 5 : r.workload_3 === 2 ? 3 : 1,
+          safety_5: r.safety_3 === 1 ? 5 : r.safety_3 === 2 ? 3 : 1,
+          leadership_5: r.leadership_3 === 1 ? 5 : r.leadership_3 === 2 ? 3 : 1,
+          clarity_5: r.clarity_3 === 1 ? 5 : r.clarity_3 === 2 ? 3 : 1
+        }))}
+      />
     </div>
   );
 }
