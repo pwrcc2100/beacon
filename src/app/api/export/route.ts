@@ -23,7 +23,7 @@ export async function GET(req: NextRequest){
   const rows = (data ?? []).map((r:any)=> headers.map(h => {
     const v = r[h];
     if(v == null) return '';
-    const s = String(v).replaceAll('"','""');
+    const s = String(v).replace(/"/g, '""');
     return s.includes(',') || s.includes('"') || s.includes('\n') ? `"${s}` + '"' : s;
   }).join(','));
   const csv = [headers.join(','), ...rows].join('\n');
