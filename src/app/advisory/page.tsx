@@ -30,7 +30,7 @@ export default function AdvisoryPage() {
               <MaterialIcon icon="workspace_premium" style={{ fontSize: '20px', marginRight: '8px' }} />
               Beacon Advisory Services
             </div>
-            <h1 className="text-5xl font-bold mb-6 text-white leading-tight">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-white leading-tight">
               Corporate Concierge for Senior Engagements & Technology Solutions
             </h1>
             <p className="text-xl text-white/90 leading-relaxed mb-8">
@@ -39,12 +39,12 @@ export default function AdvisoryPage() {
               custom application development—your trusted partner for complex business challenges.
             </p>
             <div className="flex gap-4 flex-wrap">
-              <a 
-                href="mailto:hello@beaconwellbeing.com.au?subject=Advisory Services Enquiry"
-                className="px-8 py-4 bg-white text-[#2B4162] rounded-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
-              >
-                Schedule Consultation
-              </a>
+                <a 
+                  href="mailto:hello@beaconeffect.com.au?subject=Advisory Services Enquiry"
+                  className="px-8 py-4 bg-white text-[#2B4162] rounded-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                >
+                  Schedule Consultation
+                </a>
               <a 
                 href="https://www.linkedin.com/in/peta-wilson-4769361"
                 target="_blank"
@@ -109,7 +109,7 @@ export default function AdvisoryPage() {
               <ul className="space-y-2 text-sm text-[#737A8C]">
                 <li className="flex items-start gap-2">
                   <MaterialIcon icon="check_circle" style={{ fontSize: '20px', color: '#64afac' }} />
-                  <span>Business process improvement & optimization</span>
+                  <span>Business process improvement & optimisation</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <MaterialIcon icon="check_circle" style={{ fontSize: '20px', color: '#64afac' }} />
@@ -251,7 +251,7 @@ export default function AdvisoryPage() {
             <div className="bg-white p-6 rounded-xl text-center shadow-sm">
               <MaterialIcon icon="business" style={{ fontSize: '40px', color: '#64afac', marginBottom: '12px' }} />
               <h3 className="font-bold mb-2 text-sm" style={{ color: '#2B4162' }}>Business Improvement</h3>
-              <p className="text-xs text-[#737A8C]">Process optimization, lean methodologies, continuous improvement</p>
+              <p className="text-xs text-[#737A8C]">Process optimisation, lean methodologies, continuous improvement</p>
             </div>
 
             <div className="bg-white p-6 rounded-xl text-center shadow-sm">
@@ -279,21 +279,9 @@ export default function AdvisoryPage() {
             </div>
 
             <div className="bg-white p-6 rounded-xl text-center shadow-sm">
-              <MaterialIcon icon="integration_instructions" style={{ fontSize: '40px', color: '#5d89a9', marginBottom: '12px' }} />
-              <h3 className="font-bold mb-2 text-sm" style={{ color: '#2B4162' }}>System Integration</h3>
-              <p className="text-xs text-[#737A8C]">API development, middleware, enterprise architecture</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl text-center shadow-sm">
               <MaterialIcon icon="security" style={{ fontSize: '40px', color: '#64afac', marginBottom: '12px' }} />
               <h3 className="font-bold mb-2 text-sm" style={{ color: '#2B4162' }}>Compliance & Risk</h3>
               <p className="text-xs text-[#737A8C]">Regulatory compliance, risk management, audit preparation</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl text-center shadow-sm">
-              <MaterialIcon icon="school" style={{ fontSize: '40px', color: '#5d89a9', marginBottom: '12px' }} />
-              <h3 className="font-bold mb-2 text-sm" style={{ color: '#2B4162' }}>Training & Development</h3>
-              <p className="text-xs text-[#737A8C]">Capability building, workshops, knowledge transfer</p>
             </div>
           </div>
         </div>
@@ -329,7 +317,7 @@ export default function AdvisoryPage() {
               <MaterialIcon icon="format_quote" style={{ fontSize: '40px', color: '#64afac', marginBottom: '16px' }} />
               <p className="text-[#737A8C] italic mb-4 leading-relaxed">
                 "Innovative approach to problem-solving and deep expertise in business process improvement. 
-                Instrumental in driving operational excellence across the organization."
+                Instrumental in driving operational excellence across the organisation."
               </p>
               <div className="text-sm font-bold" style={{ color: '#2B4162' }}>— Operations Director</div>
               <div className="text-xs text-[#737A8C]">Construction Industry</div>
@@ -368,9 +356,6 @@ export default function AdvisoryPage() {
             </div>
 
             <div className="bg-white p-8 rounded-xl shadow-sm border-2" style={{ borderColor: '#5d89a9' }}>
-              <div className="inline-block px-3 py-1 rounded-full text-xs font-bold text-white mb-3" style={{ backgroundColor: '#5d89a9' }}>
-                POPULAR
-              </div>
               <MaterialIcon icon="autorenew" style={{ fontSize: '48px', color: '#5d89a9', marginBottom: '16px' }} />
               <h3 className="text-xl font-bold mb-3" style={{ color: '#2B4162' }}>Retainer</h3>
               <p className="text-sm text-[#737A8C] mb-4">
@@ -409,7 +394,7 @@ export default function AdvisoryPage() {
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <a 
-              href="mailto:hello@beaconwellbeing.com.au?subject=Advisory Services Consultation"
+              href="mailto:hello@beaconeffect.com.au?subject=Advisory Services Consultation"
               className="px-8 py-4 bg-white text-[#2B4162] rounded-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
             >
               Schedule Consultation
@@ -432,11 +417,11 @@ export default function AdvisoryPage() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <MaterialIcon icon="health_and_safety" style={{ fontSize: '24px', color: '#64afac' }} />
-                <span className="text-lg font-bold text-white">Beacon</span>
+                <MaterialIcon icon="auto_awesome" style={{ fontSize: '24px', color: '#64afac' }} />
+                <span className="text-lg font-bold text-white">Beacon Effect</span>
               </div>
               <p className="text-white/70 text-sm">
-                Psychosocial wellbeing platform for modern workplaces
+                Strategic solutions for modern business
               </p>
             </div>
             <div>
@@ -460,19 +445,15 @@ export default function AdvisoryPage() {
               <div className="space-y-2 text-sm text-white/70">
                 <div className="flex items-center gap-2">
                   <MaterialIcon icon="mail" style={{ fontSize: '16px' }} />
-                  <a href="mailto:hello@beaconwellbeing.com.au" className="hover:text-white transition-colors">
-                    hello@beaconwellbeing.com.au
+                  <a href="mailto:hello@beaconeffect.com.au" className="hover:text-white transition-colors">
+                    hello@beaconeffect.com.au
                   </a>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MaterialIcon icon="phone" style={{ fontSize: '16px' }} />
-                  <span>1300 BEACON</span>
                 </div>
               </div>
             </div>
           </div>
           <div className="border-t border-white/10 mt-8 pt-8 text-center text-white/50 text-sm">
-            <p>© 2025 Beacon Wellbeing Platform. All rights reserved.</p>
+            <p>© 2025 Beacon Effect. All rights reserved.</p>
           </div>
         </div>
       </footer>

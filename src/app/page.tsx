@@ -22,7 +22,7 @@ export default function BeaconEffectPage() {
       <section className="bg-gradient-to-br from-[#2B4162] via-[#5d89a9] to-[#64afac] py-24">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-6xl font-bold mb-6 text-white leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight">
               Transform Your Business
             </h1>
             <p className="text-2xl text-white/90 mb-12 leading-relaxed">
@@ -303,10 +303,6 @@ export default function BeaconEffectPage() {
                   <a href="mailto:hello@beaconeffect.com.au" className="hover:text-white transition-colors">
                     hello@beaconeffect.com.au
                   </a>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MaterialIcon icon="phone" style={{ fontSize: '16px' }} />
-                  <span>1300 BEACON</span>
                 </div>
               </div>
             </div>

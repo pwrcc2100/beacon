@@ -47,7 +47,7 @@ Provides a consistent benchmark for tracking wellbeing over time and comparing a
 ### 2. Sentiment / Overall Mood (25% weighting)
 
 **What We Ask:**  
-"How are you feeling about work overall?"
+"How are you feeling about work this week?"
 
 **What It Reveals:**
 - Early indicator of engagement and satisfaction

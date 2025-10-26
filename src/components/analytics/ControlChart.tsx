@@ -227,3 +227,4 @@ function checkTrend(values: number[]): boolean {
 }
 
 
+

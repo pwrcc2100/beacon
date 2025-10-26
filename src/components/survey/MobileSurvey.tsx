@@ -10,7 +10,7 @@ interface MobileSurveyProps {
 const questions = [
   {
     id: 'sentiment',
-    question: 'How are you feeling overall about your work situation?',
+    question: 'How are you feeling about work this week?',
     options: [
       { value: 1 as const, label: 'Good – I\'m doing well', color: '#64afac' },
       { value: 2 as const, label: 'Okay – Getting by', color: '#5d89a9' },

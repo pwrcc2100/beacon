@@ -158,9 +158,6 @@ export default function MethodologyPage() {
                 Results represent <strong>organisational culture and practices</strong>, not personal wellbeing.
               </li>
               <li>
-                Future versions will incorporate empirically-derived weightings validated against outcomes such as engagement, turnover and safety events.
-              </li>
-              <li>
                 The Index supports compliance with <strong>ISO 45003:2021</strong> and WHS regulatory expectations for psychosocial risk management.
               </li>
             </ul>
@@ -221,7 +218,7 @@ export default function MethodologyPage() {
               </div>
             </div>
             <p className="text-xs text-amber-800 italic mt-3">
-              This model prioritizes early warning indicators while maintaining focus on systemic factors. Organizations may adjust weights based on their specific risk profile and maturity. Future versions will align with the equal-weighted Beacon Index as the evidence base grows.
+              This model prioritizes early warning indicators while maintaining focus on systemic factors. Organisations may adjust weights based on their specific risk profile and maturity.
             </p>
           </CardContent>
         </Card>

@@ -507,7 +507,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
   });
 
     const series = [
-      toSeries('sentiment_avg', '#64afac', 'Sentiment', 'How are you feeling overall?'),
+      toSeries('sentiment_avg', '#64afac', 'Sentiment', 'How are you feeling about work this week?'),
       toSeries('workload_avg',  '#ea9999', 'Workload', 'How\'s your workload?'),
       toSeries('safety_avg',    '#ea9999', 'Safety', 'Do you feel safe speaking up?'),
       toSeries('leadership_avg','#64afac', 'Leadership', 'Do you feel supported by leadership?'),

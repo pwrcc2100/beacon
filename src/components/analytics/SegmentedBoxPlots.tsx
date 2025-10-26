@@ -178,3 +178,4 @@ export function SegmentedBoxPlots({ data, divisions, departments }: Props) {
 }
 
 
+

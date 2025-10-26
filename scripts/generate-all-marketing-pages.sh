@@ -14,3 +14,4 @@ echo "  ⏳ Beacon-Email-Templates.html"
 echo ""
 echo "These will be created manually with proper card layouts..."
 
+

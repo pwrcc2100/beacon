@@ -3,7 +3,7 @@
 ## Current Survey Questions (5 Core Questions)
 
 ### 1. **Sentiment / Overall**
-*"How are you feeling overall?"*
+*"How are you feeling about work this week?"*
 - ✅ Good – I'm doing well
 - 😐 Okay – Getting by  
 - ❌ Not great – I'm struggling

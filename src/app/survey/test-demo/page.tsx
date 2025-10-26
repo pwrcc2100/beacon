@@ -52,7 +52,7 @@ export default function DemoSurveyPage() {
             </h1>
             <p className="text-gray-600 mb-6">
               Your responses have been recorded. This was a demo survey - 
-              in the real version, your responses would be sent to your organization's dashboard.
+              in the real version, your responses would be sent to your organisation's dashboard.
             </p>
             {supportRequested && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">

@@ -32,11 +32,85 @@ export default function AboutPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#2B4162] via-[#5d89a9] to-[#64afac] py-20">
         <div className="max-w-4xl mx-auto px-6 text-center text-white">
-          <h1 className="text-5xl font-bold mb-6">Early Detection for Workplace Wellbeing</h1>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">Early Detection for Workplace Wellbeing</h1>
           <p className="text-xl leading-relaxed opacity-90">
             A validated psychosocial pulse survey covering the key predictors of work stress, 
             clarity, voice, and support — designed for early detection and rapid response.
           </p>
+        </div>
+      </section>
+
+      {/* Research Foundation - Moved to Top */}
+      <section className="py-16 bg-gradient-to-br from-[#f4f4ee] to-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: '#2B4162' }}>
+            Built on Leading Research
+          </h2>
+          <p className="text-center text-lg text-[#737A8C] mb-12 max-w-3xl mx-auto">
+            Beacon's methodology is informed by decades of validated research from Google, Harvard, and leading institutions on workplace 
+            wellbeing, psychological safety, and organisational effectiveness.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Academic Research */}
+            <div className="bg-white p-8 rounded-xl border-2 shadow-sm" style={{ borderColor: '#5d89a9' }}>
+              <MaterialIcon icon="school" style={{ fontSize: '48px', color: '#5d89a9', marginBottom: '16px' }} />
+              <h3 className="text-xl font-bold mb-4" style={{ color: '#2B4162' }}>Academic Research</h3>
+              <p className="text-sm text-[#737A8C] mb-4">
+                Our methodology is informed by research from:
+              </p>
+              <ul className="space-y-3 text-sm text-[#737A8C]">
+                <li className="flex items-start gap-2">
+                  <MaterialIcon icon="auto_stories" style={{ fontSize: '16px', color: '#5d89a9' }} />
+                  <div>
+                    <strong style={{ color: '#2B4162' }}>Amy Edmondson</strong> (Harvard)<br/>
+                    <span className="text-xs">Psychological Safety research</span>
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <MaterialIcon icon="auto_stories" style={{ fontSize: '16px', color: '#5d89a9' }} />
+                  <div>
+                    <strong style={{ color: '#2B4162' }}>Karasek & Theorell</strong><br/>
+                    <span className="text-xs">Job Demand-Control-Support Model</span>
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <MaterialIcon icon="auto_stories" style={{ fontSize: '16px', color: '#5d89a9' }} />
+                  <div>
+                    <strong style={{ color: '#2B4162' }}>Google's Project Aristotle</strong><br/>
+                    <span className="text-xs">Team Effectiveness research</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            {/* Compliance Standards */}
+            <div className="bg-white p-8 rounded-xl border-2 shadow-sm" style={{ borderColor: '#64afac' }}>
+              <MaterialIcon icon="gavel" style={{ fontSize: '48px', color: '#64afac', marginBottom: '16px' }} />
+              <h3 className="text-xl font-bold mb-4" style={{ color: '#2B4162' }}>Compliance Standards</h3>
+              <p className="text-sm text-[#737A8C] mb-4">
+                Beacon helps organisations meet their obligations under:
+              </p>
+              <ul className="space-y-2 text-sm text-[#737A8C]">
+                <li className="flex items-start gap-2">
+                  <MaterialIcon icon="check_circle" style={{ fontSize: '16px', color: '#64afac' }} />
+                  <span><strong>Work Health & Safety Act</strong> (psychosocial hazards)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <MaterialIcon icon="check_circle" style={{ fontSize: '16px', color: '#64afac' }} />
+                  <span><strong>ISO 45003</strong> (Psychological health and safety at work)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <MaterialIcon icon="check_circle" style={{ fontSize: '16px', color: '#64afac' }} />
+                  <span><strong>Safe Work Australia</strong> guidelines on psychosocial hazards</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <MaterialIcon icon="check_circle" style={{ fontSize: '16px', color: '#64afac' }} />
+                  <span><strong>Model WHS Regulations</strong> for managing psychosocial risks</span>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -49,20 +123,20 @@ export default function AboutPage() {
               <MaterialIcon icon="warning" style={{ fontSize: '48px', color: '#ea9999', marginBottom: '16px' }} />
               <h3 className="text-xl font-bold mb-3" style={{ color: '#2B4162' }}>Traditional Surveys Fall Short</h3>
               <ul className="space-y-2 text-[#737A8C]">
-                <li>• Annual surveys detect problems too late</li>
+                <li>• Annual surveys detect issues too late</li>
                 <li>• Low participation rates (30-40%)</li>
                 <li>• Generic questions miss psychosocial risks</li>
-                <li>• Results take months to analyze</li>
+                <li>• Results take months to analyse</li>
               </ul>
             </div>
             <div className="bg-white p-6 rounded-xl shadow-sm">
               <MaterialIcon icon="trending_down" style={{ fontSize: '48px', color: '#ea9999', marginBottom: '16px' }} />
-              <h3 className="text-xl font-bold mb-3" style={{ color: '#2B4162' }}>The Cost of Inaction</h3>
+              <h3 className="text-xl font-bold mb-3" style={{ color: '#2B4162' }}>Inadequate Systems & Processes</h3>
               <ul className="space-y-2 text-[#737A8C]">
-                <li>• 1 in 5 employees experience work stress</li>
-                <li>• Burnout costs $3,500 per resignation</li>
-                <li>• Legal liability for psychosocial hazards</li>
-                <li>• Productivity loss from disengaged teams</li>
+                <li>• Workplace systems fail to support employees</li>
+                <li>• Processes create psychosocial hazards</li>
+                <li>• Legal liability for inadequate risk management</li>
+                <li>• Culture doesn't prioritise psychological safety</li>
               </ul>
             </div>
           </div>
@@ -79,10 +153,10 @@ export default function AboutPage() {
               <div className="inline-flex p-4 rounded-full mb-4" style={{ backgroundColor: '#f4f4ee' }}>
                 <MaterialIcon icon="speed" style={{ fontSize: '56px', color: '#64afac' }} />
               </div>
-              <h3 className="text-xl font-bold mb-3" style={{ color: '#2B4162' }}>Early Detection</h3>
+                  <h3 className="text-xl font-bold mb-3" style={{ color: '#2B4162' }}>Early Detection</h3>
               <p className="text-[#737A8C]">
-                Weekly 60-second pulse checks spot issues within weeks, not years. 
-                Catch problems before they escalate.
+                Weekly 60-second pulse checks identify issues within weeks. 
+                Understand how workplace systems, processes, and culture impact psychological safety.
               </p>
             </div>
 
@@ -92,8 +166,8 @@ export default function AboutPage() {
               </div>
               <h3 className="text-xl font-bold mb-3" style={{ color: '#2B4162' }}>Evidence-Based</h3>
               <p className="text-[#737A8C]">
-                Built on validated psychosocial research. Measures the actual predictors 
-                of burnout, turnover, and stress.
+                Built on validated psychosocial research from Google, Harvard, and leading institutions. 
+                Measures how systems, processes, and culture contribute to psychological safety.
               </p>
             </div>
 
@@ -228,117 +302,25 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Research Foundation */}
-      <section className="py-16">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: '#2B4162' }}>
-            Research Foundation
-          </h2>
-          <p className="text-center text-lg text-[#737A8C] mb-12 max-w-3xl mx-auto">
-            Beacon's methodology is informed by decades of validated research on workplace 
-            wellbeing, psychological safety, and organisational effectiveness.
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Compliance Standards */}
-            <div className="bg-gradient-to-br from-[#f4f4ee] to-white p-8 rounded-xl border-2" style={{ borderColor: '#64afac' }}>
-              <MaterialIcon icon="gavel" style={{ fontSize: '48px', color: '#64afac', marginBottom: '16px' }} />
-              <h3 className="text-xl font-bold mb-4" style={{ color: '#2B4162' }}>Compliance Standards</h3>
-              <p className="text-sm text-[#737A8C] mb-4">
-                Beacon helps organisations meet their obligations under:
-              </p>
-              <ul className="space-y-2 text-sm text-[#737A8C]">
-                <li className="flex items-start gap-2">
-                  <MaterialIcon icon="check_circle" style={{ fontSize: '16px', color: '#64afac' }} />
-                  <span><strong>Work Health & Safety Act</strong> (psychosocial hazards)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <MaterialIcon icon="check_circle" style={{ fontSize: '16px', color: '#64afac' }} />
-                  <span><strong>ISO 45003</strong> (Occupational health and safety management — Psychological health and safety at work)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <MaterialIcon icon="check_circle" style={{ fontSize: '16px', color: '#64afac' }} />
-                  <span><strong>Safe Work Australia</strong> guidelines on psychosocial hazards</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <MaterialIcon icon="check_circle" style={{ fontSize: '16px', color: '#64afac' }} />
-                  <span><strong>Model WHS Regulations</strong> for managing psychosocial risks</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Academic Research */}
-            <div className="bg-gradient-to-br from-[#eeefec] to-white p-8 rounded-xl border-2" style={{ borderColor: '#5d89a9' }}>
-              <MaterialIcon icon="school" style={{ fontSize: '48px', color: '#5d89a9', marginBottom: '16px' }} />
-              <h3 className="text-xl font-bold mb-4" style={{ color: '#2B4162' }}>Academic Research</h3>
-              <p className="text-sm text-[#737A8C] mb-4">
-                Our methodology is informed by research from:
-              </p>
-              <ul className="space-y-3 text-sm text-[#737A8C]">
-                <li className="flex items-start gap-2">
-                  <MaterialIcon icon="auto_stories" style={{ fontSize: '16px', color: '#5d89a9' }} />
-                  <div>
-                    <strong style={{ color: '#2B4162' }}>Amy Edmondson</strong> (Harvard)<br/>
-                    <span className="text-xs">Psychological Safety research</span>
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <MaterialIcon icon="auto_stories" style={{ fontSize: '16px', color: '#5d89a9' }} />
-                  <div>
-                    <strong style={{ color: '#2B4162' }}>Karasek & Theorell</strong><br/>
-                    <span className="text-xs">Job Demand-Control-Support Model</span>
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <MaterialIcon icon="auto_stories" style={{ fontSize: '16px', color: '#5d89a9' }} />
-                  <div>
-                    <strong style={{ color: '#2B4162' }}>Christina Maslach</strong><br/>
-                    <span className="text-xs">Burnout & Wellbeing Research</span>
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <MaterialIcon icon="auto_stories" style={{ fontSize: '16px', color: '#5d89a9' }} />
-                  <div>
-                    <strong style={{ color: '#2B4162' }}>Google's Project Aristotle</strong><br/>
-                    <span className="text-xs">Team Effectiveness research</span>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-8 text-center">
-            <a 
-              href="/methodology"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-white transition-all hover:opacity-90"
-              style={{ backgroundColor: '#5d89a9' }}
-            >
-              <MaterialIcon icon="description" style={{ fontSize: '20px' }} />
-              View Detailed Methodology
-            </a>
-          </div>
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="py-16 bg-gradient-to-r from-[#2B4162] to-[#5d89a9]">
         <div className="max-w-4xl mx-auto px-6 text-center text-white">
-          <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+          <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Workplace?</h2>
           <p className="text-xl mb-8 opacity-90">
-            Start your free 2-week trial with up to 50 employees. No credit card required.
+            Discover how systems, processes, and culture contribute to psychological safety in your organisation.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <a 
-              href="/pricing" 
+              href="mailto:hello@beaconeffect.com.au?subject=Beacon Wellbeing Enquiry" 
               className="px-8 py-4 bg-white text-[#2B4162] rounded-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
             >
-              View Pricing
+              Get Started
             </a>
             <a 
-              href="mailto:hello@beaconwellbeing.com.au?subject=Trial Request" 
+              href="/wellbeing/pricing" 
               className="px-8 py-4 bg-[#64afac] text-white rounded-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
             >
-              Request Trial
+              View Pricing
             </a>
           </div>
         </div>
@@ -377,19 +359,15 @@ export default function AboutPage() {
               <div className="space-y-2 text-sm text-white/70">
                 <div className="flex items-center gap-2">
                   <MaterialIcon icon="mail" style={{ fontSize: '16px' }} />
-                  <a href="mailto:hello@beaconwellbeing.com.au" className="hover:text-white transition-colors">
-                    hello@beaconwellbeing.com.au
+                  <a href="mailto:hello@beaconeffect.com.au" className="hover:text-white transition-colors">
+                    hello@beaconeffect.com.au
                   </a>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MaterialIcon icon="phone" style={{ fontSize: '16px' }} />
-                  <span>1300 BEACON</span>
                 </div>
               </div>
             </div>
           </div>
           <div className="border-t border-white/10 mt-8 pt-8 text-center text-white/50 text-sm">
-            <p>© 2025 Beacon Wellbeing Platform. All rights reserved.</p>
+            <p>© 2025 Beacon Effect. All rights reserved.</p>
           </div>
         </div>
       </footer>

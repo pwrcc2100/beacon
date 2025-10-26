@@ -14,7 +14,7 @@ export function Question({
   onChange: (v: 1 | 2 | 3) => void;
 }) {
   const questionText = {
-    sentiment: 'How are you feeling overall about your work situation?',
+    sentiment: 'How are you feeling about work this week?',
     clarity: 'How clear are you about your priorities and what\'s expected of you?',
     workload: 'How manageable is your current workload?',
     safety: 'How comfortable do you feel speaking up about concerns or ideas?',

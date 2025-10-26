@@ -64,3 +64,4 @@ export async function GET() {
     missing: configCheck.missing || []
   });
 }
+

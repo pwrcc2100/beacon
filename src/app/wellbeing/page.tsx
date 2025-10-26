@@ -27,7 +27,7 @@ export default function WellbeingPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="text-white">
-              <h1 className="text-6xl font-bold mb-6 leading-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                 Early Detection for Workplace Wellbeing
               </h1>
               <p className="text-xl mb-8 opacity-90 leading-relaxed">
@@ -36,10 +36,10 @@ export default function WellbeingPage() {
               </p>
               <div className="flex gap-4 flex-wrap">
                 <a 
-                  href="/wellbeing/pricing" 
+                  href="mailto:hello@beaconeffect.com.au?subject=Beacon Wellbeing Enquiry" 
                   className="px-8 py-4 bg-white text-[#2B4162] rounded-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
                 >
-                  Start Free Trial
+                  Get Started
                 </a>
                 <a 
                   href="/survey/test-demo" 
@@ -69,8 +69,8 @@ export default function WellbeingPage() {
                   <div className="flex items-center gap-4">
                     <MaterialIcon icon="savings" style={{ fontSize: '48px', color: '#64afac' }} />
                     <div>
-                      <div className="text-3xl font-bold text-white">10-15%</div>
-                      <div className="text-white/80 text-sm">Turnover reduction</div>
+                      <div className="text-3xl font-bold text-white">Improved</div>
+                      <div className="text-white/80 text-sm">Workplace culture</div>
                     </div>
                   </div>
                 </div>
@@ -127,7 +127,7 @@ export default function WellbeingPage() {
               </div>
               <h3 className="text-xl font-bold mb-3" style={{ color: '#2B4162' }}>Early Detection</h3>
               <p className="text-[#737A8C]">
-                Weekly pulse checks spot issues within weeks, not years. Catch problems before they escalate.
+                Weekly pulse checks identify issues within weeks. Understand how systems, processes, and culture impact psychological safety.
               </p>
             </div>
 
@@ -137,7 +137,7 @@ export default function WellbeingPage() {
               </div>
               <h3 className="text-xl font-bold mb-3" style={{ color: '#2B4162' }}>Evidence-Based</h3>
               <p className="text-[#737A8C]">
-                Built on validated psychosocial research. Measures what actually predicts burnout and turnover.
+                Built on validated research from Google, Harvard, and leading institutions. Measures workplace systems and culture effectiveness.
               </p>
             </div>
 
@@ -147,7 +147,7 @@ export default function WellbeingPage() {
               </div>
               <h3 className="text-xl font-bold mb-3" style={{ color: '#2B4162' }}>Compliance Ready</h3>
               <p className="text-[#737A8C]">
-                Meet psychosocial safety obligations with documented evidence and audit-ready reports.
+                Meet psychosocial safety obligations with documented evidence of how workplace systems, processes, and culture support psychological safety.
               </p>
             </div>
           </div>
@@ -204,8 +204,8 @@ export default function WellbeingPage() {
             <MaterialIcon icon="format_quote" style={{ fontSize: '48px', color: '#64afac', marginBottom: '16px' }} />
             <p className="text-lg italic mb-4" style={{ color: '#2E2E38' }}>
               "After implementing Beacon, we identified a department with declining wellbeing scores within 3 weeks. 
-              A simple workload redistribution prevented what would have been a wave of resignations. We estimate 
-              Beacon saved us $150,000 in recruitment costs in the first 6 months alone."
+              The insights helped us redesign our processes and systems to better support psychological safety. Beacon 
+              helped us create a workplace culture where employees feel valued and supported."
             </p>
             <div className="text-sm font-bold" style={{ color: '#2B4162' }}>— HR Director</div>
             <div className="text-sm text-[#737A8C]">Technology Company, 500 employees</div>
@@ -218,14 +218,14 @@ export default function WellbeingPage() {
         <div className="max-w-4xl mx-auto px-6 text-center text-white">
           <h2 className="text-4xl font-bold mb-4">Ready to Transform Your Workplace?</h2>
           <p className="text-xl mb-8 opacity-90">
-            Start your free 2-week trial with up to 50 employees. No credit card required.
+            Discover how systems, processes, and culture contribute to psychological safety in your organisation.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <a 
-              href="mailto:hello@beaconeffect.com.au?subject=Free Trial Request - Beacon Wellbeing" 
+              href="mailto:hello@beaconeffect.com.au?subject=Beacon Wellbeing Enquiry" 
               className="px-8 py-4 bg-white text-[#2B4162] rounded-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
             >
-              Start Free Trial
+              Get Started
             </a>
             <a 
               href="/wellbeing/about" 
@@ -275,10 +275,6 @@ export default function WellbeingPage() {
                   <a href="mailto:hello@beaconeffect.com.au" className="hover:text-white transition-colors">
                     hello@beaconeffect.com.au
                   </a>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MaterialIcon icon="phone" style={{ fontSize: '16px' }} />
-                  <span>1300 BEACON</span>
                 </div>
               </div>
             </div>

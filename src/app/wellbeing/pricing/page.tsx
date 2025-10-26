@@ -9,7 +9,7 @@ export default function PricingPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#2B4162] via-[#5d89a9] to-[#64afac] py-20">
         <div className="max-w-4xl mx-auto px-6 text-center text-white">
-          <h1 className="text-5xl font-bold mb-6">Simple, Transparent Pricing</h1>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">Simple, Transparent Pricing</h1>
           <p className="text-xl leading-relaxed opacity-90">
             Choose the plan that fits your organisation. No hidden fees, no lock-in contracts.
           </p>
@@ -58,7 +58,7 @@ export default function PricingPage() {
               </div>
 
               <a 
-                href="mailto:hello@beaconwellbeing.com.au?subject=Starter Plan Enquiry"
+                href="mailto:hello@beaconeffect.com.au?subject=Starter Plan Enquiry"
                 className="block w-full text-center px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90"
                 style={{ backgroundColor: '#64afac', color: 'white' }}
               >
@@ -68,9 +68,6 @@ export default function PricingPage() {
 
             {/* Professional Plan */}
             <div className="bg-gradient-to-br from-[#2B4162] to-[#5d89a9] rounded-2xl p-8 shadow-xl relative">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white" style={{ backgroundColor: '#64afac' }}>
-                MOST POPULAR
-              </div>
               
               <div className="text-center mb-6">
                 <MaterialIcon icon="star" style={{ fontSize: '48px', color: '#64afac', marginBottom: '12px' }} />
@@ -116,7 +113,7 @@ export default function PricingPage() {
               </div>
 
               <a 
-                href="mailto:hello@beaconwellbeing.com.au?subject=Professional Plan Enquiry"
+                href="mailto:hello@beaconeffect.com.au?subject=Professional Plan Enquiry"
                 className="block w-full text-center px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90"
                 style={{ backgroundColor: '#64afac', color: 'white' }}
               >
@@ -174,7 +171,7 @@ export default function PricingPage() {
               </div>
 
               <a 
-                href="mailto:hello@beaconwellbeing.com.au?subject=Enterprise Plan Enquiry"
+                href="mailto:hello@beaconeffect.com.au?subject=Enterprise Plan Enquiry"
                 className="block w-full text-center px-6 py-3 rounded-lg font-bold transition-all hover:opacity-90"
                 style={{ backgroundColor: '#5d89a9', color: 'white' }}
               >
@@ -233,12 +230,12 @@ export default function PricingPage() {
                 <h3 className="text-xl font-bold mb-4" style={{ color: '#2B4162' }}>Average Cost Savings</h3>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center p-4 bg-[#f4f4ee] rounded-lg">
-                    <span className="text-sm">Prevented resignations (per year)</span>
-                    <span className="font-bold text-lg" style={{ color: '#64afac' }}>3-5</span>
+                    <span className="text-sm">Early risk identification</span>
+                    <span className="font-bold text-lg" style={{ color: '#64afac' }}>Weekly</span>
                   </div>
                   <div className="flex justify-between items-center p-4 bg-[#f4f4ee] rounded-lg">
-                    <span className="text-sm">Cost per resignation</span>
-                    <span className="font-bold text-lg" style={{ color: '#64afac' }}>$3,500</span>
+                    <span className="text-sm">Improved systems & culture</span>
+                    <span className="font-bold text-lg" style={{ color: '#64afac' }}>Measurable</span>
                   </div>
                   <div className="flex justify-between items-center p-4 bg-[#f4f4ee] rounded-lg">
                     <span className="text-sm">Annual savings</span>
@@ -253,8 +250,8 @@ export default function PricingPage() {
                   <div className="flex items-start gap-2">
                     <MaterialIcon icon="trending_up" style={{ fontSize: '20px', color: '#64afac' }} />
                     <div>
-                      <div className="font-bold text-sm">10-15% reduction</div>
-                      <div className="text-xs text-[#737A8C]">in voluntary turnover</div>
+                      <div className="font-bold text-sm">Improved systems</div>
+                      <div className="text-xs text-[#737A8C]">better workplace culture</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
@@ -288,7 +285,8 @@ export default function PricingPage() {
                   Typical ROI: 3-6 months
                 </p>
                 <p className="text-sm text-[#737A8C]">
-                  Most organisations see positive return within the first quarter through reduced turnover and improved productivity.
+                  Most organisations see positive impact within the first quarter through improved workplace systems, processes, 
+                  and culture that contribute to psychological safety.
                 </p>
               </div>
             </div>
@@ -393,17 +391,17 @@ export default function PricingPage() {
         <div className="max-w-4xl mx-auto px-6 text-center text-white">
           <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
           <p className="text-xl mb-8 opacity-90">
-            Start your free 2-week trial today or speak with our team.
+            Discover how systems, processes, and culture contribute to psychological safety.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <a 
-              href="mailto:hello@beaconwellbeing.com.au?subject=Free Trial Request" 
+              href="mailto:hello@beaconeffect.com.au?subject=Beacon Wellbeing Enquiry" 
               className="px-8 py-4 bg-white text-[#2B4162] rounded-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
             >
-              Start Free Trial
+              Get Started
             </a>
             <a 
-              href="mailto:hello@beaconwellbeing.com.au?subject=Pricing Enquiry" 
+              href="mailto:hello@beaconeffect.com.au?subject=Pricing Enquiry" 
               className="px-8 py-4 bg-[#64afac] text-white rounded-lg font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
             >
               Contact Sales
@@ -446,19 +444,15 @@ export default function PricingPage() {
               <div className="space-y-2 text-sm text-white/70">
                 <div className="flex items-center gap-2">
                   <MaterialIcon icon="mail" style={{ fontSize: '16px' }} />
-                  <a href="mailto:hello@beaconwellbeing.com.au" className="hover:text-white transition-colors">
-                    hello@beaconwellbeing.com.au
+                  <a href="mailto:hello@beaconeffect.com.au" className="hover:text-white transition-colors">
+                    hello@beaconeffect.com.au
                   </a>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MaterialIcon icon="phone" style={{ fontSize: '16px' }} />
-                  <span>1300 BEACON</span>
                 </div>
               </div>
             </div>
           </div>
           <div className="border-t border-white/10 mt-8 pt-8 text-center text-white/50 text-sm">
-            <p>© 2025 Beacon Wellbeing Platform. All rights reserved.</p>
+            <p>© 2025 Beacon Effect. All rights reserved.</p>
           </div>
         </div>
       </footer>

@@ -22,7 +22,7 @@ export default function SurveyPreview() {
     {
       id: 'sentiment' as QuestionId,
       label: 'Sentiment / Overall',
-      question: 'How are you feeling overall?',
+      question: 'How are you feeling about work this week?',
       options: [
         { value: 1, label: 'Good – I\'m doing well', emoji: '😊', color: '#64afac' },
         { value: 2, label: 'Okay – Getting by', emoji: '😐', color: '#f59e0b' },
@@ -554,5 +554,6 @@ export default function SurveyPreview() {
     </div>
   );
 }
+
 
 

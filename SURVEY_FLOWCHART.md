@@ -23,7 +23,7 @@
 │                    📊 5 CORE QUESTIONS                           │
 │                  (Progress: 1/5, 2/5, 3/5...)                   │
 │                                                                   │
-│  Q1: How are you feeling overall?                               │
+│  Q1: How are you feeling about work this week?                  │
 │      ✅ Good │ 😐 Okay │ ❌ Struggling                          │
 │                                                                   │
 │  Q2: How's your workload?                                        │

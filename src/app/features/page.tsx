@@ -44,7 +44,7 @@ export default function FeaturesPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <MaterialIcon icon="check_circle" style={{ fontSize: '16px', color: '#64afac' }} />
-                  <span>Mobile-optimized interface</span>
+                  <span>Mobile-optimised interface</span>
                 </li>
               </ul>
             </div>
@@ -179,7 +179,7 @@ export default function FeaturesPage() {
               <MaterialIcon icon="download" style={{ fontSize: '40px', color: '#5d89a9', marginBottom: '12px' }} />
               <h3 className="text-lg font-bold mb-2" style={{ color: '#2B4162' }}>Export & Reporting</h3>
               <p className="text-sm text-[#737A8C]">
-                Download data as CSV for analysis in Excel or Power BI. Print-optimized reports for board 
+                Download data as CSV for analysis in Excel or Power BI. Print-optimised reports for board 
                 presentations.
               </p>
             </div>
@@ -246,8 +246,8 @@ export default function FeaturesPage() {
               <MaterialIcon icon="group" style={{ fontSize: '40px', color: '#64afac', marginBottom: '16px' }} />
               <h3 className="text-xl font-bold mb-3" style={{ color: '#2B4162' }}>Employee Management</h3>
               <p className="text-[#737A8C] mb-4">
-                Manage employee lists, organisational structure, and survey distribution. Bulk import from HRIS, 
-                automatic updates, and role-based access.
+                Manage employee lists, organisational structure, and survey distribution. Live Connection ensures 
+                current staff and nominated groups only, with automatic updates and role-based access.
               </p>
               <ul className="space-y-2 text-sm text-[#737A8C]">
                 <li className="flex items-start gap-2">
@@ -434,5 +434,6 @@ export default function FeaturesPage() {
     </main>
   );
 }
+
 
 

@@ -17,7 +17,7 @@ Each question uses a 3-point scale for quick, honest responses:
 
 | # | Dimension | Question | Purpose |
 |---|-----------|----------|---------|
-| 1 | **Sentiment / Overall** | "How are you feeling overall?" | Captures overall wellbeing and mood |
+| 1 | **Sentiment / Overall** | "How are you feeling about work this week?" | Captures overall wellbeing and mood |
 | 2 | **Workload / Capacity** | "How's your workload?" | Identifies unsustainable job demands |
 | 3 | **Psychological Safety** | "Do you feel safe speaking up?" | Measures trust and voice in the organisation |
 | 4 | **Leadership Support** | "Do you feel supported by leadership?" | Assesses management responsiveness |
