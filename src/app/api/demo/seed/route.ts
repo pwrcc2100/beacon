@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
 
 function randInt(min:number, max:number){
@@ -6,8 +7,11 @@ function randInt(min:number, max:number){
 }
 
 export async function POST(req: NextRequest){
-  // Protect with admin token
-  const token = req.headers.get('authorization')?.replace('Bearer ','') || '';
+  // Protect with admin token - check header first, then cookie
+  const headerToken = req.headers.get('authorization')?.replace('Bearer ','') || '';
+  const cookieToken = (await cookies()).get('dash')?.value || '';
+  const token = headerToken || cookieToken;
+  
   if (process.env.ADMIN_DASH_TOKEN && token !== process.env.ADMIN_DASH_TOKEN) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }

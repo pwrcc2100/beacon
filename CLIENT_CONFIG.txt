@@ -1,0 +1,19 @@
+Beacon Dashboard Configuration
+==============================
+
+Client ID: 036802fb-215b-4a54-9d6e-9826043a6645
+
+Vercel Project URL: https://beacon-5tffcd7v0-beacon1.vercel.app
+
+Environment Variables to Add:
+------------------------------
+NEXT_PUBLIC_DASHBOARD_CLIENT_ID=036802fb-215b-4a54-9d6e-9826043a6645
+NEXT_PUBLIC_APP_URL=https://beacon-5tffcd7v0-beacon1.vercel.app
+
+Plus your Supabase credentials:
+- NEXT_PUBLIC_SUPABASE_URL
+- SUPABASE_SERVICE_ROLE_KEY
+- SUPABASE_ANON_KEY
+- ADMIN_DASH_TOKEN
+
+

@@ -16,6 +16,15 @@ const schema = z.object({
   safety_5: z.number().int().min(1).max(5),
   leadership_3: z.number().int().min(1).max(3),
   leadership_5: z.number().int().min(1).max(5),
+  // Support path fields
+  support_requested: z.boolean().optional(),
+  support_contacts: z.array(z.string()).optional(),
+  support_contact_method: z.string().optional(),
+  support_contact_value: z.string().optional(),
+  support_timeframe: z.string().optional(),
+  support_other_details: z.string().optional(),
+  high_risk_flag: z.boolean().optional(),
+  risk_factors: z.array(z.string()).optional(),
   meta: z.record(z.any()).optional()
 });
 

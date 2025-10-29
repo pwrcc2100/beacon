@@ -21,8 +21,13 @@ import { StatusCards } from '@/components/dashboard/StatusCards';
 import { MoodDistribution } from '@/components/dashboard/MoodDistribution';
 import { TeamStatus } from '@/components/dashboard/TeamStatus';
 import { QuoteBanner } from '@/components/dashboard/QuoteBanner';
-import { OrganisationFilter } from '@/components/dashboard/OrganisationFilter';
+import { EnhancedOrganisationFilterClient } from '@/components/dashboard/EnhancedOrganisationFilterClient';
 import { TeamsAttentionChartWrapper } from '@/components/dashboard/TeamsAttentionChartWrapper';
+import { TimePeriodFilter } from '@/components/dashboard/TimePeriodFilter';
+import { DataModeToggleClient } from './DataModeToggleClient';
+import { GenerateDemoDataButton } from '@/components/dashboard/GenerateDemoDataButton';
+import { DemoQRCode } from '@/components/dashboard/DemoQRCode';
+import { getPeriodStartDate } from '@/lib/dateUtils';
 import DemoDashboardClient from './DemoDashboardClient';
 
 type WellbeingRow = {
@@ -34,17 +39,18 @@ type WellbeingRow = {
   leadership_avg: number;
 };
 
-async function getData(clientId: string, period?: string){
+async function getData(clientId: string, period?: string, mode?: 'historical' | 'live'){
   // Calculate date range based on period
-  const now = new Date();
   let startDate: Date | undefined;
   
-  if (period === 'week') {
-    startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-  } else if (period === 'month') {
-    startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-  } else if (period === 'quarter') {
-    startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+  if (mode === 'live') {
+    // Live mode: only show data from today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    startDate = today;
+  } else {
+    // Historical mode: use period filter
+    startDate = period ? getPeriodStartDate(period) : undefined;
   }
 
   let trendsQuery = supabaseAdmin
@@ -148,16 +154,17 @@ async function getData(clientId: string, period?: string){
   };
 }
 
-async function getHierarchyData(clientId: string, divisionId?: string, departmentId?: string, teamId?: string, period?: string) {
-  const now = new Date();
+async function getHierarchyData(clientId: string, divisionId?: string, departmentId?: string, teamId?: string, selectedDepartments?: string[], period?: string, mode?: 'historical' | 'live') {
   let startDate: Date | undefined;
   
-  if (period === 'week') {
-    startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-  } else if (period === 'month') {
-    startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-  } else if (period === 'quarter') {
-    startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+  if (mode === 'live') {
+    // Live mode: only show data from today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    startDate = today;
+  } else {
+    // Historical mode: use period filter
+    startDate = period ? getPeriodStartDate(period) : undefined;
   }
 
   // Determine current drill-down level
@@ -185,6 +192,91 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
     
     const { data } = await query.order('submitted_at', { ascending: false }).limit(20);
     return { data: data || [], currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
+    
+  } else if (selectedDepartments && selectedDepartments.length > 0) {
+    // Multi-select departments mode
+    currentLevel = 'department';
+    nextLevel = 'team';
+    
+    // Get all departments that are selected
+    const { data: selectedDepts } = await supabaseAdmin
+      .from('departments')
+      .select('department_id, department_name')
+      .in('department_id', selectedDepartments)
+      .eq('active', true);
+    
+    if (!selectedDepts || selectedDepts.length === 0) {
+      return { data: [], currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
+    }
+    
+    // Get teams across selected departments
+    const { data: teams } = await supabaseAdmin
+      .from('teams')
+      .select('team_id, team_name, department_id')
+      .in('department_id', selectedDepartments)
+      .eq('active', true);
+    
+    const teamIds = teams?.map(t => t.team_id) || [];
+    
+    let query = supabaseAdmin
+      .from('responses_v3')
+      .select(`
+        sentiment_5,
+        clarity_5,
+        workload_5,
+        safety_5,
+        leadership_5,
+        employees!inner(department_id, team_id)
+      `)
+      .eq('client_id', clientId)
+      .in('employees.department_id', selectedDepartments);
+    
+    if (startDate) query = query.gte('submitted_at', startDate.toISOString());
+    
+    const { data: responses } = await query;
+    
+    // Aggregate by department (across selected departments)
+    const aggregates: Record<string, any> = {};
+    selectedDepts.forEach(dept => {
+      aggregates[dept.department_id] = {
+        id: dept.department_id,
+        name: dept.department_name,
+        count: 0,
+        sentiment_sum: 0,
+        clarity_sum: 0,
+        workload_sum: 0,
+        safety_sum: 0,
+        leadership_sum: 0
+      };
+    });
+    
+    (responses || []).forEach((r: any) => {
+      const deptId = r.employees?.department_id;
+      if (deptId && aggregates[deptId]) {
+        aggregates[deptId].count += 1;
+        aggregates[deptId].sentiment_sum += r.sentiment_5 || 0;
+        aggregates[deptId].clarity_sum += r.clarity_5 || 0;
+        aggregates[deptId].workload_sum += r.workload_5 || 0;
+        aggregates[deptId].safety_sum += r.safety_5 || 0;
+        aggregates[deptId].leadership_sum += r.leadership_5 || 0;
+      }
+    });
+    
+    const data = Object.values(aggregates)
+      .filter((agg: any) => agg.count > 0)
+      .map((agg: any) => ({
+        id: agg.id,
+        name: agg.name,
+        response_count: agg.count,
+        sentiment_avg: agg.sentiment_sum / agg.count,
+        clarity_avg: agg.clarity_sum / agg.count,
+        workload_avg: agg.workload_sum / agg.count,
+        safety_avg: agg.safety_sum / agg.count,
+        leadership_avg: agg.leadership_sum / agg.count,
+        wellbeing_score: ((agg.sentiment_sum / agg.count) * 0.30 + (agg.workload_sum / agg.count) * 0.25 + (agg.leadership_sum / agg.count) * 0.25 + (agg.safety_sum / agg.count) * 0.20) * 20
+      }));
+    
+    return { data, currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
     
   } else if (departmentId) {
     currentLevel = 'department';
@@ -434,9 +526,17 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
   const from = (searchParams?.from as string | undefined) || '';
   const to = (searchParams?.to as string | undefined) || '';
   const period = (searchParams?.period as string | undefined) || 'all'; // 'week', 'month', 'quarter', 'all'
+  const mode = (searchParams?.mode as 'historical' | 'live' | undefined) || 'historical';
   const divisionId = (searchParams?.division_id as string | undefined) || undefined;
   const departmentId = (searchParams?.department_id as string | undefined) || undefined;
   const teamId = (searchParams?.team_id as string | undefined) || undefined;
+  // Handle selected_departments as array (can be string or string[])
+  const selectedDeptsParam = searchParams?.selected_departments;
+  const selectedDepartments = Array.isArray(selectedDeptsParam) 
+    ? selectedDeptsParam 
+    : selectedDeptsParam 
+    ? [selectedDeptsParam as string]
+    : undefined;
   const clientId = urlClient || (process.env.NEXT_PUBLIC_DASHBOARD_CLIENT_ID ?? '');
 
   const requiredToken = process.env.ADMIN_DASH_TOKEN;
@@ -465,17 +565,25 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
   }
   if(!clientId) {
     return (
-      <main className="p-6">
-        <div className="max-w-5xl mx-auto">
-          <h1 className="text-2xl font-bold mb-2 text-[var(--text-primary)]">Dashboard</h1>
-          <p className="text-[var(--text-muted)]">Set NEXT_PUBLIC_DASHBOARD_CLIENT_ID in your environment to view data.</p>
+      <DashboardShell sidebar={
+        <div className="space-y-2">
+          <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
+          <a href="/dashboard" className="block px-3 py-2 rounded bg-black/5 font-medium">Overview</a>
         </div>
-      </main>
+      }>
+        <div className="max-w-6xl mx-auto space-y-6">
+          <div>
+            <h1 className="text-2xl font-bold mb-2 text-[var(--text-primary)]">Dashboard</h1>
+            <p className="text-[var(--text-muted)] mb-6">Set NEXT_PUBLIC_DASHBOARD_CLIENT_ID in your environment to view data.</p>
+          </div>
+          
+        </div>
+      </DashboardShell>
     );
   }
 
-  const { trends, recent, responseRate } = await getData(clientId, period !== 'all' ? period : undefined);
-  const hierarchyData = await getHierarchyData(clientId, divisionId, departmentId, teamId, period !== 'all' ? period : undefined);
+  const { trends, recent, responseRate } = await getData(clientId, period !== 'all' ? period : undefined, mode);
+  const hierarchyData = await getHierarchyData(clientId, divisionId, departmentId, teamId, selectedDepartments, period !== 'all' ? period : undefined, mode);
   
   // Fetch org structure for filter
   const { data: divisions } = await supabaseAdmin
@@ -521,12 +629,19 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
   };
 
   const Sidebar = (
-    <div className="space-y-2">
-      <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
-      <a href="/dashboard" className="block px-3 py-2 rounded bg-black/5 font-medium">Overview</a>
-      <a href="/dashboard/trends" className="block px-3 py-2 rounded hover:bg-black/5">Trends</a>
-      <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Advanced Analytics</a>
-      <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
+        <a href="/dashboard" className="block px-3 py-2 rounded bg-black/5 font-medium">Overview</a>
+        <a href="/dashboard/trends" className="block px-3 py-2 rounded hover:bg-black/5">Trends</a>
+        <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Advanced Analytics</a>
+        <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
+      </div>
+      
+      {/* Compact QR Code Generator in Sidebar */}
+      <div className="pt-4 border-t border-black/10">
+        <DemoQRCode clientId={clientId} compact={true} />
+      </div>
     </div>
   );
 
@@ -555,22 +670,48 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         </div>
 
         <div className="print:hidden">
-          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Executive Wellbeing Dashboard</h1>
-          <p className="text-sm text-[var(--text-muted)]">
-            Whole of business | Last updated: {reportDate} | {responseRate.responded} responses out of {responseRate.total} team members ({Math.round((responseRate.responded / responseRate.total) * 100)}% response rate)
-          </p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-[var(--text-primary)]">Executive Wellbeing Dashboard</h1>
+              <p className="text-sm text-[var(--text-muted)]">
+                Whole of business | Last updated: {reportDate} | {responseRate.responded} responses out of {responseRate.total} team members ({Math.round((responseRate.responded / responseRate.total) * 100)}% response rate)
+              </p>
+            </div>
+            {/* Data Mode Toggle */}
+            <DataModeToggleClient 
+              currentMode={mode}
+              clientId={clientId}
+              period={period}
+              divisionId={divisionId}
+              departmentId={departmentId}
+              teamId={teamId}
+            />
+          </div>
           
           <div className="mt-3 flex items-center gap-3 flex-wrap print:hidden">
             {/* Filter Controls */}
-            <OrganisationFilter
+            <EnhancedOrganisationFilterClient
               clientId={clientId}
               period={period}
+              mode={mode}
               currentDivisionId={divisionId}
               currentDepartmentId={departmentId}
               currentTeamId={teamId}
+              selectedDepartments={selectedDepartments || []}
               divisions={divisions || []}
               departments={departments || []}
               teams={teams || []}
+            />
+            
+            <div className="border-l h-6"></div>
+            
+            <TimePeriodFilter
+              clientId={clientId}
+              currentPeriod={period}
+              mode={mode}
+              divisionId={divisionId}
+              departmentId={departmentId}
+              teamId={teamId}
             />
             
             <div className="border-l h-6"></div>
@@ -581,10 +722,18 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
               <Button type="submit" variant="outline" size="sm" disabled={recent.length === 0}>Download CSV</Button>
             </form>
             {process.env.ADMIN_DASH_TOKEN && (
-              <form action={`/api/demo/seed`} method="post">
-                <input type="hidden" name="client_id" value={clientId} />
-                <Button variant="secondary" size="sm">Generate Demo Data</Button>
-              </form>
+              <>
+                <GenerateDemoDataButton 
+                  clientId={clientId} 
+                  endpoint="seed" 
+                  label="Generate Demo Data" 
+                />
+                <GenerateDemoDataButton 
+                  clientId={clientId} 
+                  endpoint="seed-with-departments" 
+                  label="Generate 100 Demo Records" 
+                />
+              </>
             )}
           </div>
         </div>

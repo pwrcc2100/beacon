@@ -1,6 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Question } from './Question';
+import { SupportPath, SupportRequestData } from './SupportPath';
 import { map3to5 } from '@/lib/scoring';
 
 export function SurveyForm({ token }: { token: string }) {
@@ -9,8 +10,36 @@ export function SurveyForm({ token }: { token: string }) {
   >({});
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSupportPath, setShowSupportPath] = useState(false);
+  const [riskFactors, setRiskFactors] = useState<string[]>([]);
+  const [supportData, setSupportData] = useState<SupportRequestData | undefined>();
+  const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
 
-  const submit = async () => {
+  // Check if all questions are answered
+  useEffect(() => {
+    const allAnswered = v.sentiment && v.clarity && v.workload && v.safety && v.leadership;
+    setAllQuestionsAnswered(!!allAnswered);
+    
+    if (allAnswered) {
+      // Detect high-risk responses (value === 3 = struggling/unsustainable/not safe/not supported)
+      const factors: string[] = [];
+      if (v.workload === 3) factors.push('workload');
+      if (v.safety === 3) factors.push('safety');
+      if (v.leadership === 3) factors.push('support');
+      if (v.sentiment === 3) factors.push('overall');
+      
+      setRiskFactors(factors);
+      // Show support path if any high-risk indicators
+      setShowSupportPath(factors.length > 0);
+    }
+  }, [v]);
+
+  const handleSupportPathComplete = (data?: SupportRequestData) => {
+    setSupportData(data);
+    handleSubmit(data);
+  };
+
+  const handleSubmit = async (supportData?: SupportRequestData) => {
     if (!v.sentiment || !v.clarity || !v.workload || !v.safety || !v.leadership) {
       alert('Please answer all questions');
       return;
@@ -31,7 +60,16 @@ export function SurveyForm({ token }: { token: string }) {
         safety_5: map3to5(v.safety),
         leadership_3: v.leadership,
         leadership_5: map3to5(v.leadership),
-        meta: { ui_version: 'v3.0', channel: 'web' }
+        // Add support request data if provided
+        support_requested: supportData?.requested || false,
+        support_contacts: supportData?.contacts || [],
+        support_contact_method: supportData?.contactMethod,
+        support_contact_value: supportData?.contactValue,
+        support_timeframe: supportData?.timeframe,
+        support_other_details: supportData?.otherDetails,
+        high_risk_flag: riskFactors.length > 0,
+        risk_factors: riskFactors,
+        meta: { ui_version: 'v3.1', channel: 'web' }
       };
 
       const response = await fetch('/api/responses', {
@@ -52,6 +90,27 @@ export function SurveyForm({ token }: { token: string }) {
       setIsSubmitting(false);
     }
   };
+
+  // Show support path if high-risk detected
+  if (showSupportPath && allQuestionsAnswered) {
+    return (
+      <div className="max-w-xl mx-auto space-y-6 pb-24">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">
+            Support Available
+          </h1>
+          <p className="text-[var(--text-muted)]">
+            We've detected some areas where you might benefit from support
+          </p>
+        </div>
+
+        <SupportPath 
+          onComplete={handleSupportPathComplete}
+          riskFactors={riskFactors}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-xl mx-auto space-y-6 pb-24">
@@ -98,12 +157,12 @@ export function SurveyForm({ token }: { token: string }) {
       <div className="fixed bottom-0 left-0 right-0 border-t border-black/10 bg-white/90 backdrop-blur px-4 py-3">
         <div className="max-w-xl mx-auto">
           <button
-            onClick={submit}
-            disabled={isSubmitting}
+            onClick={() => handleSubmit()}
+            disabled={isSubmitting || !allQuestionsAnswered}
             className="w-full rounded-lg px-4 py-3 text-white font-semibold disabled:opacity-50"
             style={{ background: 'var(--navy)' }}
           >
-            {isSubmitting ? 'Submitting...' : 'Submit Survey'}
+            {isSubmitting ? 'Submitting...' : allQuestionsAnswered ? 'Submit Survey' : 'Answer all questions to continue'}
           </button>
         </div>
       </div>
