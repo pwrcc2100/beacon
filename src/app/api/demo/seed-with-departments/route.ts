@@ -268,7 +268,7 @@ export async function POST(req: NextRequest){
   // Insert responses in batches
   const batchSize = 20;
   let totalInserted = 0;
-  const errors: string[] = [];
+  // errors array already declared at the top of the function
   
   for (let i = 0; i < responses.length; i += batchSize) {
     const batch = responses.slice(i, i + batchSize);
