@@ -26,6 +26,7 @@ import { TeamsAttentionChartWrapper } from '@/components/dashboard/TeamsAttentio
 import { TimePeriodFilter } from '@/components/dashboard/TimePeriodFilter';
 import { DataModeToggleClient } from './DataModeToggleClient';
 import { GenerateDemoDataButton } from '@/components/dashboard/GenerateDemoDataButton';
+import { SetupHierarchyButton } from '@/components/dashboard/SetupHierarchyButton';
 import { DemoQRCode } from '@/components/dashboard/DemoQRCode';
 import { getPeriodStartDate } from '@/lib/dateUtils';
 import DemoDashboardClient from './DemoDashboardClient';
@@ -723,6 +724,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
             </form>
             {process.env.ADMIN_DASH_TOKEN && (
               <>
+                <SetupHierarchyButton clientId={clientId} />
                 <GenerateDemoDataButton 
                   clientId={clientId} 
                   endpoint="seed" 
