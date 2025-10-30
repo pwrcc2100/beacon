@@ -69,14 +69,24 @@ ALTER TABLE public.departments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.teams ENABLE ROW LEVEL SECURITY;
 
 -- Allow service role to access all (for admin operations)
-CREATE POLICY IF NOT EXISTS "Service role can manage all divisions"
-  ON public.divisions FOR ALL USING (true);
-
-CREATE POLICY IF NOT EXISTS "Service role can manage all departments"
-  ON public.departments FOR ALL USING (true);
-
-CREATE POLICY IF NOT EXISTS "Service role can manage all teams"
-  ON public.teams FOR ALL USING (true);
+-- Note: If these policies already exist, drop them first or ignore the error
+DO $$ 
+BEGIN
+  -- Drop existing policies if they exist
+  DROP POLICY IF EXISTS "Service role can manage all divisions" ON public.divisions;
+  DROP POLICY IF EXISTS "Service role can manage all departments" ON public.departments;
+  DROP POLICY IF EXISTS "Service role can manage all teams" ON public.teams;
+  
+  -- Create new policies
+  CREATE POLICY "Service role can manage all divisions"
+    ON public.divisions FOR ALL USING (true);
+  
+  CREATE POLICY "Service role can manage all departments"
+    ON public.departments FOR ALL USING (true);
+  
+  CREATE POLICY "Service role can manage all teams"
+    ON public.teams FOR ALL USING (true);
+END $$;
 
 -- ============================================
 -- Verification Query
