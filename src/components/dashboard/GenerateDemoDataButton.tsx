@@ -36,9 +36,15 @@ export function GenerateDemoDataButton({ clientId, endpoint, label }: Props) {
         throw new Error(data.error || 'Failed to generate demo data');
       }
 
-      setMessage(`✅ Success! Generated ${data.inserted || data.ok ? 'demo data' : '0'} records.`);
+      const inserted = data.inserted || data.verified || (data.ok ? 'demo data' : 0);
+      const verified = data.verified ? ` (${data.verified} verified in database)` : '';
+      setMessage(`✅ Success! Generated ${inserted} records${verified}.`);
       
-      // Refresh the page after a short delay to show new data
+      if (data.errors && data.errors.length > 0) {
+        console.warn('Some batches had errors:', data.errors);
+      }
+      
+      // Refresh the page after a short delay to show new data  
       setTimeout(() => {
         window.location.reload();
       }, 2000);

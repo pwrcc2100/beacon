@@ -141,10 +141,11 @@ export async function POST(req: NextRequest){
       remainder--;
       
       for (let i = 0; i < responsesForDept && responseCount < totalResponses; i++) {
-        // Create employee
+        // Create employee - use 'id' as primary key (employee_id is just for reference)
         const employeeId = crypto.randomUUID();
-        await supabaseAdmin.from('employees').insert({
-          employee_id: employeeId,
+        const { error: empError } = await supabaseAdmin.from('employees').insert({
+          id: employeeId,  // Use 'id' as primary key
+          employee_id: employeeId,  // Keep as reference if needed
           client_id: clientId,
           division_id: divisionMap.get(location)!,
           department_id: deptId,
@@ -154,6 +155,10 @@ export async function POST(req: NextRequest){
           last_name: `${responseCount + 1}`,
           email: `demo-${responseCount + 1}@example.com`
         });
+        
+        if (empError) {
+          console.error('Employee insert error:', empError);
+        }
         
         // Create response with random scores (distributed across time)
         const daysAgo = randInt(0, 180); // Spread over last 6 months
@@ -190,7 +195,7 @@ export async function POST(req: NextRequest){
         responses.push({
           token_id: tokenId,
           client_id: clientId,
-          employee_id: employeeId,
+          employee_id: employeeId,  // This should match employees.id
           sentiment_3: s3, sentiment_5: map(s3),
           clarity_3: c3,   clarity_5: map(c3),
           workload_3: w3,  workload_5: map(w3),
