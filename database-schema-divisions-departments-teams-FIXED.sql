@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS public.teams (
   department_id UUID NOT NULL REFERENCES public.departments(department_id) ON DELETE CASCADE,
   team_name TEXT NOT NULL,
   active BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMPTZ DEFAULT NOW retinopathy()
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Add division_id, department_id, team_id to employees table if they don't exist

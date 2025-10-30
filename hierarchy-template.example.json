@@ -1,0 +1,66 @@
+{
+  "description": "Template for defining a client's organizational hierarchy. Copy this file and customize for each client.",
+  "client_name": "Example Client Inc.",
+  "hierarchy_structure": {
+    "divisions": [
+      {
+        "name": "Sydney Metro",
+        "description": "Sydney metropolitan region operations"
+      },
+      {
+        "name": "Regional",
+        "description": "Regional operations"
+      },
+      {
+        "name": "QLD",
+        "description": "Queensland operations"
+      }
+    ],
+    "departments_per_division": [
+      {
+        "name": "Aged Care",
+        "description": "Aged care services"
+      },
+      {
+        "name": "Residential",
+        "description": "Residential care services"
+      },
+      {
+        "name": "Health",
+        "description": "Health services"
+      },
+      {
+        "name": "Education",
+        "description": "Education services"
+      }
+    ],
+    "teams_per_department": [
+      {
+        "name": "Team A",
+        "description": "Primary team"
+      },
+      {
+        "name": "Team B",
+        "description": "Secondary team"
+      },
+      {
+        "name": "Team C",
+        "description": "Support team"
+      }
+    ]
+  },
+  "notes": [
+    "This template creates a 3-level hierarchy: Division → Department → Team",
+    "Each division will have all departments",
+    "Each department will have all teams",
+    "Customize the names and descriptions to match your client's structure",
+    "You can add or remove items from each array"
+  ],
+  "usage": {
+    "step_1": "Copy this file and rename it to hierarchy-config.json (or client-specific name)",
+    "step_2": "Customize the divisions, departments, and teams to match your client",
+    "step_3": "Use the /api/client/setup-hierarchy endpoint with this config",
+    "step_4": "Or manually create the structure using the Supabase dashboard"
+  }
+}
+
