@@ -66,3 +66,4 @@ If similar issues occurred before:
 4. Try accessing the component directly: `/components/dashboard/DemoQRCode`
 
 
+

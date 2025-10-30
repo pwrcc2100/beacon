@@ -93,3 +93,4 @@ RETURNING id, name;
 **TL;DR**: It's a UUID that identifies which organization's data the dashboard should show. Create a client record in Supabase, copy its `id`, and use that as your `NEXT_PUBLIC_DASHBOARD_CLIENT_ID`.
 
 
+

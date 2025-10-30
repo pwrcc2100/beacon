@@ -28,6 +28,9 @@ export function GenerateDemoDataButton({ clientId, endpoint, label }: Props) {
       });
 
       const data = await response.json();
+      
+      // Log full response for debugging
+      console.log('Demo data generation response:', data);
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -36,26 +39,31 @@ export function GenerateDemoDataButton({ clientId, endpoint, label }: Props) {
         throw new Error(data.error || 'Failed to generate demo data');
       }
 
+      // Build detailed message
       const inserted = data.inserted || data.verifiedInDatabase || (data.ok ? 'demo data' : 0);
-      const verified = data.verifiedInDatabase ? ` (${data.verifiedInDatabase} verified in database)` : '';
-      const employeesInfo = data.employeesWithDivision ? ` | ${data.employeesWithDivision} employees with divisions` : '';
-      setMessage(`✅ Success! Generated ${inserted} records${verified}${employeesInfo}.`);
+      const verified = data.verifiedInDatabase !== undefined ? ` (${data.verifiedInDatabase} verified in database)` : '';
+      const employeesInfo = data.employeesWithDivision !== undefined ? ` | ${data.employeesWithDivision} employees with divisions` : '';
+      const structure = data.structure ? ` | Structure: ${data.structure.divisions} divisions, ${data.structure.departments} departments, ${data.structure.teams} teams` : '';
+      
+      let successMessage = `✅ Success! Generated ${inserted} records${verified}${employeesInfo}${structure}.`;
       
       if (data.errors && data.errors.length > 0) {
         console.warn('Some batches had errors:', data.errors);
-        setMessage(`⚠️ Generated ${inserted} records but some had errors. Check console.`);
+        successMessage = `⚠️ Generated ${inserted} records but some had errors: ${data.errors.join('; ')}`;
       }
       
       // Show warning if employees don't have division_id
       if (data.employeesWithDivision === 0 && data.verifiedInDatabase > 0) {
         console.warn('⚠️ Employees created but division_id not set - hierarchy data won\'t show!');
-        setMessage(`⚠️ ${data.verifiedInDatabase} responses created but employees missing division_id. Data may not display in hierarchy view.`);
+        successMessage = `⚠️ ${data.verifiedInDatabase} responses created but employees missing division_id. Data may not display in hierarchy view.`;
       }
       
-      // Refresh the page after a short delay to show new data  
+      setMessage(successMessage);
+      
+      // Refresh the page after a longer delay to show new data and allow user to read message
       setTimeout(() => {
         window.location.reload();
-      }, 2000);
+      }, 5000);
       
     } catch (error: any) {
       setMessage(`❌ Error: ${error.message}`);

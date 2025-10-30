@@ -46,3 +46,4 @@ CREATE INDEX IF NOT EXISTS idx_employees_division_id ON public.employees(divisio
 CREATE INDEX IF NOT EXISTS idx_employees_department_id ON public.employees(department_id);
 CREATE INDEX IF NOT EXISTS idx_employees_team_id ON public.employees(team_id);
 
+
