@@ -1,165 +1,164 @@
-'use client';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+# Client Hierarchy Setup Guide
 
-type Props = {
-  clientId: string;
-};
+This guide explains how to set up the organizational hierarchy for new clients in Beacon.
 
-export function SetupHierarchyButton({ clientId }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string>('');
-  const [divisions, setDivisions] = useState('Sydney Metro\nRegional\nQLD');
-  const [departments, setDepartments] = useState('Aged Care\nResidential\nHealth\nEducation');
-  const [teams, setTeams] = useState('Team A\nTeam B\nTeam C');
+## Overview
 
-  const handleSetup = async () => {
-    setLoading(true);
-    setMessage('');
-    
-    try {
-      const hierarchy = {
-        divisions: divisions.split('\n').map(s => s.trim()).filter(Boolean),
-        departments_per_division: departments.split('\n').map(s => s.trim()).filter(Boolean),
-        teams_per_department: teams.split('\n').map(s => s.trim()).filter(Boolean),
-      };
+Beacon uses a 3-level organizational hierarchy:
+- **Divisions** (e.g., Regions, Business Units)
+- **Departments** (e.g., Functions, Programs)
+- **Teams** (e.g., Work Teams, Projects)
 
-      if (hierarchy.divisions.length === 0 || hierarchy.departments_per_division.length === 0 || hierarchy.teams_per_department.length === 0) {
-        setMessage('❌ Please fill in all fields');
-        setLoading(false);
-        return;
-      }
+## Quick Start: Two Methods
 
-      const response = await fetch('/api/client/setup-hierarchy', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin',
-        body: JSON.stringify({ client_id: clientId, hierarchy })
-      });
+### Method 1: One-Time SQL Migration (Recommended)
 
-      const data = await response.json();
+**Step 1: Run the schema migration** (once per Supabase project)
+1. Go to Supabase Dashboard → SQL Editor
+2. Copy and paste the contents of `database-schema-hierarchy-template.sql`
+3. Click "Run"
+4. This creates the tables: `divisions`, `departments`, and `teams`
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to setup hierarchy');
-      }
+**Step 2: Set up hierarchy for each client** (via API or manually)
+- Use the "Setup Hierarchy" button in the dashboard, OR
+- Call the `/api/client/setup-hierarchy` API endpoint
 
-      setMessage(`✅ Success! Created ${data.summary.divisions} divisions, ${data.summary.departments} departments, ${data.summary.teams} teams.`);
-      setIsOpen(false);
-      
-      // Refresh page after a delay
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-      
-    } catch (error: any) {
-      setMessage(`❌ Error: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
+### Method 2: Using the Dashboard Button
 
-  if (!isOpen) {
-    return (
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={() => setIsOpen(true)}
-      >
-        Setup Hierarchy
-      </Button>
-    );
+1. Navigate to the dashboard
+2. Click the **"Setup Hierarchy"** button
+3. Fill in:
+   - **Divisions**: One per line (e.g., Sydney Metro, Regional, QLD)
+   - **Departments**: One per line (will be created under each division)
+   - **Teams**: One per line (will be created under each department)
+4. Click "Create Hierarchy"
+
+## File Structure
+
+```
+database-schema-hierarchy-template.sql    # SQL migration (run once)
+hierarchy-template.example.json           # Example config file
+src/app/api/client/setup-hierarchy/       # API endpoint
+src/components/dashboard/SetupHierarchyButton.tsx  # UI component
+```
+
+## API Usage
+
+### Endpoint: `/api/client/setup-hierarchy`
+
+**Method:** POST
+
+**Headers:**
+- `Content-Type: application/json`
+- `Authorization: Bearer <ADMIN_DASH_TOKEN>` (or use `dash` cookie)
+
+**Body:**
+```json
+{
+  "client_id": "uuid-here",
+  "hierarchy": {
+    "divisions": ["Division 1", "Division 2", "Division 3"],
+    "departments_per_division": ["Dept A", "Dept B", "Dept C"],
+    "teams_per_department": ["Team 1", "Team 2"]
   }
-
-  return (
-    <Card className="w-full max-w-2xl">
-      <CardHeader>
-        <CardTitle>Setup Organizational Hierarchy</CardTitle>
-        <CardDescription>
-          Define your organization's structure: Divisions → Departments → Teams
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div>
-          <Label htmlFor="divisions">Divisions (one per line)</Label>
-          <Textarea
-            id="divisions"
-            value={divisions}
-            onChange={(e) => setDivisions(e.target.value)}
-            placeholder="Sydney Metro&#10;Regional&#10;QLD"
-            rows={3}
-            className="font-mono text-sm"
-          />
-          <p className="text-xs text-muted-foreground mt-1">
-            Top level (e.g., Regions, Business Units)
-          </p>
-        </div>
-
-        <div>
-          <Label htmlFor="departments">Departments per Division (one per line)</Label>
-          <Textarea
-            id="departments"
-            value={departments}
-            onChange={(e) => setDepartments(e.target.value)}
-            placeholder="Aged Care&#10;Residential&#10;Health&#10;Education"
-            rows={4}
-            className="font-mono text-sm"
-          />
-          <p className="text-xs text-muted-foreground mt-1">
-            These will be created under each division
-          </p>
-        </div>
-
-        <div>
-          <Label htmlFor="teams">Teams per Department (one per line)</Label>
-          <Textarea
-            id="teams"
-            value={teams}
-            onChange={(e) => setTeams(e.target.value)}
-            placeholder="Team A&#10;Team B&#10;Team C"
-            rows={3}
-            className="font-mono text-sm"
-          />
-          <p className="text-xs text-muted-foreground mt-1">
-            These will be created under each department
-          </p>
-        </div>
-
-        {message && (
-          <div className={`text-sm p-3 rounded ${message.startsWith('✅') ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
-            {message}
-          </div>
-        )}
-
-        <div className="flex gap-2">
-          <Button
-            type="button"
-            onClick={handleSetup}
-            disabled={loading}
-          >
-            {loading ? 'Setting up...' : 'Create Hierarchy'}
-          </Button>
-          <Button
-            type=" visitation gamma
-            variant="outline"
-            onClick={() => {
-              setIsOpen(false);
-              setMessage('');
-            }}
-            disabled={loading}
-          >
-            Cancel
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
 }
+```
 
+**Response:**
+```json
+{
+  "ok": true,
+  "message": "Hierarchy setup completed",
+  "summary": {
+    "divisions": 3,
+    "departments": 9,
+    "teams": 18
+  },
+  "results": {
+    "divisions": ["Created: Division 1", "Created: Division 2", ...],
+    "departments": ["Created: Division 1:Dept A", ...],
+    "teams": ["Created: Division 1:Dept A:Team 1", ...]
+  }
+}
+```
+
+## Example Config File
+
+See `hierarchy-template.example.json` for a complete example.
+
+## How It Works
+
+1. **Divisions are created first** - Each division name you provide becomes a top-level organizational unit
+2. **Departments are created under each division** - For each division, all departments are created
+3. **Teams are created under each department** - For each department, all teams are created
+
+**Example:**
+- Divisions: `["Sydney", "Melbourne"]`
+- Departments: `["Sales", "Support"]`
+- Teams: `["Team A", "Team B"]`
+
+**Result:**
+- 2 Divisions: Sydney, Melbourne
+- 4 Departments: Sydney:Sales, Sydney:Support, Melbourne:Sales, Melbourne:Support
+- 8 Teams: Sydney:Sales:Team A, Sydney:Sales:Team B, ... (and so on)
+
+## For New Clients
+
+When onboarding a new client:
+
+1. **Create the client record** in Supabase `clients` table (if not exists)
+2. **Run the schema migration** (if not already done for this Supabase project)
+3. **Set up their hierarchy** using the dashboard button or API
+4. **Verify** by checking the dashboard - divisions should appear in filters
+
+## Troubleshooting
+
+### "Hierarchy tables do not exist"
+- Run the `database-schema-hierarchy-template.sql` migration in Supabase SQL Editor
+
+### "Failed to create any divisions"
+- Check that `client_id` is valid
+- Verify you have admin access (correct token/cookie)
+- Check Supabase logs for detailed errors
+
+### Divisions not showing in dashboard
+- Ensure divisions have `active = true`
+- Verify `client_id` matches your `NEXT_PUBLIC_DASHBOARD_CLIENT_ID`
+- Check browser console for errors
+
+## Database Schema
+
+The hierarchy uses these tables:
+
+```sql
+divisions
+  - division_id (PK)
+  - client_id (FK → clients)
+  - division_name
+  - active
+
+departments
+  - department_id (PK)
+  - division_id (FK → divisions)
+  - department_name
+  - active
+
+teams
+  - team_id (PK)
+  - department_id (FK → departments)
+  - team_name
+  - active
+
+employees (extended)
+  - division_id (FK → divisions)
+  - department_id (FK → departments)
+  - team_id (FK → teams)
+```
+
+## Next Steps
+
+After setting up the hierarchy:
+1. Generate demo data (will use the hierarchy structure)
+2. Import employees and assign them to divisions/departments/teams
+3. Start collecting survey responses
+4. View aggregated data in the dashboard by division/department/team
