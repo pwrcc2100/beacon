@@ -13,10 +13,12 @@ export function GenerateDemoDataButton({ clientId, endpoint, label }: Props) {
   const [message, setMessage] = useState<string>('');
 
   const handleGenerate = async () => {
+    console.log('🟢 Button clicked! Generating demo data...', { endpoint, clientId });
     setLoading(true);
     setMessage('');
     
     try {
+      console.log(`📡 Making API request to /api/demo/${endpoint}`);
       // Fetch with cookies - the API will check the 'dash' cookie set during login
       const response = await fetch(`/api/demo/${endpoint}`, {
         method: 'POST',
@@ -27,10 +29,11 @@ export function GenerateDemoDataButton({ clientId, endpoint, label }: Props) {
         body: JSON.stringify({ client_id: clientId })
       });
 
+      console.log('📥 Got response, status:', response.status);
       const data = await response.json();
       
       // Log full response for debugging
-      console.log('Demo data generation response:', data);
+      console.log('✅ Demo data generation response:', data);
 
       if (!response.ok) {
         if (response.status === 401) {
@@ -66,9 +69,11 @@ export function GenerateDemoDataButton({ clientId, endpoint, label }: Props) {
       }, 5000);
       
     } catch (error: any) {
+      console.error('❌ Error generating demo data:', error);
       setMessage(`❌ Error: ${error.message}`);
     } finally {
       setLoading(false);
+      console.log('🏁 Handler finished');
     }
   };
 
