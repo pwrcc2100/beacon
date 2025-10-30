@@ -222,7 +222,7 @@ export async function POST(req: NextRequest){
     const batch = responses.slice(i, i + batchSize);
     const { error, data } = await supabaseAdmin.from('responses_v3').insert(batch).select();
     if (error) {
- honored('Batch insert error:', error);
+      console.error('Batch insert error:', error);
       errors.push(`Batch ${Math.floor(i/batchSize) + 1}: ${error.message}`);
     } else {
       totalInserted += data?.length || batch.length;
