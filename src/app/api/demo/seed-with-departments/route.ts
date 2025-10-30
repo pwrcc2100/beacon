@@ -210,6 +210,7 @@ export async function POST(req: NextRequest){
         
         if (empError) {
           console.error('Employee insert error:', empError);
+          errors.push(`Employee ${responseCount + 1} creation failed: ${empError.message} | division_id: ${divisionMap.get(location)}, dept_id: ${deptId}, team_id: ${teamId}`);
           // If employee creation fails, skip this response
           continue;
         }
