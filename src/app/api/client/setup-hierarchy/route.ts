@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
 
     // Step 3: Create departments under each division
     const departmentMap = new Map<string, string>();
-    for (const [divisionName, divisionId] of divisionMap) {
+    for (const [divisionName, divisionId] of Array.from(divisionMap.entries())) {
       for (const deptName of hierarchy.departments_per_division) {
         const key = `${divisionName}:${deptName}`;
         const { data: existing, error: existingError } = await supabaseAdmin
@@ -153,7 +153,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Step 4: Create teams under each department
-    for (const [deptKey, deptId] of departmentMap) {
+    for (const [deptKey, deptId] of Array.from(departmentMap.entries())) {
       for (const teamName of hierarchy.teams_per_department) {
         const key = `${deptKey}:${teamName}`;
         const { data: existing, error: existingError } = await supabaseAdmin
