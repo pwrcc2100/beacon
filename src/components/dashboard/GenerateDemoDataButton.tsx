@@ -36,12 +36,20 @@ export function GenerateDemoDataButton({ clientId, endpoint, label }: Props) {
         throw new Error(data.error || 'Failed to generate demo data');
       }
 
-      const inserted = data.inserted || data.verified || (data.ok ? 'demo data' : 0);
-      const verified = data.verified ? ` (${data.verified} verified in database)` : '';
-      setMessage(`✅ Success! Generated ${inserted} records${verified}.`);
+      const inserted = data.inserted || data.verifiedInDatabase || (data.ok ? 'demo data' : 0);
+      const verified = data.verifiedInDatabase ? ` (${data.verifiedInDatabase} verified in database)` : '';
+      const employeesInfo = data.employeesWithDivision ? ` | ${data.employeesWithDivision} employees with divisions` : '';
+      setMessage(`✅ Success! Generated ${inserted} records${verified}${employeesInfo}.`);
       
       if (data.errors && data.errors.length > 0) {
         console.warn('Some batches had errors:', data.errors);
+        setMessage(`⚠️ Generated ${inserted} records but some had errors. Check console.`);
+      }
+      
+      // Show warning if employees don't have division_id
+      if (data.employeesWithDivision === 0 && data.verifiedInDatabase > 0) {
+        console.warn('⚠️ Employees created but division_id not set - hierarchy data won\'t show!');
+        setMessage(`⚠️ ${data.verifiedInDatabase} responses created but employees missing division_id. Data may not display in hierarchy view.`);
       }
       
       // Refresh the page after a short delay to show new data  

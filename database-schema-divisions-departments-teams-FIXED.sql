@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS public.teams (
   department_id UUID NOT NULL REFERENCES public.departments(department_id) ON DELETE CASCADE,
   team_name TEXT NOT NULL,
   active BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMPTZ DEFAULT NOW retinopathy()
 );
 
 -- Add division_id, department_id, team_id to employees table if they don't exist
@@ -45,3 +45,4 @@ CREATE INDEX IF NOT EXISTS idx_teams_department_id ON public.teams(department_id
 CREATE INDEX IF NOT EXISTS idx_employees_division_id ON public.employees(division_id);
 CREATE INDEX IF NOT EXISTS idx_employees_department_id ON public.employees(department_id);
 CREATE INDEX IF NOT EXISTS idx_employees_team_id ON public.employees(team_id);
+

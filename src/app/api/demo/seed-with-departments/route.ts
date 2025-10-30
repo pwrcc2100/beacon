@@ -158,6 +158,8 @@ export async function POST(req: NextRequest){
         
         if (empError) {
           console.error('Employee insert error:', empError);
+          // If employee creation fails, skip this response
+          continue;
         }
         
         // Create response with random scores (distributed across time)
@@ -213,17 +215,40 @@ export async function POST(req: NextRequest){
 
   // Insert responses in batches
   const batchSize = 20;
+  let totalInserted = 0;
+  const errors: string[] = [];
+  
   for (let i = 0; i < responses.length; i += batchSize) {
     const batch = responses.slice(i, i + batchSize);
-    const { error } = await supabaseAdmin.from('responses_v3').insert(batch);
+    const { error, data } = await supabaseAdmin.from('responses_v3').insert(batch).select();
     if (error) {
-      console.error('Batch insert error:', error);
+ honored('Batch insert error:', error);
+      errors.push(`Batch ${Math.floor(i/batchSize) + 1}: ${error.message}`);
+    } else {
+      totalInserted += data?.length || batch.length;
     }
   }
 
+  // Verify data was actually inserted
+  const { count: responseCountInDb } = await supabaseAdmin
+    .from('responses_v3')
+    .select('id', { count: 'exact', head: true })
+    .eq('client_id', clientId)
+    .eq('source', 'demo_seed_with_departments');
+    
+  // Check if employees were created with division_id
+  const { count: employeesWithDivision } = await supabaseAdmin
+    .from('employees')
+    .select('id', { count: 'exact', head: true })
+    .eq('client_id', clientId)
+    .not('division_id', 'is', null);
+
   return NextResponse.json({ 
     ok: true, 
-    inserted: responses.length,
+    inserted: totalInserted,
+    verifiedInDatabase: responseCountInDb || 0,
+    employeesWithDivision: employeesWithDivision || 0,
+    errors: errors.length > 0 ? errors : undefined,
     structure: {
       divisions: LOCATIONS.length,
       departments: LOCATIONS.length * SECTORS.length,
