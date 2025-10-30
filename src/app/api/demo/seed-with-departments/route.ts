@@ -27,19 +27,28 @@ export async function POST(req: NextRequest){
   if (!clientId) return NextResponse.json({ error: 'client_id required' }, { status: 400 });
 
   const now = new Date();
+  const errors: string[] = [];
   
   // Create divisions (Locations)
   const divisionMap = new Map<string, string>();
   for (const location of LOCATIONS) {
-    const { data: existing } = await supabaseAdmin
+    const { data: existing, error: existingError } = await supabaseAdmin
       .from('divisions')
       .select('division_id')
       .eq('client_id', clientId)
       .eq('division_name', location)
-      .single();
+      .maybeSingle(); // Use maybeSingle() instead of single() to avoid errors when not found
     
-    if (!existing) {
-      const { data: newDiv } = await supabaseAdmin
+    if (existingError && existingError.code !== 'PGRST116') { // PGRST116 = not found, which is OK
+      console.error(`Error checking existing division "${location}":`, existingError);
+      errors.push(`Error checking division "${location}": ${existingError.message}`);
+    }
+    
+    if (existing) {
+      divisionMap.set(location, existing.division_id);
+      console.log(`Using existing division "${location}": ${existing.division_id}`);
+    } else {
+      const { data: newDiv, error: insertError } = await supabaseAdmin
         .from('divisions')
         .insert({
           client_id: clientId,
@@ -48,29 +57,54 @@ export async function POST(req: NextRequest){
         })
         .select('division_id')
         .single();
-      if (newDiv) divisionMap.set(location, newDiv.division_id);
-    } else {
-      divisionMap.set(location, existing.division_id);
+      
+      if (insertError) {
+        console.error(`Error creating division "${location}":`, insertError);
+        errors.push(`Error creating division "${location}": ${insertError.message}`);
+      } else if (newDiv) {
+        divisionMap.set(location, newDiv.division_id);
+        console.log(`Created division "${location}": ${newDiv.division_id}`);
+      } else {
+        errors.push(`Failed to create division "${location}": No data returned`);
+      }
     }
+  }
+  
+  if (divisionMap.size === 0) {
+    return NextResponse.json({ 
+      error: 'Failed to create any divisions. Please check if the divisions table exists and has the correct schema.',
+      divisionErrors: errors,
+      hint: 'Run the database-schema-divisions-departments-teams-FIXED.sql migration in Supabase SQL Editor'
+    }, { status: 500 });
   }
 
   // Create departments (Sectors) under each division
   const departmentMap = new Map<string, string>();
   for (const location of LOCATIONS) {
     const divisionId = divisionMap.get(location);
-    if (!divisionId) continue;
+    if (!divisionId) {
+      errors.push(`No division_id found for "${location}" - skipping departments`);
+      continue;
+    }
     
     for (const sector of SECTORS) {
       const deptName = `${location} - ${sector}`;
-      const { data: existing } = await supabaseAdmin
+      const { data: existing, error: existingError } = await supabaseAdmin
         .from('departments')
         .select('department_id')
         .eq('division_id', divisionId)
         .eq('department_name', sector)
-        .single();
+        .maybeSingle();
       
-      if (!existing) {
-        const { data: newDept } = await supabaseAdmin
+      if (existingError && existingError.code !== 'PGRST116') {
+        console.error(`Error checking existing department "${deptName}":`, existingError);
+        errors.push(`Error checking department "${deptName}": ${existingError.message}`);
+      }
+      
+      if (existing) {
+        departmentMap.set(`${location}:${sector}`, existing.department_id);
+      } else {
+        const { data: newDept, error: insertError } = await supabaseAdmin
           .from('departments')
           .insert({
             division_id: divisionId,
@@ -79,9 +113,13 @@ export async function POST(req: NextRequest){
           })
           .select('department_id')
           .single();
-        if (newDept) departmentMap.set(`${location}:${sector}`, newDept.department_id);
-      } else {
-        departmentMap.set(`${location}:${sector}`, existing.department_id);
+        
+        if (insertError) {
+          console.error(`Error creating department "${deptName}":`, insertError);
+          errors.push(`Error creating department "${deptName}": ${insertError.message}`);
+        } else if (newDept) {
+          departmentMap.set(`${location}:${sector}`, newDept.department_id);
+        }
       }
     }
   }
@@ -91,19 +129,29 @@ export async function POST(req: NextRequest){
   for (const location of LOCATIONS) {
     for (const sector of SECTORS) {
       const deptId = departmentMap.get(`${location}:${sector}`);
-      if (!deptId) continue;
+      if (!deptId) {
+        errors.push(`No department_id found for "${location}:${sector}"`);
+        continue;
+      }
       
       for (const project of PROJECTS) {
         const teamName = `${location} - ${sector} - ${project}`;
-        const { data: existing } = await supabaseAdmin
+        const { data: existing, error: existingError } = await supabaseAdmin
           .from('teams')
           .select('team_id')
           .eq('department_id', deptId)
           .eq('team_name', project)
-          .single();
+          .maybeSingle();
         
-        if (!existing) {
-          const { data: newTeam } = await supabaseAdmin
+        if (existingError && existingError.code !== 'PGRST116') {
+          console.error(`Error checking existing team "${teamName}":`, existingError);
+          errors.push(`Error checking team "${teamName}": ${existingError.message}`);
+        }
+        
+        if (existing) {
+          teamMap.set(`${location}:${sector}:${project}`, existing.team_id);
+        } else {
+          const { data: newTeam, error: insertError } = await supabaseAdmin
             .from('teams')
             .insert({
               department_id: deptId,
@@ -112,9 +160,13 @@ export async function POST(req: NextRequest){
             })
             .select('team_id')
             .single();
-          if (newTeam) teamMap.set(`${location}:${sector}:${project}`, newTeam.team_id);
-        } else {
-          teamMap.set(`${location}:${sector}:${project}`, existing.team_id);
+          
+          if (insertError) {
+            console.error(`Error creating team "${teamName}":`, insertError);
+            errors.push(`Error creating team "${teamName}": ${insertError.message}`);
+          } else if (newTeam) {
+            teamMap.set(`${location}:${sector}:${project}`, newTeam.team_id);
+          }
         }
       }
     }
@@ -242,12 +294,33 @@ export async function POST(req: NextRequest){
     .select('id', { count: 'exact', head: true })
     .eq('client_id', clientId)
     .not('division_id', 'is', null);
+  
+  // Verify divisions were created
+  const { count: divisionsCount } = await supabaseAdmin
+    .from('divisions')
+    .select('division_id', { count: 'exact', head: true })
+    .eq('client_id', clientId);
+  
+  const { count: departmentsCount } = await supabaseAdmin
+    .from('departments')
+      .select('department_id', { count: 'exact', head: true })
+    .in('division_id', Array.from(divisionMap.values()));
+  
+  const { count: teamsCount } = await supabaseAdmin
+    .from('teams')
+    .select('team_id', { count: 'exact', head: true })
+    .in('department_id', Array.from(departmentMap.values()));
 
   return NextResponse.json({ 
     ok: true, 
     inserted: totalInserted,
     verifiedInDatabase: responseCountInDb || 0,
     employeesWithDivision: employeesWithDivision || 0,
+    hierarchyCreated: {
+      divisions: divisionsCount || 0,
+      departments: departmentsCount || 0,
+      teams: teamsCount || 0
+    },
     errors: errors.length > 0 ? errors : undefined,
     structure: {
       divisions: LOCATIONS.length,
