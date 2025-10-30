@@ -46,42 +46,56 @@ export function EnhancedOrganisationFilterClient({
 }: Props) {
   const router = useRouter();
 
-  const handleSelectionChange = (selected: string[], isAll: boolean) => {
+  const buildBaseParams = () => {
     const params = new URLSearchParams();
     params.set('client', clientId);
     params.set('mode', mode);
     
     if (period !== 'all') params.set('period', period);
-    
-    if (isAll) {
-      // Clear all filters for "ALL"
-      // Don't add division/department/team params
-    } else if (selected.length > 0) {
-      // Multi-select departments
-      selected.forEach(deptId => {
-        params.append('selected_departments', deptId);
-      });
-    } else {
-      // Single selection was made (handled by EnhancedOrganisationFilter's single select)
-      if (currentTeamId) {
-        params.set('division_id', currentDivisionId || '');
-        params.set('department_id', currentDepartmentId || '');
-        params.set('team_id', currentTeamId);
-      } else if (currentDepartmentId) {
-        params.set('division_id', currentDivisionId || '');
-        params.set('department_id', currentDepartmentId);
-      } else if (currentDivisionId) {
-        params.set('division_id', currentDivisionId);
+    return params;
+  };
+
+  const handleViewChange = (type: 'all' | 'division' | 'department' | 'team', id?: string) => {
+    const params = buildBaseParams();
+
+    if (type === 'division' && id) {
+      params.set('division_id', id);
+    } else if (type === 'department' && id) {
+      const dept = departments.find(d => d.department_id === id);
+      if (dept) {
+        params.set('division_id', dept.division_id);
+        params.set('department_id', id);
+      }
+    } else if (type === 'team' && id) {
+      const team = teams.find(t => t.team_id === id);
+      if (team) {
+        const dept = departments.find(d => d.department_id === team.department_id);
+        if (dept) {
+          params.set('division_id', dept.division_id);
+          params.set('department_id', dept.department_id);
+        }
+        params.set('team_id', id);
       }
     }
-    
+
+    router.push(`/dashboard?${params.toString()}`);
+  };
+
+  const handleDepartmentMultiChange = (selected: string[]) => {
+    const params = buildBaseParams();
+    selected.forEach(deptId => {
+      params.append('selected_departments', deptId);
+    });
+    router.push(`/dashboard?${params.toString()}`);
+  };
+
+  const handleClearDepartments = () => {
+    const params = buildBaseParams();
     router.push(`/dashboard?${params.toString()}`);
   };
 
   return (
     <EnhancedOrganisationFilter
-      clientId={clientId}
-      period={period}
       currentDivisionId={currentDivisionId}
       currentDepartmentId={currentDepartmentId}
       currentTeamId={currentTeamId}
@@ -89,7 +103,9 @@ export function EnhancedOrganisationFilterClient({
       divisions={divisions}
       departments={departments}
       teams={teams}
-      onSelectionChange={handleSelectionChange}
+      onViewChange={handleViewChange}
+      onDepartmentMultiChange={handleDepartmentMultiChange}
+      onDepartmentMultiClear={handleClearDepartments}
     />
   );
 }

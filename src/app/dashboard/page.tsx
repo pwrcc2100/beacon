@@ -594,19 +594,44 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     .eq('active', true)
     .order('division_name');
   
-  const { data: departments } = await supabaseAdmin
+  const { data: departmentsData } = await supabaseAdmin
     .from('departments')
-    .select('department_id, department_name, division_id')
-    .eq('client_id', clientId)
+    .select(`
+      department_id,
+      department_name,
+      division_id,
+      divisions!inner(client_id)
+    `)
+    .eq('divisions.client_id', clientId)
     .eq('active', true)
     .order('department_name');
+
+  const departments = (departmentsData ?? []).map(dept => ({
+    department_id: dept.department_id,
+    department_name: dept.department_name,
+    division_id: dept.division_id
+  }));
   
-  const { data: teams } = await supabaseAdmin
+  const { data: teamsData } = await supabaseAdmin
     .from('teams')
-    .select('team_id, team_name, department_id')
-    .eq('client_id', clientId)
+    .select(`
+      team_id,
+      team_name,
+      department_id,
+      departments!inner(
+        division_id,
+        divisions!inner(client_id)
+      )
+    `)
+    .eq('departments.divisions.client_id', clientId)
     .eq('active', true)
     .order('team_name');
+
+  const teams = (teamsData ?? []).map(team => ({
+    team_id: team.team_id,
+    team_name: team.team_name,
+    department_id: team.department_id
+  }));
 
   const toSeries = (key: keyof WellbeingRow, color: string, heading: string, description: string) => ({
     heading,

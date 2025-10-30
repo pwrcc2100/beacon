@@ -1,7 +1,17 @@
 'use client';
-import { useState } from 'react';
+
+import { useMemo, ChangeEvent } from 'react';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuItem
+} from '@/components/ui/dropdown-menu';
 
 type Division = {
   division_id: string;
@@ -21,208 +31,159 @@ type Team = {
 };
 
 type Props = {
-  clientId: string;
-  period: string;
   currentDivisionId?: string;
   currentDepartmentId?: string;
   currentTeamId?: string;
-  selectedDepartments?: string[];
+  selectedDepartments: string[];
   divisions: Division[];
   departments: Department[];
   teams: Team[];
-  onSelectionChange: (selected: string[], isAll: boolean) => void;
+  onViewChange: (type: 'all' | 'division' | 'department' | 'team', id?: string) => void;
+  onDepartmentMultiChange: (selected: string[]) => void;
+  onDepartmentMultiClear: () => void;
 };
 
-export function EnhancedOrganisationFilter({ 
-  clientId, 
-  period, 
-  currentDivisionId, 
-  currentDepartmentId, 
+export function EnhancedOrganisationFilter({
+  currentDivisionId,
+  currentDepartmentId,
   currentTeamId,
-  selectedDepartments = [],
+  selectedDepartments,
   divisions,
   departments,
   teams,
-  onSelectionChange
+  onViewChange,
+  onDepartmentMultiChange,
+  onDepartmentMultiClear
 }: Props) {
-  const [showMultiSelect, setShowMultiSelect] = useState(false);
-  const [tempSelections, setTempSelections] = useState<string[]>(selectedDepartments);
+  const divisionLookup = useMemo(() => {
+    const map = new Map<string, string>();
+    divisions.forEach(div => map.set(div.division_id, div.division_name));
+    return map;
+  }, [divisions]);
 
-  const handleSingleSelect = (value: string) => {
+  const groupedDepartments = useMemo(() => {
+    const groups = new Map<string, Department[]>();
+    departments.forEach(dept => {
+      const divName = divisionLookup.get(dept.division_id) ?? 'Other';
+      if (!groups.has(divName)) {
+        groups.set(divName, []);
+      }
+      groups.get(divName)!.push(dept);
+    });
+    return Array.from(groups.entries());
+  }, [departments, divisionLookup]);
+
+  const currentViewValue = useMemo(() => {
+    if (selectedDepartments.length > 0) return 'all';
+    if (currentTeamId) return `team:${currentTeamId}`;
+    if (currentDepartmentId) return `department:${currentDepartmentId}`;
+    if (currentDivisionId) return `division:${currentDivisionId}`;
+    return 'all';
+  }, [selectedDepartments, currentTeamId, currentDepartmentId, currentDivisionId]);
+
+  const handleViewSelect = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
     if (value === 'all') {
-      onSelectionChange([], true);
+      onViewChange('all');
       return;
     }
-    
     const [type, id] = value.split(':');
-    if (type === 'division') {
-      window.location.href = `/dashboard?client=${clientId}&period=${period}&division_id=${id}`;
-    } else if (type === 'department') {
-      const dept = departments.find(d => d.department_id === id);
-      window.location.href = `/dashboard?client=${clientId}&period=${period}&division_id=${dept?.division_id}&department_id=${id}`;
-    } else if (type === 'team') {
-      const team = teams.find(t => t.team_id === id);
-      const dept = departments.find(d => d.department_id === team?.department_id);
-      window.location.href = `/dashboard?client=${clientId}&period=${period}&division_id=${dept?.division_id}&department_id=${dept?.department_id}&team_id=${id}`;
+    onViewChange(type as 'division' | 'department' | 'team', id);
+  };
+
+  const toggleDepartment = (deptId: string, checked: boolean) => {
+    let next = selectedDepartments;
+    if (checked) {
+      if (!next.includes(deptId)) {
+        next = [...next, deptId];
+      }
+    } else {
+      next = next.filter(id => id !== deptId);
     }
+    onDepartmentMultiChange(next);
   };
-
-  const handleApplyMultiSelect = () => {
-    onSelectionChange(tempSelections, false);
-    setShowMultiSelect(false);
-  };
-
-  const toggleDepartment = (deptId: string) => {
-    setTempSelections(prev => 
-      prev.includes(deptId) 
-        ? prev.filter(id => id !== deptId)
-        : [...prev, deptId]
-    );
-  };
-
-  const currentValue = currentTeamId 
-    ? `team:${currentTeamId}` 
-    : currentDepartmentId 
-    ? `department:${currentDepartmentId}` 
-    : currentDivisionId 
-    ? `division:${currentDivisionId}` 
-    : 'all';
 
   return (
-    <div className="flex items-center gap-2 flex-wrap">
-      <Label className="text-sm font-medium">View:</Label>
-      
-      {/* Single Select Dropdown */}
-      <select 
-        className="border rounded px-3 py-1.5 text-sm min-w-[200px]"
-        onChange={(e) => handleSingleSelect(e.target.value)}
-        value={currentValue}
-      >
-        <option value="all">Whole of Business (ALL)</option>
-        {divisions.length > 0 && (
-          <optgroup label="Divisions">
-            {divisions.map(div => (
-              <option key={div.division_id} value={`division:${div.division_id}`}>
-                {div.division_name}
-              </option>
-            ))}
-          </optgroup>
-        )}
-        {departments.length > 0 && (
-          <optgroup label="Departments">
-            {departments.map(dept => (
-              <option key={dept.department_id} value={`department:${dept.department_id}`}>
-                {dept.department_name}
-              </option>
-            ))}
-          </optgroup>
-        )}
-        {teams.length > 0 && (
-          <optgroup label="Teams">
-            {teams.map(team => (
-              <option key={team.team_id} value={`team:${team.team_id}`}>
-                {team.team_name}
-              </option>
-            ))}
-          </optgroup>
-        )}
-      </select>
+    <div className="flex items-center gap-3 flex-wrap">
+      <div className="flex items-center gap-2">
+        <Label className="text-sm font-medium">View:</Label>
+        <select
+          className="border rounded px-3 py-1.5 text-sm min-w-[200px]"
+          value={currentViewValue}
+          onChange={handleViewSelect}
+        >
+          <option value="all">Whole of Business (ALL)</option>
+          {divisions.length > 0 && (
+            <optgroup label="Divisions">
+              {divisions.map(div => (
+                <option key={div.division_id} value={`division:${div.division_id}`}>
+                  {div.division_name}
+                </option>
+              ))}
+            </optgroup>
+          )}
+          {departments.length > 0 && (
+            <optgroup label="Departments">
+              {departments.map(dept => (
+                <option key={dept.department_id} value={`department:${dept.department_id}`}>
+                  {dept.department_name}
+                </option>
+              ))}
+            </optgroup>
+          )}
+          {teams.length > 0 && (
+            <optgroup label="Teams">
+              {teams.map(team => (
+                <option key={team.team_id} value={`team:${team.team_id}`}>
+                  {team.team_name}
+                </option>
+              ))}
+            </optgroup>
+          )}
+        </select>
+      </div>
 
-      {/* Multi-Select Button */}
-      <Button 
-        type="button"
-        variant="outline" 
-        size="sm"
-        onClick={() => {
-          setTempSelections(selectedDepartments);
-          setShowMultiSelect(!showMultiSelect);
-        }}
-      >
-        Multi-Select Departments
-      </Button>
-
-      {/* Show selected departments count */}
-      {selectedDepartments.length > 0 && !showMultiSelect && (
-        <span className="text-sm text-muted-foreground">
-          ({selectedDepartments.length} selected)
-        </span>
-      )}
-
-      {/* Multi-Select Dropdown */}
-      {showMultiSelect && (
-        <div className="absolute z-50 mt-2 bg-white border rounded-lg shadow-lg p-4 min-w-[300px] max-h-[400px] overflow-y-auto">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-sm">Select Departments</h3>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowMultiSelect(false)}
-            >
-              ✕
-            </Button>
-          </div>
-          
-          <div className="mb-3">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="w-full mb-2"
-              onClick={() => {
-                setTempSelections(departments.map(d => d.department_id));
-              }}
-            >
-              Select All
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="w-full"
-              onClick={() => setTempSelections([])}
-            >
-              Clear All
-            </Button>
-          </div>
-
-          <div className="space-y-2">
-            {departments.map(dept => (
-              <label key={dept.department_id} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded">
-                <input
-                  type="checkbox"
-                  checked={tempSelections.includes(dept.department_id)}
-                  onChange={() => toggleDepartment(dept.department_id)}
-                  className="rounded"
-                />
-                <span className="text-sm">{dept.department_name}</span>
-              </label>
-            ))}
-          </div>
-
-          <div className="mt-4 flex gap-2">
-            <Button
-              type="button"
-              size="sm"
-              className="flex-1"
-              onClick={handleApplyMultiSelect}
-            >
-              Apply
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setShowMultiSelect(false)}
-            >
-              Cancel
-            </Button>
-          </div>
-        </div>
-      )}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button type="button" variant="outline" size="sm">
+            Multi-Select Departments{selectedDepartments.length > 0 ? ` (${selectedDepartments.length})` : ''}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="max-h-80 w-64 overflow-y-auto">
+          <DropdownMenuLabel>Departments</DropdownMenuLabel>
+          <DropdownMenuItem
+            onSelect={(event) => {
+              event.preventDefault();
+              onDepartmentMultiClear();
+              onViewChange('all');
+            }}
+          >
+            Clear selection
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          {groupedDepartments.map(([divisionName, items]) => (
+            <div key={divisionName}>
+              <DropdownMenuLabel className="text-xs text-muted-foreground">
+                {divisionName}
+              </DropdownMenuLabel>
+              {items.map(dept => (
+                <DropdownMenuCheckboxItem
+                  key={dept.department_id}
+                  checked={selectedDepartments.includes(dept.department_id)}
+                  onCheckedChange={(checked) => {
+                    toggleDepartment(dept.department_id, Boolean(checked));
+                  }}
+                >
+                  {dept.department_name}
+                </DropdownMenuCheckboxItem>
+              ))}
+              <DropdownMenuSeparator />
+            </div>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
-
 
 
