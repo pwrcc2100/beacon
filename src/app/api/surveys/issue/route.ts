@@ -33,29 +33,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const DEFAULT_APP_URL = 'https://beacon-mu.vercel.app';
-
-    const envUrl =
-      base_url ||
-      process.env.NEXT_PUBLIC_APP_URL ||
-      process.env.APP_URL ||
-      DEFAULT_APP_URL;
-    const originHeader = req.headers.get('origin') || undefined;
-    const hostHeader = req.headers.get('host');
-
-    const buildBaseUrl = (input?: string | null) => {
-      if (!input) return undefined;
-      if (input.startsWith('http://') || input.startsWith('https://')) {
-        return input.replace(/\/$/, '');
-      }
-      return `https://${input}`.replace('https://https://', 'https://').replace(/\/$/, '');
-    };
-
-    const baseUrl =
-      buildBaseUrl(envUrl) ||
-      buildBaseUrl(originHeader) ||
-      buildBaseUrl(hostHeader) ||
-      DEFAULT_APP_URL;
+    // Always use production domain for survey links
+    const baseUrl = 'https://beacon-mu.vercel.app';
     const url = baseUrl ? `${baseUrl}/survey/${data.id}` : `/survey/${data.id}`;
     
     return NextResponse.json({ token: data.id, url });
