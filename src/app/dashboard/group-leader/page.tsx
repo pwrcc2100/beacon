@@ -66,7 +66,10 @@ async function getTeamSummaries(
       return team.department_id === departmentId;
     }
     if (divisionId) {
-      return team.departments?.division_id === divisionId;
+      const divisionMatch = Array.isArray((team as any).departments)
+        ? (team as any).departments.some((dept: any) => dept?.division_id === divisionId)
+        : (team as any).departments?.division_id === divisionId;
+      return divisionMatch;
     }
     return true;
   });
