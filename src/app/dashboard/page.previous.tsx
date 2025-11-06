@@ -4,20 +4,17 @@ import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
 import { DashboardShell } from '@/components/layout/DashboardShell';
 import { PrintButton } from '@/components/ui/PrintButton';
-import { Button } from '@/components/ui/button';
 import { EnhancedOrganisationFilterClient } from '@/components/dashboard/EnhancedOrganisationFilterClient';
 import { TimePeriodFilter } from '@/components/dashboard/TimePeriodFilter';
 import { DataModeToggleClient } from './DataModeToggleClient';
-import nextDynamic from 'next/dynamic';
+import { GenerateDemoDataButton } from '@/components/dashboard/GenerateDemoDataButton';
+import { SetupHierarchyButton } from '@/components/dashboard/SetupHierarchyButton';
 import { DemoQRCode } from '@/components/dashboard/DemoQRCode';
 import { getPeriodStartDate } from '@/lib/dateUtils';
 import DemoDashboardClient from './DemoDashboardClient';
 import { QuoteBanner } from '@/components/dashboard/QuoteBanner';
 import { ExecutiveOverview } from '@/components/dashboard/ExecutiveOverview';
 import { generateExecutiveInsights } from '@/lib/executiveInsights';
-import { calculateWellbeingPercent } from '@/components/dashboard/scoreTheme';
-
-const AdminTools = nextDynamic(() => import('@/components/dashboard/AdminTools').then(m => ({ default: m.AdminTools })), { ssr: false });
 
 type WellbeingRow = {
   wk: string;
@@ -558,7 +555,6 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         <div className="space-y-2">
           <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
           <a href="/dashboard" className="block px-3 py-2 rounded bg-black/5 font-medium">Overview</a>
-          <a href="/dashboard/dash-login" className="text-primary hover:underline text-sm">Admin Login</a>
         </div>
       }>
         <div className="max-w-6xl mx-auto space-y-6">
@@ -622,164 +618,26 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     department_id: team.department_id
   }));
 
-  const startDateForFilters = (() => {
-    if (mode === 'live') {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return today;
-    }
-    if (period && period !== 'all') {
-      return getPeriodStartDate(period);
-    }
-    return undefined;
-  })();
-
-  const latestRow = trends.length ? trends[trends.length - 1] : undefined;
-  const previousRow = trends.length > 1 ? trends[trends.length - 2] : undefined;
-
-  const trendSeries = trends.map(t => ({
-    label: new Date(t.wk).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-    wellbeing:
-      calculateWellbeingPercent({
-        sentiment: t.sentiment_avg,
-        workload: t.workload_avg,
-        safety: t.safety_avg,
-        leadership: t.leadership_avg,
-        clarity: t.clarity_avg,
-      }) ?? 0,
-    safety: (t.safety_avg ?? 0) * 20,
-  }));
-
-  const questionScores = {
-    sentiment: latestRow?.sentiment_avg ?? 0,
-    clarity: latestRow?.clarity_avg ?? 0,
-    workload: latestRow?.workload_avg ?? 0,
-    safety: latestRow?.safety_avg ?? 0,
-    leadership: latestRow?.leadership_avg ?? 0,
-  } as const;
-
-  const overallScore = latestRow
-    ? calculateWellbeingPercent({
-        sentiment: latestRow.sentiment_avg,
-        workload: latestRow.workload_avg,
-        safety: latestRow.safety_avg,
-        leadership: latestRow.leadership_avg,
-        clarity: latestRow.clarity_avg,
-      })
-    : undefined;
-
-  const previousScore = previousRow
-    ? calculateWellbeingPercent({
-        sentiment: previousRow.sentiment_avg,
-        workload: previousRow.workload_avg,
-        safety: previousRow.safety_avg,
-        leadership: previousRow.leadership_avg,
-        clarity: previousRow.clarity_avg,
-      })
-    : undefined;
-
-  const participationPercent = responseRate.total > 0
-    ? (responseRate.responded / responseRate.total) * 100
-    : 0;
-
-  const tableData = hierarchyData.currentLevel === 'team' ? [] : (hierarchyData.data ?? []);
-  const tableTitle = hierarchyData.currentLevel === 'division'
-    ? 'Departments'
-    : hierarchyData.currentLevel === 'department'
-    ? 'Teams'
-    : 'Divisions';
-
-  let eligibleTeams = teams;
-  if (teamId) {
-    eligibleTeams = teams.filter(team => team.team_id === teamId);
-  } else if (selectedDepartments && selectedDepartments.length > 0) {
-    const selectedSet = new Set(selectedDepartments);
-    eligibleTeams = teams.filter(team => selectedSet.has(team.department_id));
-  } else if (departmentId) {
-    eligibleTeams = teams.filter(team => team.department_id === departmentId);
-  } else if (divisionId) {
-    const divisionDeptSet = new Set(
-      departments
-        .filter(dept => dept.division_id === divisionId)
-        .map(dept => dept.department_id)
-    );
-    eligibleTeams = teams.filter(team => divisionDeptSet.has(team.department_id));
-  }
-
-  let attentionTeams: { id: string; name: string; wellbeing: number }[] = [];
-  if (eligibleTeams.length > 0) {
-    const teamMap = new Map(eligibleTeams.map(team => [team.team_id, team.team_name]));
-    const teamIds = Array.from(teamMap.keys());
-
-    let teamQuery = supabaseAdmin
-      .from('responses_v3')
-      .select(`
-        sentiment_5,
-        clarity_5,
-        workload_5,
-        safety_5,
-        leadership_5,
-        employees!inner(team_id)
-      `)
-      .eq('client_id', clientId)
-      .in('employees.team_id', teamIds);
-
-    if (startDateForFilters) {
-      teamQuery = teamQuery.gte('submitted_at', startDateForFilters.toISOString());
-    }
-
-    const { data: teamResponses } = await teamQuery;
-
-    const aggregates: Record<string, {
-      count: number;
-      sentiment: number;
-      clarity: number;
-      workload: number;
-      safety: number;
-      leadership: number;
-    }> = {};
-
-    teamIds.forEach(id => {
-      aggregates[id] = {
-        count: 0,
-        sentiment: 0,
-        clarity: 0,
-        workload: 0,
-        safety: 0,
-        leadership: 0,
-      };
-    });
-
-    (teamResponses ?? []).forEach((response: any) => {
-      const teamKey = response.employees?.team_id as string | undefined;
-      if (teamKey && aggregates[teamKey]) {
-        aggregates[teamKey].count += 1;
-        aggregates[teamKey].sentiment += Number(response.sentiment_5 ?? 0);
-        aggregates[teamKey].clarity += Number(response.clarity_5 ?? 0);
-        aggregates[teamKey].workload += Number(response.workload_5 ?? 0);
-        aggregates[teamKey].safety += Number(response.safety_5 ?? 0);
-        aggregates[teamKey].leadership += Number(response.leadership_5 ?? 0);
-      }
-    });
-
-    attentionTeams = Object.entries(aggregates)
-      .filter(([, agg]) => agg.count > 0)
-      .map(([id, agg]) => ({
-        id,
-        name: teamMap.get(id) ?? 'Team',
-        wellbeing:
-          ((agg.sentiment / agg.count) * 0.25 +
-            (agg.workload / agg.count) * 0.25 +
-            (agg.safety / agg.count) * 0.2 +
-            (agg.leadership / agg.count) * 0.2 +
-            (agg.clarity / agg.count) * 0.1) * 20,
-      }));
-  }
-
-  const executiveInsights = generateExecutiveInsights(trends, {
-    data: tableData,
-    currentLevel: hierarchyData.currentLevel,
+  const toSeries = (key: keyof WellbeingRow, color: string, heading: string, description: string) => ({
+    heading,
+    description,
+    color,
+    data: trends.map(t => ({ wk: new Date(t.wk).toLocaleDateString(undefined,{ month:'short', day:'numeric'}), value: Number(t[key]) }))
   });
+
+    const series = [
+      toSeries('sentiment_avg', '#64afac', 'Sentiment', 'How are you feeling about work this week?'),
+      toSeries('workload_avg',  '#ea9999', 'Workload', 'How\'s your workload?'),
+      toSeries('safety_avg',    '#ea9999', 'Safety', 'Do you feel safe speaking up?'),
+      toSeries('leadership_avg','#64afac', 'Leadership', 'Do you feel supported by leadership?'),
+      toSeries('clarity_avg',   '#5d89a9', 'Clarity', 'Are you clear on what\'s expected?')
+    ];
+
+  const last = (k:keyof WellbeingRow)=> (trends.length ? Number(trends[trends.length-1][k]) : undefined);
+  const prev = (k:keyof WellbeingRow)=> (trends.length>1 ? Number(trends[trends.length-2][k]) : undefined);
+  const delta = (k:keyof WellbeingRow)=>{
+    const a = last(k), b = prev(k); if(a===undefined||b===undefined) return undefined; return Number((a-b).toFixed(2));
+  };
 
   const Sidebar = (
     <div className="space-y-4">
@@ -787,7 +645,6 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
         <a href="/dashboard" className="block px-3 py-2 rounded bg-black/5 font-medium">Overview</a>
         <a href="/dashboard/trends" className="block px-3 py-2 rounded hover:bg-black/5">Trends</a>
-        <a href="/dashboard/group-leader" className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
         <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Advanced Analytics</a>
         <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
       </div>
@@ -805,15 +662,6 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
   return (
     <DashboardShell sidebar={Sidebar}>
       <div className="max-w-6xl mx-auto space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div>
-            <h1 className="text-3xl font-bold text-[var(--navy)]">Beacon Executive Wellbeing Dashboard</h1>
-            <p className="text-sm text-[var(--text-muted)]">Beacon · Building healthier workplaces through real insights</p>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
-            <span>Last updated: {reportDate}</span>
-          </div>
-        </div>
         {/* Print Header - Only visible when printing */}
         <div className="hidden print:block mb-6 pb-4 border-b-2 border-[var(--navy)]">
           <div className="flex justify-between items-start">
@@ -884,31 +732,229 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
               <input type="hidden" name="client_id" value={clientId} />
               <Button type="submit" variant="outline" size="sm" disabled={recent.length === 0}>Download CSV</Button>
             </form>
-            <AdminTools clientId={clientId} />
+            {process.env.ADMIN_DASH_TOKEN && (
+              <>
+                <SetupHierarchyButton clientId={clientId} />
+                <GenerateDemoDataButton 
+                  clientId={clientId} 
+                  endpoint="seed" 
+                  label="Generate Demo Data" 
+                />
+                <GenerateDemoDataButton 
+                  clientId={clientId} 
+                  endpoint="seed-with-departments" 
+                  label="Generate 100 Demo Records" 
+                />
+              </>
+            )}
           </div>
         </div>
 
         {/* Top Quote Banner */}
         <QuoteBanner position="top" />
 
-        {trends.length === 0 && recent.length === 0 ? (
+        {/* Demo Dashboard - Show when no real data */}
+        {recent.length === 0 && (
           <DemoDashboardClient />
-        ) : (
-          <ExecutiveOverview
-            overallScore={overallScore}
-            previousScore={previousScore}
-            trendSeries={trendSeries}
-            questionScores={questionScores}
-            participationRate={participationPercent}
-            teams={attentionTeams}
-            divisions={tableData as any}
-            insights={executiveInsights}
-            tableTitle={tableTitle}
-            attentionLabel="Which Teams Need Attention"
-          />
         )}
 
+        {/* Status Cards */}
+        <StatusCards 
+          sentiment={last('sentiment_avg')}
+          workload={last('workload_avg')}
+          safety={last('safety_avg')}
+          clarity={last('clarity_avg')}
+        />
+
+        {/* Overall Score and Psychological Safety - Side by Side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Overall Wellbeing Gauge */}
+          <WellbeingGauge 
+            sentiment={last('sentiment_avg')} 
+            clarity={last('clarity_avg')}
+            workload={last('workload_avg')} 
+            leadership={last('leadership_avg')} 
+            safety={last('safety_avg')}
+            prevScore={prev('sentiment_avg') && prev('clarity_avg') && prev('workload_avg') && prev('leadership_avg') && prev('safety_avg')
+              ? ((prev('sentiment_avg')! * 0.25) + (prev('workload_avg')! * 0.25) + (prev('leadership_avg')! * 0.20) + (prev('safety_avg')! * 0.20) + (prev('clarity_avg')! * 0.10)) * 20
+              : undefined
+            }
+          />
+
+          {/* Psychological Safety Distribution */}
+          <MoodDistribution responses={recent} />
+        </div>
+
+        {/* Team Status */}
+        <TeamStatus responses={recent} />
+
+        {/* Teams Attention Chart */}
+        <TeamsAttentionChartWrapper 
+          teams={hierarchyData.data.map((d: any) => ({
+            name: d.name,
+            score: d.wellbeing_score || 0,
+            id: d.id
+          }))}
+          clientId={clientId}
+          period={period}
+          currentLevel={hierarchyData.currentLevel}
+          divisionId={divisionId}
+          departmentId={departmentId}
+        />
+
+        {/* Key Insights */}
+        <ExecutiveSummary trends={trends} hierarchyData={hierarchyData} />
+
+        {/* Bottom Quote Banner */}
         <QuoteBanner position="bottom" />
+
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {hierarchyData.currentLevel === 'team' ? 'Recent Responses' : 
+               hierarchyData.currentLevel === 'department' ? 'Teams' :
+               hierarchyData.currentLevel === 'division' ? 'Departments' : 
+               'Divisions'}
+            </CardTitle>
+            {(divisionId || departmentId || teamId) && (
+              <div className="text-sm text-muted-foreground mt-1">
+                <a href={`/dashboard?client=${clientId}&period=${period}`} className="text-primary hover:underline">← Back to top level</a>
+              </div>
+            )}
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{hierarchyData.currentLevel === 'team' ? 'Submitted' : (hierarchyData.nextLevel || 'Name').replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</TableHead>
+                    {hierarchyData.currentLevel !== 'team' && <TableHead>Overall Wellbeing</TableHead>}
+                    <TableHead>Sentiment</TableHead>
+                    <TableHead>Clarity</TableHead>
+                    <TableHead>Workload</TableHead>
+                    <TableHead>Safety</TableHead>
+                    <TableHead>Leadership</TableHead>
+                    {hierarchyData.currentLevel !== 'team' && <TableHead>Responses</TableHead>}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {hierarchyData.currentLevel === 'team' ? (
+                    // Show individual responses at project level
+                    hierarchyData.data.map((r:any, i:number)=> {
+                      const isHighRisk = (val:number) => val <= 2; // 40% or below
+                      return (
+                        <TableRow key={i}>
+                          <TableCell className="font-medium">{new Date(r.submitted_at).toLocaleDateString()}</TableCell>
+                          <TableCell>
+                            {isHighRisk(r.sentiment_5) ? (
+                              <Badge variant="destructive">{r.sentiment_5}</Badge>
+                            ) : (
+                              <span className="text-sm">{r.sentiment_5}</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {isHighRisk(r.clarity_5) ? (
+                              <Badge variant="destructive">{r.clarity_5}</Badge>
+                            ) : (
+                              <span className="text-sm">{r.clarity_5}</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {isHighRisk(r.workload_5) ? (
+                              <Badge variant="destructive">{r.workload_5}</Badge>
+                            ) : (
+                              <span className="text-sm">{r.workload_5}</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {isHighRisk(r.safety_5) ? (
+                              <Badge variant="destructive">{r.safety_5}</Badge>
+                            ) : (
+                              <span className="text-sm">{r.safety_5}</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {isHighRisk(r.leadership_5) ? (
+                              <Badge variant="destructive">{r.leadership_5}</Badge>
+                            ) : (
+                              <span className="text-sm">{r.leadership_5}</span>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  ) : (
+                    // Show aggregated data by hierarchy level
+                    hierarchyData.data.map((agg:any, i:number)=> {
+                      const isHighRisk = (val:number) => val < 60; // Below 60% is high risk
+                      
+                      // Build drill-down URL
+                      let drillDownUrl = `/dashboard?client=${clientId}&period=${period}`;
+                      if (hierarchyData.nextLevel === 'department') {
+                        drillDownUrl += `&division_id=${encodeURIComponent(agg.id)}`;
+                      } else if (hierarchyData.nextLevel === 'team') {
+                        drillDownUrl += `&division_id=${encodeURIComponent(divisionId!)}&department_id=${encodeURIComponent(agg.id)}`;
+                      }
+                      
+                      return (
+                        <TableRow key={i} className="hover:bg-muted/50">
+                          <TableCell className="font-medium">
+                            <a href={drillDownUrl} className="text-primary hover:underline">{agg.name}</a>
+                          </TableCell>
+                          <TableCell>
+                            {isHighRisk(agg.wellbeing_score) ? (
+                              <Badge variant="destructive" className="font-bold">
+                                {agg.wellbeing_score.toFixed(0)}%
+                              </Badge>
+                            ) : (
+                              <span className="text-sm font-semibold">{agg.wellbeing_score.toFixed(0)}%</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {isHighRisk(agg.sentiment_avg * 20) ? (
+                              <Badge variant="destructive">{(agg.sentiment_avg * 20).toFixed(0)}%</Badge>
+                            ) : (
+                              <span className="text-sm">{(agg.sentiment_avg * 20).toFixed(0)}%</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {isHighRisk(agg.clarity_avg * 20) ? (
+                              <Badge variant="destructive">{(agg.clarity_avg * 20).toFixed(0)}%</Badge>
+                            ) : (
+                              <span className="text-sm">{(agg.clarity_avg * 20).toFixed(0)}%</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {isHighRisk(agg.workload_avg * 20) ? (
+                              <Badge variant="destructive">{(agg.workload_avg * 20).toFixed(0)}%</Badge>
+                            ) : (
+                              <span className="text-sm">{(agg.workload_avg * 20).toFixed(0)}%</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {isHighRisk(agg.safety_avg * 20) ? (
+                              <Badge variant="destructive">{(agg.safety_avg * 20).toFixed(0)}%</Badge>
+                            ) : (
+                              <span className="text-sm">{(agg.safety_avg * 20).toFixed(0)}%</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {isHighRisk(agg.leadership_avg * 20) ? (
+                              <Badge variant="destructive">{(agg.leadership_avg * 20).toFixed(0)}%</Badge>
+                            ) : (
+                              <span className="text-sm">{(agg.leadership_avg * 20).toFixed(0)}%</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right text-muted-foreground text-sm">{agg.response_count}</TableCell>
+                        </TableRow>
+                      );
+                    })
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </DashboardShell>
   );

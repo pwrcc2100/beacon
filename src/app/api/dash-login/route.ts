@@ -20,10 +20,17 @@ export async function POST(req: NextRequest) {
   const res = NextResponse.redirect(new URL(redirect, req.url));
   res.cookies.set('dash', expected, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     path: '/',
     maxAge: 60 * 60 * 8 // 8 hours
+  });
+  res.cookies.set('dash_ui', '1', {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 8
   });
   return res;
 }

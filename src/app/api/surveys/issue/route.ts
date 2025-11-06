@@ -7,13 +7,14 @@ const schema = z.object({
   client_id: z.string().uuid(),
   employee_id: z.string().uuid().optional(),
   ttl_days: z.number().int().min(1).max(30).default(7),
-  channel: z.enum(['web', 'sms', 'email']).default('web')
+  channel: z.enum(['web', 'sms', 'email']).default('web'),
+  base_url: z.string().url().optional()
 });
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { client_id, employee_id, ttl_days, channel } = schema.parse(body);
+    const { client_id, employee_id, ttl_days, channel, base_url } = schema.parse(body);
 
     const valid_until = new Date(Date.now() + ttl_days * 864e5).toISOString();
     
@@ -32,7 +33,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const url = `${process.env.NEXT_PUBLIC_APP_URL}/survey/${data.id}`;
+    const envUrl = base_url || process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || process.env.VERCEL_URL;
+    const originHeader = req.headers.get('origin') || undefined;
+    const hostHeader = req.headers.get('host');
+
+    const buildBaseUrl = (input?: string | null) => {
+      if (!input) return undefined;
+      if (input.startsWith('http://') || input.startsWith('https://')) {
+        return input.replace(/\/$/, '');
+      }
+      return `https://${input}`.replace('https://https://', 'https://').replace(/\/$/, '');
+    };
+
+    const baseUrl = buildBaseUrl(envUrl) || buildBaseUrl(originHeader) || buildBaseUrl(hostHeader);
+    const url = baseUrl ? `${baseUrl}/survey/${data.id}` : `/survey/${data.id}`;
     
     return NextResponse.json({ token: data.id, url });
   } catch (error) {

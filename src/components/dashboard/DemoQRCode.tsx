@@ -17,7 +17,26 @@ export function DemoQRCode({ clientId = '', compact = false }: Props) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false); // Start collapsed in compact mode
   
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  const baseUrl = (() => {
+    const format = (value?: string | null) => {
+      if (!value) return undefined;
+      if (value.startsWith('http://') || value.startsWith('https://')) {
+        return value.replace(/\/$/, '');
+      }
+      return `https://${value}`.replace('https://https://', 'https://').replace(/\/$/, '');
+    };
+
+    const envConfigured = format(process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || process.env.VERCEL_URL);
+    if (envConfigured) return envConfigured;
+
+    if (typeof window !== 'undefined') {
+      return format(window.location.origin) || '';
+    }
+
+    const host = typeof window === 'undefined' ? process.env.HOSTNAME || process.env.VERCEL_URL : undefined;
+    const fallback = format(host ? `https://${host}` : undefined);
+    return fallback || '';
+  })();
 
   const generateNewToken = async () => {
     if (!clientId) {
@@ -33,18 +52,19 @@ export function DemoQRCode({ clientId = '', compact = false }: Props) {
         body: JSON.stringify({
           client_id: clientId,
           ttl_days: 7,
-          channel: 'web'
+          channel: 'web',
+          base_url: baseUrl || undefined
         })
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to generate token');
       }
 
       const newToken = data.token;
-      const url = `${baseUrl}/survey/${newToken}`;
+      const url = data.url || (baseUrl ? `${baseUrl.replace(/\/$/, '')}/survey/${newToken}` : `/survey/${newToken}`);
       
       setToken(newToken);
       setSurveyUrl(url);

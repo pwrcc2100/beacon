@@ -1,6 +1,7 @@
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MaterialIcon } from '@/components/ui/MaterialIcon';
+import { formatPercent, SCORE_BACKGROUNDS, SCORE_COLORS, SCORE_THRESHOLDS } from './scoreTheme';
 
 type Props = {
   responses: Array<{
@@ -13,16 +14,48 @@ type Props = {
 };
 
 export function TeamStatus({ responses }: Props) {
-  // Calculate overall wellbeing score for each response
-  const categorized = responses.map(r => {
-    const score = ((r.sentiment_5 * 0.25) + (r.workload_5 * 0.25) + (r.safety_5 * 0.20) + (r.leadership_5 * 0.20) + (r.clarity_5 * 0.10)) * 20;
-    return score;
-  });
+  const scores = responses.map(r => ((
+    r.sentiment_5 * 0.25 +
+    r.workload_5 * 0.25 +
+    r.safety_5 * 0.2 +
+    r.leadership_5 * 0.2 +
+    r.clarity_5 * 0.1
+  ) * 20));
 
-  const thriving = categorized.filter(s => s >= 70).length;
-  const managingOk = categorized.filter(s => s >= 50 && s < 70).length;
-  const needSupport = categorized.filter(s => s < 50).length;
   const total = responses.length || 1;
+
+  const counts = {
+    thriving: scores.filter(score => score >= SCORE_THRESHOLDS.thriving).length,
+    watch: scores.filter(score => score >= SCORE_THRESHOLDS.watch && score < SCORE_THRESHOLDS.thriving).length,
+    alert: scores.filter(score => score < SCORE_THRESHOLDS.watch).length,
+  };
+
+  const categories = [
+    {
+      key: 'thriving' as const,
+      label: 'Thriving',
+      icon: 'star',
+      color: SCORE_COLORS.thriving,
+      background: SCORE_BACKGROUNDS.thriving,
+      count: counts.thriving,
+    },
+    {
+      key: 'watch' as const,
+      label: 'Ones to Watch',
+      icon: 'remove_red_eye',
+      color: SCORE_COLORS.watch,
+      background: SCORE_BACKGROUNDS.watch,
+      count: counts.watch,
+    },
+    {
+      key: 'alert' as const,
+      label: 'High Alert',
+      icon: 'warning',
+      color: SCORE_COLORS.alert,
+      background: SCORE_BACKGROUNDS.alert,
+      count: counts.alert,
+    },
+  ];
 
   return (
     <Card className="h-full flex flex-col">
@@ -30,39 +63,21 @@ export function TeamStatus({ responses }: Props) {
         <CardTitle className="text-base">Overall Team Status</CardTitle>
       </CardHeader>
       <CardContent className="flex-1">
-        <div className="grid grid-cols-3 gap-4">
-          {/* Thriving */}
-          <div 
-            className="text-center p-6 rounded-lg"
-            style={{ backgroundColor: '#f4f4ee' }}
-          >
-            <MaterialIcon icon="star" style={{ fontSize: '56px', color: '#64afac', marginBottom: '8px' }} />
-            <div className="text-sm font-semibold mb-1" style={{ color: '#2E2E38' }}>Thriving</div>
-            <div className="text-3xl font-bold mb-1" style={{ color: '#64afac' }}>{thriving}</div>
-            <div className="text-xs" style={{ color: '#737A8C' }}>{Math.round((thriving / total) * 100)}% of team</div>
-          </div>
-
-          {/* Managing OK */}
-          <div 
-            className="text-center p-6 rounded-lg"
-            style={{ backgroundColor: '#eeefec' }}
-          >
-            <MaterialIcon icon="thumbs_up_down" style={{ fontSize: '56px', color: '#5d89a9', marginBottom: '8px' }} />
-            <div className="text-sm font-semibold mb-1" style={{ color: '#2E2E38' }}>Managing OK</div>
-            <div className="text-3xl font-bold mb-1" style={{ color: '#5d89a9' }}>{managingOk}</div>
-            <div className="text-xs" style={{ color: '#737A8C' }}>{Math.round((managingOk / total) * 100)}% of team</div>
-          </div>
-
-          {/* Need Support */}
-          <div 
-            className="text-center p-6 rounded-lg"
-            style={{ backgroundColor: '#f6f2ef' }}
-          >
-            <MaterialIcon icon="warning" style={{ fontSize: '56px', color: '#ea9999', marginBottom: '8px' }} />
-            <div className="text-sm font-semibold mb-1" style={{ color: '#2E2E38' }}>Need Support</div>
-            <div className="text-3xl font-bold mb-1" style={{ color: '#ea9999' }}>{needSupport}</div>
-            <div className="text-xs" style={{ color: '#737A8C' }}>{Math.round((needSupport / total) * 100)}% of team</div>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {categories.map(category => (
+            <div
+              key={category.key}
+              className="text-center p-6 rounded-lg"
+              style={{ backgroundColor: category.background }}
+            >
+              <MaterialIcon icon={category.icon} style={{ fontSize: '56px', color: category.color, marginBottom: '8px' }} />
+              <div className="text-sm font-semibold mb-1" style={{ color: '#2E2E38' }}>{category.label}</div>
+              <div className="text-3xl font-bold mb-1" style={{ color: category.color }}>{category.count}</div>
+              <div className="text-xs" style={{ color: '#737A8C' }}>
+                {formatPercent((category.count / total) * 100)} of team
+              </div>
+            </div>
+          ))}
         </div>
       </CardContent>
     </Card>

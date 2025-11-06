@@ -64,3 +64,4 @@ echo "📖 See NEW_LAPTOP_SETUP.md for detailed instructions"
 
 
 
+

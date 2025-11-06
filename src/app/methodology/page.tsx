@@ -31,11 +31,14 @@ export default function MethodologyPage() {
             <CardTitle>Purpose</CardTitle>
           </CardHeader>
           <CardContent className="prose prose-sm max-w-none">
-            <p className="text-sm leading-relaxed">
-              The Beacon Check-in measures an organisation's <strong>psychosocial safety climate</strong> — the extent to which its culture, systems and leadership create a safe and supportive working environment.
+            <p className="text-sm leading-relaxed text-slate-700">
+              The Beacon Check-In measures an organisation’s <strong>psychosocial safety climate</strong> — the extent to which its culture, systems, and leadership create a safe and supportive working environment.
             </p>
-            <p className="text-sm leading-relaxed mt-3">
-              It focuses on organisational factors, not individual mental health, aligning with the <strong>Australian COPSOQ-III validation (Rahimi et al., 2025)</strong> and <strong>Safe Work Australia's Model Code of Practice – Managing Psychosocial Hazards (2022)</strong>.
+            <p className="text-sm leading-relaxed text-slate-700 mt-3">
+              It focuses on organisational conditions, not individual mental health, and aligns with the <strong>Australian COPSOQ-III validation (Rahimi et al., 2025)</strong>, <strong>Safe Work Australia’s Model Code of Practice – Managing Psychosocial Hazards (2022)</strong>, and <strong>ISO 45003:2021 Psychosocial Health & Safety at Work</strong>.
+            </p>
+            <p className="text-sm leading-relaxed text-slate-700 mt-3">
+              Beacon transforms these standards into a practical, early-warning tool for Australian workplaces — especially construction, where project pressures, leadership style, and workload variation are high-risk psychosocial factors.
             </p>
           </CardContent>
         </Card>
@@ -47,46 +50,52 @@ export default function MethodologyPage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-slate-700 mb-4">
-              Each domain reflects a <em>system-level condition</em> that supports or undermines psychological safety.
+              Each domain reflects a <em>system-level condition</em> that supports or undermines wellbeing and psychological safety.
             </p>
             <div className="overflow-x-auto">
               <table className="w-full text-sm border-collapse">
                 <thead>
                   <tr className="border-b-2 border-slate-300 bg-slate-50">
                     <th className="text-left py-3 px-3 font-semibold">Domain</th>
-                    <th className="text-left py-3 px-3 font-semibold">What it Represents</th>
-                    <th className="text-left py-3 px-3 font-semibold">Example Indicator</th>
+                    <th className="text-left py-3 px-3 font-semibold">Weight</th>
+                    <th className="text-left py-3 px-3 font-semibold">Rationale</th>
                   </tr>
                 </thead>
                 <tbody className="text-sm">
                   <tr className="border-b border-slate-200 hover:bg-slate-50">
-                    <td className="py-3 px-3 font-medium">Clarity & Direction</td>
-                    <td className="py-3 px-3">Clear expectations, communication and role definition</td>
-                    <td className="py-3 px-3 italic text-slate-600">"I understand what's expected of me."</td>
+                    <td className="py-3 px-3 font-medium">Sentiment (Overall)</td>
+                    <td className="py-3 px-3 font-semibold text-slate-800">25%</td>
+                    <td className="py-3 px-3">Most sensitive to weekly changes; earliest risk signal. Example indicator: “How are you feeling about work this week?”</td>
                   </tr>
                   <tr className="border-b border-slate-200 hover:bg-slate-50">
                     <td className="py-3 px-3 font-medium">Workload & Resourcing</td>
-                    <td className="py-3 px-3">Balance between job demands and available resources</td>
-                    <td className="py-3 px-3 italic text-slate-600">"My workload is reasonable for the time available."</td>
+                    <td className="py-3 px-3 font-semibold text-slate-800">25%</td>
+                    <td className="py-3 px-3">Directly correlates with fatigue, stress, and claims. Example indicator: “My workload is reasonable for the time available.”</td>
                   </tr>
                   <tr className="border-b border-slate-200 hover:bg-slate-50">
-                    <td className="py-3 px-3 font-medium">Psychological Safety (Voice)</td>
-                    <td className="py-3 px-3">Trust and confidence to speak up or raise issues</td>
-                    <td className="py-3 px-3 italic text-slate-600">"It's safe to express a concern at work."</td>
+                    <td className="py-3 px-3 font-medium">Psychological Safety</td>
+                    <td className="py-3 px-3 font-semibold text-slate-800">20%</td>
+                    <td className="py-3 px-3">Central cultural driver; less volatile but crucial. Example indicator: “I feel safe to speak up if something isn’t right.”</td>
                   </tr>
                   <tr className="border-b border-slate-200 hover:bg-slate-50">
                     <td className="py-3 px-3 font-medium">Leadership & Support</td>
-                    <td className="py-3 px-3">Management commitment to wellbeing and follow-through on concerns</td>
-                    <td className="py-3 px-3 italic text-slate-600">"Leaders act on issues raised by staff."</td>
+                    <td className="py-3 px-3 font-semibold text-slate-800">20%</td>
+                    <td className="py-3 px-3">Moderately responsive and affects all other domains. Example indicator: “My leader supports me when challenges arise.”</td>
                   </tr>
                   <tr className="hover:bg-slate-50">
-                    <td className="py-3 px-3 font-medium">Fairness & Recognition</td>
-                    <td className="py-3 px-3">Procedural fairness and acknowledgement of contributions</td>
-                    <td className="py-3 px-3 italic text-slate-600">"People are treated fairly and good work is recognised."</td>
+                    <td className="py-3 px-3 font-medium">Clarity & Direction</td>
+                    <td className="py-3 px-3 font-semibold text-slate-800">10%</td>
+                    <td className="py-3 px-3">Important baseline, but stable week-to-week; ideal as contextual factor. Example indicator: “I understand what’s expected of me.”</td>
                   </tr>
                 </tbody>
               </table>
             </div>
+            <p className="text-sm text-slate-600 mt-4">
+              Beacon’s weighting model prioritises domains that change quickly and signal emerging risk. Sentiment and Workload are the most dynamic predictors of psychosocial strain, while Clarity serves as a structural anchor that changes more slowly. This ensures the Beacon Index remains both sensitive and stable.
+            </p>
+            <p className="text-sm text-slate-600 mt-3">
+              These weightings apply to the live Beacon Index calculation used in dashboards and analytics.
+            </p>
           </CardContent>
         </Card>
 
@@ -98,17 +107,19 @@ export default function MethodologyPage() {
           <CardContent className="space-y-4">
             <p className="text-sm text-slate-700">
               Responses use a <strong>3-point behavioural scale</strong> (Positive = 3, Neutral = 2, Negative = 1).
-              Values are normalised to a 0-100 scale where 100 = strong organisational safety climate.
-              All domains are equally weighted in version 1.0 to ensure transparency and simplicity.
+              Scores are normalised to a 0–100 scale where 100 = strong psychosocial safety climate.
             </p>
 
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
-              <div className="font-semibold mb-2 text-slate-900">Beacon Index Formula</div>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-3">
+              <div className="font-semibold text-slate-900">Beacon Index Formula</div>
               <div className="font-mono text-base bg-white p-4 rounded border border-slate-300 text-center">
-                Beacon Index (%) = (C + W + P + L + F) / 5
+                Beacon Index (%) = (0.25S + 0.25W + 0.20P + 0.20L + 0.10C)
               </div>
-              <div className="text-xs text-slate-600 mt-3">
-                where C = Clarity, W = Workload, P = Psychological Safety, L = Leadership, F = Fairness
+              <div className="text-xs text-slate-600">
+                where S = Sentiment, W = Workload, P = Psychological Safety, L = Leadership & Support, C = Clarity & Direction
+              </div>
+              <div className="text-xs text-slate-600">
+                Weights are based on observed volatility and predictive correlation with psychosocial risk indicators (v1.1 operational model).
               </div>
             </div>
           </CardContent>
@@ -131,15 +142,15 @@ export default function MethodologyPage() {
                 <tbody className="text-sm">
                   <tr className="border-b border-slate-200 bg-green-50">
                     <td className="py-3 px-3 font-bold text-green-800">≥ 80%</td>
-                    <td className="py-3 px-3">Strong psychosocial safety climate</td>
+                    <td className="py-3 px-3">Strong psychosocial safety climate.</td>
                   </tr>
                   <tr className="border-b border-slate-200 bg-yellow-50">
                     <td className="py-3 px-3 font-bold text-yellow-800">65 – 79%</td>
-                    <td className="py-3 px-3">Generally positive; monitor emerging risks</td>
+                    <td className="py-3 px-3">Generally positive — monitor for emerging risks.</td>
                   </tr>
                   <tr className="bg-red-50">
                     <td className="py-3 px-3 font-bold text-red-800">&lt; 65%</td>
-                    <td className="py-3 px-3">Elevated psychosocial risk; review workload, leadership, or systems</td>
+                    <td className="py-3 px-3">Elevated psychosocial risk — review workload, leadership, or system design.</td>
                   </tr>
                 </tbody>
               </table>
@@ -158,7 +169,10 @@ export default function MethodologyPage() {
                 Results represent <strong>organisational culture and practices</strong>, not personal wellbeing.
               </li>
               <li>
-                The Index supports compliance with <strong>ISO 45003:2021</strong> and WHS regulatory expectations for psychosocial risk management.
+                The Index provides documented evidence of consultation and continuous improvement under WHS legislation.
+              </li>
+              <li>
+                Supports compliance with <strong>ISO 45003:2021</strong> and Safe Work NSW psychosocial safety requirements.
               </li>
             </ul>
           </CardContent>
@@ -194,31 +208,17 @@ export default function MethodologyPage() {
           </CardContent>
         </Card>
 
-        {/* Current Dashboard Implementation Note */}
+        {/* Operational Weighting (v1.1) */}
         <Card className="border-amber-200 bg-amber-50">
           <CardHeader>
-            <CardTitle className="text-amber-900">Current Dashboard Implementation</CardTitle>
+            <CardTitle className="text-amber-900">Weighting Model (v1.1 Operational)</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-sm text-amber-900">
-              The current dashboard uses a weighted model that emphasizes immediate risk indicators for early warning:
+          <CardContent className="space-y-3 text-sm text-amber-900">
+            <p>
+              The live Beacon Index uses the operational weighting shown above. It is intentionally balanced to act as an early-warning system: rapidly changing domains (Sentiment, Workload) carry the most weight, while Clarity provides structural context.
             </p>
-            <div className="bg-white border border-amber-200 rounded-lg p-4">
-              <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm text-amber-900">
-                <div><strong>Sentiment (Overall):</strong> 25%</div>
-                <div className="text-amber-700">Captures wellbeing at a glance</div>
-                <div><strong>Workload (Capacity):</strong> 25%</div>
-                <div className="text-amber-700">Strong predictor of stress & risk</div>
-                <div><strong>Psychological Safety:</strong> 20%</div>
-                <div className="text-amber-700">Key cultural indicator</div>
-                <div><strong>Leadership Support:</strong> 20%</div>
-                <div className="text-amber-700">Directly impacts all others</div>
-                <div><strong>Clarity (Direction):</strong> 10%</div>
-                <div className="text-amber-700">Important but less volatile week-to-week</div>
-              </div>
-            </div>
-            <p className="text-xs text-amber-800 italic mt-3">
-              This model prioritizes early warning indicators while maintaining focus on systemic factors. Organisations may adjust weights based on their specific risk profile and maturity.
+            <p className="text-xs italic text-amber-800">
+              These weights are reviewed as new volatility data and predictive correlations emerge. Organisations can optionally tailor weights to reflect their own risk profile once a baseline is established.
             </p>
           </CardContent>
         </Card>

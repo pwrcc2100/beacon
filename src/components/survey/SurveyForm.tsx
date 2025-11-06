@@ -125,31 +125,31 @@ export function SurveyForm({ token }: { token: string }) {
 
       <Question
         id="sentiment"
-        label="Sentiment / Overall"
+        label="Domain 1 · General Sentiment (25%)"
         value={v.sentiment}
         onChange={(x) => setV((s) => ({ ...s, sentiment: x }))}
       />
       <Question
         id="clarity"
-        label="Clarity / Direction"
+        label="Domain 2 · Clarity & Direction (20%)"
         value={v.clarity}
         onChange={(x) => setV((s) => ({ ...s, clarity: x }))}
       />
       <Question
         id="workload"
-        label="Workload / Capacity"
+        label="Domain 3 · Workload & Resourcing (20%)"
         value={v.workload}
         onChange={(x) => setV((s) => ({ ...s, workload: x }))}
       />
       <Question
         id="safety"
-        label="Safety / Voice"
+        label="Domain 4 · Psychological Safety (20%)"
         value={v.safety}
         onChange={(x) => setV((s) => ({ ...s, safety: x }))}
       />
       <Question
         id="leadership"
-        label="Leadership Support"
+        label="Domain 5 · Leadership & Support (15%)"
         value={v.leadership}
         onChange={(x) => setV((s) => ({ ...s, leadership: x }))}
       />

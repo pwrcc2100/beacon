@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import ReactECharts from 'echarts-for-react';
+import { getScoreStatus, SCORE_COLORS, SCORE_THRESHOLDS } from './scoreTheme';
 
 type TeamData = {
   name: string;
@@ -31,22 +32,16 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
     );
   }
 
-  // Sort teams by score (lowest first = needs most attention)
   const sortedTeams = [...teams].sort((a, b) => a.score - b.score);
-
-  // Determine colors based on score
-  const getColor = (score: number) => {
-    if (score >= 70) return '#10b981'; // Green
-    if (score >= 55) return '#f59e0b'; // Orange
-    return '#ef4444'; // Red
-  };
-
-  const colors = sortedTeams.map(t => getColor(t.score));
+  const colors = sortedTeams.map(t => getScoreStatus(t.score).color);
 
   // Find lowest and highest scoring teams for action text
   const lowestTeam = sortedTeams[0];
   const highestTeam = sortedTeams[sortedTeams.length - 1];
-  const needsAttention = sortedTeams.filter(t => t.score < 60);
+  const highAlertTeams = sortedTeams.filter(t => t.score < SCORE_THRESHOLDS.watch);
+  const watchTeams = sortedTeams.filter(
+    t => t.score >= SCORE_THRESHOLDS.watch && t.score < SCORE_THRESHOLDS.thriving
+  );
 
   const option = {
     grid: { 
@@ -101,7 +96,7 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
       label: {
         show: true,
         position: 'top',
-        formatter: '{c}',
+        formatter: '{c}%',
         fontSize: 11,
         fontWeight: 'bold'
       }
@@ -112,7 +107,7 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
       formatter: (params: any) => {
         const data = params[0];
         const team = sortedTeams[data.dataIndex];
-        return `<strong>${team.name}</strong><br/>Wellbeing Score: ${team.score}/100`;
+        return `<strong>${team.name}</strong><br/>Wellbeing Score: ${Math.round(team.score)}%`;
       }
     }
   };
@@ -144,19 +139,20 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
         )}
 
         {/* Action Summary */}
-        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+        <div className="bg-slate-50 border-l-4 border-slate-400 p-4 rounded">
           <div className="flex items-start gap-2">
             <span className="text-xl">🎯</span>
             <div className="flex-1">
-              <div className="font-semibold text-blue-900 mb-1">Action needed:</div>
+              <div className="font-semibold text-slate-900 mb-1">Action needed:</div>
               <p className="text-sm text-blue-800">
-                {needsAttention.length > 0 ? (
+                {highAlertTeams.length > 0 ? (
                   <>
-                    <strong>{lowestTeam.name}</strong> shows lowest wellbeing scores ({lowestTeam.score}/100){needsAttention.length > 1 && ` along with ${needsAttention.length - 1} other team${needsAttention.length > 2 ? 's' : ''}`}. 
-                    {highestTeam.score >= 70 && (
-                      <> <strong>{highestTeam.name}</strong> is thriving ({highestTeam.score}/100).</>
+                    <strong>{lowestTeam.name}</strong> is in high alert ({Math.round(lowestTeam.score)}%).
+                    {highAlertTeams.length > 1 && ` ${highAlertTeams.length - 1} additional team${highAlertTeams.length > 2 ? 's are' : ' is'} also below ${SCORE_THRESHOLDS.watch}%.`}
+                    {watchTeams.length > 0 && (
+                      <> Ones to watch: {watchTeams.map(t => t.name).slice(0, 3).join(', ')}{watchTeams.length > 3 ? '…' : ''}.</>
                     )}
-                    {' '}Consider workload redistribution or additional resources for lower-scoring teams.
+                    {' '}Prioritise targeted check-ins and workload review for these teams.
                   </>
                 ) : (
                   <>
@@ -164,10 +160,10 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
                   </>
                 )}
               </p>
-              {needsAttention.length > 0 && (
+              {highAlertTeams.length > 0 && (
                 <button
                   onClick={() => onTeamClick && onTeamClick(lowestTeam.id, lowestTeam.name)}
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium mt-2 underline"
+                  className="text-sm text-slate-700 hover:text-slate-900 font-medium mt-2 underline"
                 >
                   → View {lowestTeam.name} details
                 </button>
@@ -179,16 +175,16 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
         {/* Color Legend */}
         <div className="flex items-center justify-center gap-6 text-sm">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#ef4444' }}></div>
-            <span className="text-muted-foreground">High Risk (&lt;55)</span>
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: SCORE_COLORS.alert }}></div>
+            <span className="text-muted-foreground">High Alert (&lt;{SCORE_THRESHOLDS.watch}%)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#f59e0b' }}></div>
-            <span className="text-muted-foreground">Moderate (55-69)</span>
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: SCORE_COLORS.watch }}></div>
+            <span className="text-muted-foreground">Ones to Watch ({SCORE_THRESHOLDS.watch}–{SCORE_THRESHOLDS.thriving - 1}%)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: '#10b981' }}></div>
-            <span className="text-muted-foreground">Thriving (70+)</span>
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: SCORE_COLORS.thriving }}></div>
+            <span className="text-muted-foreground">Thriving ({SCORE_THRESHOLDS.thriving}%+)</span>
           </div>
         </div>
       </CardContent>

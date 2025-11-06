@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 
 type Props = {
   clientId: string;
-  endpoint: 'seed' | 'seed-with-departments';
+  endpoint: 'seed' | 'seed-with-departments' | 'seed-balanced';
   label: string;
 };
 

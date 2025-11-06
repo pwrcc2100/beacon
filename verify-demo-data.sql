@@ -35,3 +35,4 @@ SELECT COUNT(*) as total_divisions
 FROM public.divisions
 WHERE client_id = '036802fb-215b-4a54-9d6e-9826043a6645';
 
+

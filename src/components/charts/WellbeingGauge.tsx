@@ -3,6 +3,13 @@ import { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import {
+  calculateWellbeingPercent,
+  getScoreStatus,
+  SCORE_BACKGROUNDS,
+  SCORE_COLORS,
+  SCORE_THRESHOLDS,
+} from '@/components/dashboard/scoreTheme';
 
 type Props = {
   sentiment?: number;   // Overall / Mood (25%)
@@ -17,23 +24,18 @@ export function WellbeingGauge({ sentiment, workload, safety, leadership, clarit
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
 
-  // Calculate weighted score
-  const score = sentiment && workload && leadership && safety && clarity
-    ? ((sentiment * 0.25) + (workload * 0.25) + (safety * 0.20) + (leadership * 0.20) + (clarity * 0.10)) * 20
-    : undefined;
+  const score = calculateWellbeingPercent({
+    sentiment,
+    workload,
+    safety,
+    leadership,
+    clarity,
+  });
 
   const delta = score !== undefined && prevScore !== undefined ? Number((score - prevScore).toFixed(1)) : undefined;
   const TrendIcon = typeof delta === 'number' ? (delta > 0 ? TrendingUp : delta < 0 ? TrendingDown : Minus) : Minus;
-
-  // Color logic based on Beacon palette
-  const getColor = (val?: number) => {
-    if (!val) return '#5d89a9'; // slate
-    if (val >= 80) return '#64afac'; // teal (good)
-    if (val >= 60) return '#5d89a9'; // slate (okay)
-    return '#ea9999'; // coral (attn)
-  };
-
-  const gaugeColor = getColor(score);
+  const status = getScoreStatus(score);
+  const gaugeColor = status.color;
 
   const option = {
     series: [
@@ -60,9 +62,9 @@ export function WellbeingGauge({ sentiment, workload, safety, leadership, clarit
           lineStyle: {
             width: 16,
             color: [
-              [0.6, '#f6f2ef'],  // coral background for 0-60%
-              [0.8, '#eeefec'],  // slate background for 60-80%
-              [1, '#f4f4ee']     // teal background for 80-100%
+              [SCORE_THRESHOLDS.watch / 100, SCORE_BACKGROUNDS.alert],
+              [SCORE_THRESHOLDS.thriving / 100, SCORE_BACKGROUNDS.watch],
+              [1, SCORE_BACKGROUNDS.thriving],
             ]
           }
         },
@@ -97,7 +99,7 @@ export function WellbeingGauge({ sentiment, workload, safety, leadership, clarit
           offsetCenter: [0, '5%'],
           fontSize: 40,
           fontWeight: 'bold',
-          formatter: '{value}%',
+          formatter: () => (score !== undefined ? `${Math.round(score)}%` : '—'),
           color: gaugeColor
         },
         data: [
@@ -110,7 +112,7 @@ export function WellbeingGauge({ sentiment, workload, safety, leadership, clarit
   };
 
   return (
-    <Card className="h-full flex flex-col" style={{ borderColor: gaugeColor, border: `2px solid ${gaugeColor}` }}>
+    <Card className="h-full flex flex-col" style={{ borderColor: gaugeColor, border: `2px solid ${gaugeColor || SCORE_COLORS.neutral}` }}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-lg font-semibold">Overall Wellbeing Score</CardTitle>
         <div className="h-6 w-6 rounded-full" style={{ backgroundColor: gaugeColor }} />
@@ -136,7 +138,7 @@ export function WellbeingGauge({ sentiment, workload, safety, leadership, clarit
         </div>
         
         {delta !== undefined && (
-          <div className="flex items-center gap-2 text-xs mt-2" style={{ color: delta >= 0 ? '#64afac' : '#ea9999' }}>
+          <div className="flex items-center gap-2 text-xs mt-2" style={{ color: delta >= 0 ? SCORE_COLORS.thriving : SCORE_COLORS.alert }}>
             <TrendIcon className="h-3 w-3" />
             <span className="font-medium">{Math.abs(delta).toFixed(1)}% vs last week</span>
           </div>

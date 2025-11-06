@@ -52,7 +52,18 @@ Vercel is the easiest way to deploy Next.js applications with zero configuration
 
 #### Steps:
 
-1. **Push to GitHub** (same as above)
+1. **Push to GitHub** (same as above)     NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+     SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+     SUPABASE_ANON_KEY=your_anon_key
+     UPSTASH_REDIS_REST_URL=your_redis_url
+     UPSTASH_REDIS_REST_TOKEN=your_redis_token
+     NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
+     ADMIN_PASSWORD=beacon2025
+     ADMIN_DASH_TOKEN=your_dashboard_token
+     NEXT_PUBLIC_DASHBOARD_CLIENT_ID=your_client_id
+     TWILIO_ACCOUNT_SID=your_twilio_sid (optional)
+     TWILIO_AUTH_TOKEN=your_twilio_token (optional)
+     TWILIO_PHONE_NUMBER=+61xxxxxxxxx (optional)
 
 2. **Deploy to Netlify**:
    - Go to [netlify.com](https://netlify.com)
@@ -231,6 +242,7 @@ vercel
 ---
 
 **Ready to deploy? Start with Vercel for the fastest setup!**
+
 
 
 

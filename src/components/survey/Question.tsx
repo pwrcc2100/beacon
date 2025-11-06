@@ -15,43 +15,48 @@ export function Question({
 }) {
   const questionText = {
     sentiment: 'How are you feeling about work this week?',
-    clarity: 'How clear are you about your priorities and what\'s expected of you?',
-    workload: 'How manageable is your current workload?',
-    safety: 'How comfortable do you feel speaking up about concerns or ideas?',
-    leadership: 'How supported do you feel by your immediate leadership?'
+    clarity: 'I understand what\'s expected of me.',
+    workload: 'My workload is reasonable for the time available.',
+    safety: 'I feel safe to speak up if something isn\'t right.',
+    leadership: 'My leader supports me when challenges arise.'
   }[id];
 
   const labels = {
     sentiment: [
-      'Good – I\'m doing well',
-      'Okay – Getting by',
+      'Doing well – feeling positive about work',
+      'Okay overall',
       'Not great – I\'m struggling'
     ],
     clarity: [
-      'Clear on what\'s expected',
+      'Yes – I have clear direction',
       'Mostly clear',
-      'Unclear about priorities'
+      'No – priorities are unclear'
     ],
     workload: [
-      'Manageable',
-      'Busy but okay',
-      'Unsustainable'
+      'Workload is reasonable',
+      'Busy but manageable',
+      'Unsustainable right now'
     ],
     safety: [
-      'Comfortable speaking up',
-      'Sometimes hesitate',
-      'Don\'t feel safe raising issues'
+      'Yes – I feel safe speaking up',
+      'Sometimes hesitant',
+      'No – I don\'t feel safe raising issues'
     ],
     leadership: [
-      'Supported',
-      'Somewhat supported',
-      'Not supported'
+      'My leader supports me',
+      'Support is inconsistent',
+      'I don\'t feel supported'
     ]
   }[id];
 
   return (
     <fieldset className="space-y-3">
       <legend className="mb-3">
+        {label && (
+          <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-1">
+            {label}
+          </div>
+        )}
         <div className="text-lg font-semibold text-[var(--text-primary)]">
           {questionText}
         </div>
