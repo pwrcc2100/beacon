@@ -171,7 +171,6 @@ async function getTeamSummaries(
 
   const summaries: TeamSummary[] = filteredTeams.map(team => {
     const summary = summaryMap.get(team.team_id)!;
-    const avg = (field: keyof typeof summary) => (summary.count > 0 ? summary[field] / summary.count : undefined);
 
     const wellbeingPercent = summary.count > 0
       ? calculateWellbeingPercent({
