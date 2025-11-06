@@ -39,7 +39,6 @@ export async function POST(req: NextRequest) {
       base_url ||
       process.env.NEXT_PUBLIC_APP_URL ||
       process.env.APP_URL ||
-      process.env.VERCEL_URL ||
       DEFAULT_APP_URL;
     const originHeader = req.headers.get('origin') || undefined;
     const hostHeader = req.headers.get('host');
