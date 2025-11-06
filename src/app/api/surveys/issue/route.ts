@@ -33,7 +33,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const envUrl = base_url || process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || process.env.VERCEL_URL;
+    const DEFAULT_APP_URL = 'https://beacon-mu.vercel.app';
+
+    const envUrl =
+      base_url ||
+      process.env.NEXT_PUBLIC_APP_URL ||
+      process.env.APP_URL ||
+      process.env.VERCEL_URL ||
+      DEFAULT_APP_URL;
     const originHeader = req.headers.get('origin') || undefined;
     const hostHeader = req.headers.get('host');
 
@@ -45,7 +52,11 @@ export async function POST(req: NextRequest) {
       return `https://${input}`.replace('https://https://', 'https://').replace(/\/$/, '');
     };
 
-    const baseUrl = buildBaseUrl(envUrl) || buildBaseUrl(originHeader) || buildBaseUrl(hostHeader);
+    const baseUrl =
+      buildBaseUrl(envUrl) ||
+      buildBaseUrl(originHeader) ||
+      buildBaseUrl(hostHeader) ||
+      DEFAULT_APP_URL;
     const url = baseUrl ? `${baseUrl}/survey/${data.id}` : `/survey/${data.id}`;
     
     return NextResponse.json({ token: data.id, url });

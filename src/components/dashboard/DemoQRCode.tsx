@@ -17,6 +17,8 @@ export function DemoQRCode({ clientId = '', compact = false }: Props) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false); // Start collapsed in compact mode
   
+  const DEFAULT_APP_URL = 'https://beacon-mu.vercel.app';
+
   const baseUrl = (() => {
     const format = (value?: string | null) => {
       if (!value) return undefined;
@@ -26,16 +28,21 @@ export function DemoQRCode({ clientId = '', compact = false }: Props) {
       return `https://${value}`.replace('https://https://', 'https://').replace(/\/$/, '');
     };
 
-    const envConfigured = format(process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || process.env.VERCEL_URL);
+    const envConfigured = format(
+      process.env.NEXT_PUBLIC_APP_URL ||
+      process.env.APP_URL ||
+      process.env.VERCEL_URL ||
+      DEFAULT_APP_URL
+    );
     if (envConfigured) return envConfigured;
 
     if (typeof window !== 'undefined') {
-      return format(window.location.origin) || '';
+      return format(window.location.origin) || DEFAULT_APP_URL;
     }
 
     const host = typeof window === 'undefined' ? process.env.HOSTNAME || process.env.VERCEL_URL : undefined;
     const fallback = format(host ? `https://${host}` : undefined);
-    return fallback || '';
+    return fallback || DEFAULT_APP_URL;
   })();
 
   const generateNewToken = async () => {
