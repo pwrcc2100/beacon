@@ -172,13 +172,19 @@ async function getTeamSummaries(
   const summaries: TeamSummary[] = filteredTeams.map(team => {
     const summary = summaryMap.get(team.team_id)!;
 
+    const sentimentAvg = summary.count ? summary.sentiment / summary.count : undefined;
+    const workloadAvg = summary.count ? summary.workload / summary.count : undefined;
+    const safetyAvg = summary.count ? summary.safety / summary.count : undefined;
+    const leadershipAvg = summary.count ? summary.leadership / summary.count : undefined;
+    const clarityAvg = summary.count ? summary.clarity / summary.count : undefined;
+
     const wellbeingPercent = summary.count > 0
       ? calculateWellbeingPercent({
-          sentiment: summary.sentiment / summary.count,
-          workload: summary.workload / summary.count,
-          safety: summary.safety / summary.count,
-          leadership: summary.leadership / summary.count,
-          clarity: summary.clarity / summary.count,
+          sentiment: sentimentAvg,
+          workload: workloadAvg,
+          safety: safetyAvg,
+          leadership: leadershipAvg,
+          clarity: clarityAvg,
         })
       : undefined;
 
@@ -196,16 +202,24 @@ async function getTeamSummaries(
       })
       .slice(-6);
 
+    const getDepartmentName = () => {
+      const deptData: any = (team as any).departments;
+      if (Array.isArray(deptData)) {
+        return deptData[0]?.department_name;
+      }
+      return deptData?.department_name;
+    };
+
     return {
       id: team.team_id,
       name: team.team_name,
-      departmentName: team.departments?.department_name ?? undefined,
+      departmentName: getDepartmentName(),
       questionScores: {
-        sentiment: avg('sentiment'),
-        clarity: avg('clarity'),
-        workload: avg('workload'),
-        safety: avg('safety'),
-        leadership: avg('leadership'),
+        sentiment: sentimentAvg,
+        clarity: clarityAvg,
+        workload: workloadAvg,
+        safety: safetyAvg,
+        leadership: leadershipAvg,
       },
       wellbeingPercent,
       trend: weeklyPoints,
