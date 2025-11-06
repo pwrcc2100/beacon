@@ -131,7 +131,10 @@ async function getTeamSummaries(
   });
 
   (responses ?? []).forEach(response => {
-    const teamId = response.employees?.team_id as string | undefined;
+    const employeeData = Array.isArray(response.employees)
+      ? (response.employees[0] as { team_id?: string })
+      : (response.employees as { team_id?: string });
+    const teamId = employeeData?.team_id as string | undefined;
     if (!teamId) return;
     const summary = summaryMap.get(teamId);
     if (!summary) return;
