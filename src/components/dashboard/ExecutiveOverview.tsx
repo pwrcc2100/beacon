@@ -461,6 +461,8 @@ export function ExecutiveOverview({
                     <div className="text-xs font-bold text-blue-900 mb-1.5">AI Insight</div>
                     <p className="text-xs text-blue-800 leading-relaxed">
                       {(() => {
+                        if (overallScore === undefined) return 'Insufficient data for insights.';
+                        
                         const status = getScoreStatus(overallScore);
                         const trend = previousScore ? overallScore - previousScore : 0;
                         const lowestQ = Object.entries(questionScores).reduce((min, [key, val]) => 
