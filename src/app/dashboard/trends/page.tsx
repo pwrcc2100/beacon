@@ -130,11 +130,11 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
   });
 
   const series = [
-    toSeries('sentiment_avg', '#64afac', 'Sentiment', 'How are you feeling about work this week?'),
-    toSeries('workload_avg',  '#ea9999', 'Workload', 'How\'s your workload?'),
-    toSeries('safety_avg',    '#ea9999', 'Safety', 'Do you feel safe speaking up?'),
-    toSeries('leadership_avg','#64afac', 'Leadership', 'Do you feel supported by leadership?'),
-    toSeries('clarity_avg',   '#5d89a9', 'Clarity', 'Are you clear on what\'s expected?')
+    toSeries('sentiment_avg', '#1A936F', 'Sentiment', 'How are you feeling about work this week?'),
+    toSeries('workload_avg',  '#E63946', 'Workload', 'How\'s your workload?'),
+    toSeries('safety_avg',    '#F4A259', 'Safety', 'Do you feel safe speaking up?'),
+    toSeries('leadership_avg','#1A936F', 'Leadership', 'Do you feel supported by leadership?'),
+    toSeries('clarity_avg',   '#94A3B8', 'Clarity', 'Are you clear on what\'s expected?')
   ];
 
   const last = (k:keyof WellbeingRow)=> (trends.length ? Number(trends[trends.length-1][k]) : undefined);

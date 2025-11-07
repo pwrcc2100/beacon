@@ -15,19 +15,19 @@ export function ExecutiveSummary({ trends, hierarchyData }: Props) {
 
   const getIconColor = (type: string) => {
     switch (type) {
-      case 'warning': return '#ea9999'; // coral
-      case 'attention': return '#f59e0b'; // amber
-      case 'positive': return '#64afac'; // teal
-      default: return '#5d89a9'; // slate
+      case 'warning': return '#E63946'; // red
+      case 'attention': return '#F4A259'; // orange
+      case 'positive': return '#1A936F'; // green
+      default: return '#94A3B8'; // neutral
     }
   };
 
   const getBgColor = (type: string) => {
     switch (type) {
-      case 'warning': return '#fef2f2'; // light red
-      case 'attention': return '#fffbeb'; // light amber
-      case 'positive': return '#f0fdf4'; // light green
-      default: return '#f8fafc'; // light slate
+      case 'warning': return '#FDEAE7'; // light red
+      case 'attention': return '#FFF4E6'; // light orange
+      case 'positive': return '#E6F4EA'; // light green
+      default: return '#F1F5F9'; // light neutral
     }
   };
 
