@@ -111,13 +111,37 @@ export function WellbeingGauge({ sentiment, workload, safety, leadership, clarit
     ]
   };
 
+  const status = getScoreStatus(wellbeingPercent);
+  
   return (
-    <Card className="h-full flex flex-col" style={{ borderColor: gaugeColor, border: `2px solid ${gaugeColor || SCORE_COLORS.neutral}` }}>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-lg font-semibold">Overall Wellbeing Score</CardTitle>
-        <div className="h-6 w-6 rounded-full" style={{ backgroundColor: gaugeColor }} />
+    <Card className="h-full flex flex-col relative overflow-hidden" style={{ 
+      borderColor: gaugeColor, 
+      border: `2px solid ${gaugeColor || SCORE_COLORS.neutral}`,
+      background: `linear-gradient(135deg, ${gaugeColor}08 0%, ${gaugeColor}02 100%)`
+    }}>
+      {/* Decorative background circle */}
+      <div 
+        className="absolute -right-12 -top-12 w-48 h-48 rounded-full opacity-5"
+        style={{ backgroundColor: gaugeColor }}
+      />
+      
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 relative z-10">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-full flex items-center justify-center" style={{ 
+            backgroundColor: `${gaugeColor}20`,
+            border: `2px solid ${gaugeColor}`
+          }}>
+            <span className="text-lg">📊</span>
+          </div>
+          <CardTitle className="text-base font-bold text-[var(--text-primary)]">Overall Wellbeing</CardTitle>
+        </div>
+        <div className="flex flex-col items-end">
+          <span className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wide">Status</span>
+          <span className="text-xs font-bold" style={{ color: gaugeColor }}>{status.label}</span>
+        </div>
       </CardHeader>
-      <CardContent className="flex-1 flex flex-col justify-between">
+      
+      <CardContent className="flex-1 flex flex-col justify-between relative z-10">
         {!mounted ? (
           <div style={{ height: 200 }} className="flex items-center justify-center text-sm text-muted-foreground">
             Loading gauge...
@@ -126,21 +150,49 @@ export function WellbeingGauge({ sentiment, workload, safety, leadership, clarit
           <ReactECharts option={option} style={{ height: 200 }} opts={{ renderer: 'svg' }} />
         )}
         
-        <div className="mt-1 text-[10px] text-muted-foreground space-y-0.5">
-          <div className="font-medium">Weighting Formula:</div>
-          <div className="grid grid-cols-2 gap-x-2 gap-y-0">
-            <div>• Sentiment: 25%</div>
-            <div>• Workload: 25%</div>
-            <div>• Safety: 20%</div>
-            <div>• Leadership: 20%</div>
-            <div>• Clarity: 10%</div>
+        {/* Enhanced weighting formula with visual bars */}
+        <div className="mt-3 p-3 rounded-lg bg-white/50 border border-slate-200">
+          <div className="text-xs font-bold text-[var(--text-primary)] mb-2 flex items-center gap-1">
+            <span>⚖️</span>
+            <span>Weighting Formula</span>
+          </div>
+          <div className="space-y-1.5">
+            {[
+              { label: 'Sentiment', weight: 25, color: '#1A936F' },
+              { label: 'Workload', weight: 25, color: '#E63946' },
+              { label: 'Safety', weight: 20, color: '#F4A259' },
+              { label: 'Leadership', weight: 20, color: '#1A936F' },
+              { label: 'Clarity', weight: 10, color: '#94A3B8' }
+            ].map(item => (
+              <div key={item.label} className="flex items-center gap-2">
+                <div className="flex-1 flex items-center gap-2">
+                  <span className="text-[10px] font-medium text-[var(--text-primary)] w-20">{item.label}</span>
+                  <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full rounded-full transition-all"
+                      style={{ 
+                        width: `${item.weight * 4}%`,
+                        backgroundColor: item.color
+                      }}
+                    />
+                  </div>
+                </div>
+                <span className="text-[10px] font-bold text-[var(--text-muted)] w-8 text-right">{item.weight}%</span>
+              </div>
+            ))}
           </div>
         </div>
         
         {delta !== undefined && (
-          <div className="flex items-center gap-2 text-xs mt-2" style={{ color: delta >= 0 ? SCORE_COLORS.thriving : SCORE_COLORS.alert }}>
-            <TrendIcon className="h-3 w-3" />
-            <span className="font-medium">{Math.abs(delta).toFixed(1)}% vs last week</span>
+          <div className="flex items-center justify-between mt-3 p-2 rounded-lg" style={{ 
+            backgroundColor: delta >= 0 ? `${SCORE_COLORS.thriving}15` : `${SCORE_COLORS.alert}15`,
+            border: `1px solid ${delta >= 0 ? SCORE_COLORS.thriving : SCORE_COLORS.alert}40`
+          }}>
+            <span className="text-xs font-medium text-[var(--text-muted)]">vs Previous Period</span>
+            <div className="flex items-center gap-1.5" style={{ color: delta >= 0 ? SCORE_COLORS.thriving : SCORE_COLORS.alert }}>
+              <TrendIcon className="h-3.5 w-3.5" />
+              <span className="text-sm font-bold">{delta >= 0 ? '+' : ''}{delta.toFixed(1)}%</span>
+            </div>
           </div>
         )}
       </CardContent>

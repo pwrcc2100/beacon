@@ -551,8 +551,8 @@ export function ExecutiveOverview({
                   
                   const getCellStyle = (score: number) => {
                     const status = getScoreStatus(score);
-                    // Increase opacity range for better contrast: 0.25-0.65 instead of 0.15-0.36
-                    const opacity = Math.max(0.25, Math.min(0.65, (score / 100) * 0.8 + 0.2));
+                    // Moderate opacity range for subtle but visible contrast
+                    const opacity = Math.max(0.18, Math.min(0.45, (score / 100) * 0.6 + 0.15));
                     const alphaHex = Math.round(opacity * 255).toString(16).padStart(2, '0');
                     
                     return {
