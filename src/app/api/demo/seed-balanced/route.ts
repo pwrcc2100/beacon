@@ -242,44 +242,43 @@ export async function POST(req: NextRequest) {
         const teamName = teamEntry.teamName;
         
         if (divisionName === 'QLD') {
-          // QLD: Mostly thriving, but Team E struggles
-          if (teamName === 'Team E') {
-            sentiment5 = randInt(2, 3);
-            clarity5 = randInt(2, 3);
-            workload5 = randInt(2, 3);
-            safety5 = randInt(2, 3);
-            leadership5 = randInt(2, 3);
-          } else {
-            sentiment5 = randInt(4, 5);
-            clarity5 = randInt(4, 5);
-            workload5 = randInt(4, 5);
-            safety5 = randInt(4, 5);
-            leadership5 = randInt(4, 5);
-          }
+          // QLD: All teams thriving (green) - ensures division shows green in heatmap
+          sentiment5 = 5; // Consistently high scores
+          clarity5 = 5;
+          workload5 = 5;
+          safety5 = 5;
+          leadership5 = 5;
         } else if (divisionName === 'Sydney Metro' && departmentName === 'Health') {
-          // Sydney Metro Health: Thriving except Team D
-          if (teamName === 'Team D') {
-            sentiment5 = randInt(1, 2);
+          // Sydney Metro Health: Mostly thriving with some struggling teams
+          if (teamName === 'Team D' || teamName === 'Team E') {
+            sentiment5 = randInt(1, 2); // High alert (red)
             clarity5 = randInt(1, 2);
             workload5 = randInt(1, 2);
             safety5 = randInt(1, 2);
             leadership5 = randInt(1, 2);
           } else {
-            sentiment5 = randInt(4, 5);
-            clarity5 = randInt(4, 5);
-            workload5 = randInt(4, 5);
-            safety5 = randInt(4, 5);
-            leadership5 = randInt(4, 5);
+            sentiment5 = 5; // Thriving (green)
+            clarity5 = 5;
+            workload5 = 5;
+            safety5 = 5;
+            leadership5 = 5;
           }
+        } else if (divisionName === 'Sydney Metro' && departmentName === 'Education') {
+          // Sydney Metro Education: Also thriving for more green in heatmap
+          sentiment5 = randInt(4, 5);
+          clarity5 = randInt(4, 5);
+          workload5 = randInt(4, 5);
+          safety5 = randInt(4, 5);
+          leadership5 = randInt(4, 5);
         } else if (divisionName === 'Sydney Metro') {
           // Other Sydney Metro departments: Mixed by team
-          if (teamName === 'Team A') {
+          if (teamName === 'Team A' || teamName === 'Team B') {
             sentiment5 = randInt(4, 5); // Thriving
             clarity5 = randInt(4, 5);
             workload5 = randInt(4, 5);
             safety5 = randInt(4, 5);
             leadership5 = randInt(4, 5);
-          } else if (teamName === 'Team B' || teamName === 'Team C') {
+          } else if (teamName === 'Team C') {
             sentiment5 = randInt(3, 4); // Ones to watch
             clarity5 = randInt(3, 4);
             workload5 = randInt(3, 4);
