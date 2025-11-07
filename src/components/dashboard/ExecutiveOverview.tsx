@@ -465,9 +465,10 @@ export function ExecutiveOverview({
                         
                         const status = getScoreStatus(overallScore);
                         const trend = previousScore ? overallScore - previousScore : 0;
-                        const lowestQ = Object.entries(questionScores).reduce((min, [key, val]) => 
-                          val < (questionScores[min] ?? 100) ? key : min, 'sentiment' as keyof typeof questionScores
-                        );
+                        const lowestQ = Object.entries(questionScores).reduce((minKey, [key, val]) => {
+                          const minVal = questionScores[minKey as keyof typeof questionScores] ?? 100;
+                          return val < minVal ? key : minKey;
+                        }, 'sentiment');
                         const lowestLabel = QUESTION_META.find(q => q.key === lowestQ)?.description || '';
                         
                         if (overallScore < 40) {
