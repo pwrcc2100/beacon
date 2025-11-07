@@ -13,11 +13,11 @@ import {
 } from './scoreTheme';
 
 const QUESTION_META = [
-  { key: 'sentiment', label: 'Q1', description: 'How are you feeling about work this week?' },
-  { key: 'clarity', label: 'Q2', description: 'How clear are you about your priorities?' },
-  { key: 'workload', label: 'Q3', description: 'How manageable is your current workload?' },
-  { key: 'safety', label: 'Q4', description: 'How comfortable do you feel speaking up?' },
-  { key: 'leadership', label: 'Q5', description: 'How supported do you feel by your immediate leadership?' },
+  { key: 'sentiment', label: 'Q1', description: 'How are you feeling about work this week?', category: 'Experience (25%)' },
+  { key: 'workload', label: 'Q2', description: 'I feel my workload is reasonable for the time available.', category: 'Workload & Resourcing (25%)' },
+  { key: 'safety', label: 'Q3', description: 'I feel safe to speak up if something isn\'t right.', category: 'Psychological Safety (20%)' },
+  { key: 'leadership', label: 'Q4', description: 'I feel my leader supports me when challenges arise.', category: 'Leadership & Support (20%)' },
+  { key: 'clarity', label: 'Q5', description: 'I feel I understand what\'s expected of me.', category: 'Clarity & Direction (10%)' },
 ] as const;
 
 type QuestionScores = Record<'sentiment' | 'clarity' | 'workload' | 'safety' | 'leadership', number>;

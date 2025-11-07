@@ -15,10 +15,10 @@ export function Question({
 }) {
   const questionText = {
     sentiment: 'How are you feeling about work this week?',
-    clarity: 'I understand what\'s expected of me.',
-    workload: 'My workload is reasonable for the time available.',
+    clarity: 'I feel I understand what\'s expected of me.',
+    workload: 'I feel my workload is reasonable for the time available.',
     safety: 'I feel safe to speak up if something isn\'t right.',
-    leadership: 'My leader supports me when challenges arise.'
+    leadership: 'I feel my leader supports me when challenges arise.'
   }[id];
 
   const labels = {
