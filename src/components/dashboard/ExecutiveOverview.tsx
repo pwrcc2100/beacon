@@ -463,10 +463,9 @@ export function ExecutiveOverview({
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 xl:grid-cols-[1fr,1.2fr] gap-8">
-            {/* Left: Gauge and Weighting */}
-            <div className="space-y-4">
+            {/* Left: Gauge */}
+            <div>
               <SemiCircularGauge value={overallScore} previous={previousScore} />
-              <WeightingBreakdown />
             </div>
 
             {/* Right: Current Sentiment Questions */}
@@ -492,41 +491,46 @@ export function ExecutiveOverview({
                   />
                 ))}
               </div>
-              
-              {/* AI Insights Box */}
-              <div className="mt-4 p-4 rounded-lg border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50">
-                <div className="flex items-start gap-2">
-                  <span className="text-lg flex-shrink-0">💡</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs font-bold text-blue-900 mb-1.5">AI Insight</div>
-                    <p className="text-xs text-blue-800 leading-relaxed">
-                      {(() => {
-                        if (overallScore === undefined) return 'Insufficient data for insights.';
-                        
-                        const status = getScoreStatus(overallScore);
-                        const trend = previousScore ? overallScore - previousScore : 0;
-                        const lowestQ = Object.entries(questionScores).reduce((minKey, [key, val]) => {
-                          const minVal = questionScores[minKey as keyof typeof questionScores] ?? 100;
-                          return val < minVal ? key : minKey;
-                        }, 'sentiment');
-                        const lowestLabel = QUESTION_META.find(q => q.key === lowestQ)?.description || '';
-                        
-                        if (overallScore < 40) {
-                          return `Critical situation: Wellbeing at ${Math.round(overallScore)}%. Immediate action needed. Focus on "${lowestLabel}" - this is your weakest area. Schedule urgent team check-ins.`;
-                        } else if (overallScore < 70) {
-                          if (trend < -5) {
-                            return `Declining trend detected (${trend.toFixed(1)}%). Address "${lowestLabel}" before it impacts retention. Consider targeted interventions this week.`;
-                          } else if (trend > 5) {
-                            return `Positive momentum! Up ${trend.toFixed(1)}%. Keep focus on improvements while addressing "${lowestLabel}" to reach thriving status.`;
-                          } else {
-                            return `Moderate wellbeing at ${Math.round(overallScore)}%. "${lowestLabel}" needs attention. Small improvements here could significantly boost overall scores.`;
-                          }
+            </div>
+          </div>
+
+          {/* Bottom: Weighting Formula and AI Insights - Horizontal */}
+          <div className="mt-6 pt-6 border-t border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <WeightingBreakdown />
+            
+            {/* AI Insights Box */}
+            <div className="p-4 rounded-lg border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50">
+              <div className="flex items-start gap-2">
+                <span className="text-lg flex-shrink-0">💡</span>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-bold text-blue-900 mb-1.5">AI Insight</div>
+                  <p className="text-xs text-blue-800 leading-relaxed">
+                    {(() => {
+                      if (overallScore === undefined) return 'Insufficient data for insights.';
+                      
+                      const status = getScoreStatus(overallScore);
+                      const trend = previousScore ? overallScore - previousScore : 0;
+                      const lowestQ = Object.entries(questionScores).reduce((minKey, [key, val]) => {
+                        const minVal = questionScores[minKey as keyof typeof questionScores] ?? 100;
+                        return val < minVal ? key : minKey;
+                      }, 'sentiment');
+                      const lowestLabel = QUESTION_META.find(q => q.key === lowestQ)?.description || '';
+                      
+                      if (overallScore < 40) {
+                        return `Critical situation: Wellbeing at ${Math.round(overallScore)}%. Immediate action needed. Focus on "${lowestLabel}" - this is your weakest area. Schedule urgent team check-ins.`;
+                      } else if (overallScore < 70) {
+                        if (trend < -5) {
+                          return `Declining trend detected (${trend.toFixed(1)}%). Address "${lowestLabel}" before it impacts retention. Consider targeted interventions this week.`;
+                        } else if (trend > 5) {
+                          return `Positive momentum! Up ${trend.toFixed(1)}%. Keep focus on improvements while addressing "${lowestLabel}" to reach thriving status.`;
                         } else {
-                          return `Strong performance at ${Math.round(overallScore)}%! Team is thriving. Continue current practices and monitor "${lowestLabel}" to maintain balance across all dimensions.`;
+                          return `Moderate wellbeing at ${Math.round(overallScore)}%. "${lowestLabel}" needs attention. Small improvements here could significantly boost overall scores.`;
                         }
-                      })()}
-                    </p>
-                  </div>
+                      } else {
+                        return `Strong performance at ${Math.round(overallScore)}%! Team is thriving. Continue current practices and monitor "${lowestLabel}" to maintain balance across all dimensions.`;
+                      }
+                    })()}
+                  </p>
                 </div>
               </div>
             </div>
