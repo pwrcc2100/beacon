@@ -30,6 +30,7 @@ type Props = {
   divisions: Division[];
   departments: Department[];
   teams: Team[];
+  basePath?: string; // Optional base path for redirects (defaults to /dashboard)
 };
 
 export function EnhancedOrganisationFilterClient({
@@ -42,7 +43,8 @@ export function EnhancedOrganisationFilterClient({
   selectedDepartments,
   divisions,
   departments,
-  teams
+  teams,
+  basePath = '/dashboard'
 }: Props) {
   const router = useRouter();
 
@@ -78,7 +80,7 @@ export function EnhancedOrganisationFilterClient({
       }
     }
 
-    router.push(`/dashboard?${params.toString()}`);
+    router.push(`${basePath}?${params.toString()}`);
   };
 
   const handleDepartmentMultiChange = (selected: string[]) => {
@@ -86,12 +88,12 @@ export function EnhancedOrganisationFilterClient({
     selected.forEach(deptId => {
       params.append('selected_departments', deptId);
     });
-    router.push(`/dashboard?${params.toString()}`);
+    router.push(`${basePath}?${params.toString()}`);
   };
 
   const handleClearDepartments = () => {
     const params = buildBaseParams();
-    router.push(`/dashboard?${params.toString()}`);
+    router.push(`${basePath}?${params.toString()}`);
   };
 
   return (

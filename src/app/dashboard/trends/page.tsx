@@ -8,6 +8,7 @@ import { DashboardShell } from '@/components/layout/DashboardShell';
 import { TrendCard } from '@/components/charts/TrendCard';
 import { WellbeingGauge } from '@/components/charts/WellbeingGauge';
 import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle } from 'lucide-react';
+import { EnhancedOrganisationFilterClient } from '@/components/dashboard/EnhancedOrganisationFilterClient';
 
 type WellbeingRow = {
   wk: string;
@@ -123,6 +124,73 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
     );
   }
 
+  // Fetch org structure for filters
+  const { data: divisionsData } = await supabaseAdmin
+    .from('divisions')
+    .select('division_id, division_name')
+    .eq('client_id', clientId)
+    .eq('active', true)
+    .order('division_name');
+  
+  const divisionsMap = new Map();
+  (divisionsData ?? []).forEach(div => {
+    if (!divisionsMap.has(div.division_id)) {
+      divisionsMap.set(div.division_id, div);
+    }
+  });
+  const divisions = Array.from(divisionsMap.values());
+
+  const { data: departmentsData } = await supabaseAdmin
+    .from('departments')
+    .select(`
+      department_id,
+      department_name,
+      division_id,
+      divisions!inner(client_id)
+    `)
+    .eq('divisions.client_id', clientId)
+    .eq('active', true)
+    .order('department_name');
+
+  const departmentsMap = new Map();
+  (departmentsData ?? []).forEach(dept => {
+    if (!departmentsMap.has(dept.department_id)) {
+      departmentsMap.set(dept.department_id, {
+        department_id: dept.department_id,
+        department_name: dept.department_name,
+        division_id: dept.division_id
+      });
+    }
+  });
+  const departments = Array.from(departmentsMap.values());
+
+  const { data: teamsData } = await supabaseAdmin
+    .from('teams')
+    .select(`
+      team_id,
+      team_name,
+      department_id,
+      departments!inner(
+        division_id,
+        divisions!inner(client_id)
+      )
+    `)
+    .eq('departments.divisions.client_id', clientId)
+    .eq('active', true)
+    .order('team_name');
+
+  const teamsMap = new Map();
+  (teamsData ?? []).forEach(team => {
+    if (!teamsMap.has(team.team_id)) {
+      teamsMap.set(team.team_id, {
+        team_id: team.team_id,
+        team_name: team.team_name,
+        department_id: team.department_id
+      });
+    }
+  });
+  const teams = Array.from(teamsMap.values());
+
   const { trends } = await getData(clientId, period);
 
   const toSeries = (key: keyof WellbeingRow, color: string, heading: string, description: string) => ({
@@ -213,19 +281,37 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
           <p className="text-sm text-[var(--text-muted)]">Client: {clientId}</p>
         </div>
 
-        {/* Period Filter */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-medium">View:</span>
-          <div className="flex gap-1">
-            <a href={`/dashboard/trends?client=${clientId}&period=week`}>
-              <Button variant={period === 'week' ? 'default' : 'outline'} size="sm">Last 4 Weeks</Button>
-            </a>
-            <a href={`/dashboard/trends?client=${clientId}&period=month`}>
-              <Button variant={period === 'month' ? 'default' : 'outline'} size="sm">Last Month</Button>
-            </a>
-            <a href={`/dashboard/trends?client=${clientId}&period=quarter`}>
-              <Button variant={period === 'quarter' ? 'default' : 'outline'} size="sm">Last Quarter</Button>
-            </a>
+        {/* Filters */}
+        <div className="space-y-4">
+          {/* Organization Filter */}
+          <EnhancedOrganisationFilterClient
+            clientId={clientId}
+            period={period}
+            mode="historical"
+            currentDivisionId={divisionId}
+            currentDepartmentId={departmentId}
+            currentTeamId={teamId}
+            selectedDepartments={[]}
+            divisions={divisions}
+            departments={departments}
+            teams={teams}
+            basePath="/dashboard/trends"
+          />
+          
+          {/* Period Filter */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-medium">Time Period:</span>
+            <div className="flex gap-1">
+              <a href={`/dashboard/trends?client=${clientId}&period=week${divisionId ? `&division_id=${divisionId}` : ''}${departmentId ? `&department_id=${departmentId}` : ''}${teamId ? `&team_id=${teamId}` : ''}`}>
+                <Button variant={period === 'week' ? 'default' : 'outline'} size="sm">Last 4 Weeks</Button>
+              </a>
+              <a href={`/dashboard/trends?client=${clientId}&period=month${divisionId ? `&division_id=${divisionId}` : ''}${departmentId ? `&department_id=${departmentId}` : ''}${teamId ? `&team_id=${teamId}` : ''}`}>
+                <Button variant={period === 'month' ? 'default' : 'outline'} size="sm">Last Month</Button>
+              </a>
+              <a href={`/dashboard/trends?client=${clientId}&period=quarter${divisionId ? `&division_id=${divisionId}` : ''}${departmentId ? `&department_id=${departmentId}` : ''}${teamId ? `&team_id=${teamId}` : ''}`}>
+                <Button variant={period === 'quarter' ? 'default' : 'outline'} size="sm">Last Quarter</Button>
+              </a>
+            </div>
           </div>
         </div>
 
