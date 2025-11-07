@@ -8,6 +8,7 @@ import {
   scoreToPercent,
 } from '@/components/dashboard/scoreTheme';
 import { getScoreStatus } from '@/components/dashboard/scoreTheme';
+import { GroupLeaderFilters } from '@/components/dashboard/GroupLeaderFilters';
 
 type SearchParams = {
   [key: string]: string | string[] | undefined;
@@ -283,12 +284,26 @@ export default async function GroupLeaderDashboard({ searchParams }: { searchPar
 
   const teamSummaries = await getTeamSummaries(clientId, period, mode, divisionId, departmentId);
 
+  // Fetch divisions and departments for filters
+  const { data: divisions } = await supabaseAdmin
+    .from('divisions')
+    .select('division_id, division_name')
+    .eq('client_id', clientId)
+    .eq('active', true)
+    .order('division_name');
+
+  const { data: departments } = await supabaseAdmin
+    .from('departments')
+    .select('department_id, department_name, division_id')
+    .eq('active', true)
+    .order('department_name');
+
   const Sidebar = (
     <div className="space-y-2">
       <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
-      <a href="/dashboard" className="block px-3 py-2 rounded hover:bg-black/5">Overview</a>
-      <a href="/dashboard/trends" className="block px-3 py-2 rounded hover:bg-black/5">Trends</a>
-      <a href="/dashboard/group-leader" className="block px-3 py-2 rounded bg-black/5 font-medium">Group Leader View</a>
+      <a href={`/dashboard?client=${clientId}`} className="block px-3 py-2 rounded hover:bg-black/5">Overview</a>
+      <a href={`/dashboard/trends?client=${clientId}`} className="block px-3 py-2 rounded hover:bg-black/5">Trends</a>
+      <a href={`/dashboard/group-leader?client=${clientId}`} className="block px-3 py-2 rounded bg-black/5 font-medium">Group Leader View</a>
       <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Advanced Analytics</a>
       <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
     </div>
@@ -315,6 +330,17 @@ export default async function GroupLeaderDashboard({ searchParams }: { searchPar
             </span>
           </div>
         </div>
+
+        {/* Hierarchy Filters */}
+        <GroupLeaderFilters
+          clientId={clientId}
+          period={period}
+          mode={mode}
+          currentDivisionId={divisionId}
+          currentDepartmentId={departmentId}
+          divisions={divisions || []}
+          departments={departments || []}
+        />
 
         {teamSummaries.length === 0 ? (
           <div className="rounded-xl border border-dashed border-[#CBD5E1] bg-[#F8FAFF] p-6 text-sm text-[var(--text-muted)]">
