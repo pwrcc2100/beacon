@@ -63,14 +63,16 @@ export function EnhancedOrganisationFilter({
 
   const groupedDepartments = useMemo(() => {
     const groups = new Map<string, Department[]>();
-    const seen = new Set<string>(); // Track unique department IDs to avoid duplicates
+    const seenByName = new Map<string, string>(); // Track department name -> first ID seen
     
     departments.forEach(dept => {
-      // Skip if we've already seen this department
-      if (seen.has(dept.department_id)) return;
-      seen.add(dept.department_id);
-      
       const divName = divisionLookup.get(dept.division_id) ?? 'Other';
+      const key = `${divName}:${dept.department_name}`;
+      
+      // Skip if we've already seen a department with this name in this division
+      if (seenByName.has(key)) return;
+      seenByName.set(key, dept.department_id);
+      
       if (!groups.has(divName)) {
         groups.set(divName, []);
       }
@@ -84,13 +86,13 @@ export function EnhancedOrganisationFilter({
     const options: Array<{ value: string; label: string; indent: number }> = [];
     options.push({ value: 'all', label: 'Whole of Business (ALL)', indent: 0 });
     
-    const seenDivisions = new Set<string>();
-    const seenDepartments = new Set<string>();
-    const seenTeams = new Set<string>();
+    const seenDivisionNames = new Set<string>();
+    const seenDepartmentNames = new Map<string, Set<string>>(); // division -> dept names
+    const seenTeamNames = new Map<string, Set<string>>(); // department -> team names
     
     divisions.forEach(div => {
-      if (seenDivisions.has(div.division_id)) return;
-      seenDivisions.add(div.division_id);
+      if (seenDivisionNames.has(div.division_name)) return;
+      seenDivisionNames.add(div.division_name);
       
       options.push({ 
         value: `division:${div.division_id}`, 
@@ -98,11 +100,17 @@ export function EnhancedOrganisationFilter({
         indent: 1 
       });
       
+      // Initialize dept names set for this division
+      if (!seenDepartmentNames.has(div.division_id)) {
+        seenDepartmentNames.set(div.division_id, new Set());
+      }
+      
       // Add departments under this division
       const depts = departments.filter(d => d.division_id === div.division_id);
       depts.forEach(dept => {
-        if (seenDepartments.has(dept.department_id)) return;
-        seenDepartments.add(dept.department_id);
+        const deptNamesForDiv = seenDepartmentNames.get(div.division_id)!;
+        if (deptNamesForDiv.has(dept.department_name)) return;
+        deptNamesForDiv.add(dept.department_name);
         
         options.push({ 
           value: `department:${dept.department_id}`, 
@@ -110,11 +118,17 @@ export function EnhancedOrganisationFilter({
           indent: 2 
         });
         
+        // Initialize team names set for this department
+        if (!seenTeamNames.has(dept.department_id)) {
+          seenTeamNames.set(dept.department_id, new Set());
+        }
+        
         // Add teams under this department
         const teamList = teams.filter(t => t.department_id === dept.department_id);
         teamList.forEach(team => {
-          if (seenTeams.has(team.team_id)) return;
-          seenTeams.add(team.team_id);
+          const teamNamesForDept = seenTeamNames.get(dept.department_id)!;
+          if (teamNamesForDept.has(team.team_name)) return;
+          teamNamesForDept.add(team.team_name);
           
           options.push({ 
             value: `team:${team.team_id}`, 
