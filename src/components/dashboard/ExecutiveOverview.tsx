@@ -156,6 +156,39 @@ function Sparkline({ points, color }: { points: number[]; color: string }) {
   );
 }
 
+function generateTrendInsight(series1: number[], series2: number[], label1: string, label2: string): string {
+  if (series1.length < 2 || series2.length < 2) {
+    return `Track ${label1} and ${label2} over time to identify patterns and correlations.`;
+  }
+
+  const recent1 = series1.slice(-3);
+  const recent2 = series2.slice(-3);
+  const avg1 = recent1.reduce((a, b) => a + b, 0) / recent1.length;
+  const avg2 = recent2.reduce((a, b) => a + b, 0) / recent2.length;
+  
+  const trend1 = recent1[recent1.length - 1] - recent1[0];
+  const trend2 = recent2[recent2.length - 1] - recent2[0];
+  
+  // Check for correlation
+  const bothRising = trend1 > 2 && trend2 > 2;
+  const bothFalling = trend1 < -2 && trend2 < -2;
+  const diverging = Math.abs(trend1 - trend2) > 5;
+  
+  if (bothRising) {
+    return `Positive trend: Both ${label1} and ${label2} are improving together, indicating strong organizational health.`;
+  } else if (bothFalling) {
+    return `Concerning trend: Both ${label1} and ${label2} are declining. Immediate intervention recommended.`;
+  } else if (diverging && trend1 > trend2) {
+    return `${label1} is improving while ${label2} lags. Focus on building psychological safety to match wellbeing gains.`;
+  } else if (diverging && trend2 > trend1) {
+    return `${label2} is improving while ${label1} lags. Leverage improved safety to address broader wellbeing concerns.`;
+  } else if (avg1 < 50 || avg2 < 50) {
+    return `One or both metrics are below 50%. Prioritize interventions to address low scores before they impact retention.`;
+  } else {
+    return `Metrics are tracking steadily. Continue monitoring for early signs of divergence or decline.`;
+  }
+}
+
 function OverlaidSparklines({ 
   series1, 
   series2, 
@@ -197,6 +230,7 @@ function OverlaidSparklines({
 
   const path1 = createPath(series1);
   const path2 = createPath(series2);
+  const insight = generateTrendInsight(series1, series2, label1, label2);
 
   return (
     <div className="space-y-3">
@@ -207,8 +241,8 @@ function OverlaidSparklines({
         <path d={`M${padding},${padding + (height - 2*padding) * 0.66} H${width - padding}`} stroke="#F3F4F6" strokeWidth={1} fill="none" />
         
         {/* Data lines */}
-        <path d={path1} stroke={color1} strokeWidth={3} fill="none" strokeLinecap="round" strokeLinejoin="round" />
-        <path d={path2} stroke={color2} strokeWidth={3} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={path1} stroke={color1} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={path2} stroke={color2} strokeWidth={2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       
       {/* Legend */}
@@ -221,6 +255,11 @@ function OverlaidSparklines({
           <div className="w-6 h-0.5 rounded" style={{ backgroundColor: color2 }} />
           <span className="font-medium text-[var(--text-primary)]">{label2}</span>
         </div>
+      </div>
+      
+      {/* AI-generated insight */}
+      <div className="text-xs text-[var(--text-muted)] border rounded-lg p-3">
+        <span className="font-medium text-[var(--text-primary)]">💡 Insight:</span> {insight}
       </div>
     </div>
   );
@@ -412,7 +451,11 @@ export function ExecutiveOverview({
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-sm font-medium text-[var(--text-muted)] uppercase">Participation</span>
-              <span className="text-3xl font-semibold" style={{ color: SCORE_COLORS.thriving }}>{formatPercent(participationRate)}</span>
+              <span className="text-3xl font-semibold" style={{ 
+                color: participationRate >= 70 ? SCORE_COLORS.thriving : participationRate >= 40 ? SCORE_COLORS.watch : SCORE_COLORS.alert 
+              }}>
+                {formatPercent(participationRate)}
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -433,9 +476,6 @@ export function ExecutiveOverview({
               label1="Overall Wellbeing"
               label2="Psychological Safety"
             />
-            <div className="text-xs text-[var(--text-muted)] border rounded-lg p-3">
-              <span className="font-medium text-[var(--text-primary)]">Insight:</span> Compare the two lines to identify correlation, divergence, or parallel trends that may indicate systemic patterns.
-            </div>
           </CardContent>
         </Card>
 
