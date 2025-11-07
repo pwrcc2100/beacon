@@ -551,11 +551,14 @@ export function ExecutiveOverview({
                   
                   const getCellStyle = (score: number) => {
                     const status = getScoreStatus(score);
-                    const opacity = Math.max(0.15, Math.min(0.9, score / 100));
+                    // Increase opacity range for better contrast: 0.25-0.65 instead of 0.15-0.36
+                    const opacity = Math.max(0.25, Math.min(0.65, (score / 100) * 0.8 + 0.2));
+                    const alphaHex = Math.round(opacity * 255).toString(16).padStart(2, '0');
+                    
                     return {
-                      backgroundColor: `${status.color}${Math.round(opacity * 40).toString(16).padStart(2, '0')}`,
-                      color: score < 50 ? '#991B1B' : score < 70 ? '#92400E' : '#065F46',
-                      fontWeight: 600
+                      backgroundColor: `${status.color}${alphaHex}`,
+                      color: score < 50 ? '#7F1D1D' : score < 70 ? '#78350F' : '#064E3B',
+                      fontWeight: 700
                     };
                   };
                   
@@ -587,9 +590,10 @@ export function ExecutiveOverview({
                       <td className="px-2 py-3 text-center rounded-md" style={getCellStyle(leadership)}>
                         {formatPercent(leadership)}
                       </td>
-                      <td className="px-2 py-3 text-center rounded-md font-semibold" style={{
-                        backgroundColor: participation >= 70 ? `${SCORE_COLORS.thriving}28` : participation >= 40 ? `${SCORE_COLORS.watch}28` : `${SCORE_COLORS.alert}28`,
-                        color: participation >= 70 ? '#065F46' : participation >= 40 ? '#92400E' : '#991B1B'
+                      <td className="px-2 py-3 text-center rounded-md" style={{
+                        backgroundColor: participation >= 70 ? `${SCORE_COLORS.thriving}66` : participation >= 40 ? `${SCORE_COLORS.watch}66` : `${SCORE_COLORS.alert}66`,
+                        color: participation >= 70 ? '#064E3B' : participation >= 40 ? '#78350F' : '#7F1D1D',
+                        fontWeight: 700
                       }}>
                         {participation > 0 ? `${participation}%` : 'N/A'}
                       </td>

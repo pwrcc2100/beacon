@@ -234,11 +234,41 @@ export async function POST(req: NextRequest) {
         const daysAgo = randInt(0, 180);
         const submittedAt = new Date(now.getTime() - daysAgo * 86400000);
 
-        const sentiment5 = randInt(1, 5);
-        const clarity5 = randInt(1, 5);
-        const workload5 = randInt(1, 5);
-        const safety5 = randInt(1, 5);
-        const leadership5 = randInt(1, 5);
+        // Create varied score distributions:
+        // - QLD divisions: High scores (thriving) - 4-5 range
+        // - Sydney Metro: Mixed scores - some high, some medium
+        // - Regional: Medium to low scores
+        let sentiment5, clarity5, workload5, safety5, leadership5;
+        
+        if (divisionName === 'QLD') {
+          // QLD: Thriving scores (70%+ = 4-5 on 5-point scale)
+          sentiment5 = randInt(4, 5);
+          clarity5 = randInt(4, 5);
+          workload5 = randInt(4, 5);
+          safety5 = randInt(4, 5);
+          leadership5 = randInt(4, 5);
+        } else if (divisionName === 'Sydney Metro' && departmentName === 'Health') {
+          // Sydney Metro Health: Also thriving
+          sentiment5 = randInt(4, 5);
+          clarity5 = randInt(4, 5);
+          workload5 = randInt(4, 5);
+          safety5 = randInt(4, 5);
+          leadership5 = randInt(4, 5);
+        } else if (divisionName === 'Sydney Metro') {
+          // Other Sydney Metro departments: Mixed (2-4 range)
+          sentiment5 = randInt(2, 4);
+          clarity5 = randInt(2, 4);
+          workload5 = randInt(2, 4);
+          safety5 = randInt(2, 4);
+          leadership5 = randInt(2, 4);
+        } else {
+          // Regional: Lower scores (1-3 range)
+          sentiment5 = randInt(1, 3);
+          clarity5 = randInt(1, 3);
+          workload5 = randInt(1, 3);
+          safety5 = randInt(1, 3);
+          leadership5 = randInt(1, 3);
+        }
 
         const tokenId = crypto.randomUUID();
         const { error: tokenError } = await supabaseAdmin.from('tokens').insert({
