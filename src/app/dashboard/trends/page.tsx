@@ -141,7 +141,13 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
   const prev = (k:keyof WellbeingRow)=> (trends.length>1 ? Number(trends[trends.length-2][k]) : undefined);
 
   // Generate automated insights
-  const generateTrendInsights = () => {
+  type TrendInsights = {
+    biggestImprovement: { name: string; change: number; current: number } | null;
+    biggestDecline: { name: string; change: number; current: number } | null;
+    criticalAlert: { name: string; value: number } | null;
+  };
+
+  const generateTrendInsights = (): TrendInsights | null => {
     if (trends.length < 2) return null;
 
     const dimensions = [
