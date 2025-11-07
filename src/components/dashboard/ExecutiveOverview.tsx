@@ -39,6 +39,7 @@ type DivisionRow = {
   id: string;
   name: string;
   response_count: number;
+  total_employees?: number;
   sentiment_avg: number;
   clarity_avg: number;
   workload_avg: number;
@@ -58,6 +59,7 @@ type ExecutiveOverviewProps = {
   insights: ExecutiveInsight[];
   attentionLabel?: string;
   tableTitle?: string;
+  onDivisionClick?: (divisionId: string, divisionName: string) => void;
 };
 
 function getStatusColor(value: number) {
@@ -275,7 +277,8 @@ export function ExecutiveOverview({
   divisions,
   insights,
   attentionLabel = 'Which Teams Need Attention',
-  tableTitle = 'Divisions'
+  tableTitle = 'Divisions',
+  onDivisionClick
 }: ExecutiveOverviewProps) {
   const wellbeingPoints = useMemo(() => trendSeries.map(p => p.wellbeing), [trendSeries]);
   const safetyPoints = useMemo(() => trendSeries.map(p => p.safety), [trendSeries]);
@@ -415,21 +418,55 @@ export function ExecutiveOverview({
                   <th className="text-right font-medium px-3 py-2">Workload</th>
                   <th className="text-right font-medium px-3 py-2">Safety</th>
                   <th className="text-right font-medium px-3 py-2">Leadership</th>
+                  <th className="text-right font-medium px-3 py-2">Participation</th>
                   <th className="text-right font-medium px-3 py-2">Responses</th>
                 </tr>
               </thead>
               <tbody>
                 {divisions.map(row => {
                   const wellbeing = Math.round(row.wellbeing_score ?? 0);
+                  const sentiment = Math.round(row.sentiment_avg * 20);
+                  const clarity = Math.round(row.clarity_avg * 20);
+                  const workload = Math.round(row.workload_avg * 20);
+                  const safety = Math.round(row.safety_avg * 20);
+                  const leadership = Math.round(row.leadership_avg * 20);
+                  const participation = row.total_employees && row.total_employees > 0 
+                    ? Math.round((row.response_count / row.total_employees) * 100)
+                    : 0;
+                  
                   return (
-                    <tr key={row.id} className="border-t">
+                    <tr 
+                      key={row.id} 
+                      className={cn(
+                        "border-t transition-colors",
+                        onDivisionClick && "cursor-pointer hover:bg-slate-50"
+                      )}
+                      onClick={() => onDivisionClick && onDivisionClick(row.id, row.name)}
+                    >
                       <td className="px-3 py-2 font-medium text-[var(--text-primary)]">{row.name}</td>
-                  <td className="px-3 py-2 text-right" style={{ color: getScoreStatus(wellbeing).color }}>{formatPercent(wellbeing)}</td>
-                  <td className="px-3 py-2 text-right">{formatPercent(row.sentiment_avg * 20)}</td>
-                  <td className="px-3 py-2 text-right">{formatPercent(row.clarity_avg * 20)}</td>
-                  <td className="px-3 py-2 text-right">{formatPercent(row.workload_avg * 20)}</td>
-                  <td className="px-3 py-2 text-right">{formatPercent(row.safety_avg * 20)}</td>
-                  <td className="px-3 py-2 text-right">{formatPercent(row.leadership_avg * 20)}</td>
+                      <td className="px-3 py-2 text-right font-semibold" style={{ color: getScoreStatus(wellbeing).color }}>
+                        {formatPercent(wellbeing)}
+                      </td>
+                      <td className="px-3 py-2 text-right" style={{ color: getScoreStatus(sentiment).color }}>
+                        {formatPercent(sentiment)}
+                      </td>
+                      <td className="px-3 py-2 text-right" style={{ color: getScoreStatus(clarity).color }}>
+                        {formatPercent(clarity)}
+                      </td>
+                      <td className="px-3 py-2 text-right" style={{ color: getScoreStatus(workload).color }}>
+                        {formatPercent(workload)}
+                      </td>
+                      <td className="px-3 py-2 text-right" style={{ color: getScoreStatus(safety).color }}>
+                        {formatPercent(safety)}
+                      </td>
+                      <td className="px-3 py-2 text-right" style={{ color: getScoreStatus(leadership).color }}>
+                        {formatPercent(leadership)}
+                      </td>
+                      <td className="px-3 py-2 text-right font-medium" style={{ 
+                        color: participation >= 70 ? SCORE_COLORS.thriving : participation >= 40 ? SCORE_COLORS.watch : SCORE_COLORS.alert 
+                      }}>
+                        {participation > 0 ? `${participation}%` : 'N/A'}
+                      </td>
                       <td className="px-3 py-2 text-right text-[var(--text-muted)]">{row.response_count ?? 0}</td>
                     </tr>
                   );
