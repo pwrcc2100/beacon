@@ -192,8 +192,9 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
   const Sidebar = (
     <div className="space-y-2">
       <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
-      <a href="/dashboard" className="block px-3 py-2 rounded hover:bg-black/5">Overview</a>
-      <a href="/dashboard/trends" className="block px-3 py-2 rounded bg-black/5 font-medium">Trends</a>
+      <a href={`/dashboard?client=${clientId}`} className="block px-3 py-2 rounded hover:bg-black/5">Overview</a>
+      <a href={`/dashboard/trends?client=${clientId}`} className="block px-3 py-2 rounded bg-black/5 font-medium">Trends</a>
+      <a href={`/dashboard/group-leader?client=${clientId}`} className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
       <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Advanced Analytics</a>
       <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
     </div>
