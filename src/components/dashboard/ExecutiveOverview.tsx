@@ -131,27 +131,67 @@ function Sparkline({ points, color }: { points: number[]; color: string }) {
     return <div className="text-xs text-muted-foreground">No data</div>;
   }
 
-  const padding = 4;
-  const width = 160;
-  const height = 60;
+  const paddingLeft = 40;
+  const paddingRight = 20;
+  const paddingTop = 20;
+  const paddingBottom = 30;
+  const width = 800;
+  const height = 120;
   const max = Math.max(...points);
   const min = Math.min(...points);
   const range = max - min || 1;
 
-  const step = points.length > 1 ? (width - padding * 2) / (points.length - 1) : 0;
-  const path = points
-    .map((value, index) => {
-      const x = padding + index * step;
-      const y = height - padding - ((value - min) / range) * (height - padding * 2);
-      return `${index === 0 ? 'M' : 'L'}${x},${y}`;
-    })
+  const step = points.length > 1 ? (width - paddingLeft - paddingRight) / (points.length - 1) : 0;
+  
+  // Calculate path and point coordinates
+  const coordinates = points.map((value, index) => ({
+    x: paddingLeft + index * step,
+    y: height - paddingBottom - ((value - min) / range) * (height - paddingTop - paddingBottom),
+    value
+  }));
+  
+  const path = coordinates
+    .map((coord, index) => `${index === 0 ? 'M' : 'L'}${coord.x},${coord.y}`)
     .join(' ');
 
+  // Generate month labels (assuming monthly data)
+  const getMonthLabel = (index: number) => {
+    const now = new Date();
+    const monthDate = new Date(now.getFullYear(), now.getMonth() - (points.length - 1 - index), 1);
+    return monthDate.toLocaleDateString('en-US', { month: 'short' });
+  };
+
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-16">
-      <path d={`M${padding},${height - padding} L${padding},${padding} L${width - padding},${padding} L${width - padding},${height - padding}`} fill="#F5F5F5" opacity={0} />
-      <path d={`M${padding},${height - padding} H${width - padding}`} stroke="#E4E7EC" strokeWidth={1} fill="none" />
-      <path d={path} stroke={color} strokeWidth={2.5} fill="none" strokeLinecap="round" />
+    <svg viewBox={`0 0 ${width} ${height}`} className="w-full" style={{ height: '120px' }}>
+      {/* Grid lines */}
+      <path d={`M${paddingLeft},${height - paddingBottom} H${width - paddingRight}`} stroke="#E4E7EC" strokeWidth={1} fill="none" />
+      <path d={`M${paddingLeft},${paddingTop + (height - paddingTop - paddingBottom) * 0.33} H${width - paddingRight}`} stroke="#F3F4F6" strokeWidth={1} fill="none" />
+      <path d={`M${paddingLeft},${paddingTop + (height - paddingTop - paddingBottom) * 0.66} H${width - paddingRight}`} stroke="#F3F4F6" strokeWidth={1} fill="none" />
+      
+      {/* Y-axis labels */}
+      <text x={paddingLeft - 8} y={height - paddingBottom + 4} textAnchor="end" fontSize="10" fill="#94A3B8">{Math.round(min)}%</text>
+      <text x={paddingLeft - 8} y={paddingTop + 4} textAnchor="end" fontSize="10" fill="#94A3B8">{Math.round(max)}%</text>
+      
+      {/* Data line */}
+      <path d={path} stroke={color} strokeWidth={2.5} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      
+      {/* Data point markers */}
+      {coordinates.map((coord, index) => (
+        <g key={index}>
+          <circle cx={coord.x} cy={coord.y} r={4} fill="white" stroke={color} strokeWidth={2} />
+          {/* Month labels */}
+          <text 
+            x={coord.x} 
+            y={height - paddingBottom + 18} 
+            textAnchor="middle" 
+            fontSize="10" 
+            fill="#64748B"
+            fontWeight="500"
+          >
+            {getMonthLabel(index)}
+          </text>
+        </g>
+      ))}
     </svg>
   );
 }
