@@ -42,31 +42,64 @@ export function ExecutiveSummary({ trends, hierarchyData }: Props) {
             No significant patterns detected.
           </div>
         ) : (
-          <div className="space-y-2">
-            {insights.map((insight, idx) => (
+          <div className="space-y-3">
+            {/* Top Priority Insight - Prominent Callout */}
+            {insights.length > 0 && (
               <div 
-                key={idx} 
-                className="flex items-start gap-2 p-2 rounded border-l-2"
+                className="flex items-start gap-3 p-3 rounded-lg border-2 shadow-sm"
                 style={{ 
-                  backgroundColor: getBgColor(insight.type),
-                  borderLeftColor: getIconColor(insight.type)
+                  backgroundColor: getBgColor(insights[0].type),
+                  borderColor: getIconColor(insights[0].type)
                 }}
               >
-                <div className="flex-shrink-0 mt-0.5" style={{ color: getIconColor(insight.type) }}>
-                  {insight.icon}
+                <div className="flex-shrink-0 mt-0.5" style={{ color: getIconColor(insights[0].type) }}>
+                  {insights[0].icon}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-[var(--text-primary)] leading-snug">
-                    {insight.text}
+                  <div className="text-[10px] font-semibold uppercase tracking-wide mb-1" style={{ color: getIconColor(insights[0].type) }}>
+                    Priority Insight
+                  </div>
+                  <p className="text-sm font-semibold text-[var(--text-primary)] leading-snug mb-1">
+                    {insights[0].text}
                   </p>
-                  {insight.recommendation && (
-                    <p className="text-xs text-muted-foreground mt-1 leading-snug">
-                      → {insight.recommendation}
+                  {insights[0].recommendation && (
+                    <p className="text-xs text-muted-foreground leading-snug">
+                      → {insights[0].recommendation}
                     </p>
                   )}
                 </div>
               </div>
-            ))}
+            )}
+            
+            {/* Additional Insights */}
+            {insights.length > 1 && (
+              <div className="space-y-2">
+                {insights.slice(1).map((insight, idx) => (
+                  <div 
+                    key={idx + 1} 
+                    className="flex items-start gap-2 p-2 rounded border-l-2"
+                    style={{ 
+                      backgroundColor: getBgColor(insight.type),
+                      borderLeftColor: getIconColor(insight.type)
+                    }}
+                  >
+                    <div className="flex-shrink-0 mt-0.5" style={{ color: getIconColor(insight.type) }}>
+                      {insight.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-[var(--text-primary)] leading-snug">
+                        {insight.text}
+                      </p>
+                      {insight.recommendation && (
+                        <p className="text-xs text-muted-foreground mt-1 leading-snug">
+                          → {insight.recommendation}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </CardContent>
