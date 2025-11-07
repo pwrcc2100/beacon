@@ -156,6 +156,76 @@ function Sparkline({ points, color }: { points: number[]; color: string }) {
   );
 }
 
+function OverlaidSparklines({ 
+  series1, 
+  series2, 
+  color1, 
+  color2, 
+  label1, 
+  label2 
+}: { 
+  series1: number[]; 
+  series2: number[]; 
+  color1: string; 
+  color2: string; 
+  label1: string; 
+  label2: string; 
+}) {
+  if (series1.length === 0 && series2.length === 0) {
+    return <div className="text-xs text-muted-foreground">No data</div>;
+  }
+
+  const padding = 8;
+  const width = 320;
+  const height = 100;
+  
+  const allPoints = [...series1, ...series2];
+  const max = Math.max(...allPoints);
+  const min = Math.min(...allPoints);
+  const range = max - min || 1;
+
+  const createPath = (points: number[]) => {
+    const step = points.length > 1 ? (width - padding * 2) / (points.length - 1) : 0;
+    return points
+      .map((value, index) => {
+        const x = padding + index * step;
+        const y = height - padding - ((value - min) / range) * (height - padding * 2);
+        return `${index === 0 ? 'M' : 'L'}${x},${y}`;
+      })
+      .join(' ');
+  };
+
+  const path1 = createPath(series1);
+  const path2 = createPath(series2);
+
+  return (
+    <div className="space-y-3">
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full">
+        {/* Grid lines */}
+        <path d={`M${padding},${height - padding} H${width - padding}`} stroke="#E4E7EC" strokeWidth={1} fill="none" />
+        <path d={`M${padding},${padding + (height - 2*padding) * 0.33} H${width - padding}`} stroke="#F3F4F6" strokeWidth={1} fill="none" />
+        <path d={`M${padding},${padding + (height - 2*padding) * 0.66} H${width - padding}`} stroke="#F3F4F6" strokeWidth={1} fill="none" />
+        
+        {/* Data lines */}
+        <path d={path1} stroke={color1} strokeWidth={3} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={path2} stroke={color2} strokeWidth={3} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      
+      {/* Legend */}
+      <div className="flex items-center justify-center gap-6 text-xs">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-0.5 rounded" style={{ backgroundColor: color1 }} />
+          <span className="font-medium text-[var(--text-primary)]">{label1}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-0.5 rounded" style={{ backgroundColor: color2 }} />
+          <span className="font-medium text-[var(--text-primary)]">{label2}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SemiCircularGauge({ value, previous }: { value?: number; previous?: number }) {
   const percent = Math.max(0, Math.min(100, value ?? 0));
   const radius = 90;
@@ -352,13 +422,19 @@ export function ExecutiveOverview({
       <div className="grid gap-6 xl:grid-cols-2">
         <Card className="border border-[#E0E7F1] shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">Wellbeing vs Safety</CardTitle>
+            <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">Wellbeing vs Safety Trends</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Sparkline points={wellbeingPoints} color={SCORE_COLORS.thriving} />
-            <Sparkline points={safetyPoints} color={SCORE_COLORS.watch} />
+            <OverlaidSparklines 
+              series1={wellbeingPoints} 
+              series2={safetyPoints} 
+              color1={SCORE_COLORS.thriving} 
+              color2={SCORE_COLORS.watch}
+              label1="Overall Wellbeing"
+              label2="Psychological Safety"
+            />
             <div className="text-xs text-[var(--text-muted)] border rounded-lg p-3">
-              <span className="font-medium text-[var(--text-primary)]">Insight:</span> What does this mean? Check for correlation, trending up or down, and any notable changes across periods.
+              <span className="font-medium text-[var(--text-primary)]">Insight:</span> Compare the two lines to identify correlation, divergence, or parallel trends that may indicate systemic patterns.
             </div>
           </CardContent>
         </Card>
