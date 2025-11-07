@@ -73,6 +73,42 @@ export function EnhancedOrganisationFilter({
     return Array.from(groups.entries());
   }, [departments, divisionLookup]);
 
+  // Build hierarchical structure for dropdown
+  const hierarchyOptions = useMemo(() => {
+    const options: Array<{ value: string; label: string; indent: number }> = [];
+    options.push({ value: 'all', label: 'Whole of Business (ALL)', indent: 0 });
+    
+    divisions.forEach(div => {
+      options.push({ 
+        value: `division:${div.division_id}`, 
+        label: div.division_name, 
+        indent: 1 
+      });
+      
+      // Add departments under this division
+      const depts = departments.filter(d => d.division_id === div.division_id);
+      depts.forEach(dept => {
+        options.push({ 
+          value: `department:${dept.department_id}`, 
+          label: dept.department_name, 
+          indent: 2 
+        });
+        
+        // Add teams under this department
+        const teamList = teams.filter(t => t.department_id === dept.department_id);
+        teamList.forEach(team => {
+          options.push({ 
+            value: `team:${team.team_id}`, 
+            label: team.team_name, 
+            indent: 3 
+          });
+        });
+      });
+    });
+    
+    return options;
+  }, [divisions, departments, teams]);
+
   const currentViewValue = useMemo(() => {
     if (selectedDepartments.length > 0) return 'all';
     if (currentTeamId) return `team:${currentTeamId}`;
@@ -108,38 +144,19 @@ export function EnhancedOrganisationFilter({
       <div className="flex items-center gap-2">
         <Label className="text-sm font-medium">View:</Label>
         <select
-          className="border rounded px-3 py-1.5 text-sm min-w-[200px]"
+          className="border rounded px-3 py-1.5 text-sm min-w-[280px] font-mono"
           value={currentViewValue}
           onChange={handleViewSelect}
         >
-          <option value="all">Whole of Business (ALL)</option>
-          {divisions.length > 0 && (
-            <optgroup label="Divisions">
-              {divisions.map(div => (
-                <option key={div.division_id} value={`division:${div.division_id}`}>
-                  {div.division_name}
-                </option>
-              ))}
-            </optgroup>
-          )}
-          {departments.length > 0 && (
-            <optgroup label="Departments">
-              {departments.map(dept => (
-                <option key={dept.department_id} value={`department:${dept.department_id}`}>
-                  {dept.department_name}
-                </option>
-              ))}
-            </optgroup>
-          )}
-          {teams.length > 0 && (
-            <optgroup label="Teams">
-              {teams.map(team => (
-                <option key={team.team_id} value={`team:${team.team_id}`}>
-                  {team.team_name}
-                </option>
-              ))}
-            </optgroup>
-          )}
+          {hierarchyOptions.map((opt, idx) => (
+            <option 
+              key={`${opt.value}-${idx}`} 
+              value={opt.value}
+              style={{ paddingLeft: `${opt.indent * 12}px` }}
+            >
+              {'\u00A0'.repeat(opt.indent * 2)}{opt.indent > 0 ? '└─ ' : ''}{opt.label}
+            </option>
+          ))}
         </select>
       </div>
 
