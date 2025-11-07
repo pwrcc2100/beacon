@@ -84,6 +84,9 @@ async function getData(clientId: string, period: 'week' | 'month' | 'quarter' = 
 export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:string]: string | string[] | undefined } }){
   const urlClient = (searchParams?.client as string | undefined) || undefined;
   const period = (searchParams?.period as 'week' | 'month' | 'quarter' | undefined) || 'month';
+  const divisionId = (searchParams?.division_id as string | undefined) || undefined;
+  const departmentId = (searchParams?.department_id as string | undefined) || undefined;
+  const teamId = (searchParams?.team_id as string | undefined) || undefined;
   const clientId = urlClient || (process.env.NEXT_PUBLIC_DASHBOARD_CLIENT_ID ?? '');
 
   const requiredToken = process.env.ADMIN_DASH_TOKEN;

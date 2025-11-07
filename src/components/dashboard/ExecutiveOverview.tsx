@@ -517,25 +517,24 @@ export function ExecutiveOverview({
         </Card>
       </div>
 
-      {/* Divisions table and insights */}
+      {/* Divisions heatmap table and insights */}
       <div className="grid gap-6 xl:grid-cols-5">
         <Card className="xl:col-span-3 border border-[#E0E7F1] shadow-sm overflow-hidden">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">{tableTitle}</CardTitle>
           </CardHeader>
           <CardContent className="overflow-x-auto">
-            <table className="min-w-full text-xs">
-              <thead className="text-[var(--text-muted)] bg-[#F8FAFC]">
-                <tr>
-                  <th className="text-left font-medium px-3 py-2">Division</th>
-                  <th className="text-right font-medium px-3 py-2">Overall</th>
-                  <th className="text-right font-medium px-3 py-2">Sentiment</th>
-                  <th className="text-right font-medium px-3 py-2">Clarity</th>
-                  <th className="text-right font-medium px-3 py-2">Workload</th>
-                  <th className="text-right font-medium px-3 py-2">Safety</th>
-                  <th className="text-right font-medium px-3 py-2">Leadership</th>
-                  <th className="text-right font-medium px-3 py-2">Participation</th>
-                  <th className="text-right font-medium px-3 py-2">Responses</th>
+            <table className="min-w-full text-xs border-collapse">
+              <thead>
+                <tr className="text-[var(--text-muted)]">
+                  <th className="text-left font-semibold px-2 py-3 border-b-2 border-slate-200">Division</th>
+                  <th className="text-center font-semibold px-2 py-3 border-b-2 border-slate-200">Overall</th>
+                  <th className="text-center font-semibold px-2 py-3 border-b-2 border-slate-200">Sentiment</th>
+                  <th className="text-center font-semibold px-2 py-3 border-b-2 border-slate-200">Clarity</th>
+                  <th className="text-center font-semibold px-2 py-3 border-b-2 border-slate-200">Workload</th>
+                  <th className="text-center font-semibold px-2 py-3 border-b-2 border-slate-200">Safety</th>
+                  <th className="text-center font-semibold px-2 py-3 border-b-2 border-slate-200">Leadership</th>
+                  <th className="text-center font-semibold px-2 py-3 border-b-2 border-slate-200">Participation</th>
                 </tr>
               </thead>
               <tbody>
@@ -550,45 +549,60 @@ export function ExecutiveOverview({
                     ? Math.round((row.response_count / row.total_employees) * 100)
                     : 0;
                   
+                  const getCellStyle = (score: number) => {
+                    const status = getScoreStatus(score);
+                    const opacity = Math.max(0.15, Math.min(0.9, score / 100));
+                    return {
+                      backgroundColor: `${status.color}${Math.round(opacity * 40).toString(16).padStart(2, '0')}`,
+                      color: score < 50 ? '#991B1B' : score < 70 ? '#92400E' : '#065F46',
+                      fontWeight: 600
+                    };
+                  };
+                  
                   return (
                     <tr 
                       key={row.id} 
                       className={cn(
-                        "border-t transition-colors",
-                        onDivisionClick && "cursor-pointer hover:bg-slate-50"
+                        "border-b border-slate-100 transition-all",
+                        onDivisionClick && "cursor-pointer hover:shadow-sm hover:bg-slate-50"
                       )}
                       onClick={() => onDivisionClick && onDivisionClick(row.id, row.name)}
                     >
-                      <td className="px-3 py-2 font-medium text-[var(--text-primary)]">{row.name}</td>
-                      <td className="px-3 py-2 text-right font-semibold" style={{ color: getScoreStatus(wellbeing).color }}>
+                      <td className="px-2 py-3 font-semibold text-[var(--text-primary)]">{row.name}</td>
+                      <td className="px-2 py-3 text-center rounded-md" style={getCellStyle(wellbeing)}>
                         {formatPercent(wellbeing)}
                       </td>
-                      <td className="px-3 py-2 text-right" style={{ color: getScoreStatus(sentiment).color }}>
+                      <td className="px-2 py-3 text-center rounded-md" style={getCellStyle(sentiment)}>
                         {formatPercent(sentiment)}
                       </td>
-                      <td className="px-3 py-2 text-right" style={{ color: getScoreStatus(clarity).color }}>
+                      <td className="px-2 py-3 text-center rounded-md" style={getCellStyle(clarity)}>
                         {formatPercent(clarity)}
                       </td>
-                      <td className="px-3 py-2 text-right" style={{ color: getScoreStatus(workload).color }}>
+                      <td className="px-2 py-3 text-center rounded-md" style={getCellStyle(workload)}>
                         {formatPercent(workload)}
                       </td>
-                      <td className="px-3 py-2 text-right" style={{ color: getScoreStatus(safety).color }}>
+                      <td className="px-2 py-3 text-center rounded-md" style={getCellStyle(safety)}>
                         {formatPercent(safety)}
                       </td>
-                      <td className="px-3 py-2 text-right" style={{ color: getScoreStatus(leadership).color }}>
+                      <td className="px-2 py-3 text-center rounded-md" style={getCellStyle(leadership)}>
                         {formatPercent(leadership)}
                       </td>
-                      <td className="px-3 py-2 text-right font-medium" style={{ 
-                        color: participation >= 70 ? SCORE_COLORS.thriving : participation >= 40 ? SCORE_COLORS.watch : SCORE_COLORS.alert 
+                      <td className="px-2 py-3 text-center rounded-md font-semibold" style={{
+                        backgroundColor: participation >= 70 ? `${SCORE_COLORS.thriving}28` : participation >= 40 ? `${SCORE_COLORS.watch}28` : `${SCORE_COLORS.alert}28`,
+                        color: participation >= 70 ? '#065F46' : participation >= 40 ? '#92400E' : '#991B1B'
                       }}>
                         {participation > 0 ? `${participation}%` : 'N/A'}
                       </td>
-                      <td className="px-3 py-2 text-right text-[var(--text-muted)]">{row.response_count ?? 0}</td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
+            {divisions.length > 0 && onDivisionClick && (
+              <div className="mt-3 text-xs text-[var(--text-muted)] italic">
+                Click any row to drill down into departments and teams
+              </div>
+            )}
           </CardContent>
         </Card>
 
