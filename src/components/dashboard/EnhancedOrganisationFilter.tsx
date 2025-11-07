@@ -63,7 +63,13 @@ export function EnhancedOrganisationFilter({
 
   const groupedDepartments = useMemo(() => {
     const groups = new Map<string, Department[]>();
+    const seen = new Set<string>(); // Track unique department IDs to avoid duplicates
+    
     departments.forEach(dept => {
+      // Skip if we've already seen this department
+      if (seen.has(dept.department_id)) return;
+      seen.add(dept.department_id);
+      
       const divName = divisionLookup.get(dept.division_id) ?? 'Other';
       if (!groups.has(divName)) {
         groups.set(divName, []);
@@ -78,7 +84,14 @@ export function EnhancedOrganisationFilter({
     const options: Array<{ value: string; label: string; indent: number }> = [];
     options.push({ value: 'all', label: 'Whole of Business (ALL)', indent: 0 });
     
+    const seenDivisions = new Set<string>();
+    const seenDepartments = new Set<string>();
+    const seenTeams = new Set<string>();
+    
     divisions.forEach(div => {
+      if (seenDivisions.has(div.division_id)) return;
+      seenDivisions.add(div.division_id);
+      
       options.push({ 
         value: `division:${div.division_id}`, 
         label: div.division_name, 
@@ -88,6 +101,9 @@ export function EnhancedOrganisationFilter({
       // Add departments under this division
       const depts = departments.filter(d => d.division_id === div.division_id);
       depts.forEach(dept => {
+        if (seenDepartments.has(dept.department_id)) return;
+        seenDepartments.add(dept.department_id);
+        
         options.push({ 
           value: `department:${dept.department_id}`, 
           label: dept.department_name, 
@@ -97,6 +113,9 @@ export function EnhancedOrganisationFilter({
         // Add teams under this department
         const teamList = teams.filter(t => t.department_id === dept.department_id);
         teamList.forEach(team => {
+          if (seenTeams.has(team.team_id)) return;
+          seenTeams.add(team.team_id);
+          
           options.push({ 
             value: `team:${team.team_id}`, 
             label: team.team_name, 
