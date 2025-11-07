@@ -416,50 +416,89 @@ export function ExecutiveOverview({
 
   return (
     <div className="space-y-8">
-      {/* Top summary cards */}
-      <div className="grid gap-6 xl:grid-cols-2">
-        <Card className="border border-[#E0E7F1] shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">Overall Wellbeing Score</CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 lg:grid-cols-[1.4fr,1fr] gap-6 items-center">
+      {/* Combined Wellbeing Overview Card */}
+      <Card className="border border-[#E0E7F1] shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base font-bold text-[var(--text-primary)]">Wellbeing Overview</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 xl:grid-cols-[1fr,1.2fr] gap-8">
+            {/* Left: Gauge and Weighting */}
             <div className="space-y-4">
               <SemiCircularGauge value={overallScore} previous={previousScore} />
               <WeightingBreakdown />
             </div>
-            <div className="space-y-3">
-              <div className="text-xs font-medium text-[var(--text-muted)] uppercase">Historical Wellbeing Score</div>
-              <Sparkline points={wellbeingPoints} color="#2E96FF" />
-            </div>
-          </CardContent>
-        </Card>
 
-        <Card className="border border-[#E0E7F1] shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">Current Sentiment</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-3">
-              {QUESTION_META.map(({ key, label, description }) => (
-                <QuestionBar
-                  key={key}
-                  label={label}
-                  description={description}
-                  value={questionScores[key] ?? 0}
-                />
-              ))}
+            {/* Right: Current Sentiment Questions */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wide">Current Sentiment</h3>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-[var(--text-muted)]">Participation</span>
+                  <span className="text-xl font-bold" style={{ 
+                    color: participationRate >= 70 ? SCORE_COLORS.thriving : participationRate >= 40 ? SCORE_COLORS.watch : SCORE_COLORS.alert 
+                  }}>
+                    {formatPercent(participationRate)}
+                  </span>
+                </div>
+              </div>
+              <div className="space-y-2.5">
+                {QUESTION_META.map(({ key, label, description }) => (
+                  <QuestionBar
+                    key={key}
+                    label={label}
+                    description={description}
+                    value={questionScores[key] ?? 0}
+                  />
+                ))}
+              </div>
+              
+              {/* AI Insights Box */}
+              <div className="mt-4 p-4 rounded-lg border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50">
+                <div className="flex items-start gap-2">
+                  <span className="text-lg flex-shrink-0">💡</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs font-bold text-blue-900 mb-1.5">AI Insight</div>
+                    <p className="text-xs text-blue-800 leading-relaxed">
+                      {(() => {
+                        const status = getScoreStatus(overallScore);
+                        const trend = previousScore ? overallScore - previousScore : 0;
+                        const lowestQ = Object.entries(questionScores).reduce((min, [key, val]) => 
+                          val < (questionScores[min] ?? 100) ? key : min, 'sentiment' as keyof typeof questionScores
+                        );
+                        const lowestLabel = QUESTION_META.find(q => q.key === lowestQ)?.description || '';
+                        
+                        if (overallScore < 40) {
+                          return `Critical situation: Wellbeing at ${Math.round(overallScore)}%. Immediate action needed. Focus on "${lowestLabel}" - this is your weakest area. Schedule urgent team check-ins.`;
+                        } else if (overallScore < 70) {
+                          if (trend < -5) {
+                            return `Declining trend detected (${trend.toFixed(1)}%). Address "${lowestLabel}" before it impacts retention. Consider targeted interventions this week.`;
+                          } else if (trend > 5) {
+                            return `Positive momentum! Up ${trend.toFixed(1)}%. Keep focus on improvements while addressing "${lowestLabel}" to reach thriving status.`;
+                          } else {
+                            return `Moderate wellbeing at ${Math.round(overallScore)}%. "${lowestLabel}" needs attention. Small improvements here could significantly boost overall scores.`;
+                          }
+                        } else {
+                          return `Strong performance at ${Math.round(overallScore)}%! Team is thriving. Continue current practices and monitor "${lowestLabel}" to maintain balance across all dimensions.`;
+                        }
+                      })()}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-sm font-medium text-[var(--text-muted)] uppercase">Participation</span>
-              <span className="text-3xl font-semibold" style={{ 
-                color: participationRate >= 70 ? SCORE_COLORS.thriving : participationRate >= 40 ? SCORE_COLORS.watch : SCORE_COLORS.alert 
-              }}>
-                {formatPercent(participationRate)}
-              </span>
+          </div>
+
+          {/* Bottom: Historical Trend Line */}
+          <div className="mt-6 pt-6 border-t border-slate-200">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wide">Wellbeing Trend Over Time</h3>
+              <span className="text-xs text-[var(--text-muted)]">Last {wellbeingPoints.length} periods</span>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <Sparkline points={wellbeingPoints} color={getScoreStatus(overallScore).color} />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Trend vs Safety and Teams */}
       <div className="grid gap-6 xl:grid-cols-2">
