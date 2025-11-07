@@ -730,9 +730,11 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
   }
 
   let attentionTeams: { id: string; name: string; wellbeing: number }[] = [];
+  console.log('[DEBUG] Total teams:', teams.length, 'Eligible teams:', eligibleTeams.length);
   if (eligibleTeams.length > 0) {
     const teamMap = new Map(eligibleTeams.map(team => [team.team_id, team.team_name]));
     const teamIds = Array.from(teamMap.keys());
+    console.log('[DEBUG] Team IDs for query:', teamIds.length);
 
     let teamQuery = supabaseAdmin
       .from('responses_v3')
@@ -752,6 +754,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     }
 
     const { data: teamResponses } = await teamQuery;
+    console.log('[DEBUG] Team responses found:', teamResponses?.length ?? 0);
 
     const aggregates: Record<string, {
       count: number;
@@ -797,6 +800,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
             (agg.leadership / agg.count) * 0.2 +
             (agg.clarity / agg.count) * 0.1) * 20,
       }));
+    console.log('[DEBUG] Attention teams calculated:', attentionTeams.length);
   }
 
   const executiveInsights = generateExecutiveInsights(trends, {
