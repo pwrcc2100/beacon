@@ -384,6 +384,13 @@ export async function POST(req: NextRequest) {
 
   const tokenCount = tokenCountQuery.count ?? 0;
 
+  // Refresh materialized view to update dashboard data
+  try {
+    await supabaseAdmin.rpc('refresh_wellbeing_responses');
+  } catch (mvError) {
+    errors.push(`Materialized view refresh failed: ${mvError}`);
+  }
+
   return NextResponse.json({
     ok: true,
     inserted,
@@ -392,6 +399,9 @@ export async function POST(req: NextRequest) {
     tokenCount,
     participantsTotal,
     departments: departmentBreakdown,
+    teamCount: teamMap.size,
+    divisionCount: divisionMap.size,
+    departmentCount: departmentMap.size,
     errors: errors.length ? errors : undefined,
   });
 }
