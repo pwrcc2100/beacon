@@ -110,8 +110,6 @@ export function WellbeingGauge({ sentiment, workload, safety, leadership, clarit
       }
     ]
   };
-
-  const status = getScoreStatus(wellbeingPercent);
   
   return (
     <Card className="h-full flex flex-col relative overflow-hidden" style={{ 
