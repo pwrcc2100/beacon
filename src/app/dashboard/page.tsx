@@ -815,8 +815,71 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
       </div>
       
-      {/* Compact QR Code Generator in Sidebar */}
+      {/* Data Mode Toggle */}
       <div className="pt-4 border-t border-black/10">
+        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Data Mode</div>
+        <DataModeToggleClient 
+          currentMode={mode}
+          clientId={clientId}
+          period={period}
+          divisionId={divisionId}
+          departmentId={departmentId}
+          teamId={teamId}
+        />
+      </div>
+      
+      {/* Filters */}
+      <div className="pt-4 border-t border-black/10 space-y-3">
+        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Filters</div>
+        
+        <div>
+          <div className="text-xs font-medium text-[var(--text-primary)] mb-1.5">Organisation</div>
+          <EnhancedOrganisationFilterClient
+            clientId={clientId}
+            period={period}
+            mode={mode}
+            currentDivisionId={divisionId}
+            currentDepartmentId={departmentId}
+            currentTeamId={teamId}
+            selectedDepartments={selectedDepartments || []}
+            divisions={divisions || []}
+            departments={departments || []}
+            teams={teams || []}
+          />
+        </div>
+        
+        <div>
+          <div className="text-xs font-medium text-[var(--text-primary)] mb-1.5">Time Period</div>
+          <TimePeriodFilter
+            clientId={clientId}
+            currentPeriod={period}
+            mode={mode}
+            divisionId={divisionId}
+            departmentId={departmentId}
+            teamId={teamId}
+          />
+        </div>
+      </div>
+      
+      {/* Actions */}
+      <div className="pt-4 border-t border-black/10 space-y-2">
+        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Actions</div>
+        <PrintButton />
+        <form action={`/api/download`} method="get" className="w-full">
+          <input type="hidden" name="client_id" value={clientId} />
+          <Button type="submit" variant="outline" size="sm" className="w-full" disabled={recent.length === 0}>Download CSV</Button>
+        </form>
+      </div>
+      
+      {/* Admin Tools */}
+      <div className="pt-4 border-t border-black/10">
+        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Demo Data</div>
+        <AdminTools clientId={clientId} />
+      </div>
+      
+      {/* QR Code Generator */}
+      <div className="pt-4 border-t border-black/10">
+        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Survey QR Code</div>
         <DemoQRCode clientId={clientId} compact={true} />
       </div>
     </div>
@@ -856,58 +919,11 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         </div>
 
         <div className="print:hidden">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-2xl font-bold text-[var(--text-primary)]">Executive Wellbeing Dashboard</h1>
-              <p className="text-sm text-[var(--text-muted)]">
-                Whole of business | Last updated: {reportDate} | {responseRate.responded} responses out of {responseRate.total} team members ({Math.round((responseRate.responded / responseRate.total) * 100)}% response rate)
-              </p>
-            </div>
-            {/* Data Mode Toggle */}
-            <DataModeToggleClient 
-              currentMode={mode}
-              clientId={clientId}
-              period={period}
-              divisionId={divisionId}
-              departmentId={departmentId}
-              teamId={teamId}
-            />
-          </div>
-          
-          <div className="mt-3 flex items-center gap-3 flex-wrap print:hidden">
-            {/* Filter Controls */}
-            <EnhancedOrganisationFilterClient
-              clientId={clientId}
-              period={period}
-              mode={mode}
-              currentDivisionId={divisionId}
-              currentDepartmentId={departmentId}
-              currentTeamId={teamId}
-              selectedDepartments={selectedDepartments || []}
-              divisions={divisions || []}
-              departments={departments || []}
-              teams={teams || []}
-            />
-            
-            <div className="border-l h-6"></div>
-            
-            <TimePeriodFilter
-              clientId={clientId}
-              currentPeriod={period}
-              mode={mode}
-              divisionId={divisionId}
-              departmentId={departmentId}
-              teamId={teamId}
-            />
-            
-            <div className="border-l h-6"></div>
-            
-            <PrintButton />
-            <form action={`/api/download`} method="get" className="flex items-center gap-2">
-              <input type="hidden" name="client_id" value={clientId} />
-              <Button type="submit" variant="outline" size="sm" disabled={recent.length === 0}>Download CSV</Button>
-            </form>
-            <AdminTools clientId={clientId} />
+          <div className="mb-4">
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Executive Wellbeing Dashboard</h1>
+            <p className="text-sm text-[var(--text-muted)]">
+              Whole of business | Last updated: {reportDate} | {responseRate.responded} responses out of {responseRate.total} team members ({Math.round((responseRate.responded / responseRate.total) * 100)}% response rate)
+            </p>
           </div>
         </div>
 
