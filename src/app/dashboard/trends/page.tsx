@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { DashboardShell } from '@/components/layout/DashboardShell';
 import { TrendCard } from '@/components/charts/TrendCard';
 import { WellbeingGauge } from '@/components/charts/WellbeingGauge';
+import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle } from 'lucide-react';
 
 type WellbeingRow = {
   wk: string;
@@ -139,6 +140,49 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
   const last = (k:keyof WellbeingRow)=> (trends.length ? Number(trends[trends.length-1][k]) : undefined);
   const prev = (k:keyof WellbeingRow)=> (trends.length>1 ? Number(trends[trends.length-2][k]) : undefined);
 
+  // Generate automated insights
+  const generateTrendInsights = () => {
+    if (trends.length < 2) return null;
+
+    const dimensions = [
+      { key: 'sentiment_avg' as const, name: 'Sentiment' },
+      { key: 'workload_avg' as const, name: 'Workload' },
+      { key: 'safety_avg' as const, name: 'Psychological Safety' },
+      { key: 'leadership_avg' as const, name: 'Leadership Support' },
+      { key: 'clarity_avg' as const, name: 'Role Clarity' }
+    ];
+
+    let biggestImprovement: { name: string; change: number; current: number } | null = null;
+    let biggestDecline: { name: string; change: number; current: number } | null = null;
+    let criticalAlert: { name: string; value: number } | null = null;
+
+    dimensions.forEach(dim => {
+      const currentVal = last(dim.key);
+      const previousVal = prev(dim.key);
+      
+      if (currentVal !== undefined && previousVal !== undefined) {
+        const change = currentVal - previousVal;
+        const percentChange = ((change / previousVal) * 100);
+
+        if (change > 0 && (!biggestImprovement || percentChange > biggestImprovement.change)) {
+          biggestImprovement = { name: dim.name, change: percentChange, current: currentVal };
+        }
+        
+        if (change < 0 && (!biggestDecline || percentChange < biggestDecline.change)) {
+          biggestDecline = { name: dim.name, change: percentChange, current: currentVal };
+        }
+
+        if (currentVal < 2.5 && (!criticalAlert || currentVal < criticalAlert.value)) {
+          criticalAlert = { name: dim.name, value: currentVal };
+        }
+      }
+    });
+
+    return { biggestImprovement, biggestDecline, criticalAlert };
+  };
+
+  const insights = generateTrendInsights();
+
   const Sidebar = (
     <div className="space-y-2">
       <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
@@ -213,6 +257,75 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
             </Card>
           </div>
         </div>
+
+        {/* Automated Insights Callout */}
+        {insights && (insights.criticalAlert || insights.biggestDecline || insights.biggestImprovement) && (
+          <Card className="border-2 border-blue-200 bg-blue-50">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2">
+                <span className="text-blue-600">💡</span>
+                Key Trend Insights
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {insights.criticalAlert && (
+                <div className="flex items-start gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-red-900">
+                      Critical Alert: {insights.criticalAlert.name} is at {insights.criticalAlert.value.toFixed(1)}/5
+                    </p>
+                    <p className="text-xs text-red-800 mt-1">
+                      This indicates high psychosocial risk. Immediate intervention recommended.
+                    </p>
+                  </div>
+                </div>
+              )}
+              
+              {insights.biggestDecline && Math.abs(insights.biggestDecline.change) > 5 && (
+                <div className="flex items-start gap-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                  <TrendingDown className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-orange-900">
+                      {insights.biggestDecline.name} declined by {Math.abs(insights.biggestDecline.change).toFixed(1)}%
+                    </p>
+                    <p className="text-xs text-orange-800 mt-1">
+                      Monitor this trend closely and consider targeted interventions.
+                    </p>
+                  </div>
+                </div>
+              )}
+              
+              {insights.biggestImprovement && insights.biggestImprovement.change > 5 && (
+                <div className="flex items-start gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <TrendingUp className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-green-900">
+                      {insights.biggestImprovement.name} improved by {insights.biggestImprovement.change.toFixed(1)}%
+                    </p>
+                    <p className="text-xs text-green-800 mt-1">
+                      Positive momentum detected. Document and share successful practices.
+                    </p>
+                  </div>
+                </div>
+              )}
+              
+              {!insights.criticalAlert && !insights.biggestDecline && !insights.biggestImprovement && (
+                <div className="flex items-start gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                  <CheckCircle className="h-5 w-5 text-slate-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-slate-900">
+                      Trends are stable with no significant changes
+                    </p>
+                    <p className="text-xs text-slate-700 mt-1">
+                      Continue monitoring for any emerging patterns.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Trend Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
