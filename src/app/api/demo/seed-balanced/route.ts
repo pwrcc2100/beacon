@@ -234,40 +234,85 @@ export async function POST(req: NextRequest) {
         const daysAgo = randInt(0, 180);
         const submittedAt = new Date(now.getTime() - daysAgo * 86400000);
 
-        // Create varied score distributions:
-        // - QLD divisions: High scores (thriving) - 4-5 range
-        // - Sydney Metro: Mixed scores - some high, some medium
-        // - Regional: Medium to low scores
+        // Create varied score distributions by division, department, AND team:
+        // This ensures "Which Teams Need Attention" shows a mix of red/orange/green
         let sentiment5, clarity5, workload5, safety5, leadership5;
         
+        // Vary scores by team name to create diversity
+        const teamName = teamEntry.teamName;
+        
         if (divisionName === 'QLD') {
-          // QLD: Thriving scores (70%+ = 4-5 on 5-point scale)
-          sentiment5 = randInt(4, 5);
-          clarity5 = randInt(4, 5);
-          workload5 = randInt(4, 5);
-          safety5 = randInt(4, 5);
-          leadership5 = randInt(4, 5);
+          // QLD: Mostly thriving, but Team E struggles
+          if (teamName === 'Team E') {
+            sentiment5 = randInt(2, 3);
+            clarity5 = randInt(2, 3);
+            workload5 = randInt(2, 3);
+            safety5 = randInt(2, 3);
+            leadership5 = randInt(2, 3);
+          } else {
+            sentiment5 = randInt(4, 5);
+            clarity5 = randInt(4, 5);
+            workload5 = randInt(4, 5);
+            safety5 = randInt(4, 5);
+            leadership5 = randInt(4, 5);
+          }
         } else if (divisionName === 'Sydney Metro' && departmentName === 'Health') {
-          // Sydney Metro Health: Also thriving
-          sentiment5 = randInt(4, 5);
-          clarity5 = randInt(4, 5);
-          workload5 = randInt(4, 5);
-          safety5 = randInt(4, 5);
-          leadership5 = randInt(4, 5);
+          // Sydney Metro Health: Thriving except Team D
+          if (teamName === 'Team D') {
+            sentiment5 = randInt(1, 2);
+            clarity5 = randInt(1, 2);
+            workload5 = randInt(1, 2);
+            safety5 = randInt(1, 2);
+            leadership5 = randInt(1, 2);
+          } else {
+            sentiment5 = randInt(4, 5);
+            clarity5 = randInt(4, 5);
+            workload5 = randInt(4, 5);
+            safety5 = randInt(4, 5);
+            leadership5 = randInt(4, 5);
+          }
         } else if (divisionName === 'Sydney Metro') {
-          // Other Sydney Metro departments: Mixed (2-4 range)
-          sentiment5 = randInt(2, 4);
-          clarity5 = randInt(2, 4);
-          workload5 = randInt(2, 4);
-          safety5 = randInt(2, 4);
-          leadership5 = randInt(2, 4);
+          // Other Sydney Metro departments: Mixed by team
+          if (teamName === 'Team A') {
+            sentiment5 = randInt(4, 5); // Thriving
+            clarity5 = randInt(4, 5);
+            workload5 = randInt(4, 5);
+            safety5 = randInt(4, 5);
+            leadership5 = randInt(4, 5);
+          } else if (teamName === 'Team B' || teamName === 'Team C') {
+            sentiment5 = randInt(3, 4); // Ones to watch
+            clarity5 = randInt(3, 4);
+            workload5 = randInt(3, 4);
+            safety5 = randInt(3, 4);
+            leadership5 = randInt(3, 4);
+          } else {
+            sentiment5 = randInt(2, 3); // Lower scores
+            clarity5 = randInt(2, 3);
+            workload5 = randInt(2, 3);
+            safety5 = randInt(2, 3);
+            leadership5 = randInt(2, 3);
+          }
         } else {
-          // Regional: Lower scores (1-3 range)
-          sentiment5 = randInt(1, 3);
-          clarity5 = randInt(1, 3);
-          workload5 = randInt(1, 3);
-          safety5 = randInt(1, 3);
-          leadership5 = randInt(1, 3);
+          // Regional: Mostly lower scores with some variation
+          if (teamName === 'Team A') {
+            sentiment5 = randInt(3, 4); // One decent team
+            clarity5 = randInt(3, 4);
+            workload5 = randInt(3, 4);
+            safety5 = randInt(3, 4);
+            leadership5 = randInt(3, 4);
+          } else if (teamName === 'Team E') {
+            sentiment5 = randInt(1, 2); // Critical team
+            clarity5 = randInt(1, 2);
+            workload5 = randInt(1, 2);
+            safety5 = randInt(1, 2);
+            leadership5 = randInt(1, 2);
+          } else {
+            sentiment5 = randInt(2, 3); // Middle range
+            clarity5 = randInt(2, 3);
+            workload5 = randInt(2, 3);
+            safety5 = randInt(2, 3);
+            leadership5 = randInt(2, 3);
+          }
         }
 
         const tokenId = crypto.randomUUID();
