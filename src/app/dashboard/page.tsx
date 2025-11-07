@@ -576,12 +576,21 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
   const hierarchyData = await getHierarchyData(clientId, divisionId, departmentId, teamId, selectedDepartments, period !== 'all' ? period : undefined, mode);
   
   // Fetch org structure for filter
-  const { data: divisions } = await supabaseAdmin
+  const { data: divisionsData } = await supabaseAdmin
     .from('divisions')
     .select('division_id, division_name')
     .eq('client_id', clientId)
     .eq('active', true)
     .order('division_name');
+  
+  // Deduplicate divisions by division_id
+  const divisionsMap = new Map();
+  (divisionsData ?? []).forEach(div => {
+    if (!divisionsMap.has(div.division_id)) {
+      divisionsMap.set(div.division_id, div);
+    }
+  });
+  const divisions = Array.from(divisionsMap.values());
   
   const { data: departmentsData } = await supabaseAdmin
     .from('departments')
@@ -595,11 +604,18 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     .eq('active', true)
     .order('department_name');
 
-  const departments = (departmentsData ?? []).map(dept => ({
-    department_id: dept.department_id,
-    department_name: dept.department_name,
-    division_id: dept.division_id
-  }));
+  // Deduplicate departments by department_id
+  const departmentsMap = new Map();
+  (departmentsData ?? []).forEach(dept => {
+    if (!departmentsMap.has(dept.department_id)) {
+      departmentsMap.set(dept.department_id, {
+        department_id: dept.department_id,
+        department_name: dept.department_name,
+        division_id: dept.division_id
+      });
+    }
+  });
+  const departments = Array.from(departmentsMap.values());
   
   const { data: teamsData } = await supabaseAdmin
     .from('teams')
@@ -616,11 +632,18 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     .eq('active', true)
     .order('team_name');
 
-  const teams = (teamsData ?? []).map(team => ({
-    team_id: team.team_id,
-    team_name: team.team_name,
-    department_id: team.department_id
-  }));
+  // Deduplicate teams by team_id
+  const teamsMap = new Map();
+  (teamsData ?? []).forEach(team => {
+    if (!teamsMap.has(team.team_id)) {
+      teamsMap.set(team.team_id, {
+        team_id: team.team_id,
+        team_name: team.team_name,
+        department_id: team.department_id
+      });
+    }
+  });
+  const teams = Array.from(teamsMap.values());
 
   const startDateForFilters = (() => {
     if (mode === 'live') {
