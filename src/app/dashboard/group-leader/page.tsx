@@ -169,7 +169,15 @@ async function getTeamSummaries(
     }
   });
 
-  const summaries: TeamSummary[] = filteredTeams.map(team => {
+  // Deduplicate teams by team_id to prevent duplicate cards
+  const uniqueTeamsMap = new Map<string, any>();
+  filteredTeams.forEach(team => {
+    if (!uniqueTeamsMap.has(team.team_id)) {
+      uniqueTeamsMap.set(team.team_id, team);
+    }
+  });
+
+  const summaries: TeamSummary[] = Array.from(uniqueTeamsMap.values()).map(team => {
     const summary = summaryMap.get(team.team_id)!;
 
     const sentimentAvg = summary.count ? summary.sentiment / summary.count : undefined;
