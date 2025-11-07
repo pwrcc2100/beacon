@@ -543,65 +543,55 @@ export function ExecutiveOverview({
         </CardContent>
       </Card>
 
-      {/* Trend vs Safety and Teams */}
-      <div className="grid gap-6 xl:grid-cols-2">
-        <Card className="border border-[#E0E7F1] shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">Wellbeing vs Safety Trends</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <OverlaidSparklines 
-              series1={wellbeingPoints} 
-              series2={safetyPoints} 
-              color1={SCORE_COLORS.thriving} 
-              color2={SCORE_COLORS.watch}
-              label1="Overall Wellbeing"
-              label2="Psychological Safety"
-            />
-          </CardContent>
-        </Card>
-
-        <Card className="border border-[#E0E7F1] shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">{attentionLabel}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <TeamsBarChart teams={teamSummary.sorted} />
-            <div className="mt-4 flex flex-wrap items-center gap-4">
-              <LegendItem color={SCORE_COLORS.alert} label="High Alert" range="Under 40%" />
-              <LegendItem color={SCORE_COLORS.watch} label="Ones to Watch" range="40% – 69%" />
-              <LegendItem color={SCORE_COLORS.thriving} label="Thriving" range="70%+" />
-            </div>
-            {(teamSummary.categories.alert.length > 0 || teamSummary.categories.watch.length > 0) && (
-              <div className="mt-3 space-y-1 text-xs text-[var(--text-muted)]">
-                {teamSummary.categories.alert.length > 0 && (
-                  <div>
-                    <span className="font-semibold" style={{ color: SCORE_COLORS.alert }}>
-                      {teamSummary.categories.alert.join(', ')}
-                    </span>{' '}
-                    require immediate follow-up.
-                  </div>
-                )}
-                {teamSummary.categories.watch.length > 0 && (
-                  <div>
-                    <span className="font-semibold" style={{ color: SCORE_COLORS.watch }}>
-                      {teamSummary.categories.watch.join(', ')}
-                    </span>{' '}
-                    are ones to watch this period.
-                  </div>
-                )}
+      {/* Which Teams Need Attention - Full Width */}
+      <Card className="border border-[#E0E7F1] shadow-sm">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">{attentionLabel}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {teamSummary.sorted.length > 0 ? (
+            <>
+              <TeamsBarChart teams={teamSummary.sorted} />
+              <div className="mt-4 flex flex-wrap items-center gap-4">
+                <LegendItem color={SCORE_COLORS.alert} label="High Alert" range="Under 40%" />
+                <LegendItem color={SCORE_COLORS.watch} label="Ones to Watch" range="40% – 69%" />
+                <LegendItem color={SCORE_COLORS.thriving} label="Thriving" range="70%+" />
               </div>
-            )}
-            <div className="mt-3 text-xs" style={{ color: SCORE_COLORS.watch }}>
-              Compare against last report to track shifts in psychosocial risk.
+              {(teamSummary.categories.alert.length > 0 || teamSummary.categories.watch.length > 0) && (
+                <div className="mt-3 space-y-1 text-xs text-[var(--text-muted)]">
+                  {teamSummary.categories.alert.length > 0 && (
+                    <div>
+                      <span className="font-semibold" style={{ color: SCORE_COLORS.alert }}>
+                        {teamSummary.categories.alert.join(', ')}
+                      </span>{' '}
+                      require immediate follow-up.
+                    </div>
+                  )}
+                  {teamSummary.categories.watch.length > 0 && (
+                    <div>
+                      <span className="font-semibold" style={{ color: SCORE_COLORS.watch }}>
+                        {teamSummary.categories.watch.join(', ')}
+                      </span>{' '}
+                      are ones to watch this period.
+                    </div>
+                  )}
+                </div>
+              )}
+              <div className="mt-3 text-xs" style={{ color: SCORE_COLORS.watch }}>
+                Compare against last report to track shifts in psychosocial risk.
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-8 text-[var(--text-muted)]">
+              <p className="text-sm font-medium">No team Data?</p>
+              <p className="text-xs mt-1">Compare against last report to track shifts in psychosocial risk.</p>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          )}
+        </CardContent>
+      </Card>
 
-      {/* Divisions heatmap table and insights */}
-      <div className="grid gap-6 xl:grid-cols-5">
-        <Card className="xl:col-span-3 border border-[#E0E7F1] shadow-sm overflow-hidden">
+      {/* Divisions heatmap table - Full Width */}
+      <Card className="border border-[#E0E7F1] shadow-sm overflow-hidden">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">{tableTitle}</CardTitle>
           </CardHeader>
@@ -692,42 +682,41 @@ export function ExecutiveOverview({
           </CardContent>
         </Card>
 
-        <Card className="xl:col-span-2 border border-[#E0E7F1] shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">Key Insights</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3 text-xs">
-            {insights.length === 0 && (
-              <div className="text-muted-foreground text-xs">No significant patterns detected.</div>
-            )}
+      {/* Key Insights - Horizontal Layout */}
+      <div>
+        <h3 className="text-sm font-bold text-[var(--text-muted)] uppercase tracking-wide mb-4">Key Insights</h3>
+        {insights.length === 0 ? (
+          <div className="text-muted-foreground text-xs">No significant patterns detected.</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {insights.map((insight, index) => {
               const visuals = getInsightVisual(insight.type);
               return (
                 <div
                   key={index}
-                  className="rounded-lg p-3 space-y-2 border"
+                  className="rounded-lg p-4 space-y-2 border"
                   style={{ borderColor: visuals.border, backgroundColor: visuals.background }}
                 >
                   <div className="flex items-start gap-2">
                     {insight.icon && (
-                      <span className="mt-0.5" style={{ color: visuals.border }}>
+                      <span className="mt-0.5 text-lg" style={{ color: visuals.border }}>
                         {insight.icon}
                       </span>
                     )}
-                    <div className="font-medium text-[var(--text-primary)] leading-snug">
+                    <div className="font-medium text-[var(--text-primary)] leading-snug text-sm">
                       {insight.text}
                     </div>
                   </div>
                   {insight.recommendation && (
-                    <div className="text-[var(--text-muted)] leading-snug">
+                    <div className="text-[var(--text-muted)] leading-snug text-xs pl-7">
                       → {insight.recommendation}
                     </div>
                   )}
                 </div>
               );
             })}
-          </CardContent>
-        </Card>
+          </div>
+        )}
       </div>
     </div>
   );
