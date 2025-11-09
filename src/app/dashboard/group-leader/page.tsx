@@ -197,7 +197,10 @@ async function getTeamSummaries(
     return {
       id: team.team_id,
       name: team.team_name,
-      departmentName: (Array.isArray(team.departments) ? team.departments[0]?.department_name : team.departments?.department_name) ?? undefined,
+      departmentName: (() => {
+        const dept = Array.isArray(team.departments) ? team.departments[0] : team.departments;
+        return dept?.department_name ?? undefined;
+      })(),
       questionScores: {
         sentiment: avg('sentiment'),
         clarity: avg('clarity'),
