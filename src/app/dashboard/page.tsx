@@ -441,6 +441,19 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
     
     const divisionIds = divisions.map(d => d.division_id);
     
+    // Get employee counts per division
+    const { data: employeeCounts } = await supabaseAdmin
+      .from('employees')
+      .select('division_id')
+      .eq('client_id', clientId)
+      .in('division_id', divisionIds)
+      .eq('active', true);
+    
+    const employeeCountMap: Record<string, number> = {};
+    (employeeCounts || []).forEach((emp: any) => {
+      employeeCountMap[emp.division_id] = (employeeCountMap[emp.division_id] || 0) + 1;
+    });
+    
     let query = supabaseAdmin
       .from('responses_v3')
       .select(`
@@ -467,6 +480,7 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
         id: div.division_id,
         name: div.division_name,
         count: 0,
+        total_employees: employeeCountMap[div.division_id] || 0,
         sentiment_sum: 0,
         clarity_sum: 0,
         workload_sum: 0,
@@ -496,6 +510,7 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
         id: agg.id,
         name: agg.name,
         response_count: agg.count,
+        total_employees: agg.total_employees,
         sentiment_avg: agg.sentiment_sum / agg.count,
         clarity_avg: agg.clarity_sum / agg.count,
         workload_avg: agg.workload_sum / agg.count,
