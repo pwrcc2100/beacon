@@ -108,7 +108,7 @@ function WeightingBreakdown() {
   ];
 
   return (
-    <div className="rounded-lg border border-dashed border-[#CBD5E1] bg-[#F8FBFF] p-3">
+    <div className="rounded-lg border border-gray-200 p-3">
       <div className="text-xs uppercase text-[var(--text-muted)] font-semibold tracking-wide mb-2">
         Weighting Formula
       </div>
@@ -354,7 +354,7 @@ export function ExecutiveOverview({
           <CardContent className="space-y-4">
             <Sparkline points={wellbeingPoints} color={SCORE_COLORS.thriving} />
             <Sparkline points={safetyPoints} color={SCORE_COLORS.watch} />
-            <div className="text-xs text-[var(--text-muted)] border rounded-lg p-3">
+            <div className="text-xs text-[var(--text-muted)] border border-gray-200 rounded-lg p-3">
               <span className="font-medium text-[var(--text-primary)]">Insight:</span> What does this mean? Check for correlation, trending up or down, and any notable changes across periods.
             </div>
           </CardContent>
