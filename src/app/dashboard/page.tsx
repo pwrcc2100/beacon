@@ -719,7 +719,8 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         workload_5,
         safety_5,
         leadership_5,
-        employees!inner(team_id)
+        employee_id,
+        employees!responses_v3_employee_id_fkey!inner(team_id)
       `)
       .eq('client_id', clientId)
       .in('employees.team_id', teamIds);
