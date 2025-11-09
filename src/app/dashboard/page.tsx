@@ -949,6 +949,11 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         {/* Top Quote Banner */}
         <QuoteBanner position="top" />
 
+        {/* Debug info */}
+        <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
+          <strong>Debug:</strong> Teams: {teams.length} | Eligible: {eligibleTeams.length} | Attention Teams: {attentionTeams.length}
+        </div>
+
         {trends.length === 0 && recent.length === 0 ? (
           <DemoDashboardClient />
         ) : (
