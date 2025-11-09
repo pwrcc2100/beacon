@@ -12,7 +12,7 @@ export function QuoteBanner({ position = 'top' }: Props) {
   };
 
   const bottomQuote = {
-    text: "We measure how well the organisation provides a supportive working environment through leadership, workload design, role clarity, and trust.",
+    text: "When we measure psychological safety, we're evaluating how well the organisation provides a supportive working environment through leadership behaviour, workload design, role clarity, and trust in processes.",
     emphasis: "This is organisational health, not individual pathology."
   };
 

@@ -441,19 +441,6 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
     
     const divisionIds = divisions.map(d => d.division_id);
     
-    // Get employee counts per division
-    const { data: employeeCounts } = await supabaseAdmin
-      .from('employees')
-      .select('division_id')
-      .eq('client_id', clientId)
-      .in('division_id', divisionIds)
-      .eq('active', true);
-    
-    const employeeCountMap: Record<string, number> = {};
-    (employeeCounts || []).forEach((emp: any) => {
-      employeeCountMap[emp.division_id] = (employeeCountMap[emp.division_id] || 0) + 1;
-    });
-    
     let query = supabaseAdmin
       .from('responses_v3')
       .select(`
@@ -480,7 +467,6 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
         id: div.division_id,
         name: div.division_name,
         count: 0,
-        total_employees: employeeCountMap[div.division_id] || 0,
         sentiment_sum: 0,
         clarity_sum: 0,
         workload_sum: 0,
@@ -510,7 +496,6 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
         id: agg.id,
         name: agg.name,
         response_count: agg.count,
-        total_employees: agg.total_employees,
         sentiment_avg: agg.sentiment_sum / agg.count,
         clarity_avg: agg.clarity_sum / agg.count,
         workload_avg: agg.workload_sum / agg.count,
@@ -591,21 +576,12 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
   const hierarchyData = await getHierarchyData(clientId, divisionId, departmentId, teamId, selectedDepartments, period !== 'all' ? period : undefined, mode);
   
   // Fetch org structure for filter
-  const { data: divisionsData } = await supabaseAdmin
+  const { data: divisions } = await supabaseAdmin
     .from('divisions')
     .select('division_id, division_name')
     .eq('client_id', clientId)
     .eq('active', true)
     .order('division_name');
-  
-  // Deduplicate divisions by division_id
-  const divisionsMap = new Map();
-  (divisionsData ?? []).forEach(div => {
-    if (!divisionsMap.has(div.division_id)) {
-      divisionsMap.set(div.division_id, div);
-    }
-  });
-  const divisions = Array.from(divisionsMap.values());
   
   const { data: departmentsData } = await supabaseAdmin
     .from('departments')
@@ -619,18 +595,11 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     .eq('active', true)
     .order('department_name');
 
-  // Deduplicate departments by department_id
-  const departmentsMap = new Map();
-  (departmentsData ?? []).forEach(dept => {
-    if (!departmentsMap.has(dept.department_id)) {
-      departmentsMap.set(dept.department_id, {
-        department_id: dept.department_id,
-        department_name: dept.department_name,
-        division_id: dept.division_id
-      });
-    }
-  });
-  const departments = Array.from(departmentsMap.values());
+  const departments = (departmentsData ?? []).map(dept => ({
+    department_id: dept.department_id,
+    department_name: dept.department_name,
+    division_id: dept.division_id
+  }));
   
   const { data: teamsData } = await supabaseAdmin
     .from('teams')
@@ -647,18 +616,11 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     .eq('active', true)
     .order('team_name');
 
-  // Deduplicate teams by team_id
-  const teamsMap = new Map();
-  (teamsData ?? []).forEach(team => {
-    if (!teamsMap.has(team.team_id)) {
-      teamsMap.set(team.team_id, {
-        team_id: team.team_id,
-        team_name: team.team_name,
-        department_id: team.department_id
-      });
-    }
-  });
-  const teams = Array.from(teamsMap.values());
+  const teams = (teamsData ?? []).map(team => ({
+    team_id: team.team_id,
+    team_name: team.team_name,
+    department_id: team.department_id
+  }));
 
   const startDateForFilters = (() => {
     if (mode === 'live') {
@@ -745,11 +707,9 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
   }
 
   let attentionTeams: { id: string; name: string; wellbeing: number }[] = [];
-  console.log('[DEBUG] Total teams:', teams.length, 'Eligible teams:', eligibleTeams.length);
   if (eligibleTeams.length > 0) {
     const teamMap = new Map(eligibleTeams.map(team => [team.team_id, team.team_name]));
     const teamIds = Array.from(teamMap.keys());
-    console.log('[DEBUG] Team IDs for query:', teamIds.length);
 
     let teamQuery = supabaseAdmin
       .from('responses_v3')
@@ -768,8 +728,12 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
       teamQuery = teamQuery.gte('submitted_at', startDateForFilters.toISOString());
     }
 
-    const { data: teamResponses } = await teamQuery;
-    console.log('[DEBUG] Team responses found:', teamResponses?.length ?? 0);
+    const { data: teamResponses, error: teamRespError } = await teamQuery;
+    console.log('[DEBUG] Team responses query result:', { 
+      count: teamResponses?.length ?? 0, 
+      error: teamRespError,
+      sample: teamResponses?.[0]
+    });
 
     const aggregates: Record<string, {
       count: number;
@@ -815,7 +779,6 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
             (agg.leadership / agg.count) * 0.2 +
             (agg.clarity / agg.count) * 0.1) * 20,
       }));
-    console.log('[DEBUG] Attention teams calculated:', attentionTeams.length);
   }
 
   const executiveInsights = generateExecutiveInsights(trends, {
@@ -827,78 +790,15 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     <div className="space-y-4">
       <div className="space-y-2">
         <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
-        <a href={`/dashboard?client=${clientId}`} className="block px-3 py-2 rounded bg-black/5 font-medium">Overview</a>
-        <a href={`/dashboard/trends?client=${clientId}`} className="block px-3 py-2 rounded hover:bg-black/5">Trends</a>
-        <a href={`/dashboard/group-leader?client=${clientId}`} className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
+        <a href="/dashboard" className="block px-3 py-2 rounded bg-black/5 font-medium">Overview</a>
+        <a href="/dashboard/trends" className="block px-3 py-2 rounded hover:bg-black/5">Trends</a>
+        <a href="/dashboard/group-leader" className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
         <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Advanced Analytics</a>
         <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
       </div>
       
-      {/* Data Mode Toggle */}
+      {/* Compact QR Code Generator in Sidebar */}
       <div className="pt-4 border-t border-black/10">
-        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Data Mode</div>
-        <DataModeToggleClient 
-          currentMode={mode}
-          clientId={clientId}
-          period={period}
-          divisionId={divisionId}
-          departmentId={departmentId}
-          teamId={teamId}
-        />
-      </div>
-      
-      {/* Filters */}
-      <div className="pt-4 border-t border-black/10 space-y-3">
-        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Filters</div>
-        
-        <div>
-          <div className="text-xs font-medium text-[var(--text-primary)] mb-1.5">Organisation</div>
-          <EnhancedOrganisationFilterClient
-            clientId={clientId}
-            period={period}
-            mode={mode}
-            currentDivisionId={divisionId}
-            currentDepartmentId={departmentId}
-            currentTeamId={teamId}
-            selectedDepartments={selectedDepartments || []}
-            divisions={divisions || []}
-            departments={departments || []}
-            teams={teams || []}
-          />
-        </div>
-        
-        <div>
-          <div className="text-xs font-medium text-[var(--text-primary)] mb-1.5">Time Period</div>
-          <TimePeriodFilter
-            clientId={clientId}
-            currentPeriod={period}
-            mode={mode}
-            divisionId={divisionId}
-            departmentId={departmentId}
-            teamId={teamId}
-          />
-        </div>
-      </div>
-      
-      {/* Actions */}
-      <div className="pt-4 border-t border-black/10 space-y-2">
-        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Actions</div>
-        <PrintButton />
-        <form action={`/api/download`} method="get" className="w-full">
-          <input type="hidden" name="client_id" value={clientId} />
-          <Button type="submit" variant="outline" size="sm" className="w-full" disabled={recent.length === 0}>Download CSV</Button>
-        </form>
-      </div>
-      
-      {/* Admin Tools */}
-      <div className="pt-4 border-t border-black/10">
-        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Demo Data</div>
-        <AdminTools clientId={clientId} />
-      </div>
-      
-      {/* QR Code Generator */}
-      <div className="pt-4 border-t border-black/10">
-        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Survey QR Code</div>
         <DemoQRCode clientId={clientId} compact={true} />
       </div>
     </div>
@@ -910,15 +810,6 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
   return (
     <DashboardShell sidebar={Sidebar}>
       <div className="max-w-6xl mx-auto space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div>
-            <h1 className="text-3xl font-bold text-[var(--navy)]">Beacon Executive Wellbeing Dashboard</h1>
-            <p className="text-sm text-[var(--text-muted)]">Beacon · Building healthier workplaces through real insights</p>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
-            <span>Last updated: {reportDate}</span>
-          </div>
-        </div>
         {/* Print Header - Only visible when printing */}
         <div className="hidden print:block mb-6 pb-4 border-b-2 border-[var(--navy)]">
           <div className="flex justify-between items-start">
@@ -938,21 +829,63 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         </div>
 
         <div className="print:hidden">
-          <div className="mb-4">
-            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Executive Wellbeing Dashboard</h1>
-            <p className="text-sm text-[var(--text-muted)]">
-              Whole of business | Last updated: {reportDate} | {responseRate.responded} responses out of {responseRate.total} team members ({Math.round((responseRate.responded / responseRate.total) * 100)}% response rate)
-            </p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-[var(--text-primary)]">Executive Wellbeing Dashboard</h1>
+              <p className="text-sm text-[var(--text-muted)]">
+                Whole of business | Last updated: {reportDate} | {responseRate.responded} responses out of {responseRate.total} team members ({Math.round((responseRate.responded / responseRate.total) * 100)}% response rate)
+              </p>
+            </div>
+            {/* Data Mode Toggle */}
+            <DataModeToggleClient 
+              currentMode={mode}
+              clientId={clientId}
+              period={period}
+              divisionId={divisionId}
+              departmentId={departmentId}
+              teamId={teamId}
+            />
+          </div>
+          
+          <div className="mt-3 flex items-center gap-3 flex-wrap print:hidden">
+            {/* Filter Controls */}
+            <EnhancedOrganisationFilterClient
+              clientId={clientId}
+              period={period}
+              mode={mode}
+              currentDivisionId={divisionId}
+              currentDepartmentId={departmentId}
+              currentTeamId={teamId}
+              selectedDepartments={selectedDepartments || []}
+              divisions={divisions || []}
+              departments={departments || []}
+              teams={teams || []}
+            />
+            
+            <div className="border-l h-6"></div>
+            
+            <TimePeriodFilter
+              clientId={clientId}
+              currentPeriod={period}
+              mode={mode}
+              divisionId={divisionId}
+              departmentId={departmentId}
+              teamId={teamId}
+            />
+            
+            <div className="border-l h-6"></div>
+            
+            <PrintButton />
+            <form action={`/api/download`} method="get" className="flex items-center gap-2">
+              <input type="hidden" name="client_id" value={clientId} />
+              <Button type="submit" variant="outline" size="sm" disabled={recent.length === 0}>Download CSV</Button>
+            </form>
+            <AdminTools clientId={clientId} />
           </div>
         </div>
 
         {/* Top Quote Banner */}
         <QuoteBanner position="top" />
-
-        {/* Debug info */}
-        <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
-          <strong>Debug:</strong> Teams: {teams.length} | Eligible: {eligibleTeams.length} | Attention Teams: {attentionTeams.length}
-        </div>
 
         {trends.length === 0 && recent.length === 0 ? (
           <DemoDashboardClient />

@@ -63,16 +63,8 @@ export function EnhancedOrganisationFilter({
 
   const groupedDepartments = useMemo(() => {
     const groups = new Map<string, Department[]>();
-    const seenByName = new Map<string, string>(); // Track department name -> first ID seen
-    
     departments.forEach(dept => {
       const divName = divisionLookup.get(dept.division_id) ?? 'Other';
-      const key = `${divName}:${dept.department_name}`;
-      
-      // Skip if we've already seen a department with this name in this division
-      if (seenByName.has(key)) return;
-      seenByName.set(key, dept.department_id);
-      
       if (!groups.has(divName)) {
         groups.set(divName, []);
       }
@@ -80,67 +72,6 @@ export function EnhancedOrganisationFilter({
     });
     return Array.from(groups.entries());
   }, [departments, divisionLookup]);
-
-  // Build hierarchical structure for dropdown
-  const hierarchyOptions = useMemo(() => {
-    const options: Array<{ value: string; label: string; indent: number }> = [];
-    options.push({ value: 'all', label: 'Whole of Business (ALL)', indent: 0 });
-    
-    const seenDivisionNames = new Set<string>();
-    const seenDepartmentNames = new Map<string, Set<string>>(); // division -> dept names
-    const seenTeamNames = new Map<string, Set<string>>(); // department -> team names
-    
-    divisions.forEach(div => {
-      if (seenDivisionNames.has(div.division_name)) return;
-      seenDivisionNames.add(div.division_name);
-      
-      options.push({ 
-        value: `division:${div.division_id}`, 
-        label: div.division_name, 
-        indent: 1 
-      });
-      
-      // Initialize dept names set for this division
-      if (!seenDepartmentNames.has(div.division_id)) {
-        seenDepartmentNames.set(div.division_id, new Set());
-      }
-      
-      // Add departments under this division
-      const depts = departments.filter(d => d.division_id === div.division_id);
-      depts.forEach(dept => {
-        const deptNamesForDiv = seenDepartmentNames.get(div.division_id)!;
-        if (deptNamesForDiv.has(dept.department_name)) return;
-        deptNamesForDiv.add(dept.department_name);
-        
-        options.push({ 
-          value: `department:${dept.department_id}`, 
-          label: dept.department_name, 
-          indent: 2 
-        });
-        
-        // Initialize team names set for this department
-        if (!seenTeamNames.has(dept.department_id)) {
-          seenTeamNames.set(dept.department_id, new Set());
-        }
-        
-        // Add teams under this department
-        const teamList = teams.filter(t => t.department_id === dept.department_id);
-        teamList.forEach(team => {
-          const teamNamesForDept = seenTeamNames.get(dept.department_id)!;
-          if (teamNamesForDept.has(team.team_name)) return;
-          teamNamesForDept.add(team.team_name);
-          
-          options.push({ 
-            value: `team:${team.team_id}`, 
-            label: team.team_name, 
-            indent: 3 
-          });
-        });
-      });
-    });
-    
-    return options;
-  }, [divisions, departments, teams]);
 
   const currentViewValue = useMemo(() => {
     if (selectedDepartments.length > 0) return 'all';
@@ -177,19 +108,38 @@ export function EnhancedOrganisationFilter({
       <div className="flex items-center gap-2">
         <Label className="text-sm font-medium">View:</Label>
         <select
-          className="border rounded px-3 py-1.5 text-sm min-w-[280px] font-mono"
+          className="border rounded px-3 py-1.5 text-sm min-w-[200px]"
           value={currentViewValue}
           onChange={handleViewSelect}
         >
-          {hierarchyOptions.map((opt, idx) => (
-            <option 
-              key={`${opt.value}-${idx}`} 
-              value={opt.value}
-              style={{ paddingLeft: `${opt.indent * 12}px` }}
-            >
-              {'\u00A0'.repeat(opt.indent * 2)}{opt.indent > 0 ? '└─ ' : ''}{opt.label}
-            </option>
-          ))}
+          <option value="all">Whole of Business (ALL)</option>
+          {divisions.length > 0 && (
+            <optgroup label="Divisions">
+              {divisions.map(div => (
+                <option key={div.division_id} value={`division:${div.division_id}`}>
+                  {div.division_name}
+                </option>
+              ))}
+            </optgroup>
+          )}
+          {departments.length > 0 && (
+            <optgroup label="Departments">
+              {departments.map(dept => (
+                <option key={dept.department_id} value={`department:${dept.department_id}`}>
+                  {dept.department_name}
+                </option>
+              ))}
+            </optgroup>
+          )}
+          {teams.length > 0 && (
+            <optgroup label="Teams">
+              {teams.map(team => (
+                <option key={team.team_id} value={`team:${team.team_id}`}>
+                  {team.team_name}
+                </option>
+              ))}
+            </optgroup>
+          )}
         </select>
       </div>
 

@@ -8,7 +8,6 @@ import {
   scoreToPercent,
 } from '@/components/dashboard/scoreTheme';
 import { getScoreStatus } from '@/components/dashboard/scoreTheme';
-import { GroupLeaderFilters } from '@/components/dashboard/GroupLeaderFilters';
 
 type SearchParams = {
   [key: string]: string | string[] | undefined;
@@ -67,10 +66,7 @@ async function getTeamSummaries(
       return team.department_id === departmentId;
     }
     if (divisionId) {
-      const divisionMatch = Array.isArray((team as any).departments)
-        ? (team as any).departments.some((dept: any) => dept?.division_id === divisionId)
-        : (team as any).departments?.division_id === divisionId;
-      return divisionMatch;
+      return team.departments?.division_id === divisionId;
     }
     return true;
   });
@@ -132,10 +128,7 @@ async function getTeamSummaries(
   });
 
   (responses ?? []).forEach(response => {
-    const employeeData = Array.isArray(response.employees)
-      ? (response.employees[0] as { team_id?: string })
-      : (response.employees as { team_id?: string });
-    const teamId = employeeData?.team_id as string | undefined;
+    const teamId = response.employees?.team_id as string | undefined;
     if (!teamId) return;
     const summary = summaryMap.get(teamId);
     if (!summary) return;
@@ -170,30 +163,17 @@ async function getTeamSummaries(
     }
   });
 
-  // Deduplicate teams by team_id to prevent duplicate cards
-  const uniqueTeamsMap = new Map<string, any>();
-  filteredTeams.forEach(team => {
-    if (!uniqueTeamsMap.has(team.team_id)) {
-      uniqueTeamsMap.set(team.team_id, team);
-    }
-  });
-
-  const summaries: TeamSummary[] = Array.from(uniqueTeamsMap.values()).map(team => {
+  const summaries: TeamSummary[] = filteredTeams.map(team => {
     const summary = summaryMap.get(team.team_id)!;
-
-    const sentimentAvg = summary.count ? summary.sentiment / summary.count : undefined;
-    const workloadAvg = summary.count ? summary.workload / summary.count : undefined;
-    const safetyAvg = summary.count ? summary.safety / summary.count : undefined;
-    const leadershipAvg = summary.count ? summary.leadership / summary.count : undefined;
-    const clarityAvg = summary.count ? summary.clarity / summary.count : undefined;
+    const avg = (field: keyof typeof summary) => (summary.count > 0 ? summary[field] / summary.count : undefined);
 
     const wellbeingPercent = summary.count > 0
       ? calculateWellbeingPercent({
-          sentiment: sentimentAvg,
-          workload: workloadAvg,
-          safety: safetyAvg,
-          leadership: leadershipAvg,
-          clarity: clarityAvg,
+          sentiment: summary.sentiment / summary.count,
+          workload: summary.workload / summary.count,
+          safety: summary.safety / summary.count,
+          leadership: summary.leadership / summary.count,
+          clarity: summary.clarity / summary.count,
         })
       : undefined;
 
@@ -211,24 +191,16 @@ async function getTeamSummaries(
       })
       .slice(-6);
 
-    const getDepartmentName = () => {
-      const deptData: any = (team as any).departments;
-      if (Array.isArray(deptData)) {
-        return deptData[0]?.department_name;
-      }
-      return deptData?.department_name;
-    };
-
     return {
       id: team.team_id,
       name: team.team_name,
-      departmentName: getDepartmentName(),
+      departmentName: team.departments?.department_name ?? undefined,
       questionScores: {
-        sentiment: sentimentAvg,
-        clarity: clarityAvg,
-        workload: workloadAvg,
-        safety: safetyAvg,
-        leadership: leadershipAvg,
+        sentiment: avg('sentiment'),
+        clarity: avg('clarity'),
+        workload: avg('workload'),
+        safety: avg('safety'),
+        leadership: avg('leadership'),
       },
       wellbeingPercent,
       trend: weeklyPoints,
@@ -284,33 +256,8 @@ export default async function GroupLeaderDashboard({ searchParams }: { searchPar
 
   const teamSummaries = await getTeamSummaries(clientId, period, mode, divisionId, departmentId);
 
-  // Fetch divisions and departments for filters
-  const { data: divisions } = await supabaseAdmin
-    .from('divisions')
-    .select('division_id, division_name')
-    .eq('client_id', clientId)
-    .eq('active', true)
-    .order('division_name');
-
-  const { data: departments } = await supabaseAdmin
-    .from('departments')
-    .select('department_id, department_name, division_id')
-    .eq('active', true)
-    .order('department_name');
-
-  const Sidebar = (
-    <div className="space-y-2">
-      <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
-      <a href={`/dashboard?client=${clientId}`} className="block px-3 py-2 rounded hover:bg-black/5">Overview</a>
-      <a href={`/dashboard/trends?client=${clientId}`} className="block px-3 py-2 rounded hover:bg-black/5">Trends</a>
-      <a href={`/dashboard/group-leader?client=${clientId}`} className="block px-3 py-2 rounded bg-black/5 font-medium">Group Leader View</a>
-      <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Advanced Analytics</a>
-      <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
-    </div>
-  );
-
   return (
-    <DashboardShell sidebar={Sidebar}>
+    <DashboardShell>
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <div>
@@ -330,17 +277,6 @@ export default async function GroupLeaderDashboard({ searchParams }: { searchPar
             </span>
           </div>
         </div>
-
-        {/* Hierarchy Filters */}
-        <GroupLeaderFilters
-          clientId={clientId}
-          period={period}
-          mode={mode}
-          currentDivisionId={divisionId}
-          currentDepartmentId={departmentId}
-          divisions={divisions || []}
-          departments={departments || []}
-        />
 
         {teamSummaries.length === 0 ? (
           <div className="rounded-xl border border-dashed border-[#CBD5E1] bg-[#F8FAFF] p-6 text-sm text-[var(--text-muted)]">

@@ -7,8 +7,6 @@ import { Button } from '@/components/ui/button';
 import { DashboardShell } from '@/components/layout/DashboardShell';
 import { TrendCard } from '@/components/charts/TrendCard';
 import { WellbeingGauge } from '@/components/charts/WellbeingGauge';
-import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle } from 'lucide-react';
-import { EnhancedOrganisationFilterClient } from '@/components/dashboard/EnhancedOrganisationFilterClient';
 
 type WellbeingRow = {
   wk: string;
@@ -85,9 +83,6 @@ async function getData(clientId: string, period: 'week' | 'month' | 'quarter' = 
 export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:string]: string | string[] | undefined } }){
   const urlClient = (searchParams?.client as string | undefined) || undefined;
   const period = (searchParams?.period as 'week' | 'month' | 'quarter' | undefined) || 'month';
-  const divisionId = (searchParams?.division_id as string | undefined) || undefined;
-  const departmentId = (searchParams?.department_id as string | undefined) || undefined;
-  const teamId = (searchParams?.team_id as string | undefined) || undefined;
   const clientId = urlClient || (process.env.NEXT_PUBLIC_DASHBOARD_CLIENT_ID ?? '');
 
   const requiredToken = process.env.ADMIN_DASH_TOKEN;
@@ -124,73 +119,6 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
     );
   }
 
-  // Fetch org structure for filters
-  const { data: divisionsData } = await supabaseAdmin
-    .from('divisions')
-    .select('division_id, division_name')
-    .eq('client_id', clientId)
-    .eq('active', true)
-    .order('division_name');
-  
-  const divisionsMap = new Map();
-  (divisionsData ?? []).forEach(div => {
-    if (!divisionsMap.has(div.division_id)) {
-      divisionsMap.set(div.division_id, div);
-    }
-  });
-  const divisions = Array.from(divisionsMap.values());
-
-  const { data: departmentsData } = await supabaseAdmin
-    .from('departments')
-    .select(`
-      department_id,
-      department_name,
-      division_id,
-      divisions!inner(client_id)
-    `)
-    .eq('divisions.client_id', clientId)
-    .eq('active', true)
-    .order('department_name');
-
-  const departmentsMap = new Map();
-  (departmentsData ?? []).forEach(dept => {
-    if (!departmentsMap.has(dept.department_id)) {
-      departmentsMap.set(dept.department_id, {
-        department_id: dept.department_id,
-        department_name: dept.department_name,
-        division_id: dept.division_id
-      });
-    }
-  });
-  const departments = Array.from(departmentsMap.values());
-
-  const { data: teamsData } = await supabaseAdmin
-    .from('teams')
-    .select(`
-      team_id,
-      team_name,
-      department_id,
-      departments!inner(
-        division_id,
-        divisions!inner(client_id)
-      )
-    `)
-    .eq('departments.divisions.client_id', clientId)
-    .eq('active', true)
-    .order('team_name');
-
-  const teamsMap = new Map();
-  (teamsData ?? []).forEach(team => {
-    if (!teamsMap.has(team.team_id)) {
-      teamsMap.set(team.team_id, {
-        team_id: team.team_id,
-        team_name: team.team_name,
-        department_id: team.department_id
-      });
-    }
-  });
-  const teams = Array.from(teamsMap.values());
-
   const { trends } = await getData(clientId, period);
 
   const toSeries = (key: keyof WellbeingRow, color: string, heading: string, description: string) => ({
@@ -201,71 +129,21 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
   });
 
   const series = [
-    toSeries('sentiment_avg', '#1A936F', 'Sentiment', 'How are you feeling about work this week?'),
-    toSeries('workload_avg',  '#E63946', 'Workload', 'How\'s your workload?'),
-    toSeries('safety_avg',    '#F4A259', 'Safety', 'Do you feel safe speaking up?'),
-    toSeries('leadership_avg','#1A936F', 'Leadership', 'Do you feel supported by leadership?'),
-    toSeries('clarity_avg',   '#94A3B8', 'Clarity', 'Are you clear on what\'s expected?')
+    toSeries('sentiment_avg', '#64afac', 'Sentiment', 'How are you feeling about work this week?'),
+    toSeries('workload_avg',  '#ea9999', 'Workload', 'How\'s your workload?'),
+    toSeries('safety_avg',    '#ea9999', 'Safety', 'Do you feel safe speaking up?'),
+    toSeries('leadership_avg','#64afac', 'Leadership', 'Do you feel supported by leadership?'),
+    toSeries('clarity_avg',   '#5d89a9', 'Clarity', 'Are you clear on what\'s expected?')
   ];
 
   const last = (k:keyof WellbeingRow)=> (trends.length ? Number(trends[trends.length-1][k]) : undefined);
   const prev = (k:keyof WellbeingRow)=> (trends.length>1 ? Number(trends[trends.length-2][k]) : undefined);
 
-  // Generate automated insights
-  type TrendInsights = {
-    biggestImprovement: { name: string; change: number; current: number } | null;
-    biggestDecline: { name: string; change: number; current: number } | null;
-    criticalAlert: { name: string; value: number } | null;
-  };
-
-  const generateTrendInsights = (): TrendInsights | null => {
-    if (trends.length < 2) return null;
-
-    const dimensions = [
-      { key: 'sentiment_avg' as const, name: 'Sentiment' },
-      { key: 'workload_avg' as const, name: 'Workload' },
-      { key: 'safety_avg' as const, name: 'Psychological Safety' },
-      { key: 'leadership_avg' as const, name: 'Leadership Support' },
-      { key: 'clarity_avg' as const, name: 'Role Clarity' }
-    ];
-
-    let biggestImprovement: { name: string; change: number; current: number } | null = null;
-    let biggestDecline: { name: string; change: number; current: number } | null = null;
-    let criticalAlert: { name: string; value: number } | null = null;
-
-    dimensions.forEach(dim => {
-      const currentVal = last(dim.key);
-      const previousVal = prev(dim.key);
-      
-      if (currentVal !== undefined && previousVal !== undefined) {
-        const change = currentVal - previousVal;
-        const percentChange = ((change / previousVal) * 100);
-
-        if (change > 0 && (!biggestImprovement || percentChange > biggestImprovement.change)) {
-          biggestImprovement = { name: dim.name, change: percentChange, current: currentVal };
-        }
-        
-        if (change < 0 && (!biggestDecline || percentChange < biggestDecline.change)) {
-          biggestDecline = { name: dim.name, change: percentChange, current: currentVal };
-        }
-
-        if (currentVal < 2.5 && (!criticalAlert || currentVal < criticalAlert.value)) {
-          criticalAlert = { name: dim.name, value: currentVal };
-        }
-      }
-    });
-
-    return { biggestImprovement, biggestDecline, criticalAlert };
-  };
-
-  const insights = generateTrendInsights();
-
   const Sidebar = (
     <div className="space-y-2">
       <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
-      <a href={`/dashboard?client=${clientId}`} className="block px-3 py-2 rounded hover:bg-black/5">Overview</a>
-      <a href={`/dashboard/trends?client=${clientId}`} className="block px-3 py-2 rounded bg-black/5 font-medium">Trends</a>
-      <a href={`/dashboard/group-leader?client=${clientId}`} className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
+      <a href="/dashboard" className="block px-3 py-2 rounded hover:bg-black/5">Overview</a>
+      <a href="/dashboard/trends" className="block px-3 py-2 rounded bg-black/5 font-medium">Trends</a>
       <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Advanced Analytics</a>
       <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
     </div>
@@ -281,37 +159,19 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
           <p className="text-sm text-[var(--text-muted)]">Client: {clientId}</p>
         </div>
 
-        {/* Filters */}
-        <div className="space-y-4">
-          {/* Organization Filter */}
-          <EnhancedOrganisationFilterClient
-            clientId={clientId}
-            period={period}
-            mode="historical"
-            currentDivisionId={divisionId}
-            currentDepartmentId={departmentId}
-            currentTeamId={teamId}
-            selectedDepartments={[]}
-            divisions={divisions}
-            departments={departments}
-            teams={teams}
-            basePath="/dashboard/trends"
-          />
-          
-          {/* Period Filter */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-medium">Time Period:</span>
-            <div className="flex gap-1">
-              <a href={`/dashboard/trends?client=${clientId}&period=week${divisionId ? `&division_id=${divisionId}` : ''}${departmentId ? `&department_id=${departmentId}` : ''}${teamId ? `&team_id=${teamId}` : ''}`}>
-                <Button variant={period === 'week' ? 'default' : 'outline'} size="sm">Last 4 Weeks</Button>
-              </a>
-              <a href={`/dashboard/trends?client=${clientId}&period=month${divisionId ? `&division_id=${divisionId}` : ''}${departmentId ? `&department_id=${departmentId}` : ''}${teamId ? `&team_id=${teamId}` : ''}`}>
-                <Button variant={period === 'month' ? 'default' : 'outline'} size="sm">Last Month</Button>
-              </a>
-              <a href={`/dashboard/trends?client=${clientId}&period=quarter${divisionId ? `&division_id=${divisionId}` : ''}${departmentId ? `&department_id=${departmentId}` : ''}${teamId ? `&team_id=${teamId}` : ''}`}>
-                <Button variant={period === 'quarter' ? 'default' : 'outline'} size="sm">Last Quarter</Button>
-              </a>
-            </div>
+        {/* Period Filter */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-sm font-medium">View:</span>
+          <div className="flex gap-1">
+            <a href={`/dashboard/trends?client=${clientId}&period=week`}>
+              <Button variant={period === 'week' ? 'default' : 'outline'} size="sm">Last 4 Weeks</Button>
+            </a>
+            <a href={`/dashboard/trends?client=${clientId}&period=month`}>
+              <Button variant={period === 'month' ? 'default' : 'outline'} size="sm">Last Month</Button>
+            </a>
+            <a href={`/dashboard/trends?client=${clientId}&period=quarter`}>
+              <Button variant={period === 'quarter' ? 'default' : 'outline'} size="sm">Last Quarter</Button>
+            </a>
           </div>
         </div>
 
@@ -353,75 +213,6 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
             </Card>
           </div>
         </div>
-
-        {/* Automated Insights Callout */}
-        {insights && (insights.criticalAlert || insights.biggestDecline || insights.biggestImprovement) && (
-          <Card className="border-2 border-blue-200 bg-blue-50">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base flex items-center gap-2">
-                <span className="text-blue-600">💡</span>
-                Key Trend Insights
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {insights.criticalAlert && (
-                <div className="flex items-start gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-red-900">
-                      Critical Alert: {insights.criticalAlert.name} is at {insights.criticalAlert.value.toFixed(1)}/5
-                    </p>
-                    <p className="text-xs text-red-800 mt-1">
-                      This indicates high psychosocial risk. Immediate intervention recommended.
-                    </p>
-                  </div>
-                </div>
-              )}
-              
-              {insights.biggestDecline && Math.abs(insights.biggestDecline.change) > 5 && (
-                <div className="flex items-start gap-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                  <TrendingDown className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-orange-900">
-                      {insights.biggestDecline.name} declined by {Math.abs(insights.biggestDecline.change).toFixed(1)}%
-                    </p>
-                    <p className="text-xs text-orange-800 mt-1">
-                      Monitor this trend closely and consider targeted interventions.
-                    </p>
-                  </div>
-                </div>
-              )}
-              
-              {insights.biggestImprovement && insights.biggestImprovement.change > 5 && (
-                <div className="flex items-start gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <TrendingUp className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-green-900">
-                      {insights.biggestImprovement.name} improved by {insights.biggestImprovement.change.toFixed(1)}%
-                    </p>
-                    <p className="text-xs text-green-800 mt-1">
-                      Positive momentum detected. Document and share successful practices.
-                    </p>
-                  </div>
-                </div>
-              )}
-              
-              {!insights.criticalAlert && !insights.biggestDecline && !insights.biggestImprovement && (
-                <div className="flex items-start gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
-                  <CheckCircle className="h-5 w-5 text-slate-600 flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-900">
-                      Trends are stable with no significant changes
-                    </p>
-                    <p className="text-xs text-slate-700 mt-1">
-                      Continue monitoring for any emerging patterns.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
 
         {/* Trend Charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

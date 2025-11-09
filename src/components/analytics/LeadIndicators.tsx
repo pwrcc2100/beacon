@@ -59,33 +59,33 @@ export function LeadIndicators({ responses }: Props) {
       name: 'Workload Management',
       correlation: workloadCorr,
       insight: workloadCorr < -0.3 
-        ? 'High workload is reducing team wellbeing. Address workload issues now to prevent further decline.'
-        : 'Workload is balanced and not negatively impacting wellbeing.'
+        ? 'High workload is strongly linked to lower wellbeing. Workload issues often appear 2-3 weeks before sentiment drops.'
+        : 'Workload is well-balanced and not impacting overall wellbeing significantly.'
     },
     {
       name: 'Psychological Safety',
       correlation: safetyCorr,
       insight: safetyCorr > 0.5
-        ? 'Strong driver of wellbeing. Teams that feel safe speaking up have better outcomes.'
+        ? 'Strong positive driver! People who feel safe speaking up have significantly better wellbeing. This is a key lever for improvement.'
         : safetyCorr > 0.3
-        ? 'Moderate impact. Improving psychological safety will boost overall wellbeing.'
-        : 'Weak link to wellbeing. Focus on other factors first.'
+        ? 'Moderate positive impact. Increasing psychological safety could improve overall wellbeing.'
+        : 'Low correlation suggests other factors may be more immediate concerns.'
     },
     {
       name: 'Leadership Support',
       correlation: leadershipCorr,
       insight: leadershipCorr > 0.5
-        ? 'Strong driver of wellbeing. Leadership support is critical - keep investing here.'
+        ? 'Critical success factor! Leadership support is strongly linked to wellbeing. Continue investing in leadership capability.'
         : leadershipCorr > 0.3
-        ? 'Moderate impact. Visible leadership actions and timely responses matter.'
-        : 'Weak link to wellbeing. Leadership perception needs attention.'
+        ? 'Leadership support matters. Focus on visible leadership actions and timely responses to concerns.'
+        : 'Leadership perception may need attention - this is often a lead indicator of broader issues.'
     },
     {
       name: 'Role Clarity',
       correlation: clarityCorr,
       insight: clarityCorr > 0.4
-        ? 'Clear expectations improve wellbeing. Maintain clarity during any changes.'
-        : 'Weak link to wellbeing. Confusion about roles can lead to disengagement.'
+        ? 'Clear expectations drive wellbeing. Clarity often deteriorates first during organisational change.'
+        : 'Clarity may need improvement - confusion about roles typically precedes disengagement.'
     }
   ];
 
