@@ -432,10 +432,7 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
       .eq('client_id', clientId)
       .eq('active', true);
     
-    console.log('Divisions query:', { divisions, divError, clientId });
-    
     if (!divisions || divisions.length === 0) {
-      console.log('No divisions found, returning empty data');
       return { data: [], currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
     }
     
@@ -458,8 +455,6 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
     
     const { data: responses, error: respError } = await query;
     
-    console.log('Responses query:', { responseCount: responses?.length, respError, divisionIds });
-    
     // Aggregate by division
     const aggregates: Record<string, any> = {};
     divisions.forEach(div => {
@@ -477,7 +472,6 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
     
     (responses || []).forEach((r: any) => {
       const divId = r.employees?.division_id;
-      console.log('Processing response:', { divId, hasEmployees: !!r.employees, aggregateExists: !!aggregates[divId] });
       if (divId && aggregates[divId]) {
         aggregates[divId].count += 1;
         aggregates[divId].sentiment_sum += r.sentiment_5 || 0;
@@ -487,8 +481,6 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
         aggregates[divId].leadership_sum += r.leadership_5 || 0;
       }
     });
-    
-    console.log('Aggregates:', aggregates);
     
     const data = Object.values(aggregates)
       .filter((agg: any) => agg.count > 0)
@@ -503,8 +495,6 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
         leadership_avg: agg.leadership_sum / agg.count,
         wellbeing_score: ((agg.sentiment_sum / agg.count) * 0.30 + (agg.workload_sum / agg.count) * 0.25 + (agg.leadership_sum / agg.count) * 0.25 + (agg.safety_sum / agg.count) * 0.20) * 20
       }));
-    
-    console.log('Final data:', data);
     
     return { data, currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
   }
@@ -730,11 +720,6 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     }
 
     const { data: teamResponses, error: teamRespError } = await teamQuery;
-    console.log('[DEBUG] Team responses query result:', { 
-      count: teamResponses?.length ?? 0, 
-      error: teamRespError,
-      sample: teamResponses?.[0]
-    });
 
     const aggregates: Record<string, {
       count: number;
