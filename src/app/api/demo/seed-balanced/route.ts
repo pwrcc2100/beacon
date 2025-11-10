@@ -196,7 +196,9 @@ export async function POST(req: NextRequest) {
         continue;
       }
 
-      const participantCount = randInt(10, 22);
+      // Create more employees than participants to simulate realistic participation rate (~25%)
+      const totalEmployees = randInt(40, 80);
+      const participantCount = Math.floor(totalEmployees * 0.25); // 25% participation
       participantsTotal += participantCount;
       const deptSummary = {
         name: `${divisionName} - ${departmentName}`,
@@ -204,10 +206,10 @@ export async function POST(req: NextRequest) {
         teams: Object.fromEntries(teamIds.map(t => [t.teamName, 0])) as Record<string, number>,
       };
 
-      for (let i = 0; i < participantCount; i++) {
+      // Create all employees first
+      const deptEmployeeIds: string[] = [];
+      for (let i = 0; i < totalEmployees; i++) {
         const teamEntry = teamIds[i % teamIds.length];
-        deptSummary.teams[teamEntry.teamName] += 1;
-
         const employeeId = crypto.randomUUID();
         const email = `demo-balanced-${employeeId.slice(0, 8)}@example.com`;
 
@@ -229,7 +231,15 @@ export async function POST(req: NextRequest) {
           continue;
         }
 
+        deptEmployeeIds.push(employeeId);
         createdEmployeeIds.push(employeeId);
+      }
+
+      // Now create responses for only a subset (25%) of employees
+      for (let i = 0; i < participantCount && i < deptEmployeeIds.length; i++) {
+        const employeeId = deptEmployeeIds[i];
+        const teamEntry = teamIds[i % teamIds.length];
+        deptSummary.teams[teamEntry.teamName] += 1;
 
         const daysAgo = randInt(0, 180);
         const submittedAt = new Date(now.getTime() - daysAgo * 86400000);
