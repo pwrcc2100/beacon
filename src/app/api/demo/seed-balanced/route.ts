@@ -340,6 +340,9 @@ export async function POST(req: NextRequest) {
 
   const tokenCount = tokenCountQuery.count ?? 0;
 
+  // Refresh materialized view to ensure data is visible
+  await supabaseAdmin.rpc('refresh_wellbeing_responses');
+
   return NextResponse.json({
     ok: true,
     inserted,
