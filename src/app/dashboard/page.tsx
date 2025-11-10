@@ -716,6 +716,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     const teamMap = new Map(eligibleTeams.map(team => [team.team_id, team.team_name]));
     const teamIds = Array.from(teamMap.keys());
 
+    // Query responses for teams - use same date filter as main queries
     let teamQuery = supabaseAdmin
       .from('responses_v3')
       .select(`
@@ -725,23 +726,24 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         safety_5,
         leadership_5,
         employee_id,
-        employees!responses_v3_employee_id_fkey!inner(team_id)
+        employees!inner(team_id)
       `)
       .eq('client_id', clientId)
       .in('employees.team_id', teamIds);
 
-    if (startDateForFilters) {
-      teamQuery = teamQuery.gte('submitted_at', startDateForFilters.toISOString());
+    // Apply same date filtering as other queries
+    if (mode === 'live') {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      teamQuery = teamQuery.gte('submitted_at', today.toISOString());
+    } else if (period && period !== 'all') {
+      const startDate = getPeriodStartDate(period);
+      if (startDate) {
+        teamQuery = teamQuery.gte('submitted_at', startDate.toISOString());
+      }
     }
 
     const { data: teamResponses, error: teamRespError } = await teamQuery;
-
-    console.log('Team query results:', {
-      teamIdsCount: teamIds.length,
-      responsesCount: teamResponses?.length || 0,
-      error: teamRespError?.message,
-      sampleResponse: teamResponses?.[0]
-    });
 
     const aggregates: Record<string, {
       count: number;
