@@ -264,20 +264,34 @@ export async function POST(req: NextRequest) {
           workload5 = randInt(4, 5);
           safety5 = randInt(4, 5);
           leadership5 = randInt(4, 5);
+        } else if (divisionName === 'Sydney Metro' && departmentName === 'Education') {
+          // Sydney Metro Education: Critical - needs attention (1-2 range for RED)
+          sentiment5 = randInt(1, 2);
+          clarity5 = randInt(1, 2);
+          workload5 = randInt(1, 2);
+          safety5 = randInt(1, 2);
+          leadership5 = randInt(1, 2);
         } else if (divisionName === 'Sydney Metro') {
-          // Other Sydney Metro departments: Mixed (2-4 range)
+          // Other Sydney Metro departments: Mixed (2-4 range for ORANGE)
           sentiment5 = randInt(2, 4);
           clarity5 = randInt(2, 4);
           workload5 = randInt(2, 4);
           safety5 = randInt(2, 4);
           leadership5 = randInt(2, 4);
+        } else if (divisionName === 'Regional NSW') {
+          // Regional NSW: Critical scores (1-2 range for RED)
+          sentiment5 = randInt(1, 2);
+          clarity5 = randInt(1, 2);
+          workload5 = randInt(1, 2);
+          safety5 = randInt(1, 2);
+          leadership5 = randInt(1, 2);
         } else {
-          // Regional: Lower scores (1-3 range)
-          sentiment5 = randInt(1, 3);
-          clarity5 = randInt(1, 3);
-          workload5 = randInt(1, 3);
-          safety5 = randInt(1, 3);
-          leadership5 = randInt(1, 3);
+          // Other Regional: Lower scores (2-3 range for ORANGE)
+          sentiment5 = randInt(2, 3);
+          clarity5 = randInt(2, 3);
+          workload5 = randInt(2, 3);
+          safety5 = randInt(2, 3);
+          leadership5 = randInt(2, 3);
         }
 
         const tokenId = crypto.randomUUID();
