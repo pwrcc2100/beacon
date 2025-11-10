@@ -373,136 +373,117 @@ export function ExecutiveOverview({
         </Card>
       </div>
 
-      {/* Trend vs Safety and Teams */}
-      <div className="grid gap-6 xl:grid-cols-2">
-        <Card className="border border-[#E0E7F1] shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">Wellbeing vs Safety</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Sparkline points={wellbeingPoints} color={SCORE_COLORS.thriving} />
-            <Sparkline points={safetyPoints} color={SCORE_COLORS.watch} />
-            <div className="text-xs text-[var(--text-muted)] border border-gray-200 rounded-lg p-3">
-              <span className="font-medium text-[var(--text-primary)]">Insight:</span> What does this mean? Check for correlation, trending up or down, and any notable changes across periods.
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border border-[#E0E7F1] shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">{attentionLabel}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <TeamsBarChart teams={teamSummary.sorted} />
-            <div className="mt-4 flex flex-wrap items-center gap-4">
-              <LegendItem color={SCORE_COLORS.alert} label="High Alert" range="Under 40%" />
-              <LegendItem color={SCORE_COLORS.watch} label="Ones to Watch" range="40% – 69%" />
-              <LegendItem color={SCORE_COLORS.thriving} label="Thriving" range="70%+" />
-            </div>
-            {(teamSummary.categories.alert.length > 0 || teamSummary.categories.watch.length > 0) && (
-              <div className="mt-3 space-y-1 text-xs text-[var(--text-muted)]">
-                {teamSummary.categories.alert.length > 0 && (
-                  <div>
-                    <span className="font-semibold" style={{ color: SCORE_COLORS.alert }}>
-                      {teamSummary.categories.alert.join(', ')}
-                    </span>{' '}
-                    require immediate follow-up.
-                  </div>
-                )}
-                {teamSummary.categories.watch.length > 0 && (
-                  <div>
-                    <span className="font-semibold" style={{ color: SCORE_COLORS.watch }}>
-                      {teamSummary.categories.watch.join(', ')}
-                    </span>{' '}
-                    are ones to watch this period.
-                  </div>
-                )}
-              </div>
-            )}
-            <div className="mt-3 text-xs" style={{ color: SCORE_COLORS.watch }}>
-              Compare against last report to track shifts in psychosocial risk.
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Divisions table and insights */}
-      <div className="grid gap-6 xl:grid-cols-5">
-        <Card className="xl:col-span-3 border border-[#E0E7F1] shadow-sm overflow-hidden">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">{tableTitle}</CardTitle>
-          </CardHeader>
-          <CardContent className="overflow-x-auto">
-            <table className="min-w-full text-xs">
-              <thead className="text-[var(--text-muted)] bg-[#F8FAFC]">
-                <tr>
-                  <th className="text-left font-medium px-3 py-2">Division</th>
-                  <th className="text-right font-medium px-3 py-2">Overall</th>
-                  <th className="text-right font-medium px-3 py-2">Sentiment</th>
-                  <th className="text-right font-medium px-3 py-2">Clarity</th>
-                  <th className="text-right font-medium px-3 py-2">Workload</th>
-                  <th className="text-right font-medium px-3 py-2">Safety</th>
-                  <th className="text-right font-medium px-3 py-2">Leadership</th>
-                  <th className="text-right font-medium px-3 py-2">Responses</th>
-                </tr>
-              </thead>
-              <tbody>
-                {divisions.map(row => {
-                  const wellbeing = Math.round(row.wellbeing_score ?? 0);
-                  return (
-                    <tr key={row.id} className="border-t">
-                      <td className="px-3 py-2 font-medium text-[var(--text-primary)]">{row.name}</td>
-                  <td className="px-3 py-2 text-right" style={{ color: getScoreStatus(wellbeing).color }}>{formatPercent(wellbeing)}</td>
-                  <td className="px-3 py-2 text-right">{formatPercent(row.sentiment_avg * 20)}</td>
-                  <td className="px-3 py-2 text-right">{formatPercent(row.clarity_avg * 20)}</td>
-                  <td className="px-3 py-2 text-right">{formatPercent(row.workload_avg * 20)}</td>
-                  <td className="px-3 py-2 text-right">{formatPercent(row.safety_avg * 20)}</td>
-                  <td className="px-3 py-2 text-right">{formatPercent(row.leadership_avg * 20)}</td>
-                      <td className="px-3 py-2 text-right text-[var(--text-muted)]">{row.response_count ?? 0}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </CardContent>
-        </Card>
-
-        <Card className="xl:col-span-2 border border-[#E0E7F1] shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">Key Insights</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3 text-xs">
-            {insights.length === 0 && (
-              <div className="text-muted-foreground text-xs">No significant patterns detected.</div>
-            )}
-            {insights.map((insight, index) => {
-              const visuals = getInsightVisual(insight.type);
-              return (
-                <div
-                  key={index}
-                  className="rounded-lg p-3 space-y-2 border"
-                  style={{ borderColor: visuals.border, backgroundColor: visuals.background }}
-                >
-                  <div className="flex items-start gap-2">
-                    {insight.icon && (
-                      <span className="mt-0.5" style={{ color: visuals.border }}>
-                        {insight.icon}
-                      </span>
-                    )}
-                    <div className="font-medium text-[var(--text-primary)] leading-snug">
-                      {insight.text}
-                    </div>
-                  </div>
-                  {insight.recommendation && (
-                    <div className="text-[var(--text-muted)] leading-snug">
-                      → {insight.recommendation}
-                    </div>
-                  )}
+      {/* Which Teams Need Attention - Full Width */}
+      <Card className="border border-[#E0E7F1] shadow-sm">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">{attentionLabel}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <TeamsBarChart teams={teamSummary.sorted} />
+          <div className="mt-4 flex flex-wrap items-center gap-4">
+            <LegendItem color={SCORE_COLORS.alert} label="High Alert" range="Under 40%" />
+            <LegendItem color={SCORE_COLORS.watch} label="Ones to Watch" range="40% – 69%" />
+            <LegendItem color={SCORE_COLORS.thriving} label="Thriving" range="70%+" />
+          </div>
+          {(teamSummary.categories.alert.length > 0 || teamSummary.categories.watch.length > 0) && (
+            <div className="mt-3 space-y-1 text-xs text-[var(--text-muted)]">
+              {teamSummary.categories.alert.length > 0 && (
+                <div>
+                  <span className="font-semibold" style={{ color: SCORE_COLORS.alert }}>
+                    {teamSummary.categories.alert.join(', ')}
+                  </span>{' '}
+                  require immediate follow-up.
                 </div>
-              );
-            })}
-          </CardContent>
-        </Card>
+              )}
+              {teamSummary.categories.watch.length > 0 && (
+                <div>
+                  <span className="font-semibold" style={{ color: SCORE_COLORS.watch }}>
+                    {teamSummary.categories.watch.join(', ')}
+                  </span>{' '}
+                  are ones to watch this period.
+                </div>
+              )}
+            </div>
+          )}
+          <div className="mt-3 text-xs" style={{ color: SCORE_COLORS.watch }}>
+            Compare against last report to track shifts in psychosocial risk.
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Divisions table - Full Width */}
+      <Card className="border border-[#E0E7F1] shadow-sm overflow-hidden">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">{tableTitle}</CardTitle>
+        </CardHeader>
+        <CardContent className="overflow-x-auto">
+          <table className="min-w-full text-xs">
+            <thead className="text-[var(--text-muted)] bg-[#F8FAFC]">
+              <tr>
+                <th className="text-left font-medium px-3 py-2">Division</th>
+                <th className="text-right font-medium px-3 py-2">Overall</th>
+                <th className="text-right font-medium px-3 py-2">Sentiment</th>
+                <th className="text-right font-medium px-3 py-2">Clarity</th>
+                <th className="text-right font-medium px-3 py-2">Workload</th>
+                <th className="text-right font-medium px-3 py-2">Safety</th>
+                <th className="text-right font-medium px-3 py-2">Leadership</th>
+                <th className="text-right font-medium px-3 py-2">Responses</th>
+              </tr>
+            </thead>
+            <tbody>
+              {divisions.map(row => {
+                const wellbeing = Math.round(row.wellbeing_score ?? 0);
+                return (
+                  <tr key={row.id} className="border-t">
+                    <td className="px-3 py-2 font-medium text-[var(--text-primary)]">{row.name}</td>
+                <td className="px-3 py-2 text-right" style={{ color: getScoreStatus(wellbeing).color }}>{formatPercent(wellbeing)}</td>
+                <td className="px-3 py-2 text-right">{formatPercent(row.sentiment_avg * 20)}</td>
+                <td className="px-3 py-2 text-right">{formatPercent(row.clarity_avg * 20)}</td>
+                <td className="px-3 py-2 text-right">{formatPercent(row.workload_avg * 20)}</td>
+                <td className="px-3 py-2 text-right">{formatPercent(row.safety_avg * 20)}</td>
+                <td className="px-3 py-2 text-right">{formatPercent(row.leadership_avg * 20)}</td>
+                    <td className="px-3 py-2 text-right text-[var(--text-muted)]">{row.response_count ?? 0}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </CardContent>
+      </Card>
+
+      {/* Key Insights - Horizontal Grid (2 per row) */}
+      <div className="grid gap-4 md:grid-cols-2">
+        {insights.length === 0 && (
+          <div className="text-muted-foreground text-xs col-span-2">No significant patterns detected.</div>
+        )}
+        {insights.map((insight, index) => {
+          const visuals = getInsightVisual(insight.type);
+          return (
+            <Card
+              key={index}
+              className="border shadow-sm"
+              style={{ borderColor: visuals.border, backgroundColor: visuals.background }}
+            >
+              <CardContent className="p-4 space-y-2">
+                <div className="flex items-start gap-2">
+                  {insight.icon && (
+                    <span className="mt-0.5 text-lg" style={{ color: visuals.border }}>
+                      {insight.icon}
+                    </span>
+                  )}
+                  <div className="font-medium text-[var(--text-primary)] text-sm leading-snug">
+                    {insight.text}
+                  </div>
+                </div>
+                {insight.recommendation && (
+                  <div className="text-[var(--text-muted)] text-xs leading-snug pl-7">
+                    → {insight.recommendation}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
