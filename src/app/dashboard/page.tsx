@@ -716,8 +716,8 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     const teamMap = new Map(eligibleTeams.map(team => [team.team_id, team.team_name]));
     const teamIds = Array.from(teamMap.keys());
 
-    // Query responses for teams - use same date filter as main queries
-    let teamQuery = supabaseAdmin
+    // Query ALL responses for teams (no date filter for now to debug)
+    const { data: teamResponses, error: teamRespError } = await supabaseAdmin
       .from('responses_v3')
       .select(`
         sentiment_5,
@@ -729,21 +729,8 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         employees!inner(team_id)
       `)
       .eq('client_id', clientId)
-      .in('employees.team_id', teamIds);
-
-    // Apply same date filtering as other queries
-    if (mode === 'live') {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      teamQuery = teamQuery.gte('submitted_at', today.toISOString());
-    } else if (period && period !== 'all') {
-      const startDate = getPeriodStartDate(period);
-      if (startDate) {
-        teamQuery = teamQuery.gte('submitted_at', startDate.toISOString());
-      }
-    }
-
-    const { data: teamResponses, error: teamRespError } = await teamQuery;
+      .in('employees.team_id', teamIds)
+      .limit(1000);
 
     const aggregates: Record<string, {
       count: number;
@@ -801,8 +788,8 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     totalTeams: teams.length,
     eligibleTeams: eligibleTeams.length,
     attentionTeams: attentionTeams.length,
-    teamIds: eligibleTeams.slice(0, 3).map(t => t.team_id),
-    sampleTeamData: attentionTeams.slice(0, 2).map(t => ({ name: t.name, wellbeing: t.wellbeing }))
+    mode: mode,
+    period: period
   };
 
   const Sidebar = (
@@ -923,8 +910,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
 
         {/* Debug Info */}
         <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
-          <strong>Debug:</strong> Teams: {debugInfo.totalTeams} | Eligible: {debugInfo.eligibleTeams} | Attention Teams: {debugInfo.attentionTeams}
-          {debugInfo.teamIds.length > 0 && <span> | Sample IDs: {debugInfo.teamIds.join(', ')}</span>}
+          <strong>Debug:</strong> Teams: {debugInfo.totalTeams} | Eligible: {debugInfo.eligibleTeams} | Attention Teams: {debugInfo.attentionTeams} | Mode: {debugInfo.mode} | Period: {debugInfo.period}
         </div>
 
         {trends.length === 0 && recent.length === 0 ? (
