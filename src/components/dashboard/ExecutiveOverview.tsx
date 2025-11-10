@@ -466,40 +466,18 @@ export function ExecutiveOverview({
             {/* Left: Gauge and Weighting */}
             <div className="space-y-4">
               <SemiCircularGauge value={overallScore} previous={previousScore} />
-              <WeightingBreakdown />
-            </div>
-
-            {/* Right: Current Sentiment Questions */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wide">Current Sentiment</h3>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-medium text-[var(--text-muted)]">Participation</span>
-                  <span className="text-xl font-bold" style={{ 
-                    color: participationRate >= 70 ? SCORE_COLORS.thriving : participationRate >= 40 ? SCORE_COLORS.watch : SCORE_COLORS.alert 
-                  }}>
-                    {formatPercent(participationRate)}
-                  </span>
-                </div>
-              </div>
-              <div className="space-y-2.5">
-                {QUESTION_META.map(({ key, label, description }) => (
-                  <QuestionBar
-                    key={key}
-                    label={label}
-                    description={description}
-                    value={questionScores[key] ?? 0}
-                  />
-                ))}
-              </div>
               
-              {/* AI Insights Box */}
-              <div className="mt-4 p-4 rounded-lg border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50">
-                <div className="flex items-start gap-2">
-                  <span className="text-lg flex-shrink-0">💡</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs font-bold text-blue-900 mb-1.5">AI Insight</div>
-                    <p className="text-xs text-blue-800 leading-relaxed">
+              {/* Weighting Formula and AI Insight - Horizontal */}
+              <div className="grid grid-cols-2 gap-4">
+                <WeightingBreakdown />
+                
+                {/* AI Insights Box */}
+                <div className="rounded-lg border border-gray-200 p-3">
+                  <div className="flex items-start gap-2">
+                    <span className="text-base flex-shrink-0">💡</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-semibold text-[var(--text-primary)] mb-1.5">AI Insight</div>
+                      <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                       {(() => {
                         if (overallScore === undefined) return 'Insufficient data for insights.';
                         
@@ -528,6 +506,31 @@ export function ExecutiveOverview({
                     </p>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Right: Current Sentiment Questions */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wide">Current Sentiment</h3>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-[var(--text-muted)]">Participation</span>
+                  <span className="text-xl font-bold" style={{ 
+                    color: participationRate >= 70 ? SCORE_COLORS.thriving : participationRate >= 40 ? SCORE_COLORS.watch : SCORE_COLORS.alert 
+                  }}>
+                    {formatPercent(participationRate)}
+                  </span>
+                </div>
+              </div>
+              <div className="space-y-2.5">
+                {QUESTION_META.map(({ key, label, description }) => (
+                  <QuestionBar
+                    key={key}
+                    label={label}
+                    description={description}
+                    value={questionScores[key] ?? 0}
+                  />
+                ))}
               </div>
             </div>
           </div>
