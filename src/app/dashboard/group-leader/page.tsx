@@ -8,6 +8,7 @@ import {
   scoreToPercent,
 } from '@/components/dashboard/scoreTheme';
 import { getScoreStatus } from '@/components/dashboard/scoreTheme';
+import { DemoQRCode } from '@/components/dashboard/DemoQRCode';
 
 type SearchParams = {
   [key: string]: string | string[] | undefined;
@@ -262,8 +263,26 @@ export default async function GroupLeaderDashboard({ searchParams }: { searchPar
 
   const teamSummaries = await getTeamSummaries(clientId, period, mode, divisionId, departmentId);
 
+  const Sidebar = (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
+        <a href="/dashboard" className="block px-3 py-2 rounded hover:bg-black/5">Overview</a>
+        <a href="/dashboard/trends" className="block px-3 py-2 rounded hover:bg-black/5">Trends</a>
+        <a href="/dashboard/group-leader" className="block px-3 py-2 rounded bg-black/5 font-medium">Group Leader View</a>
+        <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Advanced Analytics</a>
+        <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
+      </div>
+      
+      {/* Compact QR Code Generator in Sidebar */}
+      <div className="pt-4 border-t border-black/10">
+        <DemoQRCode clientId={clientId} compact={true} />
+      </div>
+    </div>
+  );
+
   return (
-    <DashboardShell>
+    <DashboardShell sidebar={Sidebar}>
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <div>
