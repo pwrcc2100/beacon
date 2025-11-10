@@ -128,8 +128,10 @@ function MiniInsight({ insight }: { insight: ExecutiveInsight }) {
         {iconMap[insight.type]}
       </span>
       <div className="flex-1 min-w-0">
-        <div className="text-xs font-semibold text-gray-700">{insight.title}</div>
-        <div className="text-xs text-gray-600 mt-0.5">{insight.message}</div>
+        <div className="text-xs text-gray-700">{insight.text}</div>
+        {insight.recommendation && (
+          <div className="text-xs text-gray-500 mt-0.5">{insight.recommendation}</div>
+        )}
       </div>
     </div>
   );

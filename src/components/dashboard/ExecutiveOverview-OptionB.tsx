@@ -214,7 +214,12 @@ export default function ExecutiveOverviewOptionB({
                 return (
                   <div key={idx} className="flex gap-2 text-sm">
                     <span style={{ color: colorMap[insight.type] }}>{iconMap[insight.type]}</span>
-                    <p className="text-gray-700 leading-relaxed">{insight.message}</p>
+                    <div className="flex-1">
+                      <p className="text-gray-700 leading-relaxed">{insight.text}</p>
+                      {insight.recommendation && (
+                        <p className="text-xs text-gray-500 mt-1">{insight.recommendation}</p>
+                      )}
+                    </div>
                   </div>
                 );
               })}

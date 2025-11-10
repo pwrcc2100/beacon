@@ -222,8 +222,10 @@ export default function ExecutiveOverviewOptionA({
                     backgroundColor: `${colors}10`
                   }}
                 >
-                  <p className="text-xs font-semibold text-gray-700 mb-1">{insight.title}</p>
-                  <p className="text-xs text-gray-600">{insight.message}</p>
+                  <p className="text-xs text-gray-700">{insight.text}</p>
+                  {insight.recommendation && (
+                    <p className="text-xs text-gray-500 mt-1">{insight.recommendation}</p>
+                  )}
                 </div>
               );
             })}
