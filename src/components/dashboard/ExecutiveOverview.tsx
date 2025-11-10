@@ -107,19 +107,47 @@ function WeightingBreakdown() {
     { label: 'Clarity', value: '10%' },
   ];
 
+  const interpretation = [
+    { range: '≥ 80%', label: 'Strong psychosocial safety', color: '#D1FAE5', textColor: '#065F46' },
+    { range: '65 – 79%', label: 'Generally positive — monitor', color: '#FEF3C7', textColor: '#92400E' },
+    { range: '< 65%', label: 'Elevated psychosocial risk', color: '#FEE2E2', textColor: '#991B1B' },
+  ];
+
   return (
-    <div className="rounded-lg border border-gray-200 p-3">
-      <div className="text-xs uppercase text-[var(--text-muted)] font-semibold tracking-wide mb-2">
-        Weighting Formula
+    <div className="rounded-lg border border-gray-200 p-3 space-y-3">
+      {/* Weighting Formula */}
+      <div>
+        <div className="text-xs uppercase text-[var(--text-muted)] font-semibold tracking-wide mb-2">
+          Weighting Formula
+        </div>
+        <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-[var(--text-primary)]">
+          {breakdown.map(item => (
+            <div key={item.label} className="flex items-center justify-between">
+              <dt>{item.label}</dt>
+              <dd className="font-semibold">{item.value}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-[var(--text-primary)]">
-        {breakdown.map(item => (
-          <div key={item.label} className="flex items-center justify-between">
-            <dt>{item.label}</dt>
-            <dd className="font-semibold">{item.value}</dd>
-          </div>
-        ))}
-      </dl>
+
+      {/* Beacon Index Interpretation */}
+      <div className="pt-3 border-t border-gray-200">
+        <div className="text-xs uppercase text-[var(--text-muted)] font-semibold tracking-wide mb-2">
+          Beacon Index %
+        </div>
+        <div className="space-y-1.5">
+          {interpretation.map(item => (
+            <div 
+              key={item.range} 
+              className="flex items-center justify-between text-xs px-2 py-1.5 rounded"
+              style={{ backgroundColor: item.color }}
+            >
+              <span className="font-bold" style={{ color: item.textColor }}>{item.range}</span>
+              <span className="text-[var(--text-primary)]">{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
