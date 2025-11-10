@@ -787,6 +787,14 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     currentLevel: hierarchyData.currentLevel,
   });
 
+  // Debug info for teams
+  const debugInfo = {
+    totalTeams: teams.length,
+    eligibleTeams: eligibleTeams.length,
+    attentionTeams: attentionTeams.length,
+    teamIds: eligibleTeams.slice(0, 3).map(t => t.team_id),
+  };
+
   const Sidebar = (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -902,6 +910,12 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
 
         {/* Top Quote Banner */}
         <QuoteBanner position="top" />
+
+        {/* Debug Info */}
+        <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
+          <strong>Debug:</strong> Teams: {debugInfo.totalTeams} | Eligible: {debugInfo.eligibleTeams} | Attention Teams: {debugInfo.attentionTeams}
+          {debugInfo.teamIds.length > 0 && <span> | Sample IDs: {debugInfo.teamIds.join(', ')}</span>}
+        </div>
 
         {trends.length === 0 && recent.length === 0 ? (
           <DemoDashboardClient />
