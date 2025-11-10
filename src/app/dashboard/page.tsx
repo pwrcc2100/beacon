@@ -736,6 +736,13 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
 
     const { data: teamResponses, error: teamRespError } = await teamQuery;
 
+    console.log('Team query results:', {
+      teamIdsCount: teamIds.length,
+      responsesCount: teamResponses?.length || 0,
+      error: teamRespError?.message,
+      sampleResponse: teamResponses?.[0]
+    });
+
     const aggregates: Record<string, {
       count: number;
       sentiment: number;
@@ -793,6 +800,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     eligibleTeams: eligibleTeams.length,
     attentionTeams: attentionTeams.length,
     teamIds: eligibleTeams.slice(0, 3).map(t => t.team_id),
+    sampleTeamData: attentionTeams.slice(0, 2).map(t => ({ name: t.name, wellbeing: t.wellbeing }))
   };
 
   const Sidebar = (
