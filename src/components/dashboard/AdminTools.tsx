@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { GenerateDemoDataButton } from '@/components/dashboard/GenerateDemoDataButton';
 import { SetupHierarchyButton } from '@/components/dashboard/SetupHierarchyButton';
+import { ClearDemoDataButton } from '@/components/dashboard/ClearDemoDataButton';
 
 type AdminToolsProps = {
   clientId: string;
@@ -37,11 +38,13 @@ export function AdminTools({ clientId }: AdminToolsProps) {
   }
 
   return (
-    <div className="flex items-center gap-2 flex-wrap">
-      <SetupHierarchyButton clientId={clientId} />
-      <GenerateDemoDataButton clientId={clientId} endpoint="seed" label="Generate Demo Data" />
-      <GenerateDemoDataButton clientId={clientId} endpoint="seed-with-departments" label="Generate 100 Demo Records" />
-      <GenerateDemoDataButton clientId={clientId} endpoint="seed-balanced" label="Generate Balanced Demo Records" />
+    <div className="space-y-2">
+      <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Demo Data</div>
+      <div className="space-y-2">
+        <SetupHierarchyButton clientId={clientId} />
+        <GenerateDemoDataButton clientId={clientId} endpoint="seed-balanced" label="Generate Balanced Demo Records" />
+        <ClearDemoDataButton clientId={clientId} />
+      </div>
     </div>
   );
 }
