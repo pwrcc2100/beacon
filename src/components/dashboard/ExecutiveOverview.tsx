@@ -332,46 +332,46 @@ export function ExecutiveOverview({
 
   return (
     <div className="space-y-8">
-      {/* Top summary cards */}
-      <div className="grid gap-6 xl:grid-cols-2">
-        <Card className="border border-[#E0E7F1] shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">Overall Wellbeing Score</CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 lg:grid-cols-[1.4fr,1fr] gap-6 items-center">
+      {/* Combined Overall Wellbeing Score + Current Sentiment Card */}
+      <Card className="border border-[#E0E7F1] shadow-sm">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">Overall Wellbeing Score</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-6 lg:grid-cols-[1fr,1.2fr]">
+            {/* Left: Gauge and Weighting */}
             <div className="space-y-4">
               <SemiCircularGauge value={overallScore} previous={previousScore} />
               <WeightingBreakdown />
             </div>
-            <div className="space-y-3">
-              <div className="text-xs font-medium text-[var(--text-muted)] uppercase">Historical Wellbeing Score</div>
-              <Sparkline points={wellbeingPoints} color="#2E96FF" />
-            </div>
-          </CardContent>
-        </Card>
 
-        <Card className="border border-[#E0E7F1] shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-[var(--text-muted)] uppercase tracking-wide">Current Sentiment</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-3">
-              {QUESTION_META.map(({ key, label, description }) => (
-                <QuestionBar
-                  key={key}
-                  label={label}
-                  description={description}
-                  value={questionScores[key] ?? 0}
-                />
-              ))}
+            {/* Right: Current Sentiment Questions and AI Insight */}
+            <div className="space-y-4">
+              <div className="text-xs font-medium text-[var(--text-muted)] uppercase mb-3">Current Sentiment</div>
+              <div className="space-y-3">
+                {QUESTION_META.map(({ key, label, description }) => (
+                  <QuestionBar
+                    key={key}
+                    label={label}
+                    description={description}
+                    value={questionScores[key] ?? 0}
+                  />
+                ))}
+              </div>
+              <div className="flex items-baseline gap-2 pt-2">
+                <span className="text-sm font-medium text-[var(--text-muted)] uppercase">Participation</span>
+                <span className="text-3xl font-semibold" style={{ color: SCORE_COLORS.thriving }}>{formatPercent(participationRate)}</span>
+              </div>
             </div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-sm font-medium text-[var(--text-muted)] uppercase">Participation</span>
-              <span className="text-3xl font-semibold" style={{ color: SCORE_COLORS.thriving }}>{formatPercent(participationRate)}</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+
+          {/* Bottom: Historical Wellbeing Chart */}
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="text-xs font-medium text-[var(--text-muted)] uppercase mb-3">Historical Wellbeing Score</div>
+            <Sparkline points={wellbeingPoints} color="#2E96FF" />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Which Teams Need Attention - Full Width */}
       <Card className="border border-[#E0E7F1] shadow-sm">
