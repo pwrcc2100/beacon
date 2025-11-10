@@ -14,8 +14,12 @@ import { getPeriodStartDate } from '@/lib/dateUtils';
 import DemoDashboardClient from './DemoDashboardClient';
 import { QuoteBanner } from '@/components/dashboard/QuoteBanner';
 import { ExecutiveOverview } from '@/components/dashboard/ExecutiveOverview';
+import ExecutiveOverviewOptionA from '@/components/dashboard/ExecutiveOverview-OptionA';
+import ExecutiveOverviewOptionB from '@/components/dashboard/ExecutiveOverview-OptionB';
+import ExecutiveOverviewOptionC from '@/components/dashboard/ExecutiveOverview-OptionC';
 import { generateExecutiveInsights } from '@/lib/executiveInsights';
 import { calculateWellbeingPercent } from '@/components/dashboard/scoreTheme';
+import { DesignSwitcher } from '@/components/dashboard/DesignSwitcher';
 
 const AdminTools = nextDynamic(() => import('@/components/dashboard/AdminTools').then(m => ({ default: m.AdminTools })), { ssr: false });
 
@@ -521,6 +525,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
   const to = (searchParams?.to as string | undefined) || '';
   const period = (searchParams?.period as string | undefined) || 'all'; // 'week', 'month', 'quarter', 'all'
   const mode = (searchParams?.mode as 'historical' | 'live' | undefined) || 'historical';
+  const design = (searchParams?.design as string | undefined) || 'current';
   const divisionId = (searchParams?.division_id as string | undefined) || undefined;
   const departmentId = (searchParams?.department_id as string | undefined) || undefined;
   const teamId = (searchParams?.team_id as string | undefined) || undefined;
@@ -803,6 +808,11 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
       </div>
       
+      {/* Design Switcher */}
+      <div className="pt-4 border-t border-black/10">
+        <DesignSwitcher />
+      </div>
+      
       {/* Filters Section */}
       <div className="pt-4 border-t border-black/10 space-y-3">
         <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Filters</div>
@@ -916,18 +926,61 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         {trends.length === 0 && recent.length === 0 ? (
           <DemoDashboardClient />
         ) : (
-          <ExecutiveOverview
-            overallScore={overallScore}
-            previousScore={previousScore}
-            trendSeries={trendSeries}
-            questionScores={questionScores}
-            participationRate={participationPercent}
-            teams={attentionTeams}
-            divisions={tableData as any}
-            insights={executiveInsights}
-            tableTitle={tableTitle}
-            attentionLabel="Which Teams Need Attention"
-          />
+          <>
+            {design === 'option-a' ? (
+              <ExecutiveOverviewOptionA
+                overallScore={overallScore}
+                previousScore={previousScore}
+                trendSeries={trendSeries}
+                questionScores={questionScores}
+                participationRate={participationPercent}
+                teams={attentionTeams}
+                divisions={tableData as any}
+                insights={executiveInsights}
+                tableTitle={tableTitle}
+                attentionLabel="Which Teams Need Attention"
+              />
+            ) : design === 'option-b' ? (
+              <ExecutiveOverviewOptionB
+                overallScore={overallScore}
+                previousScore={previousScore}
+                trendSeries={trendSeries}
+                questionScores={questionScores}
+                participationRate={participationPercent}
+                teams={attentionTeams}
+                divisions={tableData as any}
+                insights={executiveInsights}
+                tableTitle={tableTitle}
+                attentionLabel="Which Teams Need Attention"
+              />
+            ) : design === 'option-c' ? (
+              <ExecutiveOverviewOptionC
+                overallScore={overallScore}
+                previousScore={previousScore}
+                trendSeries={trendSeries}
+                questionScores={questionScores}
+                participationRate={participationPercent}
+                teams={attentionTeams}
+                divisions={tableData as any}
+                insights={executiveInsights}
+                tableTitle={tableTitle}
+                attentionLabel="Which Teams Need Attention"
+              />
+            ) : (
+              <ExecutiveOverview
+                overallScore={overallScore}
+                previousScore={previousScore}
+                trendSeries={trendSeries}
+                questionScores={questionScores}
+                participationRate={participationPercent}
+                teams={attentionTeams}
+                divisions={tableData as any}
+                insights={executiveInsights}
+                tableTitle={tableTitle}
+                attentionLabel="Which Teams Need Attention"
+              />
+            )}
+          </>
         )}
 
         <QuoteBanner position="bottom" />
