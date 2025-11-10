@@ -627,8 +627,8 @@ export function ExecutiveOverview({
                   
                   const getCellStyle = (score: number) => {
                     const status = getScoreStatus(score);
-                    // Moderate opacity range for subtle but visible contrast
-                    const opacity = Math.max(0.18, Math.min(0.45, (score / 100) * 0.6 + 0.15));
+                    // Use same soft opacity as Beacon Index legend (~25%)
+                    const opacity = 0.25;
                     const alphaHex = Math.round(opacity * 255).toString(16).padStart(2, '0');
                     
                     return {
