@@ -712,9 +712,13 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
 
   let attentionTeams: { id: string; name: string; wellbeing: number }[] = [];
   
+  console.log('🔍 TEAM DEBUG - eligibleTeams:', eligibleTeams.length, '| totalTeams:', teams.length);
+  
   if (eligibleTeams.length > 0) {
     const teamMap = new Map(eligibleTeams.map(team => [team.team_id, team.team_name]));
     const teamIds = Array.from(teamMap.keys());
+
+    console.log('📋 Querying for employees in', teamIds.length, 'teams');
 
     // Step 1: Get all employees in these teams
     const { data: teamEmployees } = await supabaseAdmin
@@ -724,7 +728,10 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
       .in('team_id', teamIds)
       .eq('active', true);
 
+    console.log('👥 Found', teamEmployees?.length || 0, 'employees in teams');
+
     if (!teamEmployees || teamEmployees.length === 0) {
+      console.log('❌ NO EMPLOYEES FOUND - attentionTeams will be empty');
       attentionTeams = [];
     } else {
       const employeeIds = teamEmployees.map(e => e.employee_id);
@@ -742,6 +749,8 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
       }
 
       const { data: teamResponses } = await responsesQuery.limit(10000);
+
+      console.log('📊 Found', teamResponses?.length || 0, 'responses for those employees');
 
       // Step 3: Aggregate by team
       const aggregates: Record<string, {
@@ -789,8 +798,12 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
               (agg.leadership / agg.count) * 0.2 +
               (agg.clarity / agg.count) * 0.1) * 20,
         }));
+      
+      console.log('✅ attentionTeams calculated:', attentionTeams.length, 'teams with data');
     }
   }
+  
+  console.log('🎯 FINAL attentionTeams count:', attentionTeams.length);
 
   const executiveInsights = generateExecutiveInsights(trends, {
     data: tableData,
