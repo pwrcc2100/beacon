@@ -547,9 +547,9 @@ export async function POST(req: NextRequest) {
       teams: DIVISIONS.length * DEPARTMENTS.length * TEAM_NAMES.length,
     },
     verification: {
-      employeesCreated: employeesCreated ?? 0,
-      employeesWithTeams: employeesWithTeams ?? 0,
-      responsesWithEmployeeId: responsesWithEmployees ?? 0,
+      employeesCreated: totalEmployees ?? 0,
+      employeesWithTeams: employeesWithTeamsCount ?? 0,
+      responsesWithEmployeeId: responsesWithEmployeeIds ?? 0,
     },
     departments: departmentBreakdown,
     errors: errors.length ? errors : undefined,
