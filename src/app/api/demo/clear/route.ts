@@ -31,21 +31,22 @@ export async function POST(request: NextRequest) {
     let tokensDeleted = 0;
     let employeesDeleted = 0;
 
+    // 1. Delete ALL responses with demo sources (broader approach)
+    const { error: responseDeleteError, count: respCount } = await supabaseAdmin
+      .from('responses_v3')
+      .delete({ count: 'exact' })
+      .eq('client_id', clientId)
+      .in('source', ['demo_seed_balanced', 'demo_seed_with_departments', 'demo_seed']);
+
+    if (responseDeleteError) {
+      console.error('Response delete error:', responseDeleteError);
+      return NextResponse.json({ error: `Failed to delete responses: ${responseDeleteError.message}` }, { status: 500 });
+    }
+
+    responsesDeleted = respCount || 0;
+
     if (demoEmployeeIds.length > 0) {
       // Delete in proper order to handle foreign key constraints
-      
-      // 1. Delete responses first
-      const { error: responseDeleteError, count: respCount } = await supabaseAdmin
-        .from('responses_v3')
-        .delete({ count: 'exact' })
-        .in('employee_id', demoEmployeeIds);
-
-      if (responseDeleteError) {
-        console.error('Response delete error:', responseDeleteError);
-        return NextResponse.json({ error: `Failed to delete responses: ${responseDeleteError.message}` }, { status: 500 });
-      }
-
-      responsesDeleted = respCount || 0;
 
       // 2. Delete tokens (they reference employee_id)
       const { error: tokenDeleteError, count: tokenCount } = await supabaseAdmin
@@ -73,6 +74,31 @@ export async function POST(request: NextRequest) {
 
       employeesDeleted = empCount || 0;
     }
+
+    // 4. Clear organizational hierarchy for this client
+    const { data: clientDivisions } = await supabaseAdmin
+      .from('divisions')
+      .select('division_id')
+      .eq('client_id', clientId);
+    
+    const divisionIds = (clientDivisions || []).map(d => d.division_id);
+    
+    if (divisionIds.length > 0) {
+      const { data: clientDepartments } = await supabaseAdmin
+        .from('departments')
+        .select('department_id')
+        .in('division_id', divisionIds);
+      
+      const departmentIds = (clientDepartments || []).map(d => d.department_id);
+      
+      if (departmentIds.length > 0) {
+        await supabaseAdmin.from('teams').delete().in('department_id', departmentIds);
+      }
+      
+      await supabaseAdmin.from('departments').delete().in('division_id', divisionIds);
+    }
+    
+    await supabaseAdmin.from('divisions').delete().eq('client_id', clientId);
 
     // Refresh materialized view
     await supabaseAdmin.rpc('refresh_wellbeing_responses');
