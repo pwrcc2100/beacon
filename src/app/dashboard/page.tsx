@@ -720,32 +720,27 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
 
     console.log('📋 Querying for employees in', teamIds.length, 'teams');
 
-    // Step 1: Get all employees in these teams
+    // Step 1: Ensure there are active employees in these teams
     const { data: teamEmployees } = await supabaseAdmin
       .from('employees')
-      .select('employee_id, team_id')
+      .select('id')
       .eq('client_id', clientId)
       .in('team_id', teamIds)
-      .eq('active', true);
+      .eq('active', true)
+      .limit(1);
 
-    console.log('👥 Found', teamEmployees?.length || 0, 'employees in teams');
+    console.log('👥 Found', teamEmployees?.length || 0, 'employees in teams (sample check)');
 
     if (!teamEmployees || teamEmployees.length === 0) {
       console.log('❌ NO EMPLOYEES FOUND - attentionTeams will be empty');
       attentionTeams = [];
     } else {
-      const employeeIds = teamEmployees.map(e => e.employee_id);
-      console.log('Sample employee_ids from employees table:', employeeIds.slice(0, 3));
-      console.log('Any null employee_ids?', employeeIds.some(id => !id));
-      
-      const employeeToTeam = new Map(teamEmployees.map(e => [e.employee_id, e.team_id]));
-
-      // Step 2: Get responses for these employees
+      // Step 2: Get responses for these teams via server-side join
       let responsesQuery = supabaseAdmin
         .from('responses_v3')
-        .select('sentiment_5, clarity_5, workload_5, safety_5, leadership_5, employee_id')
+        .select('sentiment_5, clarity_5, workload_5, safety_5, leadership_5, employee_id, employees!inner(team_id)')
         .eq('client_id', clientId)
-        .in('employee_id', employeeIds);
+        .in('employees.team_id', teamIds);
 
       if (startDateForFilters) {
         responsesQuery = responsesQuery.gte('submitted_at', startDateForFilters.toISOString());
@@ -757,6 +752,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
       
       if (teamResponses && teamResponses.length > 0) {
         console.log('Sample response employee_ids:', teamResponses.slice(0, 3).map((r: any) => r.employee_id));
+        console.log('Sample response team_ids:', teamResponses.slice(0, 3).map((r: any) => r.employees?.team_id));
       }
 
       // Step 3: Aggregate by team
@@ -782,7 +778,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
 
       (teamResponses ?? []).forEach((response: any) => {
         const empId = response.employee_id;
-        const teamKey = employeeToTeam.get(empId);
+        const teamKey = response.employees?.team_id;
         if (teamKey && aggregates[teamKey]) {
           aggregates[teamKey].count += 1;
           aggregates[teamKey].sentiment += Number(response.sentiment_5 ?? 0);
