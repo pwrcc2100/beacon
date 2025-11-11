@@ -342,10 +342,18 @@ export async function POST(req: NextRequest) {
       }
 
       console.log(`👥 Created ${deptEmployeeIds.length} employees for ${deptKey}, will create ${participantCount} responses`);
+      if (deptEmployeeIds.length > 0) {
+        console.log(`First employee ID in array: ${deptEmployeeIds[0]}`);
+      }
 
       // Now create responses for only a subset (25%) of employees
       for (let i = 0; i < participantCount && i < deptEmployeeIds.length; i++) {
         const employeeId = deptEmployeeIds[i];
+        
+        if (i === 0) {
+          console.log(`Creating first response with employee_id: ${employeeId}`);
+        }
+        
         const teamEntry = teamIds[i % teamIds.length];
         deptSummary.teams[teamEntry.teamName] += 1;
 
