@@ -496,54 +496,41 @@ export async function POST(req: NextRequest) {
 
   const tokenCount = tokenCountQuery.count ?? 0;
 
-  console.log(`🔍 Verifying ${createdEmployeeIds.length} employee IDs were created...`);
-  console.log('Sample employee IDs:', createdEmployeeIds.slice(0, 3));
+  console.log(`🔍 Verifying data was created correctly...`);
 
-  // Verify employees were created with teams (check only the ones we just created)
-  const { count: employeesCreated, error: empVerifyError } = await supabaseAdmin
+  // Count all employees and responses for this client (simpler query)
+  const { count: totalEmployees } = await supabaseAdmin
     .from('employees')
     .select('*', { count: 'exact', head: true })
     .eq('client_id', clientId)
-    .in('employee_id', createdEmployeeIds);
+    .ilike('email', '%demo-balanced-%');
 
-  if (empVerifyError) {
-    console.error('❌ Employee verification query failed:', empVerifyError);
-  }
-
-  // Also try querying by id field instead of employee_id
-  const { count: employeesByIdCount } = await supabaseAdmin
+  const { count: employeesWithTeamsCount } = await supabaseAdmin
     .from('employees')
     .select('*', { count: 'exact', head: true })
     .eq('client_id', clientId)
-    .in('id', createdEmployeeIds);
-
-  console.log(`Employees by employee_id: ${employeesCreated}, by id: ${employeesByIdCount}`);
-
-  const { count: employeesWithTeams } = await supabaseAdmin
-    .from('employees')
-    .select('*', { count: 'exact', head: true })
-    .eq('client_id', clientId)
-    .in('employee_id', createdEmployeeIds)
+    .ilike('email', '%demo-balanced-%')
     .not('team_id', 'is', null);
 
-  const { count: responsesWithEmployees, data: sampleResponses } = await supabaseAdmin
+  console.log(`Total employees: ${totalEmployees}, with teams: ${employeesWithTeamsCount}`);
+
+  const { count: responsesWithEmployeeIds } = await supabaseAdmin
     .from('responses_v3')
-    .select('id, employee_id')
+    .select('*', { count: 'exact', head: true })
     .eq('client_id', clientId)
     .eq('source', 'demo_seed_balanced')
-    .not('employee_id', 'is', null)
-    .limit(3);
+    .not('employee_id', 'is', null);
 
-  console.log('Sample response employee_ids:', sampleResponses?.map(r => r.employee_id));
+  console.log(`Total responses with employee_id: ${responsesWithEmployeeIds}`);
 
   // Refresh materialized view to ensure data is visible
   await supabaseAdmin.rpc('refresh_wellbeing_responses');
 
   console.log('📊 Seed Balanced Summary:', {
-    employeesCreated: employeesCreated ?? 0,
-    employeesWithTeams: employeesWithTeams ?? 0,
+    employeesCreated: totalEmployees ?? 0,
+    employeesWithTeams: employeesWithTeamsCount ?? 0,
     responsesCreated: inserted,
-    responsesWithEmployeeId: responsesWithEmployees ?? 0,
+    responsesWithEmployeeId: responsesWithEmployeeIds ?? 0,
   });
 
   return NextResponse.json({
