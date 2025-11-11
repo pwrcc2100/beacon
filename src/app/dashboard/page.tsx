@@ -711,17 +711,10 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
   }
 
   let attentionTeams: { id: string; name: string; wellbeing: number }[] = [];
-  console.log('🔍 Team Data Debug:', {
-    eligibleTeamsCount: eligibleTeams.length,
-    totalTeamsCount: teams.length,
-    hasFilters: { divisionId, departmentId, teamId, selectedDepartments: selectedDepartments?.length },
-  });
   
   if (eligibleTeams.length > 0) {
     const teamMap = new Map(eligibleTeams.map(team => [team.team_id, team.team_name]));
     const teamIds = Array.from(teamMap.keys());
-
-    console.log('📋 Fetching employees for teams:', { teamIdsCount: teamIds.length });
 
     // Step 1: Get all employees in these teams
     const { data: teamEmployees } = await supabaseAdmin
@@ -731,12 +724,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
       .in('team_id', teamIds)
       .eq('active', true);
 
-    console.log('👥 Employees found:', { 
-      teamEmployeesCount: teamEmployees?.length || 0 
-    });
-
     if (!teamEmployees || teamEmployees.length === 0) {
-      console.log('❌ NO EMPLOYEES FOUND FOR TEAMS - Team chart will be empty');
       attentionTeams = [];
     } else {
       const employeeIds = teamEmployees.map(e => e.employee_id);
@@ -754,12 +742,6 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
       }
 
       const { data: teamResponses } = await responsesQuery.limit(10000);
-
-      console.log('📊 Responses found:', { 
-        teamResponsesCount: teamResponses?.length || 0,
-        employeeIdsQueried: employeeIds.length,
-        startDateFilter: startDateForFilters?.toISOString() || 'none'
-      });
 
       // Step 3: Aggregate by team
       const aggregates: Record<string, {
@@ -807,15 +789,8 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
               (agg.leadership / agg.count) * 0.2 +
               (agg.clarity / agg.count) * 0.1) * 20,
         }));
-      
-      console.log('✅ Attention teams calculated:', { 
-        attentionTeamsCount: attentionTeams.length,
-        sampleTeams: attentionTeams.slice(0, 3).map(t => ({ name: t.name, wellbeing: t.wellbeing.toFixed(1) }))
-      });
     }
   }
-  
-  console.log('🎯 Final attentionTeams count:', attentionTeams.length);
 
   const executiveInsights = generateExecutiveInsights(trends, {
     data: tableData,

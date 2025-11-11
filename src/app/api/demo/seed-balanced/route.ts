@@ -34,17 +34,21 @@ export async function POST(req: NextRequest) {
   }
 
   if (clearExisting) {
+    console.log('🧹 Clearing all old data including organizational hierarchy...');
+    
     // Delete in proper order to handle foreign key constraints
     
     // 1. Delete responses with demo sources
-    const { error: respDelError } = await supabaseAdmin
+    const { error: respDelError, count: respCount } = await supabaseAdmin
       .from('responses_v3')
-      .delete()
+      .delete({ count: 'exact' })
       .eq('client_id', clientId)
       .in('source', ['demo_seed_balanced', 'demo_seed_with_departments', 'demo_seed']);
     
     if (respDelError) {
-      console.error('Failed to delete old responses:', respDelError);
+      console.error('❌ Failed to delete old responses:', respDelError);
+    } else {
+      console.log(`✅ Deleted ${respCount || 0} old responses`);
     }
 
     // 2. Find demo employees to delete their tokens
@@ -55,29 +59,93 @@ export async function POST(req: NextRequest) {
       .ilike('email', 'demo-%@example.com');
     
     const demoEmployeeIds = (demoEmps || []).map(e => e.employee_id);
+    console.log(`📋 Found ${demoEmployeeIds.length} demo employees to clean up`);
     
     if (demoEmployeeIds.length > 0) {
       // Delete tokens for demo employees
-      const { error: tokenDelError } = await supabaseAdmin
+      const { error: tokenDelError, count: tokenCount } = await supabaseAdmin
         .from('tokens')
-        .delete()
+        .delete({ count: 'exact' })
         .in('employee_id', demoEmployeeIds);
       
       if (tokenDelError) {
-        console.error('Failed to delete old tokens:', tokenDelError);
+        console.error('❌ Failed to delete old tokens:', tokenDelError);
+      } else {
+        console.log(`✅ Deleted ${tokenCount || 0} old tokens`);
       }
     }
 
-    // 3. Finally delete employees
-    const { error: empDelError } = await supabaseAdmin
+    // 3. Delete employees
+    const { error: empDelError, count: empCount } = await supabaseAdmin
       .from('employees')
-      .delete()
+      .delete({ count: 'exact' })
       .eq('client_id', clientId)
       .ilike('email', 'demo-%@example.com');
     
     if (empDelError) {
-      console.error('Failed to delete old employees:', empDelError);
+      console.error('❌ Failed to delete old employees:', empDelError);
+    } else {
+      console.log(`✅ Deleted ${empCount || 0} old employees`);
     }
+
+    // 4. Now delete the organizational hierarchy (since all employees are gone)
+    // Get all divisions for this client
+    const { data: clientDivisions } = await supabaseAdmin
+      .from('divisions')
+      .select('division_id')
+      .eq('client_id', clientId);
+    
+    const divisionIds = (clientDivisions || []).map(d => d.division_id);
+    
+    if (divisionIds.length > 0) {
+      // Get all departments for these divisions
+      const { data: clientDepartments } = await supabaseAdmin
+        .from('departments')
+        .select('department_id')
+        .in('division_id', divisionIds);
+      
+      const departmentIds = (clientDepartments || []).map(d => d.department_id);
+      
+      if (departmentIds.length > 0) {
+        // Delete teams first (they reference departments)
+        const { error: teamDelError, count: teamCount } = await supabaseAdmin
+          .from('teams')
+          .delete({ count: 'exact' })
+          .in('department_id', departmentIds);
+        
+        if (teamDelError) {
+          console.error('❌ Failed to delete old teams:', teamDelError);
+        } else {
+          console.log(`✅ Deleted ${teamCount || 0} old teams`);
+        }
+      }
+
+      // Delete departments (teams are gone)
+      const { error: deptDelError, count: deptCount } = await supabaseAdmin
+        .from('departments')
+        .delete({ count: 'exact' })
+        .in('division_id', divisionIds);
+      
+      if (deptDelError) {
+        console.error('❌ Failed to delete old departments:', deptDelError);
+      } else {
+        console.log(`✅ Deleted ${deptCount || 0} old departments`);
+      }
+    }
+
+    // Delete divisions (departments and teams are gone)
+    const { error: divDelError, count: divCount } = await supabaseAdmin
+      .from('divisions')
+      .delete({ count: 'exact' })
+      .eq('client_id', clientId);
+    
+    if (divDelError) {
+      console.error('❌ Failed to delete old divisions:', divDelError);
+    } else {
+      console.log(`✅ Deleted ${divCount || 0} old divisions`);
+    }
+    
+    console.log('🎯 All old data cleared! Starting fresh generation...');
   }
 
   const errors: string[] = [];
