@@ -453,6 +453,13 @@ export async function POST(req: NextRequest) {
   }
 
   console.log(`📝 About to insert ${responses.length} responses in batches...`);
+  if (responses.length > 0) {
+    console.log('First response to insert:', {
+      employee_id: responses[0].employee_id,
+      client_id: responses[0].client_id,
+      source: responses[0].source
+    });
+  }
   
   const batchSize = 50;
   let inserted = 0;
@@ -464,6 +471,9 @@ export async function POST(req: NextRequest) {
       errors.push(`Response insert batch ${Math.floor(i / batchSize) + 1} failed: ${error.message}`);
     } else {
       inserted += data?.length ?? batch.length;
+      if (i === 0 && data && data.length > 0) {
+        console.log(`First response after insert - employee_id: ${data[0].employee_id}`);
+      }
       console.log(`✅ Inserted batch ${Math.floor(i / batchSize) + 1}: ${data?.length || batch.length} responses`);
     }
   }
