@@ -478,12 +478,28 @@ export async function POST(req: NextRequest) {
 
   const tokenCount = tokenCountQuery.count ?? 0;
 
+  console.log(`🔍 Verifying ${createdEmployeeIds.length} employee IDs were created...`);
+  console.log('Sample employee IDs:', createdEmployeeIds.slice(0, 3));
+
   // Verify employees were created with teams (check only the ones we just created)
-  const { count: employeesCreated } = await supabaseAdmin
+  const { count: employeesCreated, error: empVerifyError } = await supabaseAdmin
     .from('employees')
     .select('*', { count: 'exact', head: true })
     .eq('client_id', clientId)
     .in('employee_id', createdEmployeeIds);
+
+  if (empVerifyError) {
+    console.error('❌ Employee verification query failed:', empVerifyError);
+  }
+
+  // Also try querying by id field instead of employee_id
+  const { count: employeesByIdCount } = await supabaseAdmin
+    .from('employees')
+    .select('*', { count: 'exact', head: true })
+    .eq('client_id', clientId)
+    .in('id', createdEmployeeIds);
+
+  console.log(`Employees by employee_id: ${employeesCreated}, by id: ${employeesByIdCount}`);
 
   const { count: employeesWithTeams } = await supabaseAdmin
     .from('employees')
@@ -492,12 +508,15 @@ export async function POST(req: NextRequest) {
     .in('employee_id', createdEmployeeIds)
     .not('team_id', 'is', null);
 
-  const { count: responsesWithEmployees } = await supabaseAdmin
+  const { count: responsesWithEmployees, data: sampleResponses } = await supabaseAdmin
     .from('responses_v3')
-    .select('*', { count: 'exact', head: true })
+    .select('id, employee_id')
     .eq('client_id', clientId)
     .eq('source', 'demo_seed_balanced')
-    .not('employee_id', 'is', null);
+    .not('employee_id', 'is', null)
+    .limit(3);
+
+  console.log('Sample response employee_ids:', sampleResponses?.map(r => r.employee_id));
 
   // Refresh materialized view to ensure data is visible
   await supabaseAdmin.rpc('refresh_wellbeing_responses');
