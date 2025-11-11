@@ -397,8 +397,36 @@ export async function POST(req: NextRequest) {
 
   const tokenCount = tokenCountQuery.count ?? 0;
 
+  // Verify employees were created with teams (check only the ones we just created)
+  const { count: employeesCreated } = await supabaseAdmin
+    .from('employees')
+    .select('*', { count: 'exact', head: true })
+    .eq('client_id', clientId)
+    .in('employee_id', createdEmployeeIds);
+
+  const { count: employeesWithTeams } = await supabaseAdmin
+    .from('employees')
+    .select('*', { count: 'exact', head: true })
+    .eq('client_id', clientId)
+    .in('employee_id', createdEmployeeIds)
+    .not('team_id', 'is', null);
+
+  const { count: responsesWithEmployees } = await supabaseAdmin
+    .from('responses_v3')
+    .select('*', { count: 'exact', head: true })
+    .eq('client_id', clientId)
+    .eq('source', 'demo_seed_balanced')
+    .not('employee_id', 'is', null);
+
   // Refresh materialized view to ensure data is visible
   await supabaseAdmin.rpc('refresh_wellbeing_responses');
+
+  console.log('📊 Seed Balanced Summary:', {
+    employeesCreated: employeesCreated ?? 0,
+    employeesWithTeams: employeesWithTeams ?? 0,
+    responsesCreated: inserted,
+    responsesWithEmployeeId: responsesWithEmployees ?? 0,
+  });
 
   return NextResponse.json({
     ok: true,
@@ -412,6 +440,11 @@ export async function POST(req: NextRequest) {
       divisions: DIVISIONS.length,
       departments: DIVISIONS.length * DEPARTMENTS.length,
       teams: DIVISIONS.length * DEPARTMENTS.length * TEAM_NAMES.length,
+    },
+    verification: {
+      employeesCreated: employeesCreated ?? 0,
+      employeesWithTeams: employeesWithTeams ?? 0,
+      responsesWithEmployeeId: responsesWithEmployees ?? 0,
     },
     departments: departmentBreakdown,
     errors: errors.length ? errors : undefined,
