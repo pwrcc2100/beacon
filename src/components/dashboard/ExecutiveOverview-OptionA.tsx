@@ -314,14 +314,14 @@ export default function ExecutiveOverviewOptionA({
             })}
           </CardContent>
         </Card>
-      </div>
 
-      {/* Beacon Index - Teams Bar Chart */}
-      <div className="lg:col-span-2">
-        <TeamsAttentionChart 
-          teams={teams.map(t => ({ id: t.id, name: t.name, score: t.wellbeing }))}
-          onTeamClick={handleTeamClick}
-        />
+        {/* Team Index Score - Bar Chart (sits under Current Sentiment) */}
+        <div className="lg:col-span-2">
+          <TeamsAttentionChart 
+            teams={teams.map(t => ({ id: t.id, name: t.name, score: t.wellbeing }))}
+            onTeamClick={handleTeamClick}
+          />
+        </div>
       </div>
 
       {/* Divisions Table */}
