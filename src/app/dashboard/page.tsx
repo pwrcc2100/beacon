@@ -735,6 +735,9 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
       attentionTeams = [];
     } else {
       const employeeIds = teamEmployees.map(e => e.employee_id);
+      console.log('Sample employee_ids from employees table:', employeeIds.slice(0, 3));
+      console.log('Any null employee_ids?', employeeIds.some(id => !id));
+      
       const employeeToTeam = new Map(teamEmployees.map(e => [e.employee_id, e.team_id]));
 
       // Step 2: Get responses for these employees
@@ -751,6 +754,10 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
       const { data: teamResponses } = await responsesQuery.limit(10000);
 
       console.log('📊 Found', teamResponses?.length || 0, 'responses for those employees');
+      
+      if (teamResponses && teamResponses.length > 0) {
+        console.log('Sample response employee_ids:', teamResponses.slice(0, 3).map((r: any) => r.employee_id));
+      }
 
       // Step 3: Aggregate by team
       const aggregates: Record<string, {
