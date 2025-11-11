@@ -93,7 +93,8 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
         fontSize: 12,
         interval: 0,
         rotate: 45,
-        color: '#4b5563'
+        color: '#4b5563',
+        formatter: (value: string) => value.replace(' · ', '\n'),
       },
       axisLine: {
         lineStyle: { color: '#e5e7eb' }
@@ -153,7 +154,7 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
       label: {
         show: true,
         position: 'top',
-        formatter: '{c}%',
+        formatter: (params: any) => `${Math.round(params.value)}%`,
         fontSize: 11,
         fontWeight: 'bold'
       }
