@@ -721,66 +721,80 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     const teamMap = new Map(eligibleTeams.map(team => [team.team_id, team.team_name]));
     const teamIds = Array.from(teamMap.keys());
 
-    // Query ALL responses for teams (no date filter for now to debug)
-    const { data: teamResponses, error: teamRespError } = await supabaseAdmin
-      .from('responses_v3')
-      .select(`
-        sentiment_5,
-        clarity_5,
-        workload_5,
-        safety_5,
-        leadership_5,
-        employee_id,
-        employees!inner(team_id)
-      `)
+    // Step 1: Get all employees in these teams
+    const { data: teamEmployees } = await supabaseAdmin
+      .from('employees')
+      .select('employee_id, team_id')
       .eq('client_id', clientId)
-      .in('employees.team_id', teamIds)
-      .limit(1000);
+      .in('team_id', teamIds)
+      .eq('active', true);
 
-    const aggregates: Record<string, {
-      count: number;
-      sentiment: number;
-      clarity: number;
-      workload: number;
-      safety: number;
-      leadership: number;
-    }> = {};
+    if (!teamEmployees || teamEmployees.length === 0) {
+      attentionTeams = [];
+    } else {
+      const employeeIds = teamEmployees.map(e => e.employee_id);
+      const employeeToTeam = new Map(teamEmployees.map(e => [e.employee_id, e.team_id]));
 
-    teamIds.forEach(id => {
-      aggregates[id] = {
-        count: 0,
-        sentiment: 0,
-        clarity: 0,
-        workload: 0,
-        safety: 0,
-        leadership: 0,
-      };
-    });
+      // Step 2: Get responses for these employees
+      let responsesQuery = supabaseAdmin
+        .from('responses_v3')
+        .select('sentiment_5, clarity_5, workload_5, safety_5, leadership_5, employee_id')
+        .eq('client_id', clientId)
+        .in('employee_id', employeeIds);
 
-    (teamResponses ?? []).forEach((response: any) => {
-      const teamKey = response.employees?.team_id as string | undefined;
-      if (teamKey && aggregates[teamKey]) {
-        aggregates[teamKey].count += 1;
-        aggregates[teamKey].sentiment += Number(response.sentiment_5 ?? 0);
-        aggregates[teamKey].clarity += Number(response.clarity_5 ?? 0);
-        aggregates[teamKey].workload += Number(response.workload_5 ?? 0);
-        aggregates[teamKey].safety += Number(response.safety_5 ?? 0);
-        aggregates[teamKey].leadership += Number(response.leadership_5 ?? 0);
+      if (startDateForFilters) {
+        responsesQuery = responsesQuery.gte('submitted_at', startDateForFilters.toISOString());
       }
-    });
 
-    attentionTeams = Object.entries(aggregates)
-      .filter(([, agg]) => agg.count > 0)
-      .map(([id, agg]) => ({
-        id,
-        name: teamMap.get(id) ?? 'Team',
-        wellbeing:
-          ((agg.sentiment / agg.count) * 0.25 +
-            (agg.workload / agg.count) * 0.25 +
-            (agg.safety / agg.count) * 0.2 +
-            (agg.leadership / agg.count) * 0.2 +
-            (agg.clarity / agg.count) * 0.1) * 20,
-      }));
+      const { data: teamResponses } = await responsesQuery.limit(10000);
+
+      // Step 3: Aggregate by team
+      const aggregates: Record<string, {
+        count: number;
+        sentiment: number;
+        clarity: number;
+        workload: number;
+        safety: number;
+        leadership: number;
+      }> = {};
+
+      teamIds.forEach(id => {
+        aggregates[id] = {
+          count: 0,
+          sentiment: 0,
+          clarity: 0,
+          workload: 0,
+          safety: 0,
+          leadership: 0,
+        };
+      });
+
+      (teamResponses ?? []).forEach((response: any) => {
+        const empId = response.employee_id;
+        const teamKey = employeeToTeam.get(empId);
+        if (teamKey && aggregates[teamKey]) {
+          aggregates[teamKey].count += 1;
+          aggregates[teamKey].sentiment += Number(response.sentiment_5 ?? 0);
+          aggregates[teamKey].clarity += Number(response.clarity_5 ?? 0);
+          aggregates[teamKey].workload += Number(response.workload_5 ?? 0);
+          aggregates[teamKey].safety += Number(response.safety_5 ?? 0);
+          aggregates[teamKey].leadership += Number(response.leadership_5 ?? 0);
+        }
+      });
+
+      attentionTeams = Object.entries(aggregates)
+        .filter(([, agg]) => agg.count > 0)
+        .map(([id, agg]) => ({
+          id,
+          name: teamMap.get(id) ?? 'Team',
+          wellbeing:
+            ((agg.sentiment / agg.count) * 0.25 +
+              (agg.workload / agg.count) * 0.25 +
+              (agg.safety / agg.count) * 0.2 +
+              (agg.leadership / agg.count) * 0.2 +
+              (agg.clarity / agg.count) * 0.1) * 20,
+        }));
+    }
   }
 
   const executiveInsights = generateExecutiveInsights(trends, {
