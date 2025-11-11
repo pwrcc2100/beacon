@@ -320,15 +320,13 @@ export default function ExecutiveOverviewOptionA({
             })}
           </CardContent>
         </Card>
-
-        {/* Team Index Score - Bar Chart (sits under Current Sentiment) */}
-        <div className="lg:col-span-2">
-          <TeamsAttentionChart 
-            teams={teams.map(t => ({ id: t.id, name: t.name, score: t.wellbeing }))}
-            onTeamClick={handleTeamClick}
-          />
-        </div>
       </div>
+
+      {/* Team Index Score - Full Width Below Grid */}
+      <TeamsAttentionChart 
+        teams={teams.map(t => ({ id: t.id, name: t.name, score: t.wellbeing }))}
+        onTeamClick={handleTeamClick}
+      />
 
       {/* Divisions Table */}
       <Card className="border-none shadow-md">
