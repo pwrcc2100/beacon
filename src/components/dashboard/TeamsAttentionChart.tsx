@@ -24,19 +24,6 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
   const [sortMode, setSortMode] = useState<'score' | 'name'>('score');
   useEffect(() => { setMounted(true); }, []);
 
-  if (teams.length === 0) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Team Index Score</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">No team data available yet</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   const sortedTeams = useMemo(() => {
     const copy = [...teams];
     if (sortMode === 'score') {
@@ -68,6 +55,19 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
       return suffixParts.length ? `${base} · ${suffixParts.join(' / ')}` : base;
     });
   }, [sortedTeams]);
+
+  if (sortedTeams.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Team Index Score</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">No team data available yet</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const colors = sortedTeams.map(t => getScoreStatus(t.score).color);
 
