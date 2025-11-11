@@ -34,17 +34,50 @@ export async function POST(req: NextRequest) {
   }
 
   if (clearExisting) {
-    await supabaseAdmin
+    // Delete in proper order to handle foreign key constraints
+    
+    // 1. Delete responses with demo sources
+    const { error: respDelError } = await supabaseAdmin
       .from('responses_v3')
       .delete()
       .eq('client_id', clientId)
       .in('source', ['demo_seed_balanced', 'demo_seed_with_departments', 'demo_seed']);
+    
+    if (respDelError) {
+      console.error('Failed to delete old responses:', respDelError);
+    }
 
-    await supabaseAdmin
+    // 2. Find demo employees to delete their tokens
+    const { data: demoEmps } = await supabaseAdmin
+      .from('employees')
+      .select('employee_id')
+      .eq('client_id', clientId)
+      .ilike('email', 'demo-%@example.com');
+    
+    const demoEmployeeIds = (demoEmps || []).map(e => e.employee_id);
+    
+    if (demoEmployeeIds.length > 0) {
+      // Delete tokens for demo employees
+      const { error: tokenDelError } = await supabaseAdmin
+        .from('tokens')
+        .delete()
+        .in('employee_id', demoEmployeeIds);
+      
+      if (tokenDelError) {
+        console.error('Failed to delete old tokens:', tokenDelError);
+      }
+    }
+
+    // 3. Finally delete employees
+    const { error: empDelError } = await supabaseAdmin
       .from('employees')
       .delete()
       .eq('client_id', clientId)
       .ilike('email', 'demo-%@example.com');
+    
+    if (empDelError) {
+      console.error('Failed to delete old employees:', empDelError);
+    }
   }
 
   const errors: string[] = [];

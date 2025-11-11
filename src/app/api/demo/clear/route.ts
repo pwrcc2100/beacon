@@ -28,28 +28,46 @@ export async function POST(request: NextRequest) {
     const demoEmployeeIds = (demoEmployees || []).map(emp => emp.employee_id);
 
     let responsesDeleted = 0;
+    let tokensDeleted = 0;
     let employeesDeleted = 0;
 
     if (demoEmployeeIds.length > 0) {
-      // Delete responses for demo employees
+      // Delete in proper order to handle foreign key constraints
+      
+      // 1. Delete responses first
       const { error: responseDeleteError, count: respCount } = await supabaseAdmin
         .from('responses_v3')
         .delete({ count: 'exact' })
         .in('employee_id', demoEmployeeIds);
 
       if (responseDeleteError) {
+        console.error('Response delete error:', responseDeleteError);
         return NextResponse.json({ error: `Failed to delete responses: ${responseDeleteError.message}` }, { status: 500 });
       }
 
       responsesDeleted = respCount || 0;
 
-      // Delete demo employees
+      // 2. Delete tokens (they reference employee_id)
+      const { error: tokenDeleteError, count: tokenCount } = await supabaseAdmin
+        .from('tokens')
+        .delete({ count: 'exact' })
+        .in('employee_id', demoEmployeeIds);
+
+      if (tokenDeleteError) {
+        console.error('Token delete error:', tokenDeleteError);
+        return NextResponse.json({ error: `Failed to delete tokens: ${tokenDeleteError.message}` }, { status: 500 });
+      }
+
+      tokensDeleted = tokenCount || 0;
+
+      // 3. Finally delete employees
       const { error: employeeDeleteError, count: empCount } = await supabaseAdmin
         .from('employees')
         .delete({ count: 'exact' })
         .in('employee_id', demoEmployeeIds);
 
       if (employeeDeleteError) {
+        console.error('Employee delete error:', employeeDeleteError);
         return NextResponse.json({ error: `Failed to delete employees: ${employeeDeleteError.message}` }, { status: 500 });
       }
 
@@ -63,7 +81,8 @@ export async function POST(request: NextRequest) {
       ok: true,
       employeesDeleted,
       responsesDeleted,
-      message: `Cleared ${employeesDeleted} demo employees and ${responsesDeleted} responses`,
+      tokensDeleted,
+      message: `Cleared ${employeesDeleted} demo employees, ${responsesDeleted} responses, and ${tokensDeleted} tokens`,
     });
   } catch (error) {
     console.error('Clear demo data error:', error);
