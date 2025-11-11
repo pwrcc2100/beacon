@@ -201,6 +201,63 @@ export default function ExecutiveOverviewOptionA({
         />
       </div>
 
+      {/* Beacon Index Over Time - Line Chart */}
+      <Card className="border-none shadow-md">
+        <CardHeader>
+          <CardTitle className="text-lg">Beacon Index Over Time</CardTitle>
+          <p className="text-sm text-gray-500 mt-1">Last {trendSeries.length} reporting periods</p>
+        </CardHeader>
+        <CardContent>
+          {trendSeries.length > 0 ? (
+            <div className="w-full h-64">
+              <svg viewBox="0 0 800 240" className="w-full h-full">
+                {/* Grid lines */}
+                <line x1="40" y1="200" x2="760" y2="200" stroke="#E5E7EB" strokeWidth="1" />
+                <line x1="40" y1="150" x2="760" y2="150" stroke="#F3F4F6" strokeWidth="1" />
+                <line x1="40" y1="100" x2="760" y2="100" stroke="#F3F4F6" strokeWidth="1" />
+                <line x1="40" y1="50" x2="760" y2="50" stroke="#F3F4F6" strokeWidth="1" />
+                
+                {/* Y-axis labels */}
+                <text x="30" y="205" textAnchor="end" fontSize="12" fill="#9CA3AF">0%</text>
+                <text x="30" y="155" textAnchor="end" fontSize="12" fill="#9CA3AF">33%</text>
+                <text x="30" y="105" textAnchor="end" fontSize="12" fill="#9CA3AF">67%</text>
+                <text x="30" y="55" textAnchor="end" fontSize="12" fill="#9CA3AF">100%</text>
+                
+                {/* Line path */}
+                <path
+                  d={trendSeries.map((point, i) => {
+                    const x = 40 + (i / Math.max(1, trendSeries.length - 1)) * 720;
+                    const y = 200 - (point.wellbeing / 100) * 150;
+                    return `${i === 0 ? 'M' : 'L'}${x},${y}`;
+                  }).join(' ')}
+                  stroke={status.color}
+                  strokeWidth="3"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                
+                {/* Data points */}
+                {trendSeries.map((point, i) => {
+                  const x = 40 + (i / Math.max(1, trendSeries.length - 1)) * 720;
+                  const y = 200 - (point.wellbeing / 100) * 150;
+                  return (
+                    <g key={i}>
+                      <circle cx={x} cy={y} r="5" fill="white" stroke={status.color} strokeWidth="2" />
+                      <text x={x} y="225" textAnchor="middle" fontSize="11" fill="#6B7280">
+                        {point.label}
+                      </text>
+                    </g>
+                  );
+                })}
+              </svg>
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500 py-8 text-center">No trend data available yet</p>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Current Sentiment - Takes 2 columns */}
