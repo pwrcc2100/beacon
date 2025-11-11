@@ -31,6 +31,8 @@ export async function POST(request: NextRequest) {
     let tokensDeleted = 0;
     let employeesDeleted = 0;
 
+    const errors: string[] = [];
+
     // 1. Delete ALL responses with demo sources (broader approach)
     const { error: responseDeleteError, count: respCount } = await supabaseAdmin
       .from('responses_v3')
@@ -40,28 +42,27 @@ export async function POST(request: NextRequest) {
 
     if (responseDeleteError) {
       console.error('Response delete error:', responseDeleteError);
-      return NextResponse.json({ error: `Failed to delete responses: ${responseDeleteError.message}` }, { status: 500 });
+      errors.push(`Responses: ${responseDeleteError.message}`);
+    } else {
+      responsesDeleted = respCount || 0;
     }
 
-    responsesDeleted = respCount || 0;
+    // 2. Delete ALL tokens for this client (broader approach)
+    const { error: tokenDeleteError, count: tokenCount } = await supabaseAdmin
+      .from('tokens')
+      .delete({ count: 'exact' })
+      .eq('client_id', clientId)
+      .ilike('employee_id', '%'); // Only tokens with employee_id set
 
-    if (demoEmployeeIds.length > 0) {
-      // Delete in proper order to handle foreign key constraints
-
-      // 2. Delete tokens (they reference employee_id)
-      const { error: tokenDeleteError, count: tokenCount } = await supabaseAdmin
-        .from('tokens')
-        .delete({ count: 'exact' })
-        .in('employee_id', demoEmployeeIds);
-
-      if (tokenDeleteError) {
-        console.error('Token delete error:', tokenDeleteError);
-        return NextResponse.json({ error: `Failed to delete tokens: ${tokenDeleteError.message}` }, { status: 500 });
-      }
-
+    if (tokenDeleteError) {
+      console.error('Token delete error:', tokenDeleteError);
+      errors.push(`Tokens: ${tokenDeleteError.message}`);
+    } else {
       tokensDeleted = tokenCount || 0;
+    }
 
-      // 3. Finally delete employees
+    // 3. Delete demo employees
+    if (demoEmployeeIds.length > 0) {
       const { error: employeeDeleteError, count: empCount } = await supabaseAdmin
         .from('employees')
         .delete({ count: 'exact' })
@@ -69,10 +70,10 @@ export async function POST(request: NextRequest) {
 
       if (employeeDeleteError) {
         console.error('Employee delete error:', employeeDeleteError);
-        return NextResponse.json({ error: `Failed to delete employees: ${employeeDeleteError.message}` }, { status: 500 });
+        errors.push(`Employees: ${employeeDeleteError.message}`);
+      } else {
+        employeesDeleted = empCount || 0;
       }
-
-      employeesDeleted = empCount || 0;
     }
 
     // 4. Clear organizational hierarchy for this client
@@ -82,6 +83,9 @@ export async function POST(request: NextRequest) {
       .eq('client_id', clientId);
     
     const divisionIds = (clientDivisions || []).map(d => d.division_id);
+    let teamsDeleted = 0;
+    let departmentsDeleted = 0;
+    let divisionsDeleted = 0;
     
     if (divisionIds.length > 0) {
       const { data: clientDepartments } = await supabaseAdmin
@@ -92,23 +96,59 @@ export async function POST(request: NextRequest) {
       const departmentIds = (clientDepartments || []).map(d => d.department_id);
       
       if (departmentIds.length > 0) {
-        await supabaseAdmin.from('teams').delete().in('department_id', departmentIds);
+        const { error: teamErr, count: teamCount } = await supabaseAdmin
+          .from('teams')
+          .delete({ count: 'exact' })
+          .in('department_id', departmentIds);
+        
+        if (teamErr) {
+          console.error('Team delete error:', teamErr);
+          errors.push(`Teams: ${teamErr.message}`);
+        } else {
+          teamsDeleted = teamCount || 0;
+        }
       }
       
-      await supabaseAdmin.from('departments').delete().in('division_id', divisionIds);
+      const { error: deptErr, count: deptCount } = await supabaseAdmin
+        .from('departments')
+        .delete({ count: 'exact' })
+        .in('division_id', divisionIds);
+      
+      if (deptErr) {
+        console.error('Department delete error:', deptErr);
+        errors.push(`Departments: ${deptErr.message}`);
+      } else {
+        departmentsDeleted = deptCount || 0;
+      }
     }
     
-    await supabaseAdmin.from('divisions').delete().eq('client_id', clientId);
+    const { error: divErr, count: divCount } = await supabaseAdmin
+      .from('divisions')
+      .delete({ count: 'exact' })
+      .eq('client_id', clientId);
+    
+    if (divErr) {
+      console.error('Division delete error:', divErr);
+      errors.push(`Divisions: ${divErr.message}`);
+    } else {
+      divisionsDeleted = divCount || 0;
+    }
 
     // Refresh materialized view
     await supabaseAdmin.rpc('refresh_wellbeing_responses');
 
+    const message = `Cleared ${responsesDeleted} responses, ${tokensDeleted} tokens, ${employeesDeleted} employees, ${teamsDeleted} teams, ${departmentsDeleted} departments, ${divisionsDeleted} divisions`;
+
     return NextResponse.json({
-      ok: true,
+      ok: errors.length === 0,
       employeesDeleted,
       responsesDeleted,
       tokensDeleted,
-      message: `Cleared ${employeesDeleted} demo employees, ${responsesDeleted} responses, and ${tokensDeleted} tokens`,
+      teamsDeleted,
+      departmentsDeleted,
+      divisionsDeleted,
+      message,
+      errors: errors.length > 0 ? errors : undefined,
     });
   } catch (error) {
     console.error('Clear demo data error:', error);
