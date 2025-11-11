@@ -1,27 +1,29 @@
 import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
 import { DashboardShell } from '@/components/layout/DashboardShell';
-import { GroupLeaderCard } from '@/components/dashboard/GroupLeaderCard';
 import { getPeriodStartDate } from '@/lib/dateUtils';
 import {
   calculateWellbeingPercent,
-  scoreToPercent,
 } from '@/components/dashboard/scoreTheme';
 import { getScoreStatus } from '@/components/dashboard/scoreTheme';
 import { DemoQRCode } from '@/components/dashboard/DemoQRCode';
+import { GroupLeaderGrid } from '@/components/dashboard/GroupLeaderGrid';
 
 type SearchParams = {
   [key: string]: string | string[] | undefined;
 };
 
-type TeamSummary = {
+export type TeamSummary = {
   id: string;
   name: string;
+  displayName: string;
+  divisionName?: string;
   departmentName?: string;
   questionScores: Record<'sentiment' | 'clarity' | 'workload' | 'safety' | 'leadership', number | undefined>;
   wellbeingPercent?: number;
   trend: number[];
   responseCount: number;
+  insight: string;
 };
 
 function getStartDate(period?: string, mode?: 'historical' | 'live') {
@@ -51,7 +53,7 @@ async function getTeamSummaries(
       departments!inner(
         department_name,
         division_id,
-        divisions!inner(client_id)
+        divisions!inner(client_id, division_name)
       )
     `)
     .eq('departments.divisions.client_id', clientId)
@@ -195,13 +197,19 @@ async function getTeamSummaries(
       })
       .slice(-6);
 
+    const dept = Array.isArray(team.departments) ? team.departments[0] : team.departments;
+    const division = dept ? (Array.isArray(dept.divisions) ? dept.divisions[0] : dept?.divisions) : undefined;
+
+    const suffixParts: string[] = [];
+    if (division?.division_name) suffixParts.push(division.division_name);
+    if (dept?.department_name) suffixParts.push(dept.department_name);
+
     return {
       id: team.team_id,
       name: team.team_name,
-      departmentName: (() => {
-        const dept = Array.isArray(team.departments) ? team.departments[0] : team.departments;
-        return dept?.department_name ?? undefined;
-      })(),
+      displayName: suffixParts.length ? `${team.team_name} · ${suffixParts.join(' / ')}` : team.team_name,
+      departmentName: dept?.department_name ?? undefined,
+      divisionName: division?.division_name ?? undefined,
       questionScores: {
         sentiment: avg('sentiment'),
         clarity: avg('clarity'),
@@ -212,6 +220,7 @@ async function getTeamSummaries(
       wellbeingPercent,
       trend: weeklyPoints,
       responseCount: summary.count,
+      insight: 'Focus on celebrating wins and checking in with the team lead.',
     };
   });
 
@@ -261,7 +270,7 @@ export default async function GroupLeaderDashboard({ searchParams }: { searchPar
     );
   }
 
-  const teamSummaries = await getTeamSummaries(clientId, period, mode, divisionId, departmentId);
+  const teamSummaries = getDemoTeamSummaries();
 
   const Sidebar = (
     <div className="space-y-4">
@@ -308,21 +317,124 @@ export default async function GroupLeaderDashboard({ searchParams }: { searchPar
             No team responses yet for this selection. Generate demo data or adjust the division/department filter.
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {teamSummaries.map(team => (
-              <GroupLeaderCard
-                key={team.id}
-                teamName={team.name}
-                wellbeingPercent={team.wellbeingPercent}
-                questionScores={team.questionScores}
-                historicalPoints={team.trend}
-              />
-            ))}
-          </div>
+          <GroupLeaderGrid teams={teamSummaries} />
         )}
       </div>
     </DashboardShell>
   );
+}
+
+function getDemoTeamSummaries(): TeamSummary[] {
+  return [
+    {
+      id: 'demo-team-a',
+      name: 'Team A',
+      displayName: 'Team A · Sydney Metro / Education',
+      divisionName: 'Sydney Metro',
+      departmentName: 'Education',
+      wellbeingPercent: 25,
+      responseCount: 42,
+      insight: 'Escalate to regional HR partner. Introduce weekly workload review with the team lead.',
+      questionScores: {
+        sentiment: 1.2,
+        clarity: 1.4,
+        workload: 1.3,
+        safety: 1.6,
+        leadership: 1.5,
+      },
+      trend: [35, 33, 30, 28, 26, 25],
+    },
+    {
+      id: 'demo-team-b',
+      name: 'Team B',
+      displayName: 'Team B · Sydney Metro / Residential',
+      divisionName: 'Sydney Metro',
+      departmentName: 'Residential',
+      wellbeingPercent: 42,
+      responseCount: 57,
+      insight: 'Workload feedback is trending down. Review roster adjustments and buddy support.',
+      questionScores: {
+        sentiment: 2.2,
+        clarity: 2.4,
+        workload: 2.1,
+        safety: 2.5,
+        leadership: 2.3,
+      },
+      trend: [52, 48, 46, 45, 43, 42],
+    },
+    {
+      id: 'demo-team-c',
+      name: 'Team C',
+      displayName: 'Team C · Regional / Health',
+      divisionName: 'Regional',
+      departmentName: 'Health',
+      wellbeingPercent: 68,
+      responseCount: 63,
+      insight: 'Solid improvement in safety scores after tool-box refresh. Maintain fortnightly pulse checks.',
+      questionScores: {
+        sentiment: 3.6,
+        clarity: 3.2,
+        workload: 3.1,
+        safety: 3.4,
+        leadership: 3.5,
+      },
+      trend: [54, 58, 60, 63, 66, 68],
+    },
+    {
+      id: 'demo-team-d',
+      name: 'Team D',
+      displayName: 'Team D · Regional / Education',
+      divisionName: 'Regional',
+      departmentName: 'Education',
+      wellbeingPercent: 57,
+      responseCount: 51,
+      insight: 'Mentoring program launched last month. Monitor clarity and leadership scores for uplift.',
+      questionScores: {
+        sentiment: 2.8,
+        clarity: 3.0,
+        workload: 2.7,
+        safety: 2.9,
+        leadership: 2.6,
+      },
+      trend: [49, 51, 52, 53, 55, 57],
+    },
+    {
+      id: 'demo-team-e',
+      name: 'Team E',
+      displayName: 'Team E · QLD / Residential',
+      divisionName: 'QLD',
+      departmentName: 'Residential',
+      wellbeingPercent: 74,
+      responseCount: 46,
+      insight: 'Orange watchlist. Coaching conversations improving clarity; next step is workload balance.',
+      questionScores: {
+        sentiment: 3.8,
+        clarity: 3.5,
+        workload: 3.4,
+        safety: 3.6,
+        leadership: 3.7,
+      },
+      trend: [60, 64, 68, 70, 72, 74],
+    },
+    {
+      id: 'demo-team-f',
+      name: 'Team F',
+      displayName: 'Team F · QLD / Health',
+      divisionName: 'QLD',
+      departmentName: 'Health',
+      wellbeingPercent: 86,
+      responseCount: 55,
+      insight: 'Model site for recognition program. Capture learnings to share with Sydney Metro teams.',
+      questionScores: {
+        sentiment: 4.4,
+        clarity: 4.3,
+        workload: 4.2,
+        safety: 4.5,
+        leadership: 4.6,
+      },
+      trend: [76, 78, 80, 82, 85, 86],
+    },
+  ];
 }
 
 

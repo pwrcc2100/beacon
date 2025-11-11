@@ -17,6 +17,7 @@ type GroupLeaderCardProps = {
   wellbeingPercent?: number;
   questionScores: QuestionScores;
   historicalPoints: number[];
+  insight: string;
 };
 
 function Sparkline({ points, color }: { points: number[]; color: string }) {
@@ -44,22 +45,37 @@ function Sparkline({ points, color }: { points: number[]; color: string }) {
     <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-20">
       <path d={`M${padding},${height - padding} L${width - padding},${height - padding}`} stroke="#E2E8F0" strokeWidth={1.5} fill="none" />
       <path d={path} stroke={color} strokeWidth={2.5} fill="none" strokeLinecap="round" />
+      {points.map((value, index) => {
+        const x = padding + index * step;
+        const y = height - padding - ((value - min) / range) * (height - padding * 2);
+        return (
+          <circle key={index} cx={x} cy={y} r={3} fill="#fff" stroke={color} strokeWidth={1.5} />
+        );
+      })}
     </svg>
   );
 }
 
-export function GroupLeaderCard({ teamName, wellbeingPercent, questionScores, historicalPoints }: GroupLeaderCardProps) {
+export function GroupLeaderCard({ teamName, wellbeingPercent, questionScores, historicalPoints, insight }: GroupLeaderCardProps) {
   const wellbeingStatus = getScoreStatus(wellbeingPercent ?? 0);
 
   return (
     <div className="flex flex-col gap-6 rounded-[28px] border border-[#E2E8F0] bg-white p-6 shadow-sm">
       <div className="flex items-center justify-between">
-        <div className="text-xl font-semibold text-[var(--text-primary)]">{teamName}</div>
-        <span
-          className="h-10 w-10 rounded-full"
-          style={{ backgroundColor: wellbeingStatus.color ?? SCORE_COLORS.neutral }}
-          aria-label={`${teamName} wellbeing status`}
-        />
+        <div>
+          <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] font-semibold">Team</div>
+          <div className="text-xl font-semibold text-[var(--text-primary)]">{teamName}</div>
+        </div>
+        <div className="flex flex-col items-end gap-2">
+          <span
+            className="h-10 w-10 rounded-full border border-black/10 shadow-sm"
+            style={{ backgroundColor: wellbeingStatus.color ?? SCORE_COLORS.neutral }}
+            aria-label={`${teamName} wellbeing status`}
+          />
+          {wellbeingPercent !== undefined && (
+            <span className="text-xs font-semibold text-[var(--text-muted)]">{Math.round(wellbeingPercent)}%</span>
+          )}
+        </div>
       </div>
 
       <div>
@@ -80,6 +96,9 @@ export function GroupLeaderCard({ teamName, wellbeingPercent, questionScores, hi
                     </span>
                     <span className="font-medium text-[var(--text-muted)]">{description}</span>
                   </div>
+                  <span className="text-xs font-semibold text-[var(--text-muted)]">
+                    {hasValue ? `${Math.round(percent)}%` : '—'}
+                  </span>
                 </div>
                 <div className="h-2 rounded-full bg-[#E2E8F0] overflow-hidden">
                   <div
@@ -99,7 +118,7 @@ export function GroupLeaderCard({ teamName, wellbeingPercent, questionScores, hi
       </div>
 
       <div className="rounded-[18px] border border-dashed border-[#CBD5E1] bg-[#F8FAFF] px-4 py-3 text-sm text-[var(--text-muted)]">
-        <span className="font-medium text-[var(--text-primary)]">Insight:</span> What does this mean? Consider correlation, whether it is trending up/down, and next steps for this team.
+        <span className="font-medium text-[var(--text-primary)]">Insight:</span> {insight}
       </div>
     </div>
   );
