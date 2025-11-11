@@ -12,7 +12,6 @@ import nextDynamic from 'next/dynamic';
 import { DemoQRCode } from '@/components/dashboard/DemoQRCode';
 import { getPeriodStartDate } from '@/lib/dateUtils';
 import DemoDashboardClient from './DemoDashboardClient';
-import { QuoteBanner } from '@/components/dashboard/QuoteBanner';
 import { ExecutiveOverview } from '@/components/dashboard/ExecutiveOverview';
 import ExecutiveOverviewOptionA from '@/components/dashboard/ExecutiveOverview-OptionA';
 import ExecutiveOverviewOptionB from '@/components/dashboard/ExecutiveOverview-OptionB';
@@ -929,9 +928,6 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
           </div>
         </div>
 
-        {/* Top Quote Banner */}
-        <QuoteBanner position="top" />
-
         {/* Debug Info */}
         <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
           <strong>Debug:</strong> Teams: {debugInfo.totalTeams} | Eligible: {debugInfo.eligibleTeams} | Attention Teams: {debugInfo.attentionTeams} | Mode: {debugInfo.mode} | Period: {debugInfo.period}
@@ -996,8 +992,6 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
             )}
           </>
         )}
-
-        <QuoteBanner position="bottom" />
       </div>
     </DashboardShell>
   );

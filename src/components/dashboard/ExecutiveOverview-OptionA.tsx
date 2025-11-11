@@ -108,18 +108,19 @@ function MetricCard({
   );
 }
 
-// Question Bar Component
+// Question Bar Component with conditional coloring
 function QuestionBar({ label, description, value }: { label: string; description: string; value: number }) {
-  const status = getScoreStatus(Math.round(value));
+  const scorePercent = Math.round(value * 20);
+  const status = getScoreStatus(scorePercent);
   const percentage = (value / 5) * 100;
   
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-xs">
         <span className="font-medium text-gray-700">{label} · {description}</span>
-        <span className="font-bold" style={{ color: status.color }}>{Math.round(value * 20)}%</span>
+        <span className="font-bold" style={{ color: status.color }}>{scorePercent}%</span>
       </div>
-      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+      <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
         <div 
           className="h-full rounded-full transition-all duration-500"
           style={{ 
@@ -172,7 +173,7 @@ export default function ExecutiveOverviewOptionA({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           icon="💚"
-          label="Overall Wellbeing"
+          label="Beacon Index"
           value={`${Math.round(overallScore)}%`}
           trend={previousScore ? trendText + ' vs previous' : undefined}
           color={status.color}
@@ -181,20 +182,21 @@ export default function ExecutiveOverviewOptionA({
           icon="👥"
           label="Participation Rate"
           value={`${Math.round(participationRate)}%`}
+          trend={previousScore ? trendText + ' vs previous' : undefined}
           color={participationRate >= 70 ? SCORE_COLORS.thriving : participationRate >= 40 ? SCORE_COLORS.watch : SCORE_COLORS.alert}
         />
         <MetricCard
           icon="⚠️"
           label="Teams Needing Attention"
           value={teamsNeedingAttention}
-          trend={`out of ${teams.length} teams`}
+          trend={previousScore ? trendText + ' vs previous' : `out of ${teams.length} teams`}
           color={teamsNeedingAttention > 5 ? SCORE_COLORS.alert : teamsNeedingAttention > 2 ? SCORE_COLORS.watch : SCORE_COLORS.thriving}
         />
         <MetricCard
           icon="📈"
           label="Trend"
           value={trend > 0 ? '↗' : trend < 0 ? '↘' : '→'}
-          trend={`${Math.abs(trend).toFixed(1)}% change`}
+          trend={previousScore ? trendText + ' vs previous' : `${Math.abs(trend).toFixed(1)}% change`}
           color={trend > 0 ? SCORE_COLORS.thriving : trend < -5 ? SCORE_COLORS.alert : SCORE_COLORS.watch}
         />
       </div>
@@ -258,10 +260,12 @@ export default function ExecutiveOverviewOptionA({
       </div>
 
       {/* Beacon Index - Teams Bar Chart */}
-      <TeamsAttentionChart 
-        teams={teams.map(t => ({ id: t.id, name: t.name, score: t.wellbeing }))}
-        onTeamClick={handleTeamClick}
-      />
+      <div className="lg:col-span-2">
+        <TeamsAttentionChart 
+          teams={teams.map(t => ({ id: t.id, name: t.name, score: t.wellbeing }))}
+          onTeamClick={handleTeamClick}
+        />
+      </div>
 
       {/* Divisions Table */}
       <Card className="border-none shadow-md">
