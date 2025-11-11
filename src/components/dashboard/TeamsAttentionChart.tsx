@@ -6,9 +6,12 @@ import { getScoreStatus, SCORE_COLORS, SCORE_THRESHOLDS } from './scoreTheme';
 import { Button } from '@/components/ui/button';
 
 type TeamData = {
-  name: string;
+  name: string; // display label
   score: number;
   id: string;
+  rawName?: string;
+  division?: string;
+  department?: string;
 };
 
 type Props = {
@@ -39,10 +42,32 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
     if (sortMode === 'score') {
       copy.sort((a, b) => a.score - b.score);
     } else {
-      copy.sort((a, b) => a.name.localeCompare(b.name));
+      copy.sort((a, b) => (a.rawName ?? a.name).localeCompare(b.rawName ?? b.name));
     }
     return copy;
   }, [teams, sortMode]);
+
+  const labels = useMemo(() => {
+    const counts = new Map<string, number>();
+    sortedTeams.forEach(team => {
+      const key = team.rawName ?? team.name;
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    });
+
+    return sortedTeams.map(team => {
+      const base = team.rawName ?? team.name;
+      const duplicates = counts.get(base) ?? 0;
+      const suffixParts: string[] = [];
+      if (team.division) suffixParts.push(team.division);
+      if (team.department) suffixParts.push(team.department);
+
+      if (duplicates > 1 && suffixParts.length === 0) {
+        suffixParts.push(team.id.slice(-4).toUpperCase());
+      }
+
+      return suffixParts.length ? `${base} · ${suffixParts.join(' / ')}` : base;
+    });
+  }, [sortedTeams]);
 
   const colors = sortedTeams.map(t => getScoreStatus(t.score).color);
 
@@ -63,7 +88,7 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
     },
     xAxis: {
       type: 'category',
-      data: sortedTeams.map(t => t.name),
+      data: labels,
       axisLabel: { 
         fontSize: 12,
         interval: 0,
@@ -139,7 +164,7 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
       formatter: (params: any) => {
         const data = params[0];
         const team = sortedTeams[data.dataIndex];
-        return `<strong>${team.name}</strong><br/>Wellbeing Score: ${Math.round(team.score)}%`;
+        return `<strong>${labels[data.dataIndex]}</strong><br/>Wellbeing Score: ${Math.round(team.score)}%`;
       }
     }
   };
@@ -181,7 +206,7 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
               click: (params: any) => {
                 const team = sortedTeams[params.dataIndex];
                 if (onTeamClick) {
-                  onTeamClick(team.id, team.name);
+                  onTeamClick(team.id, team.rawName ?? team.name);
                 }
               }
             }}
@@ -201,10 +226,10 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
               <p className="text-sm text-blue-800">
                 {highAlertTeams.length > 0 ? (
                   <>
-                    <strong>{lowestTeam.name}</strong> is in high alert ({Math.round(lowestTeam.score)}%).
+                    <strong>{lowestTeam.rawName ?? lowestTeam.name}</strong> is in high alert ({Math.round(lowestTeam.score)}%).
                     {highAlertTeams.length > 1 && ` ${highAlertTeams.length - 1} additional team${highAlertTeams.length > 2 ? 's are' : ' is'} also below ${SCORE_THRESHOLDS.watch}%.`}
                     {watchTeams.length > 0 && (
-                      <> Ones to watch: {watchTeams.map(t => t.name).slice(0, 3).join(', ')}{watchTeams.length > 3 ? '…' : ''}.</>
+                      <> Ones to watch: {watchTeams.map(t => t.rawName ?? t.name).slice(0, 3).join(', ')}{watchTeams.length > 3 ? '…' : ''}.</>
                     )}
                     {' '}Prioritise targeted check-ins and workload review for these teams.
                   </>
@@ -216,10 +241,10 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
               </p>
               {highAlertTeams.length > 0 && (
                 <button
-                  onClick={() => onTeamClick && onTeamClick(lowestTeam.id, lowestTeam.name)}
+                  onClick={() => onTeamClick && onTeamClick(lowestTeam.id, lowestTeam.rawName ?? lowestTeam.name)}
                   className="text-sm text-slate-700 hover:text-slate-900 font-medium mt-2 underline"
                 >
-                  → View {lowestTeam.name} details
+                  → View {lowestTeam.rawName ?? lowestTeam.name} details
                 </button>
               )}
             </div>

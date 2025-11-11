@@ -41,6 +41,9 @@ type TrendPoint = {
 type TeamScore = {
   id: string;
   name: string;
+  displayName?: string;
+  divisionName?: string;
+  departmentName?: string;
   wellbeing: number;
 };
 
@@ -324,7 +327,14 @@ export default function ExecutiveOverviewOptionA({
 
       {/* Team Index Score - Full Width Below Grid */}
       <TeamsAttentionChart 
-        teams={teams.map(t => ({ id: t.id, name: t.name, score: t.wellbeing }))}
+        teams={teams.map(t => ({
+          id: t.id,
+          name: t.displayName ?? t.name,
+          rawName: t.name,
+          division: t.divisionName,
+          department: t.departmentName,
+          score: t.wellbeing,
+        }))}
         onTeamClick={handleTeamClick}
       />
 

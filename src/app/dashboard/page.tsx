@@ -710,7 +710,17 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     eligibleTeams = teams.filter(team => divisionDeptSet.has(team.department_id));
   }
 
-  let attentionTeams: { id: string; name: string; wellbeing: number }[] = [];
+  const departmentsById = new Map(departments.map(dept => [dept.department_id, dept]));
+  const divisionsById = new Map((divisions ?? []).map(div => [div.division_id, div]));
+
+  let attentionTeams: {
+    id: string;
+    name: string;
+    displayName?: string;
+    divisionName?: string;
+    departmentName?: string;
+    wellbeing: number;
+  }[] = [];
   
   console.log('🔍 TEAM DEBUG - eligibleTeams:', eligibleTeams.length, '| totalTeams:', teams.length);
   
@@ -776,8 +786,9 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         };
       });
 
+      const teamInfoMap = new Map(eligibleTeams.map(team => [team.team_id, team]));
+
       (teamResponses ?? []).forEach((response: any) => {
-        const empId = response.employee_id;
         const teamKey = response.employees?.team_id;
         if (teamKey && aggregates[teamKey]) {
           aggregates[teamKey].count += 1;
@@ -791,16 +802,29 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
 
       attentionTeams = Object.entries(aggregates)
         .filter(([, agg]) => agg.count > 0)
-        .map(([id, agg]) => ({
-          id,
-          name: teamMap.get(id) ?? 'Team',
-          wellbeing:
-            ((agg.sentiment / agg.count) * 0.25 +
-              (agg.workload / agg.count) * 0.25 +
-              (agg.safety / agg.count) * 0.2 +
-              (agg.leadership / agg.count) * 0.2 +
-              (agg.clarity / agg.count) * 0.1) * 20,
-        }));
+        .map(([id, agg]) => {
+          const meta = teamInfoMap.get(id);
+          const dept = meta ? departmentsById.get(meta.department_id) : undefined;
+          const division = dept ? divisionsById.get(dept.division_id) : undefined;
+          const baseName = meta?.team_name ?? 'Team';
+          const suffixParts: string[] = [];
+          if (division?.division_name) suffixParts.push(division.division_name);
+          if (dept?.department_name) suffixParts.push(dept.department_name);
+
+          return {
+            id,
+            name: baseName,
+            displayName: suffixParts.length ? `${baseName} · ${suffixParts.join(' / ')}` : baseName,
+            divisionName: division?.division_name,
+            departmentName: dept?.department_name,
+            wellbeing:
+              ((agg.sentiment / agg.count) * 0.25 +
+                (agg.workload / agg.count) * 0.25 +
+                (agg.safety / agg.count) * 0.2 +
+                (agg.leadership / agg.count) * 0.2 +
+                (agg.clarity / agg.count) * 0.1) * 20,
+          };
+        });
       
       console.log('✅ attentionTeams calculated:', attentionTeams.length, 'teams with data');
     }

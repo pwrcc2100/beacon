@@ -1,6 +1,6 @@
 export const SCORE_THRESHOLDS = {
-  thriving: 70,
-  watch: 40,
+  thriving: 80,
+  watch: 65,
 } as const;
 
 export const SCORE_COLORS = {
