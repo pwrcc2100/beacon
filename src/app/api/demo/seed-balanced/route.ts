@@ -16,6 +16,10 @@ function mapToThree(score5: number) {
   return 3; // alert
 }
 
+// Extend timeout for this function (Vercel default is 10s)
+export const maxDuration = 60; // 60 seconds
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   const headerToken = req.headers.get('authorization')?.replace('Bearer ', '') || '';
   const cookieToken = (await cookies()).get('dash')?.value || '';

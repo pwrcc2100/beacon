@@ -19,18 +19,27 @@ export function GenerateDemoDataButton({ clientId, endpoint, label }: Props) {
     
     try {
       console.log(`📡 Making API request to /api/demo/${endpoint}`);
-      // Fetch with cookies - the API will check the 'dash' cookie set during login
-      const response = await fetch(`/api/demo/${endpoint}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin', // Include cookies for same-origin requests
-        body: JSON.stringify({ client_id: clientId })
-      });
+      setMessage('⏳ Clearing old data and generating new records... (this may take 30-60 seconds)');
+      
+      // Create abort controller for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 90000); // 90 second timeout
+      
+      try {
+        // Fetch with cookies - the API will check the 'dash' cookie set during login
+        const response = await fetch(`/api/demo/${endpoint}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'same-origin', // Include cookies for same-origin requests
+          body: JSON.stringify({ client_id: clientId }),
+          signal: controller.signal
+        });
 
-      console.log('📥 Got response, status:', response.status);
-      const data = await response.json();
+        clearTimeout(timeoutId);
+        console.log('📥 Got response, status:', response.status);
+        const data = await response.json();
       
       // Log full response for debugging
       console.log('✅ Demo data generation response:', data);
@@ -68,9 +77,18 @@ export function GenerateDemoDataButton({ clientId, endpoint, label }: Props) {
         window.location.reload();
       }, 5000);
       
+      } catch (fetchError: any) {
+        clearTimeout(timeoutId);
+        if (fetchError.name === 'AbortError') {
+          throw new Error('Request timed out after 90 seconds. The operation may have partially completed. Try refreshing the page.');
+        }
+        throw fetchError;
+      }
+      
     } catch (error: any) {
       console.error('❌ Error generating demo data:', error);
-      setMessage(`❌ Error: ${error.message}`);
+      const errorMsg = error.message || 'Unknown error occurred';
+      setMessage(`❌ Error: ${errorMsg}`);
     } finally {
       setLoading(false);
       console.log('🏁 Handler finished');
