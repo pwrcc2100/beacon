@@ -208,25 +208,25 @@ export default function ExecutiveOverviewOptionA({
         </CardHeader>
         <CardContent>
           {trendSeries.length > 0 ? (
-            <div className="w-full h-64">
-              <svg viewBox="0 0 800 240" className="w-full h-full">
+            <div className="w-full h-48">
+              <svg viewBox="0 0 800 180" className="w-full h-full">
                 {/* Grid lines */}
-                <line x1="40" y1="200" x2="760" y2="200" stroke="#E5E7EB" strokeWidth="1" />
-                <line x1="40" y1="150" x2="760" y2="150" stroke="#F3F4F6" strokeWidth="1" />
+                <line x1="40" y1="140" x2="760" y2="140" stroke="#E5E7EB" strokeWidth="1" />
                 <line x1="40" y1="100" x2="760" y2="100" stroke="#F3F4F6" strokeWidth="1" />
-                <line x1="40" y1="50" x2="760" y2="50" stroke="#F3F4F6" strokeWidth="1" />
+                <line x1="40" y1="60" x2="760" y2="60" stroke="#F3F4F6" strokeWidth="1" />
+                <line x1="40" y1="20" x2="760" y2="20" stroke="#F3F4F6" strokeWidth="1" />
                 
                 {/* Y-axis labels */}
-                <text x="30" y="205" textAnchor="end" fontSize="12" fill="#9CA3AF">0%</text>
-                <text x="30" y="155" textAnchor="end" fontSize="12" fill="#9CA3AF">33%</text>
-                <text x="30" y="105" textAnchor="end" fontSize="12" fill="#9CA3AF">67%</text>
-                <text x="30" y="55" textAnchor="end" fontSize="12" fill="#9CA3AF">100%</text>
+                <text x="30" y="145" textAnchor="end" fontSize="12" fill="#9CA3AF">0%</text>
+                <text x="30" y="105" textAnchor="end" fontSize="12" fill="#9CA3AF">33%</text>
+                <text x="30" y="65" textAnchor="end" fontSize="12" fill="#9CA3AF">67%</text>
+                <text x="30" y="25" textAnchor="end" fontSize="12" fill="#9CA3AF">100%</text>
                 
                 {/* Line path */}
                 <path
                   d={trendSeries.map((point, i) => {
                     const x = 40 + (i / Math.max(1, trendSeries.length - 1)) * 720;
-                    const y = 200 - (point.wellbeing / 100) * 150;
+                    const y = 140 - (point.wellbeing / 100) * 120;
                     return `${i === 0 ? 'M' : 'L'}${x},${y}`;
                   }).join(' ')}
                   stroke={status.color}
@@ -239,11 +239,18 @@ export default function ExecutiveOverviewOptionA({
                 {/* Data points */}
                 {trendSeries.map((point, i) => {
                   const x = 40 + (i / Math.max(1, trendSeries.length - 1)) * 720;
-                  const y = 200 - (point.wellbeing / 100) * 150;
+                  const y = 140 - (point.wellbeing / 100) * 120;
                   return (
                     <g key={i}>
                       <circle cx={x} cy={y} r="5" fill="white" stroke={status.color} strokeWidth="2" />
-                      <text x={x} y="225" textAnchor="middle" fontSize="11" fill="#6B7280">
+                      <text 
+                        x={x} 
+                        y="160" 
+                        textAnchor="end" 
+                        fontSize="10" 
+                        fill="#6B7280"
+                        transform={`rotate(-90 ${x} 160)`}
+                      >
                         {point.label}
                       </text>
                     </g>

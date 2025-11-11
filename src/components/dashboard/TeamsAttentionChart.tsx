@@ -23,7 +23,7 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Beacon Index</CardTitle>
+          <CardTitle>Team Index Score</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">No team data available yet</p>
@@ -115,7 +115,7 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Beacon Index</CardTitle>
+        <CardTitle>Team Index Score</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {mounted ? (
