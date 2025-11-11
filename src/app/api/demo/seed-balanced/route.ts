@@ -404,9 +404,15 @@ export async function POST(req: NextRequest) {
     ok: true,
     inserted,
     verifiedResponses: verifiedResponses ?? 0,
+    verifiedInDatabase: verifiedResponses ?? 0,
     tokensCreated,
     tokenCount,
     participantsTotal,
+    structure: {
+      divisions: DIVISIONS.length,
+      departments: DIVISIONS.length * DEPARTMENTS.length,
+      teams: DIVISIONS.length * DEPARTMENTS.length * TEAM_NAMES.length,
+    },
     departments: departmentBreakdown,
     errors: errors.length ? errors : undefined,
   });
