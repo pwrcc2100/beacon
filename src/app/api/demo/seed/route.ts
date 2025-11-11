@@ -6,6 +6,15 @@ function randInt(min:number, max:number){
   return Math.floor(Math.random()*(max-min+1))+min;
 }
 
+// Weighted random to ensure good color distribution
+// 40% green (1), 35% yellow (2), 25% red (3)
+function weightedScore(): 1 | 2 | 3 {
+  const rand = Math.random();
+  if (rand < 0.40) return 1; // Good - green
+  if (rand < 0.75) return 2; // Watch - yellow/orange
+  return 3; // Alert - red
+}
+
 export async function POST(req: NextRequest){
   // Protect with admin token - check header first, then cookie
   const headerToken = req.headers.get('authorization')?.replace('Bearer ','') || '';
@@ -24,11 +33,12 @@ export async function POST(req: NextRequest){
   const rows:any[] = [];
   for (let i=0;i<50;i++){
     const d = new Date(now.getTime() - randInt(0, 60)*86400000);
-    const s3 = randInt(1,3) as 1|2|3;
-    const c3 = randInt(1,3) as 1|2|3;
-    const w3 = randInt(1,3) as 1|2|3;
-    const sa3 = randInt(1,3) as 1|2|3;
-    const l3 = randInt(1,3) as 1|2|3;
+    // Use weighted scoring for better visual mix
+    const s3 = weightedScore();
+    const c3 = weightedScore();
+    const w3 = weightedScore();
+    const sa3 = weightedScore();
+    const l3 = weightedScore();
     const map = (v:number)=> v===1?5 : v===2?3 : 1;
     rows.push({
       token_id: crypto.randomUUID(),
