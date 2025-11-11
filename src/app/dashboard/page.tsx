@@ -12,13 +12,9 @@ import nextDynamic from 'next/dynamic';
 import { DemoQRCode } from '@/components/dashboard/DemoQRCode';
 import { getPeriodStartDate } from '@/lib/dateUtils';
 import DemoDashboardClient from './DemoDashboardClient';
-import { ExecutiveOverview } from '@/components/dashboard/ExecutiveOverview';
 import ExecutiveOverviewOptionA from '@/components/dashboard/ExecutiveOverview-OptionA';
-import ExecutiveOverviewOptionB from '@/components/dashboard/ExecutiveOverview-OptionB';
-import ExecutiveOverviewOptionC from '@/components/dashboard/ExecutiveOverview-OptionC';
 import { generateExecutiveInsights } from '@/lib/executiveInsights';
 import { calculateWellbeingPercent } from '@/components/dashboard/scoreTheme';
-import { DesignSwitcher } from '@/components/dashboard/DesignSwitcher';
 
 const AdminTools = nextDynamic(() => import('@/components/dashboard/AdminTools').then(m => ({ default: m.AdminTools })), { ssr: false });
 
@@ -524,7 +520,6 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
   const to = (searchParams?.to as string | undefined) || '';
   const period = (searchParams?.period as string | undefined) || 'all'; // 'week', 'month', 'quarter', 'all'
   const mode = (searchParams?.mode as 'historical' | 'live' | undefined) || 'historical';
-  const design = (searchParams?.design as string | undefined) || 'current';
   const divisionId = (searchParams?.division_id as string | undefined) || undefined;
   const departmentId = (searchParams?.department_id as string | undefined) || undefined;
   const teamId = (searchParams?.team_id as string | undefined) || undefined;
@@ -801,15 +796,6 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     currentLevel: hierarchyData.currentLevel,
   });
 
-  // Debug info for teams
-  const debugInfo = {
-    totalTeams: teams.length,
-    eligibleTeams: eligibleTeams.length,
-    attentionTeams: attentionTeams.length,
-    mode: mode,
-    period: period
-  };
-
   const Sidebar = (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -819,11 +805,6 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         <a href="/dashboard/group-leader" className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
         <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Advanced Analytics</a>
         <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
-      </div>
-      
-      {/* Design Switcher */}
-      <div className="pt-4 border-t border-black/10">
-        <DesignSwitcher />
       </div>
       
       {/* Filters Section */}
@@ -928,69 +909,21 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
           </div>
         </div>
 
-        {/* Debug Info */}
-        <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
-          <strong>Debug:</strong> Teams: {debugInfo.totalTeams} | Eligible: {debugInfo.eligibleTeams} | Attention Teams: {debugInfo.attentionTeams} | Mode: {debugInfo.mode} | Period: {debugInfo.period}
-        </div>
-
         {trends.length === 0 && recent.length === 0 ? (
           <DemoDashboardClient />
         ) : (
-          <>
-            {design === 'option-a' ? (
-              <ExecutiveOverviewOptionA
-                overallScore={overallScore}
-                previousScore={previousScore}
-                trendSeries={trendSeries}
-                questionScores={questionScores}
-                participationRate={participationPercent}
-                teams={attentionTeams}
-                divisions={tableData as any}
-                insights={executiveInsights}
-                tableTitle={tableTitle}
-                attentionLabel="Which Teams Need Attention"
-              />
-            ) : design === 'option-b' ? (
-              <ExecutiveOverviewOptionB
-                overallScore={overallScore}
-                previousScore={previousScore}
-                trendSeries={trendSeries}
-                questionScores={questionScores}
-                participationRate={participationPercent}
-                teams={attentionTeams}
-                divisions={tableData as any}
-                insights={executiveInsights}
-                tableTitle={tableTitle}
-                attentionLabel="Which Teams Need Attention"
-              />
-            ) : design === 'option-c' ? (
-              <ExecutiveOverviewOptionC
-                overallScore={overallScore}
-                previousScore={previousScore}
-                trendSeries={trendSeries}
-                questionScores={questionScores}
-                participationRate={participationPercent}
-                teams={attentionTeams}
-                divisions={tableData as any}
-                insights={executiveInsights}
-                tableTitle={tableTitle}
-                attentionLabel="Which Teams Need Attention"
-              />
-            ) : (
-              <ExecutiveOverview
-                overallScore={overallScore}
-                previousScore={previousScore}
-                trendSeries={trendSeries}
-                questionScores={questionScores}
-                participationRate={participationPercent}
-                teams={attentionTeams}
-                divisions={tableData as any}
-                insights={executiveInsights}
-                tableTitle={tableTitle}
-                attentionLabel="Which Teams Need Attention"
-              />
-            )}
-          </>
+          <ExecutiveOverviewOptionA
+            overallScore={overallScore}
+            previousScore={previousScore}
+            trendSeries={trendSeries}
+            questionScores={questionScores}
+            participationRate={participationPercent}
+            teams={attentionTeams}
+            divisions={tableData as any}
+            insights={executiveInsights}
+            tableTitle={tableTitle}
+            attentionLabel="Which Teams Need Attention"
+          />
         )}
       </div>
     </DashboardShell>
