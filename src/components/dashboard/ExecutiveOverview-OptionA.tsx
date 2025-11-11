@@ -97,8 +97,7 @@ function MetricCard({
             )}
           </div>
           <div 
-            className="w-12 h-12 rounded-full flex items-center justify-center text-2xl"
-            style={{ backgroundColor: `${color}20` }}
+            className="w-12 h-12 flex items-center justify-center text-2xl"
           >
             {icon}
           </div>
