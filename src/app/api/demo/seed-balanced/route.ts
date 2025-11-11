@@ -332,6 +332,7 @@ export async function POST(req: NextRequest) {
         });
 
         if (empError) {
+          console.error(`❌ Employee creation failed (${deptKey}):`, empError);
           errors.push(`Employee creation failed (${deptKey}): ${empError.message}`);
           continue;
         }
@@ -339,6 +340,8 @@ export async function POST(req: NextRequest) {
         deptEmployeeIds.push(employeeId);
         createdEmployeeIds.push(employeeId);
       }
+
+      console.log(`👥 Created ${deptEmployeeIds.length} employees for ${deptKey}, will create ${participantCount} responses`);
 
       // Now create responses for only a subset (25%) of employees
       for (let i = 0; i < participantCount && i < deptEmployeeIds.length; i++) {
@@ -441,17 +444,23 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  console.log(`📝 About to insert ${responses.length} responses in batches...`);
+  
   const batchSize = 50;
   let inserted = 0;
   for (let i = 0; i < responses.length; i += batchSize) {
     const batch = responses.slice(i, i + batchSize);
-    const { error, data } = await supabaseAdmin.from('responses_v3').insert(batch).select('id');
+    const { error, data } = await supabaseAdmin.from('responses_v3').insert(batch).select('id, employee_id');
     if (error) {
+      console.error(`❌ Response insert batch ${Math.floor(i / batchSize) + 1} failed:`, error);
       errors.push(`Response insert batch ${Math.floor(i / batchSize) + 1} failed: ${error.message}`);
     } else {
       inserted += data?.length ?? batch.length;
+      console.log(`✅ Inserted batch ${Math.floor(i / batchSize) + 1}: ${data?.length || batch.length} responses`);
     }
   }
+  
+  console.log(`📊 Total responses inserted: ${inserted}`);
 
   const { count: verifiedResponses } = await supabaseAdmin
     .from('responses_v3')
