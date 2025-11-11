@@ -1,8 +1,9 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import ReactECharts from 'echarts-for-react';
 import { getScoreStatus, SCORE_COLORS, SCORE_THRESHOLDS } from './scoreTheme';
+import { Button } from '@/components/ui/button';
 
 type TeamData = {
   name: string;
@@ -17,6 +18,7 @@ type Props = {
 
 export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
   const [mounted, setMounted] = useState(false);
+  const [sortMode, setSortMode] = useState<'score' | 'name'>('score');
   useEffect(() => { setMounted(true); }, []);
 
   if (teams.length === 0) {
@@ -32,7 +34,16 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
     );
   }
 
-  const sortedTeams = [...teams].sort((a, b) => a.score - b.score);
+  const sortedTeams = useMemo(() => {
+    const copy = [...teams];
+    if (sortMode === 'score') {
+      copy.sort((a, b) => a.score - b.score);
+    } else {
+      copy.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return copy;
+  }, [teams, sortMode]);
+
   const colors = sortedTeams.map(t => getScoreStatus(t.score).color);
 
   // Find lowest and highest scoring teams for action text
@@ -86,6 +97,27 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
         lineStyle: { color: '#f3f4f6' }
       }
     },
+    dataZoom: sortedTeams.length > 10 ? [
+      {
+        type: 'inside',
+        xAxisIndex: 0,
+        startValue: 0,
+        endValue: 9,
+        minValueSpan: 10,
+        maxValueSpan: 10,
+      },
+      {
+        type: 'slider',
+        xAxisIndex: 0,
+        bottom: 20,
+        height: 14,
+        startValue: 0,
+        endValue: 9,
+        minValueSpan: 10,
+        maxValueSpan: 10,
+        handleSize: 12,
+      },
+    ] : undefined,
     series: [{
       type: 'bar',
       data: sortedTeams.map((t, i) => ({
@@ -115,7 +147,29 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Team Index Score</CardTitle>
+        <div className="flex items-center justify-between gap-3">
+          <CardTitle>Team Index Score</CardTitle>
+          <div className="inline-flex rounded-md border border-black/10">
+            <Button
+              type="button"
+              variant={sortMode === 'score' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setSortMode('score')}
+              className="rounded-none"
+            >
+              Sort by score
+            </Button>
+            <Button
+              type="button"
+              variant={sortMode === 'name' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setSortMode('name')}
+              className="rounded-none"
+            >
+              Sort by name
+            </Button>
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {mounted ? (
