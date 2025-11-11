@@ -14,11 +14,13 @@ import type { ExecutiveInsight } from '@/lib/executiveInsights';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   formatPercent,
   getScoreStatus,
   SCORE_COLORS,
 } from './scoreTheme';
+import { TeamsAttentionChart } from './TeamsAttentionChart';
 
 const QUESTION_META = [
   { key: 'sentiment', label: 'Q1', description: 'How are you feeling about work this week?' },
@@ -144,11 +146,25 @@ export default function ExecutiveOverviewOptionA({
   onDivisionClick,
 }: ExecutiveOverviewProps) {
   
+  const router = useRouter();
   const status = getScoreStatus(Math.round(overallScore));
   const trend = previousScore ? overallScore - previousScore : 0;
   const trendText = trend > 0 ? `+${trend.toFixed(1)}%` : `${trend.toFixed(1)}%`;
   
   const teamsNeedingAttention = teams.filter(t => t.wellbeing < 65).length;
+  
+  const handleTeamClick = (teamId: string, teamName: string) => {
+    router.push(`/dashboard/group-leader?team_id=${teamId}`);
+  };
+  
+  const handleInsightClick = (insight: ExecutiveInsight) => {
+    if (insight.relatedEntities && insight.relatedEntities.length > 0) {
+      const entity = insight.relatedEntities[0];
+      if (entity.type === 'team') {
+        router.push(`/dashboard/group-leader?team_id=${entity.id}`);
+      }
+    }
+  };
   
   return (
     <div className="space-y-6">
@@ -212,19 +228,27 @@ export default function ExecutiveOverviewOptionA({
               const colors = insight.type === 'positive' ? SCORE_COLORS.thriving :
                             insight.type === 'warning' ? SCORE_COLORS.alert :
                             SCORE_COLORS.watch;
+              const isClickable = insight.relatedEntities && insight.relatedEntities.length > 0;
               
               return (
                 <div 
                   key={idx}
-                  className="p-3 rounded-lg border-l-4"
+                  className={cn(
+                    "p-3 rounded-lg border-l-4",
+                    isClickable && "cursor-pointer hover:opacity-80 transition-opacity"
+                  )}
                   style={{ 
                     borderLeftColor: colors,
                     backgroundColor: `${colors}10`
                   }}
+                  onClick={() => isClickable && handleInsightClick(insight)}
                 >
                   <p className="text-xs text-gray-700">{insight.text}</p>
                   {insight.recommendation && (
                     <p className="text-xs text-gray-500 mt-1">{insight.recommendation}</p>
+                  )}
+                  {isClickable && (
+                    <p className="text-xs text-blue-600 mt-1 font-medium">→ Click to view details</p>
                   )}
                 </div>
               );
@@ -232,6 +256,12 @@ export default function ExecutiveOverviewOptionA({
           </CardContent>
         </Card>
       </div>
+
+      {/* Beacon Index - Teams Bar Chart */}
+      <TeamsAttentionChart 
+        teams={teams.map(t => ({ id: t.id, name: t.name, score: t.wellbeing }))}
+        onTeamClick={handleTeamClick}
+      />
 
       {/* Divisions Table */}
       <Card className="border-none shadow-md">

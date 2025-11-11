@@ -15,6 +15,7 @@ export type ExecutiveInsight = {
   icon: ReactNode;
   text: string;
   recommendation?: string;
+  relatedEntities?: Array<{ type: 'team' | 'division' | 'department'; id: string; name: string }>;
 };
 
 type HierarchyData = {
@@ -84,7 +85,12 @@ export function generateExecutiveInsights(trends: WellbeingRow[], hierarchyData?
           type: 'warning',
           icon: <AlertTriangle className="h-5 w-5" />,
           text: `${strugglingTeams.length} team(s) showing elevated psychosocial risk: ${teamNames}.`,
-          recommendation: 'Compare team structures, workload distribution, and management practices. What differs from higher-performing teams?'
+          recommendation: 'Compare team structures, workload distribution, and management practices. What differs from higher-performing teams?',
+          relatedEntities: strugglingTeams.map((t: any) => ({
+            type: 'team' as const,
+            id: t.id,
+            name: t.name
+          }))
         });
       }
     }
