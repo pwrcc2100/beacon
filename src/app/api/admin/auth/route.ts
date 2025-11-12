@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
     const { password } = await req.json();
     
     // Check against environment variable
-    const adminPassword = process.env.ADMIN_PASSWORD || 'beacon2025';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'Beacon2100!';
     
     if (password === adminPassword) {
       // Set secure cookie
