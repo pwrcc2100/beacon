@@ -1,9 +1,18 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
-import { Resend } from 'resend';
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+let resendClient: any = null;
 const notifyEmail = process.env.ADMIN_ONBOARDING_NOTIFY;
+
+async function getResendClient() {
+  if (!process.env.RESEND_API_KEY) return null;
+  if (resendClient) return resendClient;
+  const mod = await import('resend').catch(() => null);
+  if (!mod) return null;
+  const { Resend } = mod as typeof import('resend');
+  resendClient = new Resend(process.env.RESEND_API_KEY!);
+  return resendClient;
+}
 
 export async function POST(req: Request) {
   try {
@@ -28,6 +37,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Failed to save request.' }, { status: 500 });
     }
 
+    const resend = await getResendClient();
     if (resend && notifyEmail) {
       try {
         await resend.emails.send({
