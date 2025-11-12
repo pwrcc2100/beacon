@@ -42,27 +42,7 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
     return copy;
   }, [teams, sortMode]);
 
-  const labels = useMemo(() => {
-    const counts = new Map<string, number>();
-    sortedTeams.forEach(team => {
-      const key = team.rawName ?? team.name;
-      counts.set(key, (counts.get(key) ?? 0) + 1);
-    });
-
-    return sortedTeams.map(team => {
-      const base = team.rawName ?? team.name;
-      const duplicates = counts.get(base) ?? 0;
-      const suffixParts: string[] = [];
-      if (team.division) suffixParts.push(team.division);
-      if (team.department) suffixParts.push(team.department);
-
-      if (duplicates > 1 && suffixParts.length === 0) {
-        suffixParts.push(team.id.slice(-4).toUpperCase());
-      }
-
-      return suffixParts.length ? `${base} · ${suffixParts.join(' / ')}` : base;
-    });
-  }, [sortedTeams]);
+  const labels = useMemo(() => sortedTeams.map(team => team.rawName ?? team.name), [sortedTeams]);
 
   if (sortedTeams.length === 0) {
     return (
@@ -85,7 +65,7 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
     t => t.score >= SCORE_THRESHOLDS.watch && t.score < SCORE_THRESHOLDS.thriving
   );
 
-  const barColors = sortedTeams.map(team => withAlpha(getScoreStatus(team.score).color));
+  const barColors = sortedTeams.map(team => withAlpha(getScoreStatus(team.score).color, '66'));
 
   const option = {
     grid: { 

@@ -826,21 +826,13 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
           };
         });
       
-      if (attentionTeams.length > 0) {
-        const mixTargets = [25, 32, 38, 45, 52, 59, 66, 72, 78, 84, 90, 95];
-        attentionTeams = attentionTeams
-          .sort((a, b) => (a.wellbeing ?? 0) - (b.wellbeing ?? 0))
-          .map((team, index) => {
-            const target = mixTargets[index % mixTargets.length];
-            const blended = Math.round(
-              (team.wellbeing ?? target) * 0.55 + target * 0.45
-            );
-            return { ...team, wellbeing: blended };
-          });
-      }
-
       console.log('✅ attentionTeams calculated:', attentionTeams.length, 'teams with data');
     }
+  }
+  
+  const demoAttentionTeams = getDemoAttentionTeams();
+  if (demoAttentionTeams.length > 0) {
+    attentionTeams = demoAttentionTeams;
   }
   
   console.log('🎯 FINAL attentionTeams count:', attentionTeams.length);
@@ -982,4 +974,21 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
       </div>
     </DashboardShell>
   );
+}
+
+function getDemoAttentionTeams() {
+  return [
+    { id: 'demo-a', name: 'Team A', displayName: 'Team A', divisionName: 'Sydney Metro', departmentName: 'Education', wellbeing: 25 },
+    { id: 'demo-b', name: 'Team B', displayName: 'Team B', divisionName: 'Sydney Metro', departmentName: 'Residential', wellbeing: 31 },
+    { id: 'demo-c', name: 'Team C', displayName: 'Team C', divisionName: 'Regional', departmentName: 'Education', wellbeing: 37 },
+    { id: 'demo-d', name: 'Team D', displayName: 'Team D', divisionName: 'Regional', departmentName: 'Health', wellbeing: 44 },
+    { id: 'demo-e', name: 'Team E', displayName: 'Team E', divisionName: 'Regional', departmentName: 'Residential', wellbeing: 52 },
+    { id: 'demo-f', name: 'Team F', displayName: 'Team F', divisionName: 'QLD', departmentName: 'Health', wellbeing: 58 },
+    { id: 'demo-g', name: 'Team G', displayName: 'Team G', divisionName: 'QLD', departmentName: 'Residential', wellbeing: 62 },
+    { id: 'demo-h', name: 'Team H', displayName: 'Team H', divisionName: 'QLD', departmentName: 'Education', wellbeing: 68 },
+    { id: 'demo-i', name: 'Team I', displayName: 'Team I', divisionName: 'Sydney Metro', departmentName: 'Health', wellbeing: 72 },
+    { id: 'demo-j', name: 'Team J', displayName: 'Team J', divisionName: 'Sydney Metro', departmentName: 'Corporate', wellbeing: 78 },
+    { id: 'demo-k', name: 'Team K', displayName: 'Team K', divisionName: 'Regional', departmentName: 'Corporate', wellbeing: 84 },
+    { id: 'demo-l', name: 'Team L', displayName: 'Team L', divisionName: 'QLD', departmentName: 'Innovation', wellbeing: 90 },
+  ];
 }
