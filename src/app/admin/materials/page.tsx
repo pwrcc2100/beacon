@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import { MaterialIcon } from '@/components/ui/MaterialIcon';
 
 export default async function AdminMaterialsPage() {
@@ -72,13 +73,20 @@ export default async function AdminMaterialsPage() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <a 
+              <Link
                 href="/"
                 className="px-4 py-2 rounded-lg text-white hover:bg-white/10 transition-all flex items-center gap-2"
               >
                 <MaterialIcon icon="home" style={{ fontSize: '20px' }} />
                 Home
-              </a>
+              </Link>
+              <Link
+                href="/admin/onboarding"
+                className="px-4 py-2 rounded-lg text-white hover:bg-white/10 transition-all flex items-center gap-2"
+              >
+                <MaterialIcon icon="assignment" style={{ fontSize: '20px' }} />
+                Onboarding
+              </Link>
               <form action="/api/admin/logout" method="post">
                 <button 
                   type="submit"

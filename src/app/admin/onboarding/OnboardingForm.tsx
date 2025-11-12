@@ -433,6 +433,11 @@ export function OnboardingForm() {
             <MaterialIcon icon="gavel" style={{ fontSize: '22px', color: '#2B4162' }} />
             <h3 className="text-lg font-semibold text-[var(--text-primary)]">Compliance & additional notes</h3>
           </div>
+          <div className="rounded-lg border border-[#64afac] bg-[#E6F4EA] px-4 py-3 text-xs text-[#1A936F]">
+            Beacon’s managed infrastructure, data segregation and access controls align with ISO 27001 expectations.
+            Capturing the details below allows us to extend those controls to any bespoke integrations or data flows for
+            this client.
+          </div>
           <textarea
             name="complianceNotes"
             rows={3}
