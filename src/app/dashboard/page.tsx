@@ -971,6 +971,44 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
             attentionLabel="Which Teams Need Attention"
           />
         )}
+
+        <section className="bg-white rounded-2xl border border-[#e2e8f0] shadow-sm p-6 space-y-4">
+          <div>
+            <h2 className="text-xl font-semibold text-[var(--text-primary)]">New Client Onboarding Checklist</h2>
+            <p className="text-sm text-[var(--text-muted)]">
+              Use this intake workflow with prospective clients to capture every configuration detail before go-live. It
+              mirrors the admin onboarding form so you can demo the process directly from this dashboard.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4 text-sm text-[var(--text-primary)]">
+            <ul className="space-y-2 list-disc list-inside">
+              <li>Company &amp; primary contact information</li>
+              <li>Integrations/API credentials (HRIS, identity, payroll)</li>
+              <li>Hierarchy upload (divisions → departments → teams → employees)</li>
+              <li>Branding assets, colours, and logo placements</li>
+              <li>Dashboard modules &amp; customised survey questions</li>
+            </ul>
+            <ul className="space-y-2 list-disc list-inside">
+              <li>Survey cadence, reminder schedule, and reporting recipients</li>
+              <li>High-risk support workflow approvals</li>
+              <li>Compliance notes &amp; data-retention expectations</li>
+              <li>ISO 27001 alignment confidence: Beacon’s controls map to Annex A; we extend them to bespoke integrations using the form below.</li>
+              <li>Optional attachments for brand kits or legacy survey mappings</li>
+            </ul>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Button asChild>
+              <a href="/admin/onboarding" target="_blank" rel="noopener noreferrer">
+                Open onboarding intake form
+              </a>
+            </Button>
+            <Button asChild variant="outline">
+              <a href="/templates/hierarchy-template.csv" download>
+                Download hierarchy template
+              </a>
+            </Button>
+          </div>
+        </section>
       </div>
     </DashboardShell>
   );
