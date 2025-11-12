@@ -2,6 +2,18 @@
 
 import { SCORE_COLORS, getScoreStatus, scoreToPercent } from './scoreTheme';
 
+function hexToRgba(hex: string, alpha = 0.65) {
+  if (!hex || !hex.startsWith('#') || (hex.length !== 7 && hex.length !== 9)) {
+    return hex;
+  }
+  const value = hex.length === 9 ? hex.slice(1, 7) : hex.slice(1);
+  const bigint = parseInt(value, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 const QUESTION_COPY = [
   { key: 'sentiment', label: 'Q1', description: 'How are you feeling about work this week?' },
   { key: 'clarity', label: 'Q2', description: 'How clear are you about your priorities?' },
@@ -104,7 +116,11 @@ export function GroupLeaderCard({ teamName, wellbeingPercent, questionScores, hi
                 <div className="h-2 rounded-full bg-[#E2E8F0] overflow-hidden">
                   <div
                     className="h-full rounded-full"
-                    style={{ width: `${percent}%`, backgroundColor: status.color, transition: 'width 0.3s ease' }}
+                    style={{
+                      width: `${percent}%`,
+                      backgroundColor: hexToRgba(status.color ?? SCORE_COLORS.neutral, 0.75),
+                      transition: 'width 0.3s ease',
+                    }}
                   />
                 </div>
               </div>
