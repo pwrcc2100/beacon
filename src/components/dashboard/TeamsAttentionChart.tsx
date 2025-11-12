@@ -5,6 +5,14 @@ import ReactECharts from 'echarts-for-react';
 import { getScoreStatus, SCORE_COLORS, SCORE_THRESHOLDS } from './scoreTheme';
 import { Button } from '@/components/ui/button';
 
+function withAlpha(hex: string, alpha = 'D6') {
+  if (!hex || !hex.startsWith('#') || (hex.length !== 7 && hex.length !== 9)) {
+    return hex;
+  }
+  if (hex.length === 9) return hex;
+  return `${hex}${alpha}`;
+}
+
 type TeamData = {
   name: string; // display label
   score: number;
@@ -69,8 +77,6 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
     );
   }
 
-  const colors = sortedTeams.map(t => getScoreStatus(t.score).color);
-
   // Find lowest and highest scoring teams for action text
   const lowestTeam = sortedTeams[0];
   const highestTeam = sortedTeams[sortedTeams.length - 1];
@@ -78,6 +84,8 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
   const watchTeams = sortedTeams.filter(
     t => t.score >= SCORE_THRESHOLDS.watch && t.score < SCORE_THRESHOLDS.thriving
   );
+
+  const barColors = sortedTeams.map(team => withAlpha(getScoreStatus(team.score).color));
 
   const option = {
     grid: { 
@@ -148,7 +156,7 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
       type: 'bar',
       data: sortedTeams.map((t, i) => ({
         value: t.score,
-        itemStyle: { color: colors[i] }
+        itemStyle: { color: barColors[i] }
       })),
       barWidth: '60%',
       label: {

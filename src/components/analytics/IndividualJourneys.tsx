@@ -103,7 +103,7 @@ export function IndividualJourneys({ data }: Props) {
       splitArea: {
         show: true,
         areaStyle: {
-          color: ['rgba(234, 153, 153, 0.05)', 'transparent', 'transparent', 'rgba(100, 175, 172, 0.05)']
+          color: ['rgba(234, 153, 153, 0.12)', 'transparent', 'transparent', 'rgba(100, 175, 172, 0.12)']
         }
       }
     },

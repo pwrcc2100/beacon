@@ -58,6 +58,7 @@ function Sparkline({ points, color }: { points: number[]; color: string }) {
 
 export function GroupLeaderCard({ teamName, wellbeingPercent, questionScores, historicalPoints, insight }: GroupLeaderCardProps) {
   const wellbeingStatus = getScoreStatus(wellbeingPercent ?? 0);
+  const wellbeingLabel = wellbeingPercent !== undefined ? `${Math.round(wellbeingPercent)}%` : '—';
 
   return (
     <div className="flex flex-col gap-6 rounded-[28px] border border-[#E2E8F0] bg-white p-6 shadow-sm">
@@ -66,15 +67,15 @@ export function GroupLeaderCard({ teamName, wellbeingPercent, questionScores, hi
           <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] font-semibold">Team</div>
           <div className="text-xl font-semibold text-[var(--text-primary)]">{teamName}</div>
         </div>
-        <div className="flex flex-col items-end gap-2">
+        <div className="relative h-12 w-12">
           <span
-            className="h-10 w-10 rounded-full border border-black/10 shadow-sm"
+            className="absolute inset-0 rounded-full border border-black/10 shadow-sm"
             style={{ backgroundColor: wellbeingStatus.color ?? SCORE_COLORS.neutral }}
             aria-label={`${teamName} wellbeing status`}
           />
-          {wellbeingPercent !== undefined && (
-            <span className="text-xs font-semibold text-[var(--text-muted)]">{Math.round(wellbeingPercent)}%</span>
-          )}
+          <span className="absolute inset-0 flex items-center justify-center text-[0.75rem] font-semibold text-white">
+            {wellbeingLabel}
+          </span>
         </div>
       </div>
 

@@ -38,7 +38,7 @@ export function TrendCard({ heading, description, data, color }:{ heading:string
       smooth: true,
       lineStyle: { color, width: 2 },
       itemStyle: { color },
-      areaStyle: { color, opacity: 0.1 }
+      areaStyle: { color, opacity: 0.18 }
     }],
     tooltip: {
       trigger: 'axis',
