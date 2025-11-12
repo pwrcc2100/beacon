@@ -1,0 +1,6 @@
+division,department,team,employee_external_id,first_name,last_name,email
+Sydney Metro,Education,Team A,SM-EDU-A-001,Alex,Nguyen,alex.nguyen@example.com
+Sydney Metro,Education,Team A,SM-EDU-A-002,Casey,Tran,casey.tran@example.com
+Sydney Metro,Residential,Team B,SM-RES-B-001,Jordan,Smith,jordan.smith@example.com
+Regional,Health,Team C,REG-HLT-C-001,Riley,Patel,riley.patel@example.com
+QLD,Residential,Team E,QLD-RES-E-001,Sam,Taylor,sam.taylor@example.com
