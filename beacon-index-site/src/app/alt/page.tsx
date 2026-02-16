@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 
-export default function Home() {
+export default function AltPage() {
   return (
     <main className="flex flex-col items-center text-gray-800">
       {/* Hero Section */}
