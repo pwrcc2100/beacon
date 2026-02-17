@@ -253,7 +253,7 @@ export default function Home() {
 
         .section-soft {
           padding: 80px 0;
-          background: linear-gradient(to bottom, #f6f9f9, #ffffff);
+          background: #f4f7f6;
         }
 
         .two-column {
@@ -294,10 +294,10 @@ export default function Home() {
 
         .demo-card {
           background: #ffffff;
-          border: 1px solid #d7e3e3;
-          padding: 40px 32px;
-          border-radius: 16px;
-          box-shadow: 0 12px 32px rgba(0, 40, 40, 0.08);
+          padding: 32px;
+          border-radius: 14px;
+          box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+          border-top: 4px solid #2f7f7b;
           text-align: center;
           min-width: 320px;
         }
@@ -318,15 +318,19 @@ export default function Home() {
 
         .demo-badge {
           display: inline-block;
-          font-size: 11px;
-          letter-spacing: 1.2px;
+          font-size: 12px;
+          letter-spacing: 1px;
           text-transform: uppercase;
-          background: rgba(42, 140, 138, 0.10);
-          color: #0f5f5f;
-          padding: 8px 14px;
-          border-radius: 24px;
-          font-weight: 700;
-          border: 1px solid rgba(42, 140, 138, 0.20);
+          color: #2f7f7b;
+          margin-bottom: 12px;
+        }
+
+        .demo-card .signal-line {
+          height: 3px;
+          width: 60px;
+          background: linear-gradient(90deg, #2f7f7b, #6db4b0);
+          margin: 16px auto 0;
+          border-radius: 2px;
         }
 
         @media (prefers-reduced-motion: reduce){
