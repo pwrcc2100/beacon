@@ -19,250 +19,136 @@ export default function Home() {
         }
 
         .section {
-          padding: 80px 24px;
+          padding: 100px 24px;
         }
 
         .container {
-          max-width: 1100px;
+          max-width: 1180px;
           margin: 0 auto;
         }
 
-        .beacon-hero{
-          position: relative;
-          overflow: hidden;
-          background: linear-gradient(180deg, var(--paper-tint) 0%, var(--paper) 55%);
-          border: 1px solid var(--line);
-          border-radius: calc(var(--radius) + 6px);
-          box-shadow: var(--shadow);
-          max-width: 1200px;
-          margin: 40px auto;
+        .section-alt {
+          background: #f6f9f8;
         }
 
-        .beacon-hero__inner{
+        .hero {
+          padding-top: 140px;
+          padding-bottom: 120px;
+        }
+
+        .hero-inner {
           display: grid;
           grid-template-columns: 1.2fr 0.8fr;
-          gap: 28px;
-          padding: clamp(28px, 4vw, 56px);
+          gap: 60px;
           align-items: center;
         }
 
         @media (max-width: 900px){
-          .beacon-hero__inner{
+          .hero-inner {
             grid-template-columns: 1fr;
+            gap: 40px;
           }
-          .beacon-hero__visual{
+          .hero-right {
             order: -1;
           }
         }
 
-        .beacon-hero::before{
-          content:"";
-          position:absolute;
-          inset:-120px -120px auto auto;
-          width: 560px;
-          height: 560px;
-          background: radial-gradient(circle at 40% 40%, var(--teal-glow) 0%, rgba(42,140,138,0.08) 35%, rgba(255,255,255,0) 70%);
-          filter: blur(2px);
-          pointer-events:none;
+        .hero-tag {
+          display: inline-block;
+          font-size: 13px;
+          color: #5b6670;
+          margin-bottom: 20px;
+          font-weight: 500;
         }
 
-        .beacon-hero::after{
-          content:"";
-          position:absolute;
-          right: 18px;
-          bottom: 14px;
-          width: 180px;
-          height: 180px;
-          background-image: url("/assets/Beaconlogo.png");
-          background-repeat: no-repeat;
-          background-size: contain;
-          background-position: bottom right;
-          opacity: 0.06;
-          filter: grayscale(100%) contrast(90%);
-          pointer-events:none;
+        .hero-left h1 {
+          font-size: 44px;
+          line-height: 1.2;
+          margin-bottom: 24px;
+          font-family: Georgia, "Times New Roman", serif;
+          color: #0B1B2B;
         }
 
-        .beacon-hero h1{
-          margin: 0 0 12px 0;
-          color: var(--ink);
-          letter-spacing: -0.02em;
-          line-height: 1.02;
-          font-size: clamp(34px, 4vw, 56px);
+        .hero-subtext {
+          font-size: 18px;
+          color: #5b6670;
+          max-width: 600px;
+          line-height: 1.6;
+          margin-bottom: 32px;
+        }
+
+        .hero-buttons {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary {
+          padding: 12px 24px;
+          border-radius: 8px;
+          text-decoration: none;
+          font-size: 15px;
+          font-weight: 600;
+          transition: all 0.2s;
+        }
+
+        .btn-primary {
+          background: #2f7f7b;
+          color: #ffffff;
+          border: 1px solid #2f7f7b;
+        }
+
+        .btn-primary:hover {
+          background: #276b68;
+        }
+
+        .btn-secondary {
+          background: transparent;
+          color: #2f7f7b;
+          border: 1px solid #d7e0e8;
+        }
+
+        .btn-secondary:hover {
+          border-color: #2f7f7b;
+          background: rgba(47, 127, 123, 0.05);
+        }
+
+        .score-card {
+          background: #ffffff;
+          border: 1px solid #e0e5e8;
+          border-top: 4px solid #2f7f7b;
+          border-radius: 12px;
+          padding: 32px;
+          text-align: center;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .score-label {
+          font-size: 11px;
+          letter-spacing: 1.2px;
+          text-transform: uppercase;
+          color: #5b6670;
+          margin-bottom: 16px;
+          font-weight: 700;
+        }
+
+        .score-number {
+          font-size: 72px;
+          font-weight: 700;
+          color: #0B1B2B;
+          line-height: 1;
+          margin-bottom: 16px;
           font-family: Georgia, "Times New Roman", serif;
         }
 
-        .beacon-hero p{
-          margin: 0 0 18px 0;
-          color: rgba(11, 18, 32, 0.78);
-          font-size: 18px;
-          line-height: 1.55;
-          max-width: 60ch;
-        }
-
-        .beacon-hero__kicker{
-          display: inline-flex;
-          align-items:center;
-          gap: 10px;
-          padding: 8px 12px;
-          border-radius: 999px;
-          border: 1px solid rgba(42,140,138,0.24);
-          background: rgba(42,140,138,0.08);
-          color: rgba(11, 18, 32, 0.80);
-          font-size: 13px;
-          font-weight: 600;
-          letter-spacing: 0.02em;
-          margin-bottom: 14px;
-        }
-
-        .beacon-dot{
-          width: 10px;
-          height: 10px;
-          border-radius: 999px;
-          background: var(--muted-teal);
-          box-shadow: 0 0 0 6px rgba(42,140,138,0.14);
-        }
-
-        .signal-line{
-          position: relative;
-          height: 2px;
-          width: min(520px, 92%);
-          background: linear-gradient(90deg, rgba(14,27,46,0.16), rgba(42,140,138,0.55), rgba(14,27,46,0.16));
-          border-radius: 999px;
-          margin: 10px 0 18px 0;
-          overflow: hidden;
-        }
-
-        .signal-line::after{
-          content:"";
-          position:absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          left: -18%;
-          width: 18%;
-          height: 8px;
-          background: radial-gradient(circle, rgba(42,140,138,0.65) 0%, rgba(42,140,138,0.10) 55%, rgba(42,140,138,0) 70%);
-          filter: blur(0.2px);
-          animation: signal-sweep 3.2s ease-in-out infinite;
-          opacity: 0.9;
-        }
-
-        @keyframes signal-sweep{
-          0%   { left: -20%; opacity: 0.0; }
-          10%  { opacity: 0.9; }
-          55%  { opacity: 0.9; }
-          100% { left: 110%; opacity: 0.0; }
-        }
-
-        .beacon-actions{
-          display:flex;
-          gap: 12px;
-          flex-wrap: wrap;
-          margin-top: 8px;
-        }
-
-        .btn{
-          appearance:none;
-          border: 1px solid rgba(14,27,46,0.18);
-          background: var(--paper);
-          color: var(--ink);
-          padding: 10px 14px;
-          border-radius: 12px;
-          font-weight: 700;
+        .score-meta {
           font-size: 14px;
-          cursor:pointer;
-          text-decoration:none;
-          display:inline-flex;
-          align-items:center;
-          gap: 10px;
-        }
-
-        .btn--primary{
-          background: rgba(42,140,138,0.12);
-          border-color: rgba(42,140,138,0.30);
-        }
-
-        .btn:hover{
-          transform: translateY(-1px);
-          box-shadow: 0 10px 20px rgba(11,18,32,0.08);
-        }
-
-        .beacon-hero__visual{
-          display:flex;
-          justify-content: flex-end;
-        }
-
-        .scorecard{
-          width: min(360px, 100%);
-          background: linear-gradient(180deg, #FFFFFF 0%, #FBFEFE 100%);
-          border: 1px solid rgba(14,27,46,0.14);
-          border-radius: 20px;
-          box-shadow: 0 14px 34px rgba(11,18,32,0.10);
-          padding: 18px;
-          position: relative;
-        }
-
-        .scorecard__title{
-          font-size: 12px;
-          letter-spacing: 0.12em;
-          font-weight: 800;
-          color: rgba(11,18,32,0.58);
-          text-transform: uppercase;
-          margin: 2px 0 14px 0;
-        }
-
-        .scorecard__value{
-          font-size: 86px;
-          line-height: 0.92;
-          font-weight: 900;
-          letter-spacing: -0.03em;
-          color: var(--navy);
-          margin: 0 0 8px 0;
-        }
-
-        .scorecard__rule{
-          height: 3px;
-          width: 64px;
-          background: var(--muted-teal);
-          border-radius: 999px;
-          margin: 8px 0 14px 2px;
-          opacity: 0.85;
-        }
-
-        .scorecard__meta{
-          display:grid;
-          gap: 8px;
-          font-size: 16px;
-          color: rgba(11,18,32,0.72);
-        }
-
-        .scorecard__meta b{
-          color: rgba(11,18,32,0.90);
-        }
-
-        .trend{
-          display:inline-flex;
-          align-items:center;
-          gap: 8px;
-          font-weight: 800;
-          color: var(--navy);
-        }
-
-        .trend__arrow{
-          width: 10px; height: 10px;
-          border-right: 3px solid var(--muted-teal);
-          border-top: 3px solid var(--muted-teal);
-          transform: rotate(-45deg);
-          margin-top: 2px;
+          color: #5b6670;
+          line-height: 1.8;
         }
 
         @media (prefers-reduced-motion: reduce){
-          .signal-line::after{ animation: none; }
-          .btn:hover{ transform: none; }
-        }
-
-        .section-soft {
-          padding: 80px 0;
-          background: #f4f7f6;
+          .btn-primary:hover, .btn-secondary:hover { transform: none; }
         }
 
         .two-column {
@@ -350,38 +236,37 @@ export default function Home() {
       <div style={{ fontFamily: 'ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif', lineHeight: 1.6, color: '#2E4057', background: '#ffffff' }}>
         
         {/* HERO */}
-        <section className="beacon-hero" aria-label="Beacon Index hero">
-          <div className="beacon-hero__inner">
-            <div className="beacon-hero__copy">
-              <div className="beacon-hero__kicker">
-                <span className="beacon-dot" aria-hidden="true"></span>
-                Serious governance instrument • early strain detection
+        <section className="section hero">
+          <div className="container hero-inner">
+            <div className="hero-left">
+              <div className="hero-tag">
+                Serious governance instrument · Early strain detection
               </div>
 
-              <h1>Psychosocial risk is a governance responsibility — not a sentiment metric.</h1>
+              <h1>
+                Psychosocial risk is a governance responsibility — not a sentiment metric.
+              </h1>
 
-              <div className="signal-line" aria-hidden="true"></div>
-
-              <p>
-                Beacon Index makes psychosocial risk visible at system level, with calibrated domains,
-                defensible thresholds, and trend oversight designed for WHS governance.
+              <p className="hero-subtext">
+                Beacon Index makes psychosocial risk visible at system level, 
+                with calibrated domains, defensible thresholds, and trend oversight 
+                designed for WHS governance.
               </p>
 
-              <div className="beacon-actions">
-                <a className="btn btn--primary" href="#methodology">Methodology</a>
-                <a className="btn" href="#governance">Governance calibration</a>
-                <a className="btn" href="#pilot">Pilot overview</a>
+              <div className="hero-buttons">
+                <a href="#methodology" className="btn-primary">Methodology</a>
+                <a href="#governance" className="btn-secondary">Governance calibration</a>
+                <a href="#pilot" className="btn-secondary">Pilot overview</a>
               </div>
             </div>
 
-            <div className="beacon-hero__visual">
-              <div className="scorecard" role="img" aria-label="Beacon Index scorecard example">
-                <div className="scorecard__title">Beacon Index Score</div>
-                <div className="scorecard__value">74</div>
-                <div className="scorecard__rule"></div>
-                <div className="scorecard__meta">
-                  <div><b>Status:</b> Within risk tolerance</div>
-                  <div><b>Trend:</b> <span className="trend"><span className="trend__arrow" aria-hidden="true"></span>1.2%</span></div>
+            <div className="hero-right">
+              <div className="score-card">
+                <div className="score-label">BEACON INDEX SCORE</div>
+                <div className="score-number">74</div>
+                <div className="score-meta">
+                  Status: Within risk tolerance<br />
+                  Trend: ↑ 1.2%
                 </div>
               </div>
             </div>
@@ -407,7 +292,7 @@ export default function Home() {
         </section>
 
         {/* EXECUTIVE EXPERIENCE */}
-        <section className="section-soft">
+        <section className="section section-alt">
           <div className="container two-column">
             <div>
               <h2>See It in 60 Seconds</h2>
