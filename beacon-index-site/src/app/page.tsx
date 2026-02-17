@@ -250,6 +250,87 @@ export default function Home() {
           .signal-line::after{ animation: none; }
           .btn:hover{ transform: none; }
         }
+
+        .exec-demo {
+          padding: 80px 0;
+          background: linear-gradient(to bottom, #f6f9f9, #ffffff);
+        }
+
+        .exec-demo-inner {
+          display: flex;
+          gap: 60px;
+          align-items: center;
+          justify-content: space-between;
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 0 24px;
+        }
+
+        @media (max-width: 900px){
+          .exec-demo-inner {
+            flex-direction: column;
+            gap: 40px;
+          }
+        }
+
+        .exec-demo-text h2 {
+          font-size: 28px;
+          margin-bottom: 20px;
+          font-family: Georgia, "Times New Roman", serif;
+          color: #0B1B2B;
+        }
+
+        .exec-demo-text p {
+          margin-bottom: 16px;
+          color: #2f3a3a;
+          line-height: 1.6;
+        }
+
+        .exec-demo-text .subtle {
+          color: #5a6b6b;
+          font-size: 15px;
+        }
+
+        .signal-card {
+          background: #ffffff;
+          border: 1px solid #d7e3e3;
+          padding: 30px;
+          border-radius: 12px;
+          box-shadow: 0 10px 30px rgba(0, 40, 40, 0.06);
+          text-align: center;
+          min-width: 280px;
+        }
+
+        .badge {
+          display: inline-block;
+          font-size: 12px;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          background: rgba(0, 128, 128, 0.08);
+          color: #0f5f5f;
+          padding: 6px 10px;
+          border-radius: 20px;
+          margin-bottom: 12px;
+        }
+
+        .pulse-line {
+          height: 3px;
+          width: 80px;
+          margin: 20px auto 0;
+          background: linear-gradient(90deg, #1e7a7a, #3ca6a6);
+          border-radius: 2px;
+          animation: pulse 2.5s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+          0% { opacity: 0.4; transform: scaleX(0.9); }
+          50% { opacity: 1; transform: scaleX(1.1); }
+          100% { opacity: 0.4; transform: scaleX(0.9); }
+        }
+
+        @media (prefers-reduced-motion: reduce){
+          .pulse-line { animation: none; }
+        }
       `}} />
       
       <div style={{ fontFamily: 'ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif', lineHeight: 1.6, color: '#2E4057', background: '#ffffff' }}>
@@ -308,6 +389,35 @@ export default function Home() {
             <p style={{ marginBottom: '16px', fontSize: '17px' }}>
               Beacon Index provides structured, continuous visibility suitable for governance reporting — closing the gap between obligation and operational reality.
             </p>
+          </div>
+        </section>
+
+        {/* EXECUTIVE EXPERIENCE */}
+        <section className="exec-demo">
+          <div className="exec-demo-inner">
+            <div className="exec-demo-text">
+              <h2>Executive Experience</h2>
+              <p>
+                Beacon Index is intentionally simple at the point of interaction — 
+                five calibrated questions, mobile-first, typically completed in under 60 seconds.
+              </p>
+              <p>
+                In executive briefings, leaders often scan a QR code, complete the questions live,
+                and immediately view how the composite score appears within the governance dashboard.
+              </p>
+              <p className="subtle">
+                The simplicity of the experience contrasts with the depth of modelling behind the index —
+                trend stability logic, weighted domain scoring, and escalation triggers are applied automatically.
+              </p>
+            </div>
+
+            <div className="exec-demo-visual">
+              <div className="signal-card">
+                <span className="badge">Live Demonstration</span>
+                <p>Scan → Respond → View dashboard output</p>
+                <div className="pulse-line"></div>
+              </div>
+            </div>
           </div>
         </section>
 
