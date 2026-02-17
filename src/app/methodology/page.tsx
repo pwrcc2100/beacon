@@ -63,38 +63,41 @@ export default function MethodologyPage() {
                 </thead>
                 <tbody className="text-sm">
                   <tr className="border-b border-slate-200 hover:bg-slate-50">
-                    <td className="py-3 px-3 font-medium">Sentiment (Overall)</td>
+                    <td className="py-3 px-3 font-medium">Experience (Overall Sentiment)</td>
                     <td className="py-3 px-3 font-semibold text-slate-800">25%</td>
                     <td className="py-3 px-3">Most sensitive to weekly changes; earliest risk signal. Example indicator: “How are you feeling about work this week?”</td>
                   </tr>
                   <tr className="border-b border-slate-200 hover:bg-slate-50">
                     <td className="py-3 px-3 font-medium">Workload & Resourcing</td>
                     <td className="py-3 px-3 font-semibold text-slate-800">25%</td>
-                    <td className="py-3 px-3">Directly correlates with fatigue, stress, and claims. Example indicator: “My workload is reasonable for the time available.”</td>
+                    <td className="py-3 px-3">Directly correlates with fatigue, stress, and claims. Example indicator: “How manageable is your current workload?”</td>
                   </tr>
                   <tr className="border-b border-slate-200 hover:bg-slate-50">
                     <td className="py-3 px-3 font-medium">Psychological Safety</td>
                     <td className="py-3 px-3 font-semibold text-slate-800">20%</td>
-                    <td className="py-3 px-3">Central cultural driver; less volatile but crucial. Example indicator: “I feel safe to speak up if something isn’t right.”</td>
+                    <td className="py-3 px-3">Central cultural driver; less volatile but crucial. Example indicator: “How comfortable do you feel raising concerns when something isn’t right?”</td>
                   </tr>
                   <tr className="border-b border-slate-200 hover:bg-slate-50">
                     <td className="py-3 px-3 font-medium">Leadership & Support</td>
                     <td className="py-3 px-3 font-semibold text-slate-800">20%</td>
-                    <td className="py-3 px-3">Moderately responsive and affects all other domains. Example indicator: “My leader supports me when challenges arise.”</td>
+                    <td className="py-3 px-3">Leader support buffers stress, improves wellbeing and drives safety participation. Poor support amplifies other risk factors (Gilbreath &amp; Benson, 2004; ISO 45003).</td>
                   </tr>
                   <tr className="hover:bg-slate-50">
                     <td className="py-3 px-3 font-medium">Clarity & Direction</td>
                     <td className="py-3 px-3 font-semibold text-slate-800">10%</td>
-                    <td className="py-3 px-3">Important baseline, but stable week-to-week; ideal as contextual factor. Example indicator: “I understand what’s expected of me.”</td>
+                    <td className="py-3 px-3">Important baseline, but stable week-to-week; ideal as contextual factor. Example indicator: “How clear are you on your priorities and what’s expected of you?”</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <p className="text-sm text-slate-600 mt-4">
-              Beacon’s weighting model prioritises domains that change quickly and signal emerging risk. Sentiment and Workload are the most dynamic predictors of psychosocial strain, while Clarity serves as a structural anchor that changes more slowly. This ensures the Beacon Index remains both sensitive and stable.
+              Beacon’s weighting model prioritises domains that change quickly and signal emerging risk. Experience and Workload are the most dynamic predictors of psychosocial strain, while Clarity serves as a structural anchor that changes more slowly. This ensures the Beacon Index remains both sensitive and stable.
             </p>
             <p className="text-sm text-slate-600 mt-3">
               These weightings apply to the live Beacon Index calculation used in dashboards and analytics.
+            </p>
+            <p className="text-sm text-slate-700 mt-3">
+              These five questions meet all Beacon’s functional, regulatory, and UX criteria while providing the strongest early-warning signal and the cleanest path to meaningful intervention.
             </p>
           </CardContent>
         </Card>
@@ -113,10 +116,10 @@ export default function MethodologyPage() {
             <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 space-y-3">
               <div className="font-semibold text-slate-900">Beacon Index Formula</div>
               <div className="font-mono text-base bg-white p-4 rounded border border-slate-300 text-center">
-                Beacon Index (%) = (0.25S + 0.25W + 0.20P + 0.20L + 0.10C)
+                Beacon Index (%) = (0.25E + 0.25W + 0.20P + 0.20L + 0.10C)
               </div>
               <div className="text-xs text-slate-600">
-                where S = Sentiment, W = Workload, P = Psychological Safety, L = Leadership & Support, C = Clarity & Direction
+                where E = Experience (overall sentiment), W = Workload, P = Psychological Safety, L = Leadership & Support, C = Clarity & Direction
               </div>
               <div className="text-xs text-slate-600">
                 Weights are based on observed volatility and predictive correlation with psychosocial risk indicators (v1.1 operational model).
@@ -141,20 +144,27 @@ export default function MethodologyPage() {
                 </thead>
                 <tbody className="text-sm">
                   <tr className="border-b border-slate-200 bg-green-50">
-                    <td className="py-3 px-3 font-bold text-green-800">≥ 80%</td>
-                    <td className="py-3 px-3">Strong psychosocial safety climate.</td>
+                    <td className="py-3 px-3 font-bold text-green-800">≥ 80</td>
+                    <td className="py-3 px-3">Low psychosocial risk</td>
+                  </tr>
+                  <tr className="border-b border-slate-200 bg-blue-50">
+                    <td className="py-3 px-3 font-bold text-blue-800">70–79</td>
+                    <td className="py-3 px-3">Within tolerance</td>
                   </tr>
                   <tr className="border-b border-slate-200 bg-yellow-50">
-                    <td className="py-3 px-3 font-bold text-yellow-800">65 – 79%</td>
-                    <td className="py-3 px-3">Generally positive — monitor for emerging risks.</td>
+                    <td className="py-3 px-3 font-bold text-yellow-800">60–69</td>
+                    <td className="py-3 px-3">Emerging risk</td>
                   </tr>
                   <tr className="bg-red-50">
-                    <td className="py-3 px-3 font-bold text-red-800">&lt; 65%</td>
-                    <td className="py-3 px-3">Elevated psychosocial risk — review workload, leadership, or system design.</td>
+                    <td className="py-3 px-3 font-bold text-red-800">&lt;60</td>
+                    <td className="py-3 px-3">Elevated risk</td>
                   </tr>
                 </tbody>
               </table>
             </div>
+            <p className="text-sm text-slate-700 mt-4">
+              Risk bands are calibrated using weighted composite domain modelling and stability analysis across reporting cycles. Organisations may adjust tolerance bands in line with risk appetite and operating context.
+            </p>
           </CardContent>
         </Card>
 
