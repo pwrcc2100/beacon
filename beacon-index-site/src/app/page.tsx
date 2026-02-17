@@ -119,6 +119,33 @@ export default function Home() {
           </div>
         </section>
 
+        {/* OPERATIONAL DESIGN */}
+        <section style={{ backgroundColor: '#F3F7FB', padding: '70px 20px' }}>
+          <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+            <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '28px', fontWeight: 600, color: '#0B1B2B', marginBottom: '20px', lineHeight: 1.2 }}>
+              Operational Design
+            </h2>
+            <p style={{ fontSize: '18px', color: '#2E4057', maxWidth: '760px', marginBottom: '16px' }}>
+              Beacon Index is intentionally lightweight at the point of employee interaction,
+              while maintaining rigorous governance modelling behind the scenes.
+            </p>
+            <div style={{ marginTop: '35px', border: '1px solid #D7E0E8', padding: '30px', backgroundColor: '#ffffff' }}>
+              <ul style={{ fontSize: '17px', lineHeight: 1.6, paddingLeft: '20px', margin: 0 }}>
+                <li style={{ marginBottom: '10px' }}>Five calibrated system-level indicators</li>
+                <li style={{ marginBottom: '10px' }}>Mobile-first delivery (typically &lt; 60 seconds to complete)</li>
+                <li style={{ marginBottom: '10px' }}>Team-level de-identification and anonymity thresholds</li>
+                <li style={{ marginBottom: '10px' }}>Trend-weighted composite scoring (0–100 index)</li>
+                <li style={{ marginBottom: 0 }}>Embedded support pathways activated where elevated risk patterns are detected</li>
+              </ul>
+            </div>
+            <p style={{ marginTop: '25px', fontSize: '16px', color: '#2E4057', maxWidth: '760px' }}>
+              The employee experience remains simple.  
+              The governance intelligence sits within the composite modelling,
+              stability analysis, and escalation logic.
+            </p>
+          </div>
+        </section>
+
         {/* GOVERNANCE CALIBRATION */}
         <section style={{ padding: '64px 0' }}>
           <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
