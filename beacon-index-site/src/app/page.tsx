@@ -4,57 +4,290 @@ export default function Home() {
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       
+      <style dangerouslySetInnerHTML={{ __html: `
+        :root{
+          --ink: #0B1220;
+          --navy: #0E1B2E;
+          --muted-teal: #2A8C8A;
+          --teal-soft: rgba(42, 140, 138, 0.18);
+          --teal-glow: rgba(42, 140, 138, 0.28);
+          --paper: #FFFFFF;
+          --paper-tint: #F6FAFA;
+          --line: rgba(14, 27, 46, 0.14);
+          --shadow: 0 10px 30px rgba(11, 18, 32, 0.10);
+          --radius: 18px;
+        }
+
+        .beacon-hero{
+          position: relative;
+          overflow: hidden;
+          background: linear-gradient(180deg, var(--paper-tint) 0%, var(--paper) 55%);
+          border: 1px solid var(--line);
+          border-radius: calc(var(--radius) + 6px);
+          box-shadow: var(--shadow);
+          max-width: 1200px;
+          margin: 40px auto;
+        }
+
+        .beacon-hero__inner{
+          display: grid;
+          grid-template-columns: 1.2fr 0.8fr;
+          gap: 28px;
+          padding: clamp(28px, 4vw, 56px);
+          align-items: center;
+        }
+
+        @media (max-width: 900px){
+          .beacon-hero__inner{
+            grid-template-columns: 1fr;
+          }
+          .beacon-hero__visual{
+            order: -1;
+          }
+        }
+
+        .beacon-hero::before{
+          content:"";
+          position:absolute;
+          inset:-120px -120px auto auto;
+          width: 560px;
+          height: 560px;
+          background: radial-gradient(circle at 40% 40%, var(--teal-glow) 0%, rgba(42,140,138,0.08) 35%, rgba(255,255,255,0) 70%);
+          filter: blur(2px);
+          pointer-events:none;
+        }
+
+        .beacon-hero::after{
+          content:"";
+          position:absolute;
+          right: 18px;
+          bottom: 14px;
+          width: 180px;
+          height: 180px;
+          background-image: url("/assets/Beaconlogo.png");
+          background-repeat: no-repeat;
+          background-size: contain;
+          background-position: bottom right;
+          opacity: 0.06;
+          filter: grayscale(100%) contrast(90%);
+          pointer-events:none;
+        }
+
+        .beacon-hero h1{
+          margin: 0 0 12px 0;
+          color: var(--ink);
+          letter-spacing: -0.02em;
+          line-height: 1.02;
+          font-size: clamp(34px, 4vw, 56px);
+          font-family: Georgia, "Times New Roman", serif;
+        }
+
+        .beacon-hero p{
+          margin: 0 0 18px 0;
+          color: rgba(11, 18, 32, 0.78);
+          font-size: 18px;
+          line-height: 1.55;
+          max-width: 60ch;
+        }
+
+        .beacon-hero__kicker{
+          display: inline-flex;
+          align-items:center;
+          gap: 10px;
+          padding: 8px 12px;
+          border-radius: 999px;
+          border: 1px solid rgba(42,140,138,0.24);
+          background: rgba(42,140,138,0.08);
+          color: rgba(11, 18, 32, 0.80);
+          font-size: 13px;
+          font-weight: 600;
+          letter-spacing: 0.02em;
+          margin-bottom: 14px;
+        }
+
+        .beacon-dot{
+          width: 10px;
+          height: 10px;
+          border-radius: 999px;
+          background: var(--muted-teal);
+          box-shadow: 0 0 0 6px rgba(42,140,138,0.14);
+        }
+
+        .signal-line{
+          position: relative;
+          height: 2px;
+          width: min(520px, 92%);
+          background: linear-gradient(90deg, rgba(14,27,46,0.16), rgba(42,140,138,0.55), rgba(14,27,46,0.16));
+          border-radius: 999px;
+          margin: 10px 0 18px 0;
+          overflow: hidden;
+        }
+
+        .signal-line::after{
+          content:"";
+          position:absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          left: -18%;
+          width: 18%;
+          height: 8px;
+          background: radial-gradient(circle, rgba(42,140,138,0.65) 0%, rgba(42,140,138,0.10) 55%, rgba(42,140,138,0) 70%);
+          filter: blur(0.2px);
+          animation: signal-sweep 3.2s ease-in-out infinite;
+          opacity: 0.9;
+        }
+
+        @keyframes signal-sweep{
+          0%   { left: -20%; opacity: 0.0; }
+          10%  { opacity: 0.9; }
+          55%  { opacity: 0.9; }
+          100% { left: 110%; opacity: 0.0; }
+        }
+
+        .beacon-actions{
+          display:flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          margin-top: 8px;
+        }
+
+        .btn{
+          appearance:none;
+          border: 1px solid rgba(14,27,46,0.18);
+          background: var(--paper);
+          color: var(--ink);
+          padding: 10px 14px;
+          border-radius: 12px;
+          font-weight: 700;
+          font-size: 14px;
+          cursor:pointer;
+          text-decoration:none;
+          display:inline-flex;
+          align-items:center;
+          gap: 10px;
+        }
+
+        .btn--primary{
+          background: rgba(42,140,138,0.12);
+          border-color: rgba(42,140,138,0.30);
+        }
+
+        .btn:hover{
+          transform: translateY(-1px);
+          box-shadow: 0 10px 20px rgba(11,18,32,0.08);
+        }
+
+        .beacon-hero__visual{
+          display:flex;
+          justify-content: flex-end;
+        }
+
+        .scorecard{
+          width: min(360px, 100%);
+          background: linear-gradient(180deg, #FFFFFF 0%, #FBFEFE 100%);
+          border: 1px solid rgba(14,27,46,0.14);
+          border-radius: 20px;
+          box-shadow: 0 14px 34px rgba(11,18,32,0.10);
+          padding: 18px;
+          position: relative;
+        }
+
+        .scorecard__title{
+          font-size: 12px;
+          letter-spacing: 0.12em;
+          font-weight: 800;
+          color: rgba(11,18,32,0.58);
+          text-transform: uppercase;
+          margin: 2px 0 14px 0;
+        }
+
+        .scorecard__value{
+          font-size: 86px;
+          line-height: 0.92;
+          font-weight: 900;
+          letter-spacing: -0.03em;
+          color: var(--navy);
+          margin: 0 0 8px 0;
+        }
+
+        .scorecard__rule{
+          height: 3px;
+          width: 64px;
+          background: var(--muted-teal);
+          border-radius: 999px;
+          margin: 8px 0 14px 2px;
+          opacity: 0.85;
+        }
+
+        .scorecard__meta{
+          display:grid;
+          gap: 8px;
+          font-size: 16px;
+          color: rgba(11,18,32,0.72);
+        }
+
+        .scorecard__meta b{
+          color: rgba(11,18,32,0.90);
+        }
+
+        .trend{
+          display:inline-flex;
+          align-items:center;
+          gap: 8px;
+          font-weight: 800;
+          color: var(--navy);
+        }
+
+        .trend__arrow{
+          width: 10px; height: 10px;
+          border-right: 3px solid var(--muted-teal);
+          border-top: 3px solid var(--muted-teal);
+          transform: rotate(-45deg);
+          margin-top: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce){
+          .signal-line::after{ animation: none; }
+          .btn:hover{ transform: none; }
+        }
+      `}} />
+      
       <div style={{ fontFamily: 'ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif', lineHeight: 1.6, color: '#2E4057', background: '#ffffff' }}>
         
         {/* HERO */}
-        <section style={{ backgroundColor: '#0B1B2B', color: '#ffffff', padding: '80px 24px', textAlign: 'center' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
-            <h1 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '48px', fontWeight: 600, color: '#ffffff', marginBottom: '8px', lineHeight: 1.2 }}>
-              Psychosocial Risk Is a Governance Responsibility
-            </h1>
-            <div style={{ width: '120px', height: '2px', backgroundColor: '#2F6F7E', margin: '20px auto' }}></div>
-            <p style={{ fontSize: '20px', color: '#D7E0E8', maxWidth: '800px', margin: '0 auto 32px', lineHeight: 1.5 }}>
-              System-level visibility for early detection, proportionate response, and defensible oversight.
-            </p>
-            <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="#contact" style={{ display: 'inline-block', padding: '14px 32px', backgroundColor: '#2F6F7E', color: '#ffffff', textDecoration: 'none', fontWeight: 500, fontSize: '16px' }}>
-                Request Executive Overview
-              </a>
-              <a href="#methodology" style={{ display: 'inline-block', padding: '14px 32px', backgroundColor: 'transparent', color: '#ffffff', textDecoration: 'none', fontWeight: 500, fontSize: '16px', border: '1px solid #D7E0E8' }}>
-                View Methodology
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* SCORECARD SPECIMEN */}
-        <section style={{ padding: '64px 0' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
-            <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '32px', fontWeight: 600, color: '#0B1B2B', marginBottom: '24px', lineHeight: 1.2 }}>
-              Example Output: Beacon Index Scorecard
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', alignItems: 'center' }}>
-              <div style={{ background: '#ffffff', border: '2px solid #0B1B2B', padding: '32px', textAlign: 'center', boxShadow: '0 2px 8px rgba(11, 27, 43, 0.06)' }}>
-                <div style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '0.5px', color: '#2E4057', marginBottom: '16px' }}>
-                  BEACON INDEX SCORE
-                </div>
-                <div style={{ fontSize: '72px', fontWeight: 600, color: '#0B1B2B', lineHeight: 1, marginBottom: '16px' }}>
-                  74
-                </div>
-                <div style={{ height: '2px', backgroundColor: '#2F6F7E', margin: '16px auto', width: '60px' }}></div>
-                <div style={{ fontSize: '16px', fontWeight: 500, color: '#2E4057', marginBottom: '12px' }}>
-                  Within risk tolerance
-                </div>
-                <div style={{ fontSize: '14px', color: '#2E4057' }}>
-                  Trend: <span style={{ color: '#2F6F7E', fontWeight: 600 }}>↑ 1.2%</span>
-                </div>
+        <section className="beacon-hero" aria-label="Beacon Index hero">
+          <div className="beacon-hero__inner">
+            <div className="beacon-hero__copy">
+              <div className="beacon-hero__kicker">
+                <span className="beacon-dot" aria-hidden="true"></span>
+                Serious governance instrument • early strain detection
               </div>
-              <div>
-                <ul style={{ margin: '16px 0', paddingLeft: '24px' }}>
-                  <li style={{ marginBottom: '10px', fontSize: '16px' }}>Composite 0–100 risk exposure score</li>
-                  <li style={{ marginBottom: '10px', fontSize: '16px' }}>Trend-weighted interpretation across reporting cycles</li>
-                  <li style={{ marginBottom: '10px', fontSize: '16px' }}>Designed for governance oversight — not sentiment tracking</li>
-                </ul>
+
+              <h1>Psychosocial risk is a governance responsibility — not a sentiment metric.</h1>
+
+              <div className="signal-line" aria-hidden="true"></div>
+
+              <p>
+                Beacon Index makes psychosocial risk visible at system level, with calibrated domains,
+                defensible thresholds, and trend oversight designed for WHS governance.
+              </p>
+
+              <div className="beacon-actions">
+                <a className="btn btn--primary" href="#methodology">Methodology</a>
+                <a className="btn" href="#governance">Governance calibration</a>
+                <a className="btn" href="#pilot">Pilot overview</a>
+              </div>
+            </div>
+
+            <div className="beacon-hero__visual">
+              <div className="scorecard" role="img" aria-label="Beacon Index scorecard example">
+                <div className="scorecard__title">Beacon Index Score</div>
+                <div className="scorecard__value">74</div>
+                <div className="scorecard__rule"></div>
+                <div className="scorecard__meta">
+                  <div><b>Status:</b> Within risk tolerance</div>
+                  <div><b>Trend:</b> <span className="trend"><span className="trend__arrow" aria-hidden="true"></span>1.2%</span></div>
+                </div>
               </div>
             </div>
           </div>
@@ -147,7 +380,7 @@ export default function Home() {
         </section>
 
         {/* GOVERNANCE CALIBRATION */}
-        <section style={{ padding: '64px 0' }}>
+        <section id="governance" style={{ padding: '64px 0' }}>
           <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
             <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '32px', fontWeight: 600, color: '#0B1B2B', marginBottom: '24px', lineHeight: 1.2 }}>
               Governance Risk Bands (Default)
