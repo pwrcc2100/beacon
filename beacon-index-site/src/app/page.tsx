@@ -18,6 +18,15 @@ export default function Home() {
           --radius: 18px;
         }
 
+        .section {
+          padding: 80px 24px;
+        }
+
+        .container {
+          max-width: 1100px;
+          margin: 0 auto;
+        }
+
         .beacon-hero{
           position: relative;
           overflow: hidden;
