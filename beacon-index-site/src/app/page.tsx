@@ -19,16 +19,17 @@ export default function Home() {
         }
 
         .section {
-          padding: 100px 24px;
+          padding: 100px 0;
         }
 
         .container {
-          max-width: 1180px;
+          max-width: 1160px;
           margin: 0 auto;
+          padding: 0 24px;
         }
 
         .section-alt {
-          background: #f6f9f8;
+          background: #f4f7f6;
         }
 
         .hero {
@@ -274,8 +275,8 @@ export default function Home() {
         </section>
 
         {/* THE VISIBILITY GAP */}
-        <section style={{ backgroundColor: '#F3F7FB', padding: '64px 0' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+        <section className="section section-alt">
+          <div className="container">
             <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '32px', fontWeight: 600, color: '#0B1B2B', marginBottom: '24px', lineHeight: 1.2 }}>
               The Visibility Gap
             </h2>
@@ -327,8 +328,8 @@ export default function Home() {
         </section>
 
         {/* METHODOLOGY */}
-        <section id="methodology" style={{ padding: '64px 0' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+        <section id="methodology" className="section">
+          <div className="container">
             <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '32px', fontWeight: 600, color: '#0B1B2B', marginBottom: '24px', lineHeight: 1.2 }}>
               Methodology (in brief)
             </h2>
@@ -368,12 +369,12 @@ export default function Home() {
         </section>
 
         {/* OPERATIONAL DESIGN */}
-        <section style={{ backgroundColor: '#F3F7FB', padding: '70px 20px' }}>
-          <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        <section className="section section-alt">
+          <div className="container">
             <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '28px', fontWeight: 600, color: '#0B1B2B', marginBottom: '20px', lineHeight: 1.2 }}>
               Operational Design
             </h2>
-            <p style={{ fontSize: '18px', color: '#2E4057', maxWidth: '760px', marginBottom: '16px' }}>
+            <p style={{ fontSize: '18px', color: '#2E4057', marginBottom: '16px' }}>
               Beacon Index is intentionally lightweight at the point of employee interaction,
               while maintaining rigorous governance modelling behind the scenes.
             </p>
@@ -386,7 +387,7 @@ export default function Home() {
                 <li style={{ marginBottom: 0 }}>Embedded support pathways activated where elevated risk patterns are detected</li>
               </ul>
             </div>
-            <p style={{ marginTop: '25px', fontSize: '16px', color: '#2E4057', maxWidth: '760px' }}>
+            <p style={{ marginTop: '25px', fontSize: '16px', color: '#2E4057' }}>
               The employee experience remains simple.  
               The governance intelligence sits within the composite modelling,
               stability analysis, and escalation logic.
@@ -395,8 +396,8 @@ export default function Home() {
         </section>
 
         {/* GOVERNANCE CALIBRATION */}
-        <section id="governance" style={{ padding: '64px 0' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+        <section id="governance" className="section">
+          <div className="container">
             <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '32px', fontWeight: 600, color: '#0B1B2B', marginBottom: '24px', lineHeight: 1.2 }}>
               Governance Risk Bands (Default)
             </h2>
@@ -438,8 +439,8 @@ export default function Home() {
         </section>
 
         {/* PILOT OVERVIEW */}
-        <section id="pilot" style={{ backgroundColor: '#F3F7FB', padding: '64px 0' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+        <section id="pilot" className="section section-alt">
+          <div className="container">
             <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '32px', fontWeight: 600, color: '#0B1B2B', marginBottom: '24px', lineHeight: 1.2 }}>
               Pilot (Governance Validation)
             </h2>
@@ -462,8 +463,8 @@ export default function Home() {
         </section>
 
         {/* CONTACT */}
-        <section id="contact" style={{ backgroundColor: '#F3F7FB', padding: '48px 24px', textAlign: 'center', borderTop: '1px solid #D7E0E8' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+        <section id="contact" className="section section-alt" style={{ borderTop: '1px solid #D7E0E8', textAlign: 'center' }}>
+          <div className="container">
             <h3 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '20px', fontWeight: 600, color: '#0B1B2B', marginBottom: '16px', lineHeight: 1.2 }}>
               Contact
             </h3>
@@ -477,8 +478,8 @@ export default function Home() {
         </section>
 
         {/* FOOTER */}
-        <footer style={{ backgroundColor: '#0B1B2B', color: '#ffffff', padding: '48px 24px', textAlign: 'center' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+        <footer style={{ backgroundColor: '#0B1B2B', color: '#ffffff', padding: '48px 0', textAlign: 'center' }}>
+          <div className="container">
             <p style={{ fontSize: '18px', marginBottom: '24px', color: '#D7E0E8' }}>
               Structured data. Early signals. Defensible governance insight.
             </p>
