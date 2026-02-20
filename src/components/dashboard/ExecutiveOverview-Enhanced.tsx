@@ -410,8 +410,6 @@ export default function ExecutiveOverviewEnhanced({
         <TriageBandsLegend />
         <TeamsAttentionChart 
           teams={teams.map(t => ({ ...t, score: t.wellbeing }))} 
-          title={attentionLabel}
-          subtitle={teams.length > 0 ? `Primary driver for lowest teams: ${primaryDriver.label}` : undefined}
         />
       </div>
 
