@@ -10,55 +10,6 @@ export const metadata: Metadata = {
     'Senior advisory and hands-on execution support for complex executive initiatives, including business transformation, digital initiatives and enterprise improvement.',
 };
 
-const advisoryServices = [
-  {
-    icon: 'psychology',
-    title: 'Strategic Consulting',
-    description: 'Executive-level advisory for complex organisational challenges. From digital transformation roadmaps to operational excellence programs.',
-    items: [
-      'Business process improvement & optimisation',
-      'Digital transformation strategy & execution',
-      'Change management & stakeholder engagement',
-      'Operational excellence programs',
-    ],
-  },
-  {
-    icon: 'code',
-    title: 'Technology Solutions',
-    description: 'Custom application development and technology platform implementation. From concept to deployment, building solutions that solve real business problems. We take a tactical approach: engage, execute, and hand over—without distracting your high performers from their core responsibilities.',
-    items: [
-      'Technology platform installation & implementation',
-      'Custom web & mobile application development',
-      'System integration & API development',
-      'Data analytics & business intelligence',
-      'Technology vendor selection & implementation',
-    ],
-  },
-  {
-    icon: 'lightbulb',
-    title: 'Executive Advisory',
-    description: 'Strategic guidance for senior leaders navigating complex decisions. Expert advice on technology, operations, and transformation—without stepping into line management roles.',
-    items: [
-      'Technology strategy & roadmap development',
-      'Operational excellence & process improvement',
-      'Digital transformation planning & execution',
-      'Strategic program oversight & governance',
-    ],
-  },
-  {
-    icon: 'concierge',
-    title: 'Corporate Concierge',
-    description: 'Let Beacon Advisory handle the important initiatives that don\'t align with anyone\'s primary role. We take a tactical approach—engage, execute, and hand over—allowing your high performers to focus on what they do best. Don\'t dilute your team\'s effectiveness by assigning critical projects outside their core expertise simply because they\'re capable. Let them excel in their roles while we deliver the initiatives that matter.',
-    items: [
-      'Executive dashboard development (Power BI, Tableau, custom) providing real-time KPI tracking & insights for leadership decision making',
-      'Unique projects & short-term secondments',
-      'Crisis response & uncharted territory navigation',
-      'Vendor selection & contract negotiation',
-      'Board & executive presentations',
-      'Business case development & ROI analysis',
-    ],
-  },
-] as const;
 
 const areasOfExpertise = [
   { icon: 'business', title: 'Business Improvement', description: 'Process optimisation, lean methodologies, continuous improvement' },
@@ -192,30 +143,10 @@ export default function AdvisoryPage() {
               ))}
             </div>
 
-            {/* Service Details */}
-            <div className="space-y-16">
-              {advisoryServices.map((service) => (
-                <div key={service.title} className="bg-white border border-[#e6e8ed] rounded-xl p-8">
-                  <div className="flex items-start gap-4 mb-6">
-                    <div className="p-3 rounded-lg bg-[#f4f6fa]">
-                      <MaterialIcon icon={service.icon} style={{ fontSize: '32px', color: '#2B4162' }} />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-[#2B4162] mb-3">{service.title}</h3>
-                      <p className="text-base text-[#465164] leading-relaxed mb-4">{service.description}</p>
-                      <ul className="space-y-2">
-                        {service.items.map((item, idx) => (
-                          <li key={idx} className="flex items-start gap-2 text-sm text-[#465164]">
-                            <MaterialIcon icon="check_circle" style={{ fontSize: '18px', color: '#5d89a9', marginTop: '2px' }} />
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {/* Description text beneath tiles */}
+            <p className="text-base text-[#465164] leading-relaxed max-w-4xl">
+              Let Beacon Advisory handle the important initiatives that don't align with anyone's primary role. We take a tactical approach—engage, execute, and hand over—allowing your high performers to focus on what they do best. Don't dilute your team's effectiveness by assigning critical projects outside their core expertise simply because they're capable. Let them excel in their roles while we deliver the initiatives that matter.
+            </p>
           </div>
         </section>
 
