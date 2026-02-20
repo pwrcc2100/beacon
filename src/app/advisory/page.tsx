@@ -174,6 +174,25 @@ export default function AdvisoryPage() {
         <section className="py-20 bg-[#f8f9fb]">
           <div className="max-w-6xl mx-auto px-6 space-y-12">
             <h2 className="text-2xl font-semibold text-[#2B4162]">Advisory Services</h2>
+            
+            {/* Areas of Expertise - Immediately beneath Advisory Services heading */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {areasOfExpertise.map((area) => (
+                <div key={area.title} className="bg-white border border-[#e6e8ed] rounded-xl p-6">
+                  <div className="flex justify-center mb-4">
+                    <MaterialIcon icon={area.icon} style={{ fontSize: '48px', color: '#6B9AC4' }} />
+                  </div>
+                  <h3 className="text-xl font-semibold text-[#2B4162] text-center mb-3">
+                    {area.title}
+                  </h3>
+                  <p className="text-[#6B7C93] text-center leading-relaxed">
+                    {area.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Service Details */}
             <div className="space-y-16">
               {advisoryServices.map((service) => (
                 <div key={service.title} className="bg-white border border-[#e6e8ed] rounded-xl p-8">
@@ -194,28 +213,6 @@ export default function AdvisoryPage() {
                       </ul>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Areas of Expertise - Moved here under Advisory Services */}
-        <section className="py-20 bg-white">
-          <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-2xl font-semibold text-[#2B4162] mb-12">Areas of Expertise</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {areasOfExpertise.map((area) => (
-                <div key={area.title} className="bg-[#f8f9fb] border border-[#e6e8ed] rounded-xl p-6">
-                  <div className="flex justify-center mb-4">
-                    <MaterialIcon icon={area.icon} style={{ fontSize: '48px', color: '#6B9AC4' }} />
-                  </div>
-                  <h3 className="text-xl font-semibold text-[#2B4162] text-center mb-3">
-                    {area.title}
-                  </h3>
-                  <p className="text-[#6B7C93] text-center leading-relaxed">
-                    {area.description}
-                  </p>
                 </div>
               ))}
             </div>
