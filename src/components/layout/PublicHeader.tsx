@@ -13,7 +13,7 @@ export function PublicHeader() {
         </a>
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-[#2B4162]">
           <a href="/" className="text-[#2B4162] hover:text-[#1b2740] transition-colors">Home</a>
-          <a href="/advisory" className="text-[#2B4162] hover:text-[#1b2740] transition-colors">Advisory</a>
+          <a href="/#advisory" className="text-[#2B4162] hover:text-[#1b2740] transition-colors">Advisory</a>
           <a href="/about" className="text-[#2B4162] hover:text-[#1b2740] transition-colors">About</a>
         </nav>
         <a
