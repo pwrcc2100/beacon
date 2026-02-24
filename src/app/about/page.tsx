@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { PublicHeader } from '@/components/layout/PublicHeader';
@@ -23,19 +24,33 @@ export default function AboutPage() {
 
       <main className="flex-1">
         <section className="bg-[#f8f9fb] border-b border-gray-200">
-          <div className="max-w-5xl mx-auto px-6 py-16 md:py-20 space-y-6">
-            <div className="space-y-3">
-              <p className="text-xs font-semibold tracking-[0.3em] uppercase text-[#5d89a9]">
-                About Beacon Advisory
-              </p>
-              <h1 className="text-3xl md:text-4xl font-semibold text-[#2B4162] leading-tight">
-                Practical senior advisory and execution support for complex organisational challenges.
-              </h1>
-            </div>
-            <div className="space-y-6 text-base md:text-lg text-[#465164] leading-relaxed">
-              {paragraphs.map((text) => (
-                <p key={text}>{text}</p>
-              ))}
+          <div className="max-w-5xl mx-auto px-6 py-16 md:py-20">
+            <div className="flex flex-col md:flex-row md:items-start gap-8 md:gap-10">
+              <div className="flex-shrink-0 mx-auto md:mx-0">
+                <Image
+                  src="/peta-wilson.png"
+                  alt="Peta Wilson"
+                  width={280}
+                  height={280}
+                  className="rounded-xl object-cover aspect-square w-[240px] h-[240px] md:w-[280px] md:h-[280px]"
+                  priority
+                />
+              </div>
+              <div className="flex-1 min-w-0 space-y-6">
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold tracking-[0.3em] uppercase text-[#5d89a9]">
+                    About Beacon Advisory
+                  </p>
+                  <h1 className="text-3xl md:text-4xl font-semibold text-[#2B4162] leading-tight">
+                    Practical senior advisory and execution support for complex organisational challenges.
+                  </h1>
+                </div>
+                <div className="space-y-6 text-base md:text-lg text-[#465164] leading-relaxed">
+                  {paragraphs.map((text) => (
+                    <p key={text}>{text}</p>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -45,5 +60,10 @@ export default function AboutPage() {
     </div>
   );
 }
+
+
+
+
+
 
 
