@@ -86,40 +86,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Recognition & Awards */}
-        <section className="py-20 bg-white">
-          <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-2xl font-semibold text-[#2B4162] mb-8">Recognition & Awards</h2>
-            <p className="text-sm text-[#465164] mb-8">Industry-recognized expertise in technology and business transformation</p>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="border border-[#e6e8ed] rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <MaterialIcon icon="emoji_events" style={{ fontSize: '32px', color: '#5d89a9' }} />
-                  <h3 className="text-lg font-semibold text-[#2B4162]">HammerTech Award</h3>
-                </div>
-                <p className="text-sm text-[#465164] mb-2">Technology Excellence</p>
-                <p className="text-xs text-[#737A8C]">Australia & New Zealand 2024</p>
-              </div>
-              <div className="border border-[#e6e8ed] rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <MaterialIcon icon="verified" style={{ fontSize: '32px', color: '#5d89a9' }} />
-                  <h3 className="text-lg font-semibold text-[#2B4162]">Head of Business Improvement</h3>
-                </div>
-                <p className="text-sm text-[#465164] mb-2">RCC (Richard Crookes Constructions)</p>
-                <p className="text-xs text-[#737A8C]">Leading digital transformation initiatives</p>
-              </div>
-              <div className="border border-[#e6e8ed] rounded-xl p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <MaterialIcon icon="campaign" style={{ fontSize: '32px', color: '#5d89a9' }} />
-                  <h3 className="text-lg font-semibold text-[#2B4162]">Industry Thought Leader</h3>
-                </div>
-                <p className="text-sm text-[#465164] mb-2">Featured by multiple consultants</p>
-                <p className="text-xs text-[#737A8C]">Interviews on technology & innovation</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Advisory Services */}
         <section id="advisory" className="py-20 bg-[#f8f9fb] scroll-mt-20">
           <div className="max-w-6xl mx-auto px-6 space-y-12">
@@ -139,7 +105,7 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-            <p className="text-base text-[#465164] leading-relaxed max-w-4xl">
+            <p className="text-lg md:text-xl text-[#2B4162] font-medium leading-relaxed w-full max-w-none">
               Let Beacon Advisory handle the important initiatives that don't align with anyone's primary role. We take a tactical approach—engage, execute, and hand over—allowing your high performers to focus on what they do best. Don't dilute your team's effectiveness by assigning critical projects outside their core expertise simply because they're capable. Let them excel in their roles while we deliver the initiatives that matter.
             </p>
           </div>
@@ -186,6 +152,40 @@ export default function HomePage() {
                 <MaterialIcon icon="person" style={{ fontSize: '18px' }} />
                 Connect on LinkedIn
               </a>
+            </div>
+          </div>
+        </section>
+
+        {/* Recognition & Awards */}
+        <section className="py-20 bg-[#f8f9fb] border-t border-[#e6e8ed]">
+          <div className="max-w-6xl mx-auto px-6">
+            <h2 className="text-2xl font-semibold text-[#2B4162] mb-8">Recognition & Awards</h2>
+            <p className="text-sm text-[#465164] mb-8">Industry-recognized expertise in technology and business transformation</p>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="border border-[#e6e8ed] rounded-xl p-6 bg-white">
+                <div className="flex items-center gap-3 mb-3">
+                  <MaterialIcon icon="emoji_events" style={{ fontSize: '32px', color: '#5d89a9' }} />
+                  <h3 className="text-lg font-semibold text-[#2B4162]">HammerTech Award</h3>
+                </div>
+                <p className="text-sm text-[#465164] mb-2">Technology Excellence</p>
+                <p className="text-xs text-[#737A8C]">Australia & New Zealand 2024</p>
+              </div>
+              <div className="border border-[#e6e8ed] rounded-xl p-6 bg-white">
+                <div className="flex items-center gap-3 mb-3">
+                  <MaterialIcon icon="verified" style={{ fontSize: '32px', color: '#5d89a9' }} />
+                  <h3 className="text-lg font-semibold text-[#2B4162]">Head of Business Improvement</h3>
+                </div>
+                <p className="text-sm text-[#465164] mb-2">RCC (Richard Crookes Constructions)</p>
+                <p className="text-xs text-[#737A8C]">Leading digital transformation initiatives</p>
+              </div>
+              <div className="border border-[#e6e8ed] rounded-xl p-6 bg-white">
+                <div className="flex items-center gap-3 mb-3">
+                  <MaterialIcon icon="campaign" style={{ fontSize: '32px', color: '#5d89a9' }} />
+                  <h3 className="text-lg font-semibold text-[#2B4162]">Industry Thought Leader</h3>
+                </div>
+                <p className="text-sm text-[#465164] mb-2">Featured by multiple consultants</p>
+                <p className="text-xs text-[#737A8C]">Interviews on technology & innovation</p>
+              </div>
             </div>
           </div>
         </section>
