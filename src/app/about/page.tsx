@@ -32,7 +32,7 @@ export default function AboutPage() {
                   alt="Peta Wilson"
                   width={280}
                   height={280}
-                  className="rounded-xl object-cover aspect-square w-[240px] h-[240px] md:w-[280px] md:h-[280px]"
+                  className="rounded-xl object-cover object-top aspect-square w-[240px] h-[240px] md:w-[280px] md:h-[280px]"
                   priority
                 />
               </div>
