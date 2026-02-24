@@ -20,6 +20,7 @@ export default function BeaconIndexPage() {
                 <MaterialIcon icon="health_and_safety" style={{ fontSize: '32px', color: '#2A8C8A' }} />
                 <span className="text-xl font-bold" style={{ color: '#0B1B2B' }}>Beacon Index</span>
               </div>
+              <a href="/beacon-index/v2" className="hidden sm:inline text-xs font-medium text-[#2F6F7E] hover:underline whitespace-nowrap">Compare V2</a>
               <BeaconIndexMobileNav variant="dark" />
             </div>
           </div>

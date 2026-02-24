@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 const links = [
   { href: '/', label: 'Home' },
   { href: '/beacon-index', label: 'Beacon Index' },
+  { href: '/beacon-index/v2', label: 'Beacon Index (V2)' },
   { href: '/beacon-index/about', label: 'About' },
   { href: '/beacon-index/features', label: 'Features' },
   { href: 'mailto:hello@beaconeffect.com.au', label: 'Contact' },
