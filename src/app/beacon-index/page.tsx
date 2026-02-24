@@ -71,7 +71,7 @@ export default function BeaconIndexPage() {
       </section>
 
       {/* The Visibility Gap */}
-      <section id="visibility" className="py-16 md:py-20 bg-[#f6f9f7]">
+      <section id="visibility" className="py-16 md:py-20 bg-white">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="font-serif text-3xl font-semibold text-[#0B1B2B] mb-6" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
             The visibility gap
@@ -89,7 +89,7 @@ export default function BeaconIndexPage() {
       </section>
 
       {/* See It in 60 Seconds */}
-      <section className="py-16 md:py-20 bg-white">
+      <section className="py-16 md:py-20 bg-[#f6f9f7]">
         <div className="max-w-6xl mx-auto px-6 flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
           <div className="flex-1">
             <h2 className="font-serif text-3xl font-semibold text-[#0B1B2B] mb-6" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
@@ -118,7 +118,7 @@ export default function BeaconIndexPage() {
       </section>
 
       {/* Why Organisations Choose Beacon Index */}
-      <section className="py-16 bg-[#f6f9f7]">
+      <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl font-bold mb-4 text-center" style={{ color: '#0B1B2B' }}>
             Why organisations choose Beacon Index
@@ -159,7 +159,7 @@ export default function BeaconIndexPage() {
       </section>
 
       {/* Methodology (in brief) */}
-      <section id="methodology" className="py-16 md:py-20 bg-white">
+      <section id="methodology" className="py-16 md:py-20 bg-[#f6f9f7]">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="font-serif text-3xl font-semibold text-[#0B1B2B] mb-10" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
             Methodology in brief
@@ -194,7 +194,7 @@ export default function BeaconIndexPage() {
       </section>
 
       {/* Governance Risk Bands */}
-      <section id="governance" className="py-16 md:py-20 bg-[#f6f9f7]">
+      <section id="governance" className="py-16 md:py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="font-serif text-3xl font-semibold text-[#0B1B2B] mb-6" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
             Governance Risk Bands (Default)
@@ -238,34 +238,58 @@ export default function BeaconIndexPage() {
         </div>
       </section>
 
-      {/* Explore Beacon Index */}
-      <section className="py-16 bg-white">
+      {/* Explore Beacon Index — card layout (consulting-style) */}
+      <section className="py-16 bg-[#f6f9f7]">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: '#0B1B2B' }}>
+          <h2 className="text-3xl font-bold mb-4 text-center" style={{ color: '#0B1B2B' }}>
             Explore Beacon Index
           </h2>
+          <p className="text-center text-[#2E4057] mb-10 max-w-2xl mx-auto">
+            Dig into methodology, platform capabilities, or try the survey yourself.
+          </p>
           <div className="grid md:grid-cols-3 gap-6">
-            <a href="/beacon-index/features" className="bg-[#F6FAFA] border-2 border-transparent hover:border-[#2A8C8A] p-6 rounded-xl transition-all hover:shadow-md">
-              <MaterialIcon icon="star" style={{ fontSize: '48px', color: '#2A8C8A', marginBottom: '12px' }} />
-              <h3 className="font-bold mb-2 text-[#0B1B2B]">Features</h3>
-              <p className="text-sm text-[#2E4057]">See all platform capabilities</p>
+            <a href="/beacon-index/features" className="group block bg-white rounded-xl border border-[#E0E5E8] overflow-hidden shadow-sm hover:shadow-md hover:border-[#2A8C8A]/40 transition-all duration-200">
+              <div className="p-6 pb-4">
+                <h3 className="font-bold text-lg text-[#0B1B2B] mb-2 group-hover:text-[#2F6F7E] transition-colors">Features</h3>
+                <p className="text-sm text-[#2E4057] leading-relaxed mb-4">
+                  See how Beacon Index surfaces early signals: dashboards, risk bands, trend reporting, and leader-ready insights — all designed for governance and action.
+                </p>
+                <p className="text-xs font-medium text-[#2A8C8A]">Platform · 3 min read</p>
+              </div>
+              <div className="h-32 bg-gradient-to-br from-[#2A8C8A]/20 via-[#2F6F7E]/15 to-[#0B1B2B]/10 flex items-center justify-center">
+                <MaterialIcon icon="dashboard" style={{ fontSize: '48px', color: 'rgba(42, 140, 138, 0.5)' }} />
+              </div>
             </a>
-            <a href="/beacon-index/about" className="bg-[#F6FAFA] border-2 border-transparent hover:border-[#2A8C8A] p-6 rounded-xl transition-all hover:shadow-md">
-              <MaterialIcon icon="info" style={{ fontSize: '48px', color: '#2A8C8A', marginBottom: '12px' }} />
-              <h3 className="font-bold mb-2 text-[#0B1B2B]">About</h3>
-              <p className="text-sm text-[#2E4057]">Research & methodology</p>
+            <a href="/beacon-index/about" className="group block bg-white rounded-xl border border-[#E0E5E8] overflow-hidden shadow-sm hover:shadow-md hover:border-[#2A8C8A]/40 transition-all duration-200">
+              <div className="p-6 pb-4">
+                <h3 className="font-bold text-lg text-[#0B1B2B] mb-2 group-hover:text-[#2F6F7E] transition-colors">About</h3>
+                <p className="text-sm text-[#2E4057] leading-relaxed mb-4">
+                  Built on leading research from Harvard, Google, and WHS standards. Understand the science behind the five domains and how we keep people at the centre.
+                </p>
+                <p className="text-xs font-medium text-[#2A8C8A]">Research · 5 min read</p>
+              </div>
+              <div className="h-32 bg-gradient-to-br from-[#5d89a9]/20 via-[#64afac]/15 to-[#0B1B2B]/10 flex items-center justify-center">
+                <MaterialIcon icon="auto_stories" style={{ fontSize: '48px', color: 'rgba(93, 137, 169, 0.5)' }} />
+              </div>
             </a>
-            <a href="/survey/test-demo" className="bg-[#F6FAFA] border-2 border-transparent hover:border-[#2A8C8A] p-6 rounded-xl transition-all hover:shadow-md">
-              <MaterialIcon icon="quiz" style={{ fontSize: '48px', color: '#2A8C8A', marginBottom: '12px' }} />
-              <h3 className="font-bold mb-2 text-[#0B1B2B]">Try Survey</h3>
-              <p className="text-sm text-[#2E4057]">Experience the 2-minute survey</p>
+            <a href="/survey/test-demo" className="group block bg-white rounded-xl border border-[#E0E5E8] overflow-hidden shadow-sm hover:shadow-md hover:border-[#2A8C8A]/40 transition-all duration-200">
+              <div className="p-6 pb-4">
+                <h3 className="font-bold text-lg text-[#0B1B2B] mb-2 group-hover:text-[#2F6F7E] transition-colors">Try the survey</h3>
+                <p className="text-sm text-[#2E4057] leading-relaxed mb-4">
+                  Experience the same five questions your people see: quick, mobile-friendly, and calibrated for system-level psychosocial risk. See your score in under 60 seconds.
+                </p>
+                <p className="text-xs font-medium text-[#2A8C8A]">Experience · 2 min</p>
+              </div>
+              <div className="h-32 bg-gradient-to-br from-[#2F6F7E]/25 via-[#2A8C8A]/15 to-[#0B1B2B]/10 flex items-center justify-center">
+                <MaterialIcon icon="touch_app" style={{ fontSize: '48px', color: 'rgba(47, 111, 126, 0.5)' }} />
+              </div>
             </a>
           </div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="py-16 bg-[#f6f9f7]">
+      <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl font-bold mb-12 text-center" style={{ color: '#0B1B2B' }}>
             How it works
@@ -296,7 +320,7 @@ export default function BeaconIndexPage() {
       </section>
 
       {/* Pilot */}
-      <section id="pilot" className="py-16 md:py-20 bg-white">
+      <section id="pilot" className="py-16 md:py-20 bg-[#f6f9f7]">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="font-serif text-3xl font-semibold text-[#0B1B2B] mb-6" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
             Run a pilot with us
@@ -318,7 +342,7 @@ export default function BeaconIndexPage() {
       </section>
 
       {/* Testimonial */}
-      <section className="py-16 bg-[#f6f9f7]">
+      <section className="py-16 bg-white">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <h2 className="text-2xl font-bold mb-8" style={{ color: '#0B1B2B' }}>Trusted by forward-thinking organisations</h2>
           <div className="bg-white p-8 rounded-2xl border-2 border-[#2A8C8A]/30 shadow-sm">
