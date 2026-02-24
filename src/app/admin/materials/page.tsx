@@ -66,10 +66,10 @@ export default async function AdminMaterialsPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <MaterialIcon icon="health_and_safety" style={{ fontSize: '40px', color: 'white' }} />
+              <MaterialIcon icon="auto_awesome" style={{ fontSize: '40px', color: 'white' }} />
               <div>
-                <h1 className="text-3xl font-bold text-white">Beacon Admin</h1>
-                <p className="text-white/80 text-sm">Internal Materials & Documentation</p>
+                <h1 className="text-3xl font-bold text-white">Beacon Advisory – Internal Resources</h1>
+                <p className="text-white/80 text-sm">Confidential materials for advisory engagements</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -108,10 +108,10 @@ export default async function AdminMaterialsPage() {
           <div className="flex items-start gap-4">
             <MaterialIcon icon="info" style={{ fontSize: '32px', color: '#64afac' }} />
             <div>
-              <h2 className="text-2xl font-bold mb-2" style={{ color: '#2B4162' }}>Welcome to Beacon Admin</h2>
+              <h2 className="text-2xl font-bold mb-2" style={{ color: '#2B4162' }}>Welcome to Beacon Advisory resources</h2>
               <p className="text-[#737A8C] leading-relaxed">
-                This secure area contains all internal materials, client presentations, email templates, and 
-                documentation for Beacon. All documents are accessible online and can be downloaded or printed as needed.
+                This secure area contains all internal materials, executive presentations, email templates and delivery documentation for Beacon Advisory engagements. Everything is available online and
+                can be downloaded or printed as needed.
               </p>
             </div>
           </div>
@@ -185,7 +185,7 @@ export default async function AdminMaterialsPage() {
             </a>
 
             <a
-              href="mailto:hello@beaconwellbeing.com.au"
+              href="mailto:hello@beaconeffect.com.au"
               className="p-4 rounded-lg bg-white/10 backdrop-blur border border-white/20 hover:bg-white/20 transition-all text-white"
             >
               <MaterialIcon icon="mail" style={{ fontSize: '32px', marginBottom: '8px' }} />

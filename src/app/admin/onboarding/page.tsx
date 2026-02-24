@@ -18,8 +18,8 @@ export default async function AdminOnboardingPage() {
             <div className="flex items-center gap-4">
               <MaterialIcon icon="assignment" style={{ fontSize: '40px', color: 'white' }} />
               <div>
-                <h1 className="text-3xl font-bold text-white">Client Onboarding Intake</h1>
-                <p className="text-white/80 text-sm">Collect every detail needed to launch a new Beacon client.</p>
+                <h1 className="text-3xl font-bold text-white">Beacon Advisory – Client Onboarding</h1>
+                <p className="text-white/80 text-sm">Collect every detail required to configure a new advisory engagement.</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -48,10 +48,8 @@ export default async function AdminOnboardingPage() {
         <section className="bg-white border-l-4 border-[#64afac] rounded-2xl shadow-sm p-8 mb-8">
           <h2 className="text-2xl font-bold text-[var(--text-primary)] mb-4">How to use this form</h2>
           <p className="text-[var(--text-muted)] leading-relaxed">
-            Share this onboarding checklist with new trial clients. They can download the hierarchy template, upload
-            their completed file, set branding preferences, nominate dashboards and survey questions, and outline the
-            launch cadence. Submissions create a record in Supabase and send an email notification so we can configure
-            their environment across Beacon, Supabase, and integrations.
+            Share this onboarding checklist with new Beacon Advisory clients. Capture hierarchy details, branding, dashboard requirements and delivery cadence so we can configure their environment,
+            integrations and reporting workflow ahead of launch. Submissions create a record in Supabase and trigger an email notification to the onboarding team.
           </p>
         </section>
 

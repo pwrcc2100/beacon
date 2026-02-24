@@ -19,6 +19,7 @@ import {
   formatPercent,
   getScoreStatus,
   SCORE_COLORS,
+  SCORE_THRESHOLDS,
 } from './scoreTheme';
 import { TeamsAttentionChart } from './TeamsAttentionChart';
 
@@ -74,34 +75,45 @@ type ExecutiveOverviewProps = {
   onDivisionClick?: (divisionId: string, divisionName: string) => void;
 };
 
+const hexToRgba = (hex: string, alpha: number) => {
+  const clean = hex.replace('#', '');
+  const bigint = parseInt(clean, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 // Metric Card Component
-function MetricCard({ 
-  icon, 
-  label, 
-  value, 
-  trend, 
-  color 
-}: { 
-  icon: string; 
-  label: string; 
-  value: string | number; 
-  trend?: string; 
+function MetricCard({
+  icon,
+  label,
+  value,
+  trend,
+  color,
+  className,
+}: {
+  icon: string;
+  label: string;
+  value: string | number;
+  trend?: string;
   color: string;
+  className: string;
 }) {
   return (
-    <Card className="border-none shadow-md hover:shadow-lg transition-shadow">
-      <CardContent className="p-6">
+    <Card className={className}>
+      <CardContent className="p-6 md:p-7">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <p className="text-sm text-gray-600 mb-2">{label}</p>
-            <p className="text-3xl font-bold" style={{ color }}>{value}</p>
-            {trend && (
-              <p className="text-xs text-gray-500 mt-2">{trend}</p>
-            )}
+            <p className="text-[11px] font-semibold uppercase tracking-[0.55em] text-slate-400">
+              {label}
+            </p>
+            <p className="mt-6 text-4xl font-semibold leading-tight" style={{ color }}>
+              {value}
+            </p>
+            {trend && <p className="mt-3 text-xs text-slate-500">{trend}</p>}
           </div>
-          <div 
-            className="w-12 h-12 flex items-center justify-center text-2xl"
-          >
+          <div className="ml-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-xl text-slate-500">
             {icon}
           </div>
         </div>
@@ -115,19 +127,38 @@ function QuestionBar({ label, description, value }: { label: string; description
   const scorePercent = Math.round(value * 20);
   const status = getScoreStatus(scorePercent);
   const percentage = (value / 5) * 100;
+  const alertStop = SCORE_THRESHOLDS.watch;
+  const thrivingStop = SCORE_THRESHOLDS.thriving;
+  const trackGradient = `linear-gradient(90deg,
+    ${hexToRgba(SCORE_COLORS.alert, 0.18)} 0%,
+    ${hexToRgba(SCORE_COLORS.alert, 0.18)} ${alertStop}%,
+    ${hexToRgba(SCORE_COLORS.watch, 0.18)} ${alertStop}%,
+    ${hexToRgba(SCORE_COLORS.watch, 0.18)} ${thrivingStop}%,
+    ${hexToRgba(SCORE_COLORS.thriving, 0.18)} ${thrivingStop}%,
+    ${hexToRgba(SCORE_COLORS.thriving, 0.18)} 100%
+  )`;
   
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2 rounded-2xl border border-white/50 bg-white/80 p-4 shadow-[0_12px_28px_rgba(15,23,42,0.08)] backdrop-blur-sm">
       <div className="flex items-center justify-between text-xs">
-        <span className="font-medium text-gray-700">{label} · {description}</span>
+        <span className="font-semibold uppercase tracking-[0.2em] text-[#5f6f87]">
+          {label}
+          <span className="ml-2 normal-case tracking-normal text-[#1e293b]">{description}</span>
+        </span>
         <span className="font-bold" style={{ color: status.color }}>{scorePercent}%</span>
       </div>
-      <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
-        <div 
-          className="h-full rounded-full transition-all duration-500"
-          style={{ 
-            width: `${percentage}%`,
-            backgroundColor: status.color
+      <div
+        className="relative h-3 overflow-hidden rounded-full"
+        style={{ background: trackGradient }}
+      >
+        <div className="absolute top-0 bottom-0 w-px bg-white/60" style={{ left: `${alertStop}%` }} />
+        <div className="absolute top-0 bottom-0 w-px bg-white/60" style={{ left: `${thrivingStop}%` }} />
+        <div
+          className="relative h-full rounded-full transition-all duration-500"
+          style={{
+            width: `${Math.min(percentage, 100)}%`,
+            backgroundColor: hexToRgba(status.color, 0.9),
+            boxShadow: `0 0 6px ${hexToRgba(status.color, 0.45)}`,
           }}
         />
       </div>
@@ -153,6 +184,7 @@ export default function ExecutiveOverviewOptionA({
   const status = getScoreStatus(Math.round(overallScore));
   const trend = previousScore ? overallScore - previousScore : 0;
   const trendText = trend > 0 ? `+${trend.toFixed(1)}%` : `${trend.toFixed(1)}%`;
+  const labelFrequency = Math.max(1, Math.ceil(trendSeries.length / 10));
   
   const teamsNeedingAttention = teams.filter(t => t.wellbeing < 65).length;
   
@@ -169,16 +201,28 @@ export default function ExecutiveOverviewOptionA({
     }
   };
   
+  const surfaceCardClass =
+    'border-none bg-white/95 rounded-3xl shadow-[0_24px_60px_rgba(15,23,42,0.08)] ring-1 ring-white/60';
+  const metricCardClass =
+    'border-none bg-white/95 rounded-3xl shadow-[0_30px_70px_rgba(15,23,42,0.12)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_36px_85px_rgba(15,23,42,0.18)]';
+
   return (
-    <div className="space-y-6 p-6 bg-gray-50 rounded-lg">
+    <div className="space-y-10 rounded-[32px] border border-white/60 bg-gradient-to-br from-[#f7faff] via-[#f0f5ff] to-[#e9effb] p-8 md:p-10 shadow-[0_30px_80px_rgba(15,23,42,0.12)]">
+      <div className="space-y-2">
+        <h2 className="text-2xl font-semibold text-[#0f172a] md:text-3xl">Beacon Index Overview</h2>
+        <p className="text-sm text-[#5d6f87] md:text-base">
+          Latest check-in insights across sentiment, workload, support, safety and leadership for the selected view.
+        </p>
+      </div>
       {/* Top Metric Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
         <MetricCard
           icon="💚"
           label="Beacon Index"
           value={`${Math.round(overallScore)}%`}
           trend={previousScore ? trendText + ' vs previous' : undefined}
           color={status.color}
+          className={metricCardClass}
         />
         <MetricCard
           icon="👥"
@@ -186,6 +230,7 @@ export default function ExecutiveOverviewOptionA({
           value={`${Math.round(participationRate)}%`}
           trend={previousScore ? trendText + ' vs previous' : undefined}
           color={participationRate >= 70 ? SCORE_COLORS.thriving : participationRate >= 40 ? SCORE_COLORS.watch : SCORE_COLORS.alert}
+          className={metricCardClass}
         />
         <MetricCard
           icon="⚠️"
@@ -193,6 +238,7 @@ export default function ExecutiveOverviewOptionA({
           value={teamsNeedingAttention}
           trend={previousScore ? trendText + ' vs previous' : `out of ${teams.length} teams`}
           color={teamsNeedingAttention > 5 ? SCORE_COLORS.alert : teamsNeedingAttention > 2 ? SCORE_COLORS.watch : SCORE_COLORS.thriving}
+          className={metricCardClass}
         />
         <MetricCard
           icon="📈"
@@ -200,16 +246,17 @@ export default function ExecutiveOverviewOptionA({
           value={trend > 0 ? '↗' : trend < 0 ? '↘' : '→'}
           trend={previousScore ? trendText + ' vs previous' : `${Math.abs(trend).toFixed(1)}% change`}
           color={trend > 0 ? SCORE_COLORS.thriving : trend < -5 ? SCORE_COLORS.alert : SCORE_COLORS.watch}
+          className={metricCardClass}
         />
       </div>
 
       {/* Beacon Index Over Time - Line Chart */}
-      <Card className="border-none shadow-md">
-        <CardHeader>
-          <CardTitle className="text-lg">Beacon Index Over Time</CardTitle>
-          <p className="text-sm text-gray-500 mt-1">Last {trendSeries.length} reporting periods</p>
+      <Card className={surfaceCardClass}>
+        <CardHeader className="p-8 pb-0">
+          <CardTitle className="text-xl text-[#0f172a]">Beacon Index Over Time</CardTitle>
+          <p className="mt-2 text-sm text-[#5f6f87]">Last {trendSeries.length} reporting periods</p>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-8 pt-6">
           {trendSeries.length > 0 ? (
             <div className="w-full h-48">
               <svg viewBox="0 0 800 180" className="w-full h-full">
@@ -243,19 +290,21 @@ export default function ExecutiveOverviewOptionA({
                 {trendSeries.map((point, i) => {
                   const x = 40 + (i / Math.max(1, trendSeries.length - 1)) * 720;
                   const y = 140 - (point.wellbeing / 100) * 120;
+                  const showLabel = trendSeries.length <= 12 || i % labelFrequency === 0 || i === trendSeries.length - 1;
                   return (
                     <g key={i}>
                       <circle cx={x} cy={y} r="5" fill="white" stroke={status.color} strokeWidth="2" />
-                      <text 
-                        x={x} 
-                        y="160" 
-                        textAnchor="end" 
-                        fontSize="10" 
-                        fill="#6B7280"
-                        transform={`rotate(-90 ${x} 160)`}
-                      >
-                        {point.label}
-                      </text>
+                      {showLabel && (
+                        <text 
+                          x={x} 
+                          y="162" 
+                          textAnchor="middle" 
+                          fontSize="10" 
+                          fill="#6B7280"
+                        >
+                          {point.label}
+                        </text>
+                      )}
                     </g>
                   );
                 })}
@@ -268,13 +317,13 @@ export default function ExecutiveOverviewOptionA({
       </Card>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Current Sentiment - Takes 2 columns */}
-        <Card className="lg:col-span-2 border-none shadow-md">
-          <CardHeader>
-            <CardTitle className="text-lg">Current Sentiment</CardTitle>
+        <Card className={`${surfaceCardClass} lg:col-span-2`}>
+          <CardHeader className="p-8 pb-4">
+            <CardTitle className="text-xl text-[#0f172a]">Current Sentiment</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-5 p-8 pt-0">
             {QUESTION_META.map(({ key, label, description }) => (
               <QuestionBar
                 key={key}
@@ -287,11 +336,11 @@ export default function ExecutiveOverviewOptionA({
         </Card>
 
         {/* Key Insights */}
-        <Card className="border-none shadow-md">
-          <CardHeader>
-            <CardTitle className="text-lg">Key Insights</CardTitle>
+        <Card className={surfaceCardClass}>
+          <CardHeader className="p-8 pb-4">
+            <CardTitle className="text-xl text-[#0f172a]">Key Insights</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4 p-8 pt-0">
             {insights.slice(0, 3).map((insight, idx) => {
               const colors = insight.type === 'positive' ? SCORE_COLORS.thriving :
                             insight.type === 'warning' ? SCORE_COLORS.alert :
@@ -302,21 +351,23 @@ export default function ExecutiveOverviewOptionA({
                 <div 
                   key={idx}
                   className={cn(
-                    "p-3 rounded-lg border-l-4",
-                    isClickable && "cursor-pointer hover:opacity-80 transition-opacity"
+                    "rounded-2xl border border-transparent bg-white/80 p-4 shadow-[0_12px_30px_rgba(15,23,42,0.06)] transition-transform duration-200",
+                    isClickable && "cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_20px_38px_rgba(15,23,42,0.12)]"
                   )}
                   style={{ 
-                    borderLeftColor: colors,
-                    backgroundColor: `${colors}10`
+                    borderColor: `${colors}40`,
+                    boxShadow: `0 18px 35px -18px ${hexToRgba(colors, 0.45)}`,
                   }}
                   onClick={() => isClickable && handleInsightClick(insight)}
                 >
-                  <p className="text-xs text-gray-700">{insight.text}</p>
+                  <p className="text-sm font-medium text-[#1e293b]">{insight.text}</p>
                   {insight.recommendation && (
-                    <p className="text-xs text-gray-500 mt-1">{insight.recommendation}</p>
+                    <p className="mt-2 text-xs text-[#64748b]">{insight.recommendation}</p>
                   )}
                   {isClickable && (
-                    <p className="text-xs text-blue-600 mt-1 font-medium">→ Click to view details</p>
+                    <p className="mt-2 text-xs font-semibold uppercase tracking-[0.25em] text-[#2563eb]">
+                      View details →
+                    </p>
                   )}
                 </div>
               );
@@ -339,23 +390,23 @@ export default function ExecutiveOverviewOptionA({
       />
 
       {/* Divisions Table */}
-      <Card className="border-none shadow-md">
-        <CardHeader>
-          <CardTitle className="text-lg">{tableTitle}</CardTitle>
+      <Card className={surfaceCardClass}>
+        <CardHeader className="p-8 pb-3">
+          <CardTitle className="text-xl text-[#0f172a]">{tableTitle}</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
+        <CardContent className="p-8 pt-0">
+          <div className="overflow-x-auto rounded-2xl border border-white/50 bg-white/70 shadow-[0_12px_28px_rgba(15,23,42,0.08)]">
             <table className="w-full">
               <thead>
-                <tr className="border-b-2 border-gray-200">
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Division</th>
-                  <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Overall</th>
-                  <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Sentiment</th>
-                  <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Clarity</th>
-                  <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Workload</th>
-                  <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Safety</th>
-                  <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Leadership</th>
-                  <th className="text-center py-3 px-4 text-sm font-semibold text-gray-700">Participation</th>
+                <tr className="bg-white/60 text-left uppercase tracking-[0.35em] text-[#7b88a3]">
+                  <th className="py-4 pl-5 pr-4 text-xs text-left">Division</th>
+                  <th className="py-4 px-4 text-center text-xs">Overall</th>
+                  <th className="py-4 px-4 text-center text-xs">Sentiment</th>
+                  <th className="py-4 px-4 text-center text-xs">Clarity</th>
+                  <th className="py-4 px-4 text-center text-xs">Workload</th>
+                  <th className="py-4 px-4 text-center text-xs">Safety</th>
+                  <th className="py-4 px-4 text-center text-xs">Leadership</th>
+                  <th className="py-4 px-4 text-center text-xs">Participation</th>
                 </tr>
               </thead>
               <tbody>
@@ -382,29 +433,29 @@ export default function ExecutiveOverviewOptionA({
                   return (
                     <tr 
                       key={row.id}
-                      className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors"
+                      className="cursor-pointer border-b border-white/40 last:border-none hover:bg-white/90 hover:shadow-[0_10px_25px_rgba(15,23,42,0.08)] transition-all"
                       onClick={() => onDivisionClick && onDivisionClick(row.id, row.name)}
                     >
-                      <td className="py-3 px-4 font-semibold text-gray-800">{row.name}</td>
-                      <td className="py-3 px-4 text-center rounded-md" style={getCellStyle(wellbeing)}>
+                      <td className="whitespace-nowrap py-4 pl-5 pr-4 text-sm font-semibold text-[#1e293b]">{row.name}</td>
+                      <td className="py-4 px-4 text-center rounded-md font-semibold text-sm" style={getCellStyle(wellbeing)}>
                         {formatPercent(wellbeing)}
                       </td>
-                      <td className="py-3 px-4 text-center rounded-md" style={getCellStyle(sentiment)}>
+                      <td className="py-4 px-4 text-center rounded-md font-semibold text-sm" style={getCellStyle(sentiment)}>
                         {formatPercent(sentiment)}
                       </td>
-                      <td className="py-3 px-4 text-center rounded-md" style={getCellStyle(clarity)}>
+                      <td className="py-4 px-4 text-center rounded-md font-semibold text-sm" style={getCellStyle(clarity)}>
                         {formatPercent(clarity)}
                       </td>
-                      <td className="py-3 px-4 text-center rounded-md" style={getCellStyle(workload)}>
+                      <td className="py-4 px-4 text-center rounded-md font-semibold text-sm" style={getCellStyle(workload)}>
                         {formatPercent(workload)}
                       </td>
-                      <td className="py-3 px-4 text-center rounded-md" style={getCellStyle(safety)}>
+                      <td className="py-4 px-4 text-center rounded-md font-semibold text-sm" style={getCellStyle(safety)}>
                         {formatPercent(safety)}
                       </td>
-                      <td className="py-3 px-4 text-center rounded-md" style={getCellStyle(leadership)}>
+                      <td className="py-4 px-4 text-center rounded-md font-semibold text-sm" style={getCellStyle(leadership)}>
                         {formatPercent(leadership)}
                       </td>
-                      <td className="py-3 px-4 text-center rounded-md" style={getCellStyle(participation)}>
+                      <td className="py-4 px-4 text-center rounded-md font-semibold text-sm" style={getCellStyle(participation)}>
                         {participation > 0 ? `${participation}%` : 'N/A'}
                       </td>
                     </tr>

@@ -20,7 +20,7 @@ export function DashboardShell({ sidebar, children }:{ sidebar: React.ReactNode;
           </SheetContent>
         </Sheet>
       </div>
-      <main className="p-4 lg:p-6">{children}</main>
+      <main className="p-4 lg:p-6 bg-[#f5f8ff]">{children}</main>
     </div>
   );
 }

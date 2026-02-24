@@ -55,22 +55,22 @@
 
 **Go through the 5 questions:**
 1. "**How are you feeling about work this week?**" ← Updated wording
-2. "How's your workload?"
-3. "Do you feel safe speaking up?"
-4. "Do you feel supported by leadership?"
-5. "Are you clear on what's expected?"
+2. "How manageable is your current workload?"
+3. "How comfortable do you feel raising concerns when something isn’t right?"
+4. "How supported do you feel by your immediate leadership?"
+5. "How clear are you on your priorities and what’s expected of you?"
 
 **Key talking points:**
 - 60 seconds to complete
-- 3-point scale: Good / Okay / Not great
+- 3-point scale: Positive / Neutral / Needs attention
 - All anonymous
 - Mobile-optimised
 - No login required
 
 **Response options:**
-- ✅ Green: Good
-- 😐 Yellow: Okay  
-- ❌ Red: Not great
+- ✅ Positive (e.g., "Feeling positive and energised about work")
+- 😐 Neutral (e.g., "Fine overall")  
+- ❌ Needs attention (e.g., "Not great – I’m struggling this week")
 
 ---
 

@@ -19,7 +19,7 @@ export default function Home() {
         }
 
         .section {
-          padding: 100px 0;
+          padding: 56px 0;
         }
 
         .container {
@@ -33,8 +33,8 @@ export default function Home() {
         }
 
         .hero {
-          padding-top: 140px;
-          padding-bottom: 120px;
+          padding-top: 80px;
+          padding-bottom: 72px;
         }
 
         .hero-inner {
@@ -232,6 +232,108 @@ export default function Home() {
         @media (prefers-reduced-motion: reduce){
           .signal-line::after { animation: none; }
         }
+
+        .section-icon {
+          width: 48px;
+          height: 48px;
+          margin-bottom: 16px;
+          color: #2f7f7b;
+        }
+        .visibility-cards {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 24px;
+          margin-top: 28px;
+        }
+        @media (max-width: 700px) { .visibility-cards { grid-template-columns: 1fr; } }
+        .visibility-card {
+          padding: 24px;
+          border-radius: 12px;
+          border: 1px solid #D7E0E8;
+          background: #fff;
+        }
+        .visibility-card.reactive { border-left: 4px solid #8A3A3A; }
+        .visibility-card.solution { border-left: 4px solid #2f7f7b; }
+        .visibility-card h3 { font-size: 16px; font-weight: 700; color: #0B1B2B; margin-bottom: 12px; }
+        .visibility-card ul { margin: 0; padding-left: 20px; font-size: 15px; color: #2E4057; line-height: 1.6; }
+        .step-flow {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 16px;
+          flex-wrap: wrap;
+          margin-top: 28px;
+        }
+        .step-flow .step {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          min-width: 100px;
+        }
+        .step-flow .step-circle {
+          width: 56px;
+          height: 56px;
+          border-radius: 50%;
+          background: #2f7f7b;
+          color: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          font-size: 18px;
+          margin-bottom: 10px;
+        }
+        .step-flow .step-label { font-size: 14px; font-weight: 600; color: #0B1B2B; }
+        .step-flow .arrow { color: #2f7f7b; font-size: 24px; margin: 0 4px; }
+        .method-card-visual {
+          border: 1px solid #D7E0E8;
+          padding: 24px;
+          background: #fff;
+          border-radius: 10px;
+          border-top: 4px solid #2f7f7b;
+        }
+        .method-card-visual .card-icon { margin-bottom: 12px; color: #2f7f7b; }
+        .risk-scale-bar {
+          display: flex;
+          width: 100%;
+          max-width: 560px;
+          height: 32px;
+          border-radius: 6px;
+          overflow: hidden;
+          margin-bottom: 24px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .risk-scale-bar span { flex: 1; min-width: 0; }
+        .risk-scale-bar .r0 { background: #8A3A3A; }
+        .risk-scale-bar .r1 { background: #A87B2F; }
+        .risk-scale-bar .r2 { background: #4C6A88; }
+        .risk-scale-bar .r3 { background: #2F6F7E; }
+        .pilot-steps {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          gap: 16px;
+          margin-top: 24px;
+        }
+        .pilot-step {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 16px;
+          background: #fff;
+          border: 1px solid #D7E0E8;
+          border-radius: 10px;
+        }
+        .pilot-step-num { width: 28px; height: 28px; border-radius: 50%; background: #2f7f7b; color: #fff; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .pilot-step span { font-size: 15px; color: #2E4057; line-height: 1.4; }
+        .op-design-list { list-style: none; padding: 0; margin: 24px 0 0; }
+        .op-design-list li { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; font-size: 17px; color: #2E4057; }
+        .op-design-list .tick { width: 24px; height: 24px; border-radius: 50%; background: #2f7f7b; color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
+        .method-grid-visual { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 28px; }
+        @media (max-width: 768px) {
+          .method-grid-visual { grid-template-columns: 1fr; }
+          .risk-scale-bar { max-width: 100%; }
+          .pilot-steps { grid-template-columns: 1fr; }
+        }
       `}} />
       
       <div style={{ fontFamily: 'ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif', lineHeight: 1.6, color: '#2E4057', background: '#ffffff' }}>
@@ -277,18 +379,33 @@ export default function Home() {
         {/* THE VISIBILITY GAP */}
         <section className="section section-alt">
           <div className="container">
-            <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '32px', fontWeight: 600, color: '#0B1B2B', marginBottom: '24px', lineHeight: 1.2 }}>
+            <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
+            </svg>
+            <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '32px', fontWeight: 600, color: '#0B1B2B', marginBottom: '8px', lineHeight: 1.2 }}>
               The Visibility Gap
             </h2>
-            <p style={{ marginBottom: '16px', fontSize: '17px' }}>
-              Most organisations detect psychosocial risk after escalation — through complaints, conflict, attrition, or claims.
+            <p style={{ marginBottom: '0', fontSize: '17px', maxWidth: '720px' }}>
+              Most organisations detect psychosocial risk after escalation. WHS expectations require ongoing identification, monitoring, and response.
             </p>
-            <p style={{ marginBottom: '16px', fontSize: '17px' }}>
-              WHS expectations require ongoing identification, monitoring, and response. Reactive detection undermines duty of care and exposes organisations to regulatory scrutiny.
-            </p>
-            <p style={{ marginBottom: '16px', fontSize: '17px' }}>
-              Beacon Index provides structured, continuous visibility suitable for governance reporting — closing the gap between obligation and operational reality.
-            </p>
+            <div className="visibility-cards">
+              <div className="visibility-card reactive">
+                <h3>Reactive detection</h3>
+                <ul>
+                  <li>Complaints, conflict, attrition, or claims</li>
+                  <li>Undermines duty of care</li>
+                  <li>Exposes organisations to regulatory scrutiny</li>
+                </ul>
+              </div>
+              <div className="visibility-card solution">
+                <h3>Beacon Index</h3>
+                <ul>
+                  <li>Structured, continuous visibility</li>
+                  <li>Suitable for governance reporting</li>
+                  <li>Closes the gap between obligation and operational reality</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -296,22 +413,33 @@ export default function Home() {
         <section className="section section-alt">
           <div className="container two-column">
             <div>
+              <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+              </svg>
               <h2>See It in 60 Seconds</h2>
               <p>
                 Beacon Index is intentionally simple at the point of interaction.
                 Five calibrated system-level questions. Mobile-first.
                 Typically completed in under one minute.
               </p>
-              <p>
-                In executive briefings, leaders scan a QR code,
-                complete the questions live,
-                and immediately view the composite governance score
-                within the calibrated risk bands.
-              </p>
-              <p>
-                The simplicity at the surface contrasts with the modelling beneath —
-                weighted domain scoring, stability logic, de-identification thresholds,
-                and escalation triggers are applied automatically.
+              <div className="step-flow" aria-label="Process: Scan, Respond, View">
+                <div className="step">
+                  <div className="step-circle">1</div>
+                  <span className="step-label">Scan</span>
+                </div>
+                <span className="arrow" aria-hidden="true">→</span>
+                <div className="step">
+                  <div className="step-circle">2</div>
+                  <span className="step-label">Respond</span>
+                </div>
+                <span className="arrow" aria-hidden="true">→</span>
+                <div className="step">
+                  <div className="step-circle">3</div>
+                  <span className="step-label">View</span>
+                </div>
+              </div>
+              <p style={{ marginTop: '20px' }}>
+                In executive briefings, leaders scan a QR code, complete the questions live, and immediately view the composite governance score within the calibrated risk bands.
               </p>
               <p className="micro-note">
                 Designed for governance validation — not employee sentiment tracking.
@@ -330,38 +458,44 @@ export default function Home() {
         {/* METHODOLOGY */}
         <section id="methodology" className="section">
           <div className="container">
-            <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '32px', fontWeight: 600, color: '#0B1B2B', marginBottom: '24px', lineHeight: 1.2 }}>
+            <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" />
+            </svg>
+            <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '32px', fontWeight: 600, color: '#0B1B2B', marginBottom: '8px', lineHeight: 1.2 }}>
               Methodology (in brief)
             </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', marginTop: '32px' }}>
-              <div style={{ border: '1px solid #D7E0E8', padding: '24px', background: '#ffffff' }}>
-                <h3 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '18px', fontWeight: 600, color: '#0B1B2B', marginBottom: '16px', lineHeight: 1.2 }}>
-                  Domains & Weighting
-                </h3>
-                <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                  <li style={{ fontSize: '15px', marginBottom: '8px' }}>Five calibrated ISO 45003-aligned domains</li>
-                  <li style={{ fontSize: '15px', marginBottom: '8px' }}>Weighted composite scoring (0–100)</li>
-                  <li style={{ fontSize: '15px', marginBottom: '8px' }}>System-level conditions, not individual sentiment</li>
+            <div className="method-grid-visual">
+              <div className="method-card-visual">
+                <svg className="card-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                  <path d="M3 3v18h18" /><path d="M18 9V3h-6" /><path d="M18 15v-4" /><path d="M18 21v-2" />
+                </svg>
+                <h3 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '18px', fontWeight: 600, color: '#0B1B2B', marginBottom: '16px', lineHeight: 1.2 }}>Domains & Weighting</h3>
+                <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '15px' }}>
+                  <li style={{ marginBottom: '8px' }}>Five calibrated ISO 45003-aligned domains</li>
+                  <li style={{ marginBottom: '8px' }}>Weighted composite scoring (0–100)</li>
+                  <li style={{ marginBottom: '8px' }}>System-level conditions, not individual sentiment</li>
                 </ul>
               </div>
-              <div style={{ border: '1px solid #D7E0E8', padding: '24px', background: '#ffffff' }}>
-                <h3 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '18px', fontWeight: 600, color: '#0B1B2B', marginBottom: '16px', lineHeight: 1.2 }}>
-                  De-identification & Anonymity
-                </h3>
-                <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                  <li style={{ fontSize: '15px', marginBottom: '8px' }}>Team-level aggregation minimum thresholds</li>
-                  <li style={{ fontSize: '15px', marginBottom: '8px' }}>Individual responses not identifiable</li>
-                  <li style={{ fontSize: '15px', marginBottom: '8px' }}>Threshold protections maintained across reporting cycles</li>
+              <div className="method-card-visual">
+                <svg className="card-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                <h3 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '18px', fontWeight: 600, color: '#0B1B2B', marginBottom: '16px', lineHeight: 1.2 }}>De-identification & Anonymity</h3>
+                <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '15px' }}>
+                  <li style={{ marginBottom: '8px' }}>Team-level aggregation minimum thresholds</li>
+                  <li style={{ marginBottom: '8px' }}>Individual responses not identifiable</li>
+                  <li style={{ marginBottom: '8px' }}>Threshold protections maintained across reporting cycles</li>
                 </ul>
               </div>
-              <div style={{ border: '1px solid #D7E0E8', padding: '24px', background: '#ffffff' }}>
-                <h3 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '18px', fontWeight: 600, color: '#0B1B2B', marginBottom: '16px', lineHeight: 1.2 }}>
-                  Trend Modelling & Stability
-                </h3>
-                <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                  <li style={{ fontSize: '15px', marginBottom: '8px' }}>Multi-cycle trend analysis prioritised</li>
-                  <li style={{ fontSize: '15px', marginBottom: '8px' }}>Single-week volatility smoothed</li>
-                  <li style={{ fontSize: '15px', marginBottom: '8px' }}>Sustained movement signals governance significance</li>
+              <div className="method-card-visual">
+                <svg className="card-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+                <h3 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '18px', fontWeight: 600, color: '#0B1B2B', marginBottom: '16px', lineHeight: 1.2 }}>Trend Modelling & Stability</h3>
+                <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '15px' }}>
+                  <li style={{ marginBottom: '8px' }}>Multi-cycle trend analysis prioritised</li>
+                  <li style={{ marginBottom: '8px' }}>Single-week volatility smoothed</li>
+                  <li style={{ marginBottom: '8px' }}>Sustained movement signals governance significance</li>
                 </ul>
               </div>
             </div>
@@ -371,26 +505,26 @@ export default function Home() {
         {/* OPERATIONAL DESIGN */}
         <section className="section section-alt">
           <div className="container">
-            <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '28px', fontWeight: 600, color: '#0B1B2B', marginBottom: '20px', lineHeight: 1.2 }}>
+            <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="3" /><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+            </svg>
+            <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '28px', fontWeight: 600, color: '#0B1B2B', marginBottom: '12px', lineHeight: 1.2 }}>
               Operational Design
             </h2>
-            <p style={{ fontSize: '18px', color: '#2E4057', marginBottom: '16px' }}>
-              Beacon Index is intentionally lightweight at the point of employee interaction,
-              while maintaining rigorous governance modelling behind the scenes.
+            <p style={{ fontSize: '18px', color: '#2E4057', marginBottom: '0' }}>
+              Beacon Index is intentionally lightweight at the point of employee interaction, while maintaining rigorous governance modelling behind the scenes.
             </p>
-            <div style={{ marginTop: '35px', border: '1px solid #D7E0E8', padding: '30px', backgroundColor: '#ffffff' }}>
-              <ul style={{ fontSize: '17px', lineHeight: 1.6, paddingLeft: '20px', margin: 0 }}>
-                <li style={{ marginBottom: '10px' }}>Five calibrated system-level indicators</li>
-                <li style={{ marginBottom: '10px' }}>Mobile-first delivery (typically &lt; 60 seconds to complete)</li>
-                <li style={{ marginBottom: '10px' }}>Team-level de-identification and anonymity thresholds</li>
-                <li style={{ marginBottom: '10px' }}>Trend-weighted composite scoring (0–100 index)</li>
-                <li style={{ marginBottom: 0 }}>Embedded support pathways activated where elevated risk patterns are detected</li>
+            <div style={{ border: '1px solid #D7E0E8', padding: '28px', backgroundColor: '#ffffff', borderRadius: '10px', marginTop: '24px' }}>
+              <ul className="op-design-list">
+                <li><span className="tick">✓</span> Five calibrated system-level indicators</li>
+                <li><span className="tick">✓</span> Mobile-first delivery (typically &lt; 60 seconds to complete)</li>
+                <li><span className="tick">✓</span> Team-level de-identification and anonymity thresholds</li>
+                <li><span className="tick">✓</span> Trend-weighted composite scoring (0–100 index)</li>
+                <li><span className="tick">✓</span> Embedded support pathways activated where elevated risk patterns are detected</li>
               </ul>
             </div>
-            <p style={{ marginTop: '25px', fontSize: '16px', color: '#2E4057' }}>
-              The employee experience remains simple.  
-              The governance intelligence sits within the composite modelling,
-              stability analysis, and escalation logic.
+            <p style={{ marginTop: '24px', fontSize: '16px', color: '#2E4057' }}>
+              The employee experience remains simple. The governance intelligence sits within the composite modelling, stability analysis, and escalation logic.
             </p>
           </div>
         </section>
@@ -398,9 +532,19 @@ export default function Home() {
         {/* GOVERNANCE CALIBRATION */}
         <section id="governance" className="section">
           <div className="container">
-            <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '32px', fontWeight: 600, color: '#0B1B2B', marginBottom: '24px', lineHeight: 1.2 }}>
+            <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 20V10" /><path d="M18 20V4" /><path d="M6 20v-4" />
+            </svg>
+            <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '32px', fontWeight: 600, color: '#0B1B2B', marginBottom: '12px', lineHeight: 1.2 }}>
               Governance Risk Bands (Default)
             </h2>
+            <p style={{ fontSize: '15px', color: '#5b6670', marginBottom: '16px' }}>Score scale 0–100: lower = higher risk</p>
+            <div className="risk-scale-bar" aria-hidden="true">
+              <span className="r0" title="&lt;60 Elevated" />
+              <span className="r1" title="60–69 Emerging" />
+              <span className="r2" title="70–79 Within tolerance" />
+              <span className="r3" title="≥80 Low risk" />
+            </div>
             <table style={{ width: '100%', borderCollapse: 'collapse', margin: '24px 0' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid #0B1B2B' }}>
@@ -441,21 +585,24 @@ export default function Home() {
         {/* PILOT OVERVIEW */}
         <section id="pilot" className="section section-alt">
           <div className="container">
-            <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '32px', fontWeight: 600, color: '#0B1B2B', marginBottom: '24px', lineHeight: 1.2 }}>
+            <svg className="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <h2 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '32px', fontWeight: 600, color: '#0B1B2B', marginBottom: '12px', lineHeight: 1.2 }}>
               Pilot (Governance Validation)
             </h2>
-            <p style={{ marginBottom: '16px', fontSize: '17px' }}>
+            <p style={{ marginBottom: '0', fontSize: '17px' }}>
               <strong>This is a governance validation pilot — not a software trial.</strong>
             </p>
-            <ul style={{ margin: '16px 0', paddingLeft: '24px' }}>
-              <li style={{ marginBottom: '10px', fontSize: '16px' }}>6–8 weeks</li>
-              <li style={{ marginBottom: '10px', fontSize: '16px' }}>Baseline deployment + calibration workshop</li>
-              <li style={{ marginBottom: '10px', fontSize: '16px' }}>Weekly reporting cycles with trend review</li>
-              <li style={{ marginBottom: '10px', fontSize: '16px' }}>Escalation logic validation</li>
-              <li style={{ marginBottom: '10px', fontSize: '16px' }}>Board-ready summary and recommendations</li>
-            </ul>
+            <div className="pilot-steps">
+              <div className="pilot-step"><span className="pilot-step-num">1</span><span>6–8 weeks</span></div>
+              <div className="pilot-step"><span className="pilot-step-num">2</span><span>Baseline deployment + calibration workshop</span></div>
+              <div className="pilot-step"><span className="pilot-step-num">3</span><span>Weekly reporting cycles with trend review</span></div>
+              <div className="pilot-step"><span className="pilot-step-num">4</span><span>Escalation logic validation</span></div>
+              <div className="pilot-step"><span className="pilot-step-num">5</span><span>Board-ready summary and recommendations</span></div>
+            </div>
             <div style={{ marginTop: '32px' }}>
-              <a href="#contact" style={{ display: 'inline-block', padding: '14px 32px', backgroundColor: '#2F6F7E', color: '#ffffff', textDecoration: 'none', fontWeight: 500, fontSize: '16px' }}>
+              <a href="#contact" style={{ display: 'inline-block', padding: '14px 32px', backgroundColor: '#2F6F7E', color: '#ffffff', textDecoration: 'none', fontWeight: 500, fontSize: '16px', borderRadius: '8px' }}>
                 Request pilot pack
               </a>
             </div>
@@ -465,6 +612,9 @@ export default function Home() {
         {/* CONTACT */}
         <section id="contact" className="section section-alt" style={{ borderTop: '1px solid #D7E0E8', textAlign: 'center' }}>
           <div className="container">
+            <svg className="section-icon" style={{ marginLeft: 'auto', marginRight: 'auto' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
+            </svg>
             <h3 style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '20px', fontWeight: 600, color: '#0B1B2B', marginBottom: '16px', lineHeight: 1.2 }}>
               Contact
             </h3>

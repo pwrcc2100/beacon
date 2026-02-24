@@ -456,10 +456,10 @@ export function ExecutiveOverview({
 
   return (
     <div className="space-y-8">
-      {/* Combined Wellbeing Overview Card */}
+      {/* Combined Beacon Index Overview Card */}
       <Card className="border border-[#E0E7F1] shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base font-bold text-[var(--text-primary)]">Wellbeing Overview</CardTitle>
+          <CardTitle className="text-base font-bold text-[var(--text-primary)]">Beacon Index Overview</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 xl:grid-cols-[1fr,1.2fr] gap-8">
@@ -490,14 +490,14 @@ export function ExecutiveOverview({
                           const lowestLabel = QUESTION_META.find(q => q.key === lowestQ)?.description || '';
                           
                           if (overallScore < 40) {
-                            return `Critical situation: Wellbeing at ${Math.round(overallScore)}%. Immediate action needed. Focus on "${lowestLabel}" - this is your weakest area. Schedule urgent team check-ins.`;
+                            return `Critical situation: Beacon Index at ${Math.round(overallScore)}%. Immediate action needed. Focus on "${lowestLabel}" - this is your weakest area. Schedule urgent team check-ins.`;
                           } else if (overallScore < 70) {
                             if (trend < -5) {
                               return `Declining trend detected (${trend.toFixed(1)}%). Address "${lowestLabel}" before it impacts retention. Consider targeted interventions this week.`;
                             } else if (trend > 5) {
                               return `Positive momentum! Up ${trend.toFixed(1)}%. Keep focus on improvements while addressing "${lowestLabel}" to reach thriving status.`;
                             } else {
-                              return `Moderate wellbeing at ${Math.round(overallScore)}%. "${lowestLabel}" needs attention. Small improvements here could significantly boost overall scores.`;
+                              return `Moderate Beacon Index at ${Math.round(overallScore)}%. "${lowestLabel}" needs attention. Small improvements here could significantly boost overall scores.`;
                             }
                           } else {
                             return `Strong performance at ${Math.round(overallScore)}%! Team is thriving. Continue current practices and monitor "${lowestLabel}" to maintain balance across all dimensions.`;
@@ -539,7 +539,7 @@ export function ExecutiveOverview({
           {/* Bottom: Historical Trend Line */}
           <div className="mt-6 pt-6 border-t border-slate-200">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wide">Wellbeing Trend Over Time</h3>
+              <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wide">Beacon Index Trend Over Time</h3>
               <span className="text-xs text-[var(--text-muted)]">Last {wellbeingPoints.length} periods</span>
             </div>
             <Sparkline points={wellbeingPoints} color={getScoreStatus(overallScore).color} />

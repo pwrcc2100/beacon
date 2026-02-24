@@ -16,7 +16,7 @@ export function GroupLeaderGrid({ teams, limit = 12 }: Props) {
   const sortedTeams = useMemo(() => {
     const copy = [...teams];
     if (sortMode === 'score') {
-      copy.sort((a, b) => (a.wellbeingPercent ?? -1) - (b.wellbeingPercent ?? -1));
+      copy.sort((a, b) => (a.indexPercent ?? -1) - (b.indexPercent ?? -1));
     } else {
       copy.sort((a, b) => a.name.localeCompare(b.name));
     }
@@ -34,7 +34,7 @@ export function GroupLeaderGrid({ teams, limit = 12 }: Props) {
             onClick={() => setSortMode('score')}
             className="rounded-none"
           >
-            Sort by wellbeing
+            Sort by Beacon Index
           </Button>
           <Button
             type="button"
@@ -56,7 +56,7 @@ export function GroupLeaderGrid({ teams, limit = 12 }: Props) {
           <GroupLeaderCard
             key={team.id}
             teamName={team.displayName}
-            wellbeingPercent={team.wellbeingPercent}
+            indexPercent={team.indexPercent}
             questionScores={team.questionScores}
             historicalPoints={team.trend}
             insight={team.insight}

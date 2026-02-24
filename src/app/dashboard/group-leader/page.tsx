@@ -13,6 +13,12 @@ type SearchParams = {
   [key: string]: string | string[] | undefined;
 };
 
+export type TrendPoint = {
+  iso: string;
+  label: string;
+  value: number;
+};
+
 export type TeamSummary = {
   id: string;
   name: string;
@@ -20,8 +26,8 @@ export type TeamSummary = {
   divisionName?: string;
   departmentName?: string;
   questionScores: Record<'sentiment' | 'clarity' | 'workload' | 'safety' | 'leadership', number | undefined>;
-  wellbeingPercent?: number;
-  trend: number[];
+  indexPercent?: number;
+  trend: TrendPoint[];
   responseCount: number;
   insight: string;
 };
@@ -173,7 +179,7 @@ async function getTeamSummaries(
     const avg = (field: 'sentiment' | 'workload' | 'safety' | 'leadership' | 'clarity') => 
       (summary.count > 0 ? summary[field] / summary.count : undefined);
 
-    const wellbeingPercent = summary.count > 0
+    const indexPercent = summary.count > 0
       ? calculateWellbeingPercent({
           sentiment: summary.sentiment / summary.count,
           workload: summary.workload / summary.count,
@@ -185,17 +191,31 @@ async function getTeamSummaries(
 
     const weeklyPoints = Array.from(summary.weekly.entries())
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([, bucket]) => {
-        if (bucket.count === 0) return 0;
-        return (
-          ((bucket.sentiment / bucket.count) * 0.25 +
-            (bucket.workload / bucket.count) * 0.25 +
-            (bucket.safety / bucket.count) * 0.2 +
-            (bucket.leadership / bucket.count) * 0.2 +
-            (bucket.clarity / bucket.count) * 0.1) * 20
-        );
+      .map(([weekStart, bucket]) => {
+        const score =
+          bucket.count === 0
+            ? 0
+            : (
+                (bucket.sentiment / bucket.count) * 0.25 +
+                (bucket.workload / bucket.count) * 0.25 +
+                (bucket.safety / bucket.count) * 0.2 +
+                (bucket.leadership / bucket.count) * 0.2 +
+                (bucket.clarity / bucket.count) * 0.1
+              ) * 20;
+
+        const weekDate = new Date(`${weekStart}T00:00:00Z`);
+        const label = weekDate.toLocaleDateString('en-AU', {
+          day: 'numeric',
+          month: 'short',
+        });
+
+        return {
+          iso: weekStart,
+          label,
+          value: Number(score.toFixed(1)),
+        };
       })
-      .slice(-6);
+      .slice(-12);
 
     const dept = Array.isArray(team.departments) ? team.departments[0] : team.departments;
     const division = dept ? (Array.isArray(dept.divisions) ? dept.divisions[0] : dept?.divisions) : undefined;
@@ -217,7 +237,7 @@ async function getTeamSummaries(
         safety: avg('safety'),
         leadership: avg('leadership'),
       },
-      wellbeingPercent,
+      indexPercent,
       trend: weeklyPoints,
       responseCount: summary.count,
       insight: 'Focus on celebrating wins and checking in with the team lead.',
@@ -225,8 +245,8 @@ async function getTeamSummaries(
   });
 
   return summaries.sort((a, b) => {
-    const aValue = a.wellbeingPercent ?? 101;
-    const bValue = b.wellbeingPercent ?? 101;
+    const aValue = a.indexPercent ?? 101;
+    const bValue = b.indexPercent ?? 101;
     return aValue - bValue;
   });
 }
@@ -295,9 +315,11 @@ export default async function GroupLeaderDashboard({ searchParams }: { searchPar
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <div>
-            <div className="text-lg font-semibold text-[var(--text-muted)] uppercase tracking-widest">Example</div>
-            <div className="text-3xl md:text-4xl font-black text-[var(--text-primary)] leading-tight">Group Leader Dashboard</div>
-            <p className="text-sm text-[var(--text-muted)] mt-2">Whole of department | period: {period === 'all' ? 'All time' : period}</p>
+            <div className="text-lg font-semibold text-[var(--text-muted)] uppercase tracking-widest">Beacon Index</div>
+            <div className="text-3xl md:text-4xl font-black text-[var(--text-primary)] leading-tight">Team Insights Dashboard</div>
+            <p className="text-sm text-[var(--text-muted)] mt-2">
+              Beacon Index by team · period: {period === 'all' ? 'All time' : period}
+            </p>
           </div>
           <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
             <span className="inline-flex items-center gap-2">
@@ -325,6 +347,19 @@ export default async function GroupLeaderDashboard({ searchParams }: { searchPar
 }
 
 function getDemoTeamSummaries(): TeamSummary[] {
+  const buildTrend = (values: number[]) => {
+    const startDate = new Date(Date.UTC(2024, 6, 1));
+    return values.map((value, index) => {
+      const pointDate = new Date(startDate.getTime());
+      pointDate.setUTCDate(startDate.getUTCDate() + index * 7);
+      return {
+        iso: pointDate.toISOString().slice(0, 10),
+        label: pointDate.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }),
+        value,
+      };
+    });
+  };
+
   return [
     {
       id: 'demo-team-a',
@@ -332,7 +367,7 @@ function getDemoTeamSummaries(): TeamSummary[] {
       displayName: 'Team A · Sydney Metro / Education',
       divisionName: 'Sydney Metro',
       departmentName: 'Education',
-      wellbeingPercent: 25,
+      indexPercent: 25,
       responseCount: 42,
       insight: 'Escalate to regional HR partner. Introduce weekly workload review with the team lead.',
       questionScores: {
@@ -342,7 +377,7 @@ function getDemoTeamSummaries(): TeamSummary[] {
         safety: 1.7,
         leadership: 1.8,
       },
-      trend: [35, 33, 30, 28, 26, 25],
+      trend: buildTrend([48, 46, 44, 42, 40, 38, 35, 33, 30, 28, 26, 25]),
     },
     {
       id: 'demo-team-b',
@@ -350,7 +385,7 @@ function getDemoTeamSummaries(): TeamSummary[] {
       displayName: 'Team B · Sydney Metro / Residential',
       divisionName: 'Sydney Metro',
       departmentName: 'Residential',
-      wellbeingPercent: 42,
+      indexPercent: 42,
       responseCount: 57,
       insight: 'Workload feedback is trending down. Review roster adjustments and buddy support.',
       questionScores: {
@@ -360,7 +395,7 @@ function getDemoTeamSummaries(): TeamSummary[] {
         safety: 2.7,
         leadership: 2.5,
       },
-      trend: [52, 48, 46, 45, 43, 42],
+      trend: buildTrend([60, 58, 56, 54, 52, 50, 48, 47, 46, 45, 43, 42]),
     },
     {
       id: 'demo-team-c',
@@ -368,7 +403,7 @@ function getDemoTeamSummaries(): TeamSummary[] {
       displayName: 'Team C · Regional / Health',
       divisionName: 'Regional',
       departmentName: 'Health',
-      wellbeingPercent: 68,
+      indexPercent: 68,
       responseCount: 63,
       insight: 'Solid improvement in safety scores after tool-box refresh. Maintain fortnightly pulse checks.',
       questionScores: {
@@ -378,7 +413,7 @@ function getDemoTeamSummaries(): TeamSummary[] {
         safety: 3.5,
         leadership: 3.2,
       },
-      trend: [54, 58, 60, 63, 66, 68],
+      trend: buildTrend([42, 45, 48, 51, 54, 57, 60, 62, 64, 66, 68, 70]),
     },
     {
       id: 'demo-team-d',
@@ -386,7 +421,7 @@ function getDemoTeamSummaries(): TeamSummary[] {
       displayName: 'Team D · Regional / Education',
       divisionName: 'Regional',
       departmentName: 'Education',
-      wellbeingPercent: 57,
+      indexPercent: 57,
       responseCount: 51,
       insight: 'Mentoring program launched last month. Monitor clarity and leadership scores for uplift.',
       questionScores: {
@@ -396,7 +431,7 @@ function getDemoTeamSummaries(): TeamSummary[] {
         safety: 3.0,
         leadership: 3.1,
       },
-      trend: [49, 51, 52, 53, 55, 57],
+      trend: buildTrend([44, 46, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57]),
     },
     {
       id: 'demo-team-e',
@@ -404,7 +439,7 @@ function getDemoTeamSummaries(): TeamSummary[] {
       displayName: 'Team E · QLD / Residential',
       divisionName: 'QLD',
       departmentName: 'Residential',
-      wellbeingPercent: 74,
+      indexPercent: 74,
       responseCount: 46,
       insight: 'Coaching conversations improved clarity; next focus is balancing rosters across shifts.',
       questionScores: {
@@ -414,7 +449,7 @@ function getDemoTeamSummaries(): TeamSummary[] {
         safety: 3.4,
         leadership: 3.1,
       },
-      trend: [60, 64, 68, 70, 72, 74],
+      trend: buildTrend([58, 60, 62, 64, 66, 68, 70, 71, 72, 73, 74, 75]),
     },
     {
       id: 'demo-team-f',
@@ -422,7 +457,7 @@ function getDemoTeamSummaries(): TeamSummary[] {
       displayName: 'Team F · QLD / Health',
       divisionName: 'QLD',
       departmentName: 'Health',
-      wellbeingPercent: 86,
+      indexPercent: 86,
       responseCount: 55,
       insight: 'Model site for recognition program. Capture learnings to share with Sydney Metro teams.',
       questionScores: {
@@ -432,7 +467,7 @@ function getDemoTeamSummaries(): TeamSummary[] {
         safety: 4.6,
         leadership: 4.7,
       },
-      trend: [76, 78, 80, 82, 85, 86],
+      trend: buildTrend([70, 72, 74, 76, 78, 80, 82, 83, 84, 85, 86, 88]),
     },
   ];
 }

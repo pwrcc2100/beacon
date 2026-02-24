@@ -12,45 +12,45 @@ const questions = [
     id: 'sentiment',
     question: 'How are you feeling about work this week?',
     options: [
-      { value: 1 as const, label: 'Good – I\'m doing well', color: '#64afac' },
-      { value: 2 as const, label: 'Okay – Getting by', color: '#5d89a9' },
-      { value: 3 as const, label: 'Not great – I\'m struggling', color: '#ea9999' }
+      { value: 1 as const, label: 'Feeling positive and energised about work', color: '#64afac' },
+      { value: 2 as const, label: 'Fine overall', color: '#5d89a9' },
+      { value: 3 as const, label: 'Not great – I’m struggling this week', color: '#ea9999' }
     ]
   },
   {
     id: 'clarity',
-    question: 'How clear are you about your priorities and what\'s expected of you?',
+    question: 'How clear are you on your priorities and what’s expected of you?',
     options: [
-      { value: 1 as const, label: 'Clear on what\'s expected', color: '#64afac' },
-      { value: 2 as const, label: 'Mostly clear', color: '#5d89a9' },
-      { value: 3 as const, label: 'Unclear about priorities', color: '#ea9999' }
+      { value: 1 as const, label: 'Very clear on priorities and expectations', color: '#64afac' },
+      { value: 2 as const, label: 'Mostly clear, a few grey areas', color: '#5d89a9' },
+      { value: 3 as const, label: 'Unclear – need more direction', color: '#ea9999' }
     ]
   },
   {
     id: 'workload',
     question: 'How manageable is your current workload?',
     options: [
-      { value: 1 as const, label: 'Manageable', color: '#64afac' },
-      { value: 2 as const, label: 'Busy but okay', color: '#5d89a9' },
-      { value: 3 as const, label: 'Unsustainable', color: '#ea9999' }
+      { value: 1 as const, label: 'Manageable – workload feels sustainable', color: '#64afac' },
+      { value: 2 as const, label: 'Busy but still manageable', color: '#5d89a9' },
+      { value: 3 as const, label: 'Unsustainable – workload isn’t manageable', color: '#ea9999' }
     ]
   },
   {
     id: 'safety',
-    question: 'How comfortable do you feel speaking up about concerns or ideas?',
+    question: 'How comfortable do you feel raising concerns when something isn’t right?',
     options: [
-      { value: 1 as const, label: 'Comfortable speaking up', color: '#64afac' },
-      { value: 2 as const, label: 'Sometimes hesitate', color: '#5d89a9' },
-      { value: 3 as const, label: 'Don\'t feel safe raising issues', color: '#ea9999' }
+      { value: 1 as const, label: 'Very comfortable raising concerns', color: '#64afac' },
+      { value: 2 as const, label: 'Sometimes hesitate before speaking up', color: '#5d89a9' },
+      { value: 3 as const, label: 'Not comfortable raising concerns', color: '#ea9999' }
     ]
   },
   {
     id: 'leadership',
     question: 'How supported do you feel by your immediate leadership?',
     options: [
-      { value: 1 as const, label: 'Supported', color: '#64afac' },
-      { value: 2 as const, label: 'Somewhat supported', color: '#5d89a9' },
-      { value: 3 as const, label: 'Not supported', color: '#ea9999' }
+      { value: 1 as const, label: 'Consistently supported by my leader', color: '#64afac' },
+      { value: 2 as const, label: 'Support is mixed', color: '#5d89a9' },
+      { value: 3 as const, label: 'I don’t feel supported by leadership', color: '#ea9999' }
     ]
   }
 ];

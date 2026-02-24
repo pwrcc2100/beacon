@@ -92,7 +92,7 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
       type: 'value',
       min: 0,
       max: 100,
-      name: 'Average Wellbeing Score',
+      name: 'Beacon Index Score',
       nameLocation: 'middle',
       nameGap: 50,
       nameTextStyle: {
@@ -153,7 +153,7 @@ export function TeamsAttentionChart({ teams, onTeamClick }: Props) {
       formatter: (params: any) => {
         const data = params[0];
         const team = sortedTeams[data.dataIndex];
-        return `<strong>${labels[data.dataIndex]}</strong><br/>Wellbeing Score: ${Math.round(team.score)}%`;
+        return `<strong>${labels[data.dataIndex]}</strong><br/>Beacon Index: ${Math.round(team.score)}%`;
       }
     }
   };

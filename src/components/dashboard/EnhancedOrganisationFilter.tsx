@@ -16,18 +16,25 @@ import {
 type Division = {
   division_id: string;
   division_name: string;
+  display_name?: string;
 };
 
 type Department = {
   department_id: string;
   department_name: string;
   division_id: string;
+  division_name?: string;
+  display_name?: string;
 };
 
 type Team = {
   team_id: string;
   team_name: string;
   department_id: string;
+  department_name?: string;
+  division_id?: string;
+  division_name?: string;
+  display_name?: string;
 };
 
 type Props = {
@@ -57,7 +64,7 @@ export function EnhancedOrganisationFilter({
 }: Props) {
   const divisionLookup = useMemo(() => {
     const map = new Map<string, string>();
-    divisions.forEach(div => map.set(div.division_id, div.division_name));
+    divisions.forEach(div => map.set(div.division_id, div.display_name ?? div.division_name));
     return map;
   }, [divisions]);
 
@@ -117,7 +124,7 @@ export function EnhancedOrganisationFilter({
             <optgroup label="Divisions">
               {divisions.map(div => (
                 <option key={div.division_id} value={`division:${div.division_id}`}>
-                  {div.division_name}
+                  {div.display_name ?? div.division_name}
                 </option>
               ))}
             </optgroup>
@@ -126,7 +133,7 @@ export function EnhancedOrganisationFilter({
             <optgroup label="Departments">
               {departments.map(dept => (
                 <option key={dept.department_id} value={`department:${dept.department_id}`}>
-                  {dept.department_name}
+                  {dept.display_name ?? dept.department_name}
                 </option>
               ))}
             </optgroup>
@@ -135,7 +142,7 @@ export function EnhancedOrganisationFilter({
             <optgroup label="Teams">
               {teams.map(team => (
                 <option key={team.team_id} value={`team:${team.team_id}`}>
-                  {team.team_name}
+                  {team.display_name ?? team.team_name}
                 </option>
               ))}
             </optgroup>
@@ -174,7 +181,7 @@ export function EnhancedOrganisationFilter({
                     toggleDepartment(dept.department_id, Boolean(checked));
                   }}
                 >
-                  {dept.department_name}
+                  {dept.display_name ?? dept.department_name}
                 </DropdownMenuCheckboxItem>
               ))}
               <DropdownMenuSeparator />

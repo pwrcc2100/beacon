@@ -88,7 +88,7 @@ export default async function ParticipantPage({ params }: { params: { token: str
       <div className="max-w-4xl mx-auto space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">
-            Your Wellbeing Response
+            Your Response
           </h1>
           <p className="text-sm text-[var(--text-muted)]">
             Submitted: {new Date(response.submitted_at || response.created_at).toLocaleString()}
@@ -98,7 +98,7 @@ export default async function ParticipantPage({ params }: { params: { token: str
         {/* Overall Score */}
         <Card>
           <CardHeader>
-            <CardTitle>Your Overall Wellbeing Score</CardTitle>
+            <CardTitle>Your Beacon Index Score</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex justify-center">
@@ -126,7 +126,7 @@ export default async function ParticipantPage({ params }: { params: { token: str
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Sentiment / Overall Mood</CardTitle>
+              <CardTitle className="text-base">Experience / Overall Sentiment</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
@@ -146,7 +146,7 @@ export default async function ParticipantPage({ params }: { params: { token: str
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Workload / Capacity</CardTitle>
+              <CardTitle className="text-base">Workload & Resourcing</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
@@ -159,14 +159,14 @@ export default async function ParticipantPage({ params }: { params: { token: str
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                "How's your workload?"
+                "How manageable is your current workload?"
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Clarity / Direction</CardTitle>
+              <CardTitle className="text-base">Clarity & Direction</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
@@ -179,7 +179,7 @@ export default async function ParticipantPage({ params }: { params: { token: str
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                "Are you clear on what's expected?"
+                "How clear are you on your priorities and what’s expected of you?"
               </p>
             </CardContent>
           </Card>
@@ -199,14 +199,14 @@ export default async function ParticipantPage({ params }: { params: { token: str
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                "Do you feel safe speaking up?"
+                "How comfortable do you feel raising concerns when something isn’t right?"
               </p>
             </CardContent>
           </Card>
 
           <Card className="md:col-span-2">
             <CardHeader>
-              <CardTitle className="text-base">Leadership Support</CardTitle>
+              <CardTitle className="text-base">Leadership & Support</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
@@ -219,7 +219,7 @@ export default async function ParticipantPage({ params }: { params: { token: str
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                "Do you feel supported by leadership?"
+                "How supported do you feel by your immediate leadership?"
               </p>
             </CardContent>
           </Card>

@@ -24,19 +24,20 @@
 │                  (Progress: 1/5, 2/5, 3/5...)                   │
 │                                                                   │
 │  Q1: How are you feeling about work this week?                  │
-│      ✅ Good │ 😐 Okay │ ❌ Struggling                          │
+│      ✅ Feeling positive │ 😐 Fine overall │ ❌ Not great        │
 │                                                                   │
-│  Q2: How's your workload?                                        │
-│      ✅ Manageable │ 😐 Busy │ ❌ Unsustainable                 │
+│  Q2: How manageable is your current workload?                   │
+│      ✅ Manageable │ 😐 Busy but manageable │ ❌ Unsustainable   │
 │                                                                   │
-│  Q3: Do you feel safe speaking up?                              │
-│      ✅ Comfortable │ 😐 Sometimes hesitate │ ❌ Don't feel safe│
+│  Q3: How comfortable do you feel raising concerns when          │
+│      something isn’t right?                                     │
+│      ✅ Very comfortable │ 😐 Sometimes hesitate │ ❌ Not comfy   │
 │                                                                   │
-│  Q4: Do you feel supported by leadership?                       │
-│      ✅ Supported │ 😐 Somewhat │ ❌ Not supported              │
+│  Q4: How supported do you feel by your immediate leadership?    │
+│      ✅ Consistently supported │ 😐 Support is mixed │ ❌ Unsupported │
 │                                                                   │
-│  Q5: Are you clear on what's expected?                          │
-│      ✅ Clear │ 😐 Mostly clear │ ❌ Unclear                    │
+│  Q5: How clear are you on your priorities and what’s expected? │
+│      ✅ Very clear │ 😐 Mostly clear │ ❌ Need more direction    │
 └─────────────────────┬───────────────────────────────────────────┘
                       │
                       ▼

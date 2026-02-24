@@ -15,37 +15,37 @@ export function Question({
 }) {
   const questionText = {
     sentiment: 'How are you feeling about work this week?',
-    clarity: 'I understand what\'s expected of me.',
-    workload: 'My workload is reasonable for the time available.',
-    safety: 'I feel safe to speak up if something isn\'t right.',
-    leadership: 'My leader supports me when challenges arise.'
+    clarity: 'How clear are you on your priorities and what’s expected of you?',
+    workload: 'How manageable is your current workload?',
+    safety: 'How comfortable do you feel raising concerns when something isn’t right?',
+    leadership: 'How supported do you feel by your immediate leadership?'
   }[id];
 
   const labels = {
     sentiment: [
-      'Doing well – feeling positive about work',
-      'Okay overall',
-      'Not great – I\'m struggling'
+      'Feeling positive and energised about work',
+      'Fine overall',
+      'Not great – I’m struggling this week'
     ],
     clarity: [
-      'Yes – I have clear direction',
-      'Mostly clear',
-      'No – priorities are unclear'
+      'Very clear on priorities and expectations',
+      'Mostly clear, a few grey areas',
+      'Unclear – need more direction'
     ],
     workload: [
-      'Workload is reasonable',
-      'Busy but manageable',
-      'Unsustainable right now'
+      'Manageable – workload feels sustainable',
+      'Busy but still manageable',
+      'Unsustainable – workload isn’t manageable'
     ],
     safety: [
-      'Yes – I feel safe speaking up',
-      'Sometimes hesitant',
-      'No – I don\'t feel safe raising issues'
+      'Very comfortable raising concerns',
+      'Sometimes hesitate before speaking up',
+      'Not comfortable raising concerns'
     ],
     leadership: [
-      'My leader supports me',
-      'Support is inconsistent',
-      'I don\'t feel supported'
+      'Consistently supported by my leader',
+      'Support is mixed',
+      'I don’t feel supported by leadership'
     ]
   }[id];
 

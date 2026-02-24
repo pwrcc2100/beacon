@@ -1,4 +1,13 @@
+'use client';
+
 import { MaterialIcon } from '@/components/ui/MaterialIcon';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/#advisory', label: 'Advisory' },
+  { href: '/about', label: 'About' },
+] as const;
 
 export function PublicHeader() {
   return (
@@ -11,10 +20,14 @@ export function PublicHeader() {
             <p className="text-xs text-[#737A8C]">Practical senior advisory & execution support</p>
           </div>
         </a>
+
+        {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-[#2B4162]">
-          <a href="/" className="text-[#2B4162] hover:text-[#1b2740] transition-colors">Home</a>
-          <a href="/#advisory" className="text-[#2B4162] hover:text-[#1b2740] transition-colors">Advisory</a>
-          <a href="/about" className="text-[#2B4162] hover:text-[#1b2740] transition-colors">About</a>
+          {navLinks.map(({ href, label }) => (
+            <a key={href} href={href} className="text-[#2B4162] hover:text-[#1b2740] transition-colors">
+              {label}
+            </a>
+          ))}
         </nav>
         <a
           href="mailto:hello@beaconeffect.com.au"
@@ -23,6 +36,45 @@ export function PublicHeader() {
           <MaterialIcon icon="mail" style={{ fontSize: '18px' }} />
           Start a conversation
         </a>
+
+        {/* Mobile menu - always show below md; use SVG so it renders without font */}
+        <div className="flex md:hidden items-center flex-shrink-0">
+          <Sheet>
+            <SheetTrigger asChild>
+              <button
+                type="button"
+                className="flex items-center justify-center w-10 h-10 rounded-md border-2 border-[#2B4162] text-[#2B4162] hover:bg-[#2B4162] hover:text-white transition-colors"
+                aria-label="Open menu"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+                  <line x1="4" y1="6" x2="20" y2="6" />
+                  <line x1="4" y1="12" x2="20" y2="12" />
+                  <line x1="4" y1="18" x2="20" y2="18" />
+                </svg>
+              </button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[280px] bg-white">
+              <nav className="flex flex-col gap-1 pt-8">
+                {navLinks.map(({ href, label }) => (
+                  <a
+                    key={href}
+                    href={href}
+                    className="block px-4 py-3 text-base font-medium text-[#2B4162] hover:bg-[#f8f9fb] rounded-md transition-colors"
+                  >
+                    {label}
+                  </a>
+                ))}
+                <a
+                  href="mailto:hello@beaconeffect.com.au"
+                  className="mt-4 mx-4 inline-flex items-center justify-center gap-2 rounded-md border border-[#2B4162] px-4 py-3 text-sm font-semibold text-[#2B4162] hover:bg-[#2B4162] hover:text-white transition-colors"
+                >
+                  <MaterialIcon icon="mail" style={{ fontSize: '18px' }} />
+                  Start a conversation
+                </a>
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );

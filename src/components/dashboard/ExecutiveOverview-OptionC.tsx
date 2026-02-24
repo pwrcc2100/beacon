@@ -162,7 +162,7 @@ export default function ExecutiveOverviewOptionC({
             <div className="text-2xl font-bold" style={{ color: getScoreStatus(Math.round(overallScore)).color }}>
               {Math.round(overallScore)}%
             </div>
-            <div className="text-xs text-gray-600 mt-1">Overall Wellbeing</div>
+            <div className="text-xs text-gray-600 mt-1">Beacon Index</div>
           </CardContent>
         </Card>
         

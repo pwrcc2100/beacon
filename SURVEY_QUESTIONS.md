@@ -2,35 +2,39 @@
 
 ## Current Survey Questions (5 Core Questions)
 
-### 1. **Sentiment / Overall**
+### 1. **Experience / Overall Sentiment**
 *"How are you feeling about work this week?"*
-- ✅ Good – I'm doing well
-- 😐 Okay – Getting by  
-- ❌ Not great – I'm struggling
+- ✅ Feeling positive and energised about work
+- 😐 Fine overall
+- ❌ Not great – I’m struggling this week
 
-### 2. **Workload / Capacity**
-*"How's your workload?"*
-- ✅ Manageable
-- 😐 Busy but okay
-- ❌ Unsustainable
+### 2. **Workload & Resourcing**
+*"How manageable is your current workload?"*
+- ✅ Manageable – workload feels sustainable
+- 😐 Busy but still manageable
+- ❌ Unsustainable – workload isn’t manageable
 
 ### 3. **Psychological Safety / Voice**
-*"Do you feel safe speaking up?"*
-- ✅ Comfortable speaking up
-- 😐 Sometimes hesitate
-- ❌ Don't feel safe raising issues
+*"How comfortable do you feel raising concerns when something isn’t right?"*
+- ✅ Very comfortable raising concerns
+- 😐 Sometimes hesitate before speaking up
+- ❌ Not comfortable raising concerns
 
-### 4. **Leadership Support**
-*"Do you feel supported by leadership?"*
-- ✅ Supported
-- 😐 Somewhat supported
-- ❌ Not supported
+### 4. **Leadership & Support**
+*"How supported do you feel by your immediate leadership?"*
+- ✅ Consistently supported by my leader  
+- 😐 Support is mixed  
+- ❌ I don’t feel supported by leadership
 
-### 5. **Clarity / Direction**
-*"Are you clear on what's expected?"*
-- ✅ Clear on what's expected
-- 😐 Mostly clear
-- ❌ Unclear about priorities
+**Purpose:** Leader support buffers stress, improves wellbeing and drives safety participation. Poor support amplifies all other risk factors.
+
+**Evidence:** Supportive leadership is linked to lower turnover, better safety outcomes and improved mental health (Gilbreath & Benson, 2004; ISO 45003).
+
+### 5. **Clarity & Direction**
+*"How clear are you on your priorities and what’s expected of you?"*
+- ✅ Very clear on priorities and expectations
+- 😐 Mostly clear, a few grey areas
+- ❌ Unclear – need more direction
 
 ---
 
@@ -39,13 +43,13 @@
 ### **INTRO SCREEN**
 **Confidentiality Notice**
 > This is a confidential wellbeing check-in. Your responses help us identify systemic issues and improve our workplace culture.
-> 
+>
 > **How we protect your privacy:**
 > - Individual responses are confidential
 > - Only aggregated data is shared with leadership
 > - If you request support, only your designated contact person will know
 > - This is about organisational health, not individual performance
-> 
+>
 > [Continue to Survey] button
 
 ---
@@ -70,7 +74,7 @@
 
 ### **SUPPORT OPTIONS SCREEN** (If "Yes" selected)
 > "Who would you like to connect with?"
-> 
+>
 > *Select all that apply:*
 
 **Available Contacts:** (Configured per client)
@@ -117,7 +121,7 @@
 > **Immediate Support Available:**
 
 [Button: 📞 Lifeline - 13 11 14] → tel:131114
-[Button: 🌐 Beyond Blue - 1300 22 4636] → tel:1300224636  
+[Button: 🌐 Beyond Blue - 1300 22 4636] → tel:1300224636
 [Button: 💼 SafeWork Australia] → https://www.safeworkaustralia.gov.au
 [Button: 🏥 EAP - 1300 XXX XXX] → tel:client-specific
 [Button: 📧 HR Support] → mailto:hr@client.com
@@ -130,18 +134,18 @@
 
 ### **THANK YOU SCREEN** (Final screen for all users)
 > "Thank you for your feedback"
-> 
+>
 > Your responses help us build a safer, more supportive workplace for everyone.
-> 
+>
 > **What happens next:**
 > - Your individual responses remain confidential
 > - Leadership sees only aggregated trends
 > - If you requested support, expect contact within your timeframe
 > - The next check-in will be sent in 1 week
-> 
+>
 > **Need immediate help?**
 > Contact HR: hr@company.com | 📞 Internal Extension
-> 
+>
 > [Close] button
 
 ---
@@ -173,19 +177,19 @@ CREATE TABLE support_requests (
   client_id UUID REFERENCES clients(id),
   employee_id UUID REFERENCES employees(id),
   response_id UUID REFERENCES responses_v3(id),
-  
+
   contact_types TEXT[], -- ['HR', 'EAP', etc.]
   contact_method TEXT,
   contact_value TEXT,
   preferred_timeframe TEXT,
-  
+
   status TEXT DEFAULT 'pending', -- pending, assigned, contacted, resolved
   assigned_to TEXT,
   assigned_at TIMESTAMPTZ,
   contacted_at TIMESTAMPTZ,
   resolved_at TIMESTAMPTZ,
   resolution_notes TEXT,
-  
+
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

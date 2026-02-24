@@ -1,4 +1,5 @@
 import { MaterialIcon } from '@/components/ui/MaterialIcon';
+import { BeaconIndexMobileNav } from '@/components/layout/BeaconIndexMobileNav';
 
 export default function AboutPage() {
   return (
@@ -25,6 +26,7 @@ export default function AboutPage() {
               Contact
             </a>
           </nav>
+          <BeaconIndexMobileNav />
         </div>
       </header>
 

@@ -1,6 +1,6 @@
 # Beacon Index Marketing Site
 
-A standalone marketing website for the Beacon Index psychosocial safety solution.
+A standalone marketing website for **Beacon Index** — the psychosocial risk governance instrument. This site is **separate** from the Beacon Advisory website (beaconeffect.com.au): different product, different offering, different deployment.
 
 ## Quick Start
 
@@ -13,7 +13,7 @@ Visit [http://localhost:3000](http://localhost:3000) to see the site.
 
 ## Deployment
 
-This site is configured for **separate deployment** from the main Beacon Advisory site.
+This site deploys on its own (e.g. beacon-index.vercel.app or a custom domain). It is not part of the Beacon Advisory app or beaconeffect.com.au.
 
 ### Deploy to Vercel
 

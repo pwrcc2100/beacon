@@ -27,7 +27,78 @@ type WellbeingRow = {
   leadership_avg: number;
 };
 
-async function getData(clientId: string, period?: string, mode?: 'historical' | 'live'){
+type ResponseRow = {
+  submitted_at: string;
+  employee_id: string | null;
+  sentiment_5: number | null;
+  clarity_5: number | null;
+  workload_5: number | null;
+  safety_5: number | null;
+  leadership_5: number | null;
+  employees: {
+    division_id: string | null;
+    department_id: string | null;
+    team_id: string | null;
+  } | null;
+};
+
+type OrgFilter = {
+  divisionId?: string;
+  departmentId?: string;
+  teamId?: string;
+  selectedDepartments?: string[];
+};
+
+function applyResponseFilters<T extends { employees?: any }>(query: any, { divisionId, departmentId, teamId, selectedDepartments }: OrgFilter) {
+  if (teamId) {
+    return query.eq('employees.team_id', teamId);
+  }
+  if (selectedDepartments && selectedDepartments.length > 0) {
+    return query.in('employees.department_id', selectedDepartments);
+  }
+  if (departmentId) {
+    return query.eq('employees.department_id', departmentId);
+  }
+  if (divisionId) {
+    return query.eq('employees.division_id', divisionId);
+  }
+  return query;
+}
+
+function applyEmployeeFilters(query: any, { divisionId, departmentId, teamId, selectedDepartments }: OrgFilter) {
+  if (teamId) {
+    return query.eq('team_id', teamId);
+  }
+  if (selectedDepartments && selectedDepartments.length > 0) {
+    return query.in('department_id', selectedDepartments);
+  }
+  if (departmentId) {
+    return query.eq('department_id', departmentId);
+  }
+  if (divisionId) {
+    return query.eq('division_id', divisionId);
+  }
+  return query;
+}
+
+async function getData(
+  clientId: string,
+  {
+    period,
+    mode,
+    divisionId,
+    departmentId,
+    teamId,
+    selectedDepartments,
+  }: {
+    period?: string;
+    mode?: 'historical' | 'live';
+    divisionId?: string;
+    departmentId?: string;
+    teamId?: string;
+    selectedDepartments?: string[];
+  }
+) {
   // Calculate date range based on period
   let startDate: Date | undefined;
   
@@ -41,103 +112,124 @@ async function getData(clientId: string, period?: string, mode?: 'historical' | 
     startDate = period ? getPeriodStartDate(period) : undefined;
   }
 
-  let trendsQuery = supabaseAdmin
-    .from('wellbeing_responses')
-    .select('wk, sentiment_avg, clarity_avg, workload_avg, safety_avg, leadership_avg')
+  const baseSelect = `
+    submitted_at,
+    employee_id,
+    sentiment_5,
+    clarity_5,
+    workload_5,
+    safety_5,
+    leadership_5,
+    employees!inner(
+      division_id,
+      department_id,
+      team_id
+    )
+  `;
+
+  let responsesQuery = supabaseAdmin
+    .from('responses_v3')
+    .select(baseSelect)
     .eq('client_id', clientId)
-    .order('wk', { ascending: true });
+    .order('submitted_at', { ascending: true });
   
   if (startDate) {
-    trendsQuery = trendsQuery.gte('wk', startDate.toISOString());
+    responsesQuery = responsesQuery.gte('submitted_at', startDate.toISOString());
   }
-  
-  const { data: trends } = await trendsQuery;
 
-  // Fallback: if MV is empty/not refreshed, compute trends directly from raw responses
-  let computedTrends = trends as any[] | null;
-  if (!computedTrends || computedTrends.length === 0) {
-    let directQuery = supabaseAdmin
-      .from('responses_v3')
-      .select('submitted_at, sentiment_5, clarity_5, workload_5, safety_5, leadership_5')
-      .eq('client_id', clientId)
-      .order('submitted_at', { ascending: true });
-    
-    if (startDate) {
-      directQuery = directQuery.gte('submitted_at', startDate.toISOString());
-    }
-    
-    const { data: direct } = await directQuery;
-    if (direct && direct.length) {
-      // Group by week in JS
-      const byWeek: Record<string, { n:number; s:number; c:number; w:number; sa:number; l:number }> = {};
-      for (const r of direct as any[]) {
-        const d = new Date(r.submitted_at);
-        // ISO week start (Mon) approximation: get Monday of that week
-        const day = d.getDay() || 7; // 1..7
-        const monday = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - (day-1)));
-        const key = monday.toISOString().slice(0,10);
-        if (!byWeek[key]) byWeek[key] = { n:0, s:0, c:0, w:0, sa:0, l:0 };
-        const b = byWeek[key];
-        b.n += 1;
-        b.s += Number(r.sentiment_5 || 0);
-        b.c += Number(r.clarity_5 || 0);
-        b.w += Number(r.workload_5 || 0);
-        b.sa += Number(r.safety_5 || 0);
-        b.l += Number(r.leadership_5 || 0);
+  responsesQuery = applyResponseFilters(responsesQuery, { divisionId, departmentId, teamId, selectedDepartments });
+
+  const { data: responses } = await responsesQuery;
+
+  const normalizedResponses: ResponseRow[] = (responses ?? []).map((r: any) => {
+    const employee = Array.isArray(r.employees) ? r.employees[0] : r.employees;
+    return {
+      submitted_at: r.submitted_at as string,
+      employee_id: r.employee_id ?? null,
+      sentiment_5: r.sentiment_5 ?? null,
+      clarity_5: r.clarity_5 ?? null,
+      workload_5: r.workload_5 ?? null,
+      safety_5: r.safety_5 ?? null,
+      leadership_5: r.leadership_5 ?? null,
+      employees: employee
+        ? {
+            division_id: employee.division_id ?? null,
+            department_id: employee.department_id ?? null,
+            team_id: employee.team_id ?? null,
+          }
+        : {
+            division_id: null,
+            department_id: null,
+            team_id: null,
+          },
+    };
+  });
+
+  const trends = (() => {
+    if (!normalizedResponses.length) return [] as WellbeingRow[];
+    const byWeek: Record<string, { n:number; s:number; c:number; w:number; sa:number; l:number }> = {};
+    for (const r of normalizedResponses) {
+      const submittedAt = r.submitted_at;
+      if (!submittedAt) continue;
+      const d = new Date(submittedAt);
+      const day = d.getUTCDay() || 7;
+      const monday = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - (day - 1)));
+      const key = monday.toISOString().slice(0, 10);
+      if (!byWeek[key]) {
+        byWeek[key] = { n: 0, s: 0, c: 0, w: 0, sa: 0, l: 0 };
       }
-      const keys = Object.keys(byWeek).sort();
-      computedTrends = keys.map(k => {
-        const b = byWeek[k];
+      const bucket = byWeek[key];
+      bucket.n += 1;
+      bucket.s += Number(r.sentiment_5 || 0);
+      bucket.c += Number(r.clarity_5 || 0);
+      bucket.w += Number(r.workload_5 || 0);
+      bucket.sa += Number(r.safety_5 || 0);
+      bucket.l += Number(r.leadership_5 || 0);
+    }
+    return Object.keys(byWeek)
+      .sort()
+      .map((key) => {
+        const bucket = byWeek[key];
         return {
-          wk: new Date(k + 'T00:00:00.000Z').toISOString(),
-          sentiment_avg: b.s / b.n,
-          clarity_avg: b.c / b.n,
-          workload_avg: b.w / b.n,
-          safety_avg: b.sa / b.n,
-          leadership_avg: b.l / b.n,
+          wk: new Date(key + 'T00:00:00.000Z').toISOString(),
+          sentiment_avg: bucket.s / bucket.n,
+          clarity_avg: bucket.c / bucket.n,
+          workload_avg: bucket.w / bucket.n,
+          safety_avg: bucket.sa / bucket.n,
+          leadership_avg: bucket.l / bucket.n,
         };
       });
+  })();
+
+  const recent = normalizedResponses.slice(-20).reverse();
+
+  const uniqueResponders = (() => {
+    if (!normalizedResponses.length) return 0;
+    const ids = new Set<string>();
+    for (const r of normalizedResponses) {
+      if (r.employee_id) {
+        ids.add(r.employee_id);
+      }
     }
-  }
+    return ids.size;
+  })();
 
-  let recentQuery = supabaseAdmin
-    .from('responses_v3')
-    .select('submitted_at, workload_5, safety_5, clarity_5, sentiment_5, leadership_5')
-    .eq('client_id', clientId)
-    .order('submitted_at', { ascending: false })
-    .limit(20);
-  
-  if (startDate) {
-    recentQuery = recentQuery.gte('submitted_at', startDate.toISOString());
-  }
-  
-  const { data: recent } = await recentQuery;
-
-  // Get response rate: count responses vs tokens issued in period
-  let tokensQuery = supabaseAdmin
-    .from('tokens')
-    .select('id, status')
-    .eq('client_id', clientId);
-  
-  let responsesCountQuery = supabaseAdmin
-    .from('responses_v3')
+  let employeeCountQuery = supabaseAdmin
+    .from('employees')
     .select('id', { count: 'exact', head: true })
-    .eq('client_id', clientId);
+    .eq('client_id', clientId)
+    .eq('active', true);
   
-  if (startDate) {
-    tokensQuery = tokensQuery.gte('created_at', startDate.toISOString());
-    responsesCountQuery = responsesCountQuery.gte('submitted_at', startDate.toISOString());
-  }
-  
-  const { data: tokens } = await tokensQuery;
-  const { count: responsesCount } = await responsesCountQuery;
+  employeeCountQuery = applyEmployeeFilters(employeeCountQuery, { divisionId, departmentId, teamId, selectedDepartments });
 
-  return { 
-    trends: (computedTrends ?? trends ?? []) as WellbeingRow[], 
-    recent: recent ?? [],
+  const { count: employeesTotal } = await employeeCountQuery;
+
+  return {
+    trends: trends as WellbeingRow[],
+    recent: recent as ResponseRow[],
     responseRate: {
-      responded: responsesCount ?? 0,
-      total: tokens?.length ?? 0
+      responded: uniqueResponders,
+      total: employeesTotal ?? uniqueResponders
     }
   };
 }
@@ -261,7 +353,14 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
         workload_avg: agg.workload_sum / agg.count,
         safety_avg: agg.safety_sum / agg.count,
         leadership_avg: agg.leadership_sum / agg.count,
-        wellbeing_score: ((agg.sentiment_sum / agg.count) * 0.30 + (agg.workload_sum / agg.count) * 0.25 + (agg.leadership_sum / agg.count) * 0.25 + (agg.safety_sum / agg.count) * 0.20) * 20
+        wellbeing_score:
+          (
+            (agg.sentiment_sum / agg.count) * 0.25 +
+            (agg.workload_sum / agg.count) * 0.25 +
+            (agg.leadership_sum / agg.count) * 0.20 +
+            (agg.safety_sum / agg.count) * 0.20 +
+            (agg.clarity_sum / agg.count) * 0.10
+          ) * 20
       }));
     
     return { data, currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
@@ -338,7 +437,14 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
         workload_avg: agg.workload_sum / agg.count,
         safety_avg: agg.safety_sum / agg.count,
         leadership_avg: agg.leadership_sum / agg.count,
-        wellbeing_score: ((agg.sentiment_sum / agg.count) * 0.30 + (agg.workload_sum / agg.count) * 0.25 + (agg.leadership_sum / agg.count) * 0.25 + (agg.safety_sum / agg.count) * 0.20) * 20
+        wellbeing_score:
+          (
+            (agg.sentiment_sum / agg.count) * 0.25 +
+            (agg.workload_sum / agg.count) * 0.25 +
+            (agg.leadership_sum / agg.count) * 0.20 +
+            (agg.safety_sum / agg.count) * 0.20 +
+            (agg.clarity_sum / agg.count) * 0.10
+          ) * 20
       }));
     
     return { data, currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
@@ -415,7 +521,14 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
         workload_avg: agg.workload_sum / agg.count,
         safety_avg: agg.safety_sum / agg.count,
         leadership_avg: agg.leadership_sum / agg.count,
-        wellbeing_score: ((agg.sentiment_sum / agg.count) * 0.30 + (agg.workload_sum / agg.count) * 0.25 + (agg.leadership_sum / agg.count) * 0.25 + (agg.safety_sum / agg.count) * 0.20) * 20
+        wellbeing_score:
+          (
+            (agg.sentiment_sum / agg.count) * 0.25 +
+            (agg.workload_sum / agg.count) * 0.25 +
+            (agg.leadership_sum / agg.count) * 0.20 +
+            (agg.safety_sum / agg.count) * 0.20 +
+            (agg.clarity_sum / agg.count) * 0.10
+          ) * 20
       }));
     
     return { data, currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
@@ -507,7 +620,14 @@ async function getHierarchyData(clientId: string, divisionId?: string, departmen
         workload_avg: agg.workload_sum / agg.count,
         safety_avg: agg.safety_sum / agg.count,
         leadership_avg: agg.leadership_sum / agg.count,
-        wellbeing_score: ((agg.sentiment_sum / agg.count) * 0.30 + (agg.workload_sum / agg.count) * 0.25 + (agg.leadership_sum / agg.count) * 0.25 + (agg.safety_sum / agg.count) * 0.20) * 20
+        wellbeing_score:
+          (
+            (agg.sentiment_sum / agg.count) * 0.25 +
+            (agg.workload_sum / agg.count) * 0.25 +
+            (agg.leadership_sum / agg.count) * 0.20 +
+            (agg.safety_sum / agg.count) * 0.20 +
+            (agg.clarity_sum / agg.count) * 0.10
+          ) * 20
       }));
     
     return { data, currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
@@ -576,35 +696,57 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     );
   }
 
-  const { trends, recent, responseRate } = await getData(clientId, period !== 'all' ? period : undefined, mode);
+  const { trends, recent, responseRate } = await getData(clientId, {
+    period: period !== 'all' ? period : undefined,
+    mode,
+    divisionId,
+    departmentId,
+    teamId,
+    selectedDepartments,
+  });
   const hierarchyData = await getHierarchyData(clientId, divisionId, departmentId, teamId, selectedDepartments, period !== 'all' ? period : undefined, mode);
   
   // Fetch org structure for filter
-  const { data: divisions } = await supabaseAdmin
+  const { data: divisionsRaw } = await supabaseAdmin
     .from('divisions')
     .select('division_id, division_name')
     .eq('client_id', clientId)
     .eq('active', true)
     .order('division_name');
   
+  const divisions = (divisionsRaw ?? []).map(div => ({
+    division_id: div.division_id,
+    division_name: div.division_name,
+  }));
+
+  const divisionLookup = new Map(divisions.map(div => [div.division_id, div.division_name]));
+
   const { data: departmentsData } = await supabaseAdmin
     .from('departments')
     .select(`
       department_id,
       department_name,
       division_id,
-      divisions!inner(client_id)
+      divisions!inner(division_name, client_id)
     `)
     .eq('divisions.client_id', clientId)
     .eq('active', true)
     .order('department_name');
 
-  const departments = (departmentsData ?? []).map(dept => ({
-    department_id: dept.department_id,
-    department_name: dept.department_name,
-    division_id: dept.division_id
-  }));
-  
+  const departments = (departmentsData ?? []).map(dept => {
+    const divisionRel = Array.isArray(dept.divisions) ? dept.divisions[0] : dept.divisions;
+    const divisionName = divisionRel?.division_name ?? divisionLookup.get(dept.division_id) ?? '';
+    return {
+      department_id: dept.department_id,
+      department_name: dept.department_name,
+      division_id: dept.division_id,
+      division_name: divisionName,
+      display_name: divisionName ? `${dept.department_name} · ${divisionName}` : dept.department_name,
+    };
+  });
+
+  const departmentLookup = new Map(departments.map(dept => [dept.department_id, dept]));
+
   const { data: teamsData } = await supabaseAdmin
     .from('teams')
     .select(`
@@ -612,19 +754,39 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
       team_name,
       department_id,
       departments!inner(
+        department_name,
         division_id,
-        divisions!inner(client_id)
+        divisions!inner(division_name, client_id)
       )
     `)
     .eq('departments.divisions.client_id', clientId)
     .eq('active', true)
     .order('team_name');
 
-  const teams = (teamsData ?? []).map(team => ({
-    team_id: team.team_id,
-    team_name: team.team_name,
-    department_id: team.department_id
-  }));
+  const teams = (teamsData ?? []).map(team => {
+    const departmentRel = Array.isArray(team.departments) ? team.departments[0] : team.departments;
+    const divisionRelRaw = departmentRel?.divisions;
+    const divisionRel = Array.isArray(divisionRelRaw) ? divisionRelRaw[0] : divisionRelRaw;
+    const department = departmentLookup.get(team.department_id);
+    const departmentName = department?.department_name ?? departmentRel?.department_name ?? '';
+    const divisionId = department?.division_id ?? departmentRel?.division_id ?? '';
+    const divisionName = department?.division_name
+      ?? (divisionRel && typeof divisionRel.division_name === 'string' ? divisionRel.division_name : undefined)
+      ?? divisionLookup.get(divisionId)
+      ?? '';
+
+    return {
+      team_id: team.team_id,
+      team_name: team.team_name,
+      department_id: team.department_id,
+      department_name: departmentName,
+      division_id: divisionId,
+      division_name: divisionName,
+      display_name: departmentName && divisionName
+        ? `${team.team_name} · ${departmentName} / ${divisionName}`
+        : team.team_name,
+    };
+  });
 
   const startDateForFilters = (() => {
     if (mode === 'live') {
@@ -725,8 +887,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
   console.log('🔍 TEAM DEBUG - eligibleTeams:', eligibleTeams.length, '| totalTeams:', teams.length);
   
   if (eligibleTeams.length > 0) {
-    const teamMap = new Map(eligibleTeams.map(team => [team.team_id, team.team_name]));
-    const teamIds = Array.from(teamMap.keys());
+    const teamIds = eligibleTeams.map(team => team.team_id);
 
     console.log('📋 Querying for employees in', teamIds.length, 'teams');
 
@@ -806,7 +967,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
           const meta = teamInfoMap.get(id);
           const dept = meta ? departmentsById.get(meta.department_id) : undefined;
           const division = dept ? divisionsById.get(dept.division_id) : undefined;
-          const baseName = meta?.team_name ?? 'Team';
+          const baseName = meta?.display_name ?? meta?.team_name ?? 'Team';
           const suffixParts: string[] = [];
           if (division?.division_name) suffixParts.push(division.division_name);
           if (dept?.department_name) suffixParts.push(dept.department_name);
@@ -930,7 +1091,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         <div className="hidden print:block mb-6 pb-4 border-b-2 border-[var(--navy)]">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-3xl font-bold text-[var(--navy)] mb-2">Beacon Wellbeing Report</h1>
+              <h1 className="text-3xl font-bold text-[var(--navy)] mb-2">Beacon Index Report</h1>
               <div className="text-sm text-[var(--text-muted)] space-y-1">
                 <p><strong>Client ID:</strong> {clientId}</p>
                 <p><strong>Report Period:</strong> {periodLabel}</p>
@@ -947,9 +1108,9 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         <div className="print:hidden">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-[var(--text-primary)]">Executive Wellbeing Dashboard</h1>
+              <h1 className="text-2xl font-bold text-[var(--text-primary)]">Beacon Index Dashboard</h1>
               <p className="text-sm text-[var(--text-muted)]">
-                Whole of business | Last updated: {reportDate} | {responseRate.responded} responses out of {responseRate.total} team members ({Math.round((responseRate.responded / responseRate.total) * 100)}% response rate)
+                Whole of business | Last updated: {reportDate} | {responseRate.responded} responses out of {responseRate.total} team members ({Math.round(participationPercent)}% response rate)
               </p>
             </div>
           </div>

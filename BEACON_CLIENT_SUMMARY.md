@@ -17,16 +17,16 @@ Each question uses a 3-point scale for quick, honest responses:
 
 | # | Dimension | Question | Purpose |
 |---|-----------|----------|---------|
-| 1 | **Sentiment / Overall** | "How are you feeling about work this week?" | Captures overall wellbeing and mood |
-| 2 | **Workload / Capacity** | "How's your workload?" | Identifies unsustainable job demands |
-| 3 | **Psychological Safety** | "Do you feel safe speaking up?" | Measures trust and voice in the organisation |
-| 4 | **Leadership Support** | "Do you feel supported by leadership?" | Assesses management responsiveness |
-| 5 | **Clarity / Direction** | "Are you clear on what's expected?" | Evaluates role clarity and expectations |
+| 1 | **Experience / Overall Sentiment** | "How are you feeling about work this week?" | Captures overall sentiment and weekly shifts |
+| 2 | **Workload & Resourcing** | "How manageable is your current workload?" | Identifies unsustainable job demands |
+| 3 | **Psychological Safety** | "How comfortable do you feel raising concerns when something isn’t right?" | Measures trust and voice in the organisation |
+| 4 | **Leadership & Support** | "How supported do you feel by your immediate leadership?" | Leader support buffers stress, improves wellbeing, and drives safety participation; gaps amplify other risk factors |
+| 5 | **Clarity & Direction** | "How clear are you on your priorities and what’s expected of you?" | Evaluates role clarity and expectations |
 
 **Response Options:**
-- ✅ Positive (e.g., "Good – I'm doing well")
-- 😐 Neutral (e.g., "Okay – Getting by")
-- ❌ Negative (e.g., "Not great – I'm struggling")
+- ✅ Positive (e.g., "Feeling positive and energised about work")
+- 😐 Neutral (e.g., "Fine overall")
+- ❌ Negative (e.g., "Not great – I’m struggling this week")
 
 ---
 

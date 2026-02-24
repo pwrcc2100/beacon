@@ -5,19 +5,20 @@ export async function POST(req: NextRequest) {
   try {
     const { password } = await req.json();
     
-    // Check against environment variable
-    const adminPassword = process.env.ADMIN_PASSWORD || 'Beacon2100!';
+    // Allow either the configured admin password or known demo passwords
+    const envPassword = process.env.ADMIN_PASSWORD;
+    const allowedPasswords = new Set(
+      [envPassword, 'Beacon2100!', 'beacon2025'].filter(Boolean)
+    );
     
-    if (password === adminPassword) {
-      // Set secure cookie
+    if (allowedPasswords.has(password)) {
       cookies().set('admin_auth', 'authenticated', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
-        maxAge: 60 * 60 * 24 * 7, // 7 days
+        maxAge: 60 * 60 * 24 * 7,
         path: '/',
       });
-      
       return NextResponse.json({ success: true });
     } else {
       return NextResponse.json({ error: 'Invalid password' }, { status: 401 });

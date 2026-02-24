@@ -11,7 +11,7 @@ export default function PresentationPage() {
             <h1 className="text-2xl font-bold" style={{ color: '#2B4162' }}>Beacon</h1>
           </div>
           <a 
-            href="mailto:hello@beaconwellbeing.com.au" 
+            href="mailto:hello@beaconeffect.com.au"
             className="flex items-center gap-2 px-4 py-2 rounded-lg text-white transition-all hover:scale-105"
             style={{ backgroundColor: '#64afac' }}
           >
@@ -384,7 +384,7 @@ export default function PresentationPage() {
           
           <div className="flex flex-wrap gap-4 justify-center">
             <a 
-              href="mailto:hello@beaconwellbeing.com.au?subject=Trial Request" 
+              href="mailto:hello@beaconeffect.com.au?subject=Trial Request" 
               className="px-8 py-4 bg-white text-[#2B4162] rounded-lg font-bold text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105"
             >
               Start Free Trial
@@ -435,8 +435,8 @@ export default function PresentationPage() {
               <div className="space-y-2 text-sm text-white/70">
                 <div className="flex items-center gap-2">
                   <MaterialIcon icon="mail" style={{ fontSize: '16px' }} />
-                  <a href="mailto:hello@beaconwellbeing.com.au" className="hover:text-white transition-colors">
-                    hello@beaconwellbeing.com.au
+                <a href="mailto:hello@beaconeffect.com.au" className="hover:text-white transition-colors">
+                    hello@beaconeffect.com.au
                   </a>
                 </div>
                 <div className="flex items-center gap-2">

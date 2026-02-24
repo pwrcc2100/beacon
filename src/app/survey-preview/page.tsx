@@ -21,52 +21,52 @@ export default function SurveyPreview() {
   const questions = [
     {
       id: 'sentiment' as QuestionId,
-      label: 'Sentiment / Overall',
+      label: 'Experience / Overall Sentiment',
       question: 'How are you feeling about work this week?',
       options: [
-        { value: 1, label: 'Good – I\'m doing well', emoji: '😊', color: '#64afac' },
-        { value: 2, label: 'Okay – Getting by', emoji: '😐', color: '#f59e0b' },
-        { value: 3, label: 'Not great – I\'m struggling', emoji: '😟', color: '#ea9999' }
+        { value: 1, label: 'Feeling positive and energised about work', emoji: '😊', color: '#64afac' },
+        { value: 2, label: 'Fine overall', emoji: '😐', color: '#f59e0b' },
+        { value: 3, label: 'Not great – I’m struggling this week', emoji: '😟', color: '#ea9999' }
       ]
     },
     {
       id: 'workload' as QuestionId,
-      label: 'Workload / Capacity',
-      question: 'How\'s your workload?',
+      label: 'Workload & Resourcing',
+      question: 'How manageable is your current workload?',
       options: [
-        { value: 1, label: 'Manageable', emoji: '✅', color: '#64afac' },
-        { value: 2, label: 'Busy but okay', emoji: '😐', color: '#f59e0b' },
-        { value: 3, label: 'Unsustainable', emoji: '🔴', color: '#ea9999' }
+        { value: 1, label: 'Manageable – workload feels sustainable', emoji: '✅', color: '#64afac' },
+        { value: 2, label: 'Busy but still manageable', emoji: '🤔', color: '#f59e0b' },
+        { value: 3, label: 'Unsustainable – workload isn’t manageable', emoji: '🔴', color: '#ea9999' }
       ]
     },
     {
       id: 'safety' as QuestionId,
       label: 'Psychological Safety',
-      question: 'Do you feel safe speaking up?',
+      question: 'How comfortable do you feel raising concerns when something isn’t right?',
       options: [
-        { value: 1, label: 'Comfortable speaking up', emoji: '✅', color: '#64afac' },
-        { value: 2, label: 'Sometimes hesitate', emoji: '🤔', color: '#f59e0b' },
-        { value: 3, label: 'Don\'t feel safe raising issues', emoji: '❌', color: '#ea9999' }
+        { value: 1, label: 'Very comfortable raising concerns', emoji: '🗣️', color: '#64afac' },
+        { value: 2, label: 'Sometimes hesitate before speaking up', emoji: '🤔', color: '#f59e0b' },
+        { value: 3, label: 'Not comfortable raising concerns', emoji: '⚠️', color: '#ea9999' }
       ]
     },
     {
       id: 'leadership' as QuestionId,
-      label: 'Leadership Support',
-      question: 'Do you feel supported by leadership?',
+      label: 'Leadership & Support',
+      question: 'How supported do you feel by your immediate leadership?',
       options: [
-        { value: 1, label: 'Supported', emoji: '✅', color: '#64afac' },
-        { value: 2, label: 'Somewhat supported', emoji: '😐', color: '#f59e0b' },
-        { value: 3, label: 'Not supported', emoji: '❌', color: '#ea9999' }
+        { value: 1, label: 'Consistently supported by my leader', emoji: '🤝', color: '#64afac' },
+        { value: 2, label: 'Support is mixed', emoji: '😐', color: '#f59e0b' },
+        { value: 3, label: 'I don’t feel supported by leadership', emoji: '❌', color: '#ea9999' }
       ]
     },
     {
       id: 'clarity' as QuestionId,
-      label: 'Clarity / Direction',
-      question: 'Are you clear on what\'s expected?',
+      label: 'Clarity & Direction',
+      question: 'How clear are you on your priorities and what’s expected of you?',
       options: [
-        { value: 1, label: 'Clear on what\'s expected', emoji: '✅', color: '#64afac' },
-        { value: 2, label: 'Mostly clear', emoji: '😐', color: '#f59e0b' },
-        { value: 3, label: 'Unclear about priorities', emoji: '❓', color: '#ea9999' }
+        { value: 1, label: 'Very clear on priorities and expectations', emoji: '🎯', color: '#64afac' },
+        { value: 2, label: 'Mostly clear, a few grey areas', emoji: '🤔', color: '#f59e0b' },
+        { value: 3, label: 'Unclear – need more direction', emoji: '❓', color: '#ea9999' }
       ]
     }
   ];

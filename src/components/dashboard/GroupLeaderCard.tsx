@@ -26,51 +26,56 @@ type QuestionScores = Record<'sentiment' | 'clarity' | 'workload' | 'safety' | '
 
 type GroupLeaderCardProps = {
   teamName: string;
-  wellbeingPercent?: number;
+  indexPercent?: number;
   questionScores: QuestionScores;
-  historicalPoints: number[];
+  historicalPoints: { label: string; value: number }[];
   insight: string;
 };
 
-function Sparkline({ points, color }: { points: number[]; color: string }) {
+function Sparkline({ points, color }: { points: { label: string; value: number }[]; color: string }) {
   if (points.length === 0) {
     return <div className="text-xs text-muted-foreground">No trend data yet</div>;
   }
 
   const padding = 6;
-  const width = 180;
+  const width = 220;
   const height = 70;
-  const max = Math.max(...points, 100);
-  const min = Math.min(...points, 0);
+  const values = points.map(point => point.value);
+  const max = Math.max(...values, 100);
+  const min = Math.min(...values, 0);
   const range = max - min || 1;
   const step = points.length > 1 ? (width - padding * 2) / (points.length - 1) : 0;
 
   const path = points
-    .map((value, index) => {
+    .map((point, index) => {
       const x = padding + index * step;
-      const y = height - padding - ((value - min) / range) * (height - padding * 2);
+      const y = height - padding - ((point.value - min) / range) * (height - padding * 2);
       return `${index === 0 ? 'M' : 'L'}${x},${y}`;
     })
     .join(' ');
 
   return (
-    <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-20">
+    <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-24">
       <path d={`M${padding},${height - padding} L${width - padding},${height - padding}`} stroke="#E2E8F0" strokeWidth={1.5} fill="none" />
       <path d={path} stroke={color} strokeWidth={2.5} fill="none" strokeLinecap="round" />
-      {points.map((value, index) => {
+      {points.map((point, index) => {
         const x = padding + index * step;
-        const y = height - padding - ((value - min) / range) * (height - padding * 2);
+        const y = height - padding - ((point.value - min) / range) * (height - padding * 2);
         return (
-          <circle key={index} cx={x} cy={y} r={3} fill="#fff" stroke={color} strokeWidth={1.5} />
+          <circle key={index} cx={x} cy={y} r={3} fill="#fff" stroke={color} strokeWidth={1.5}>
+            <title>{point.label}</title>
+          </circle>
         );
       })}
     </svg>
   );
 }
 
-export function GroupLeaderCard({ teamName, wellbeingPercent, questionScores, historicalPoints, insight }: GroupLeaderCardProps) {
-  const wellbeingStatus = getScoreStatus(wellbeingPercent ?? 0);
-  const wellbeingLabel = wellbeingPercent !== undefined ? `${Math.round(wellbeingPercent)}%` : '—';
+export function GroupLeaderCard({ teamName, indexPercent, questionScores, historicalPoints, insight }: GroupLeaderCardProps) {
+  const indexStatus = getScoreStatus(indexPercent ?? 0);
+  const indexLabel = indexPercent !== undefined ? `${Math.round(indexPercent)}%` : '—';
+  const periodStart = historicalPoints[0]?.label;
+  const periodEnd = historicalPoints[historicalPoints.length - 1]?.label;
 
   return (
     <div className="flex flex-col gap-6 rounded-[28px] border border-[#E2E8F0] bg-white p-6 shadow-sm">
@@ -79,20 +84,23 @@ export function GroupLeaderCard({ teamName, wellbeingPercent, questionScores, hi
           <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] font-semibold">Team</div>
           <div className="text-xl font-semibold text-[var(--text-primary)]">{teamName}</div>
         </div>
-        <div className="relative h-12 w-12">
-          <span
-            className="absolute inset-0 rounded-full border border-black/10 shadow-sm"
-            style={{ backgroundColor: wellbeingStatus.color ?? SCORE_COLORS.neutral }}
-            aria-label={`${teamName} wellbeing status`}
-          />
-          <span className="absolute inset-0 flex items-center justify-center text-[0.75rem] font-semibold text-white">
-            {wellbeingLabel}
-          </span>
+        <div className="flex flex-col items-end gap-1">
+          <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] font-semibold">Beacon Index</div>
+          <div className="relative h-12 w-12">
+            <span
+              className="absolute inset-0 rounded-full border border-black/10 shadow-sm"
+              style={{ backgroundColor: indexStatus.color ?? SCORE_COLORS.neutral }}
+              aria-label={`${teamName} Beacon Index status`}
+            />
+            <span className="absolute inset-0 flex items-center justify-center text-[0.75rem] font-semibold text-white">
+              {indexLabel}
+            </span>
+          </div>
         </div>
       </div>
 
       <div>
-        <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">Current Sentiment</h3>
+        <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">Beacon Index Inputs</h3>
         <div className="space-y-3">
           {QUESTION_COPY.map(({ key, label, description }) => {
             const value = questionScores[key];
@@ -130,8 +138,12 @@ export function GroupLeaderCard({ teamName, wellbeingPercent, questionScores, hi
       </div>
 
       <div className="space-y-2">
-        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)]">Historical Wellbeing Score</div>
-        <Sparkline points={historicalPoints} color={wellbeingStatus.color ?? SCORE_COLORS.thriving} />
+        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)]">Historical Index</div>
+        <Sparkline points={historicalPoints} color={indexStatus.color ?? SCORE_COLORS.thriving} />
+        <div className="flex items-center justify-between text-[0.7rem] text-[var(--text-muted)]">
+          <span>{periodStart ? `Start: ${periodStart}` : 'No data'}</span>
+          <span>{periodEnd && periodEnd !== periodStart ? `Latest: ${periodEnd}` : periodEnd ? `Latest: ${periodEnd}` : ''}</span>
+        </div>
       </div>
 
       <div className="rounded-[18px] border border-dashed border-[#CBD5E1] bg-[#F8FAFF] px-4 py-3 text-sm text-[var(--text-muted)]">

@@ -18,12 +18,22 @@ export function IndividualJourneys({ data }: Props) {
     if (!employeeJourneys[empId]) {
       employeeJourneys[empId] = [];
     }
+    const sentiment = Number(response.sentiment_5 || 0);
+    const workload = Number(response.workload_5 || 0);
+    const safety = Number(response.safety_5 || 0);
+    const leadership = Number(response.leadership_5 || 0);
+    const clarity = Number(response.clarity_5 || 0);
+
+    const wellbeingIndex =
+      (sentiment * 0.25 +
+        workload * 0.25 +
+        safety * 0.20 +
+        leadership * 0.20 +
+        clarity * 0.10) * 20;
+
     employeeJourneys[empId].push({
       date: new Date(response.submitted_at),
-      wellbeing: ((response.sentiment_5 || 0) * 0.30 + 
-                  (response.workload_5 || 0) * 0.25 + 
-                  (response.leadership_5 || 0) * 0.25 + 
-                  (response.safety_5 || 0) * 0.20) * 20
+      wellbeing: wellbeingIndex
     });
   });
 
@@ -89,7 +99,7 @@ export function IndividualJourneys({ data }: Props) {
     },
     yAxis: {
       type: 'value',
-      name: 'Wellbeing Score (%)',
+      name: 'Beacon Index Score (%)',
       min: 0,
       max: 100,
       axisLabel: { fontSize: 10 },

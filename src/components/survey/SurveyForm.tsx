@@ -116,7 +116,7 @@ export function SurveyForm({ token }: { token: string }) {
     <div className="max-w-xl mx-auto space-y-6 pb-24">
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">
-          Team Wellbeing Survey
+          Beacon Index Survey
         </h1>
         <p className="text-[var(--text-muted)]">
           Your feedback helps us create a better workplace
@@ -125,33 +125,33 @@ export function SurveyForm({ token }: { token: string }) {
 
       <Question
         id="sentiment"
-        label="Domain 1 · General Sentiment (25%)"
+        label="Domain 1 · Experience · Q1"
         value={v.sentiment}
         onChange={(x) => setV((s) => ({ ...s, sentiment: x }))}
       />
       <Question
-        id="clarity"
-        label="Domain 2 · Clarity & Direction (20%)"
-        value={v.clarity}
-        onChange={(x) => setV((s) => ({ ...s, clarity: x }))}
-      />
-      <Question
         id="workload"
-        label="Domain 3 · Workload & Resourcing (20%)"
+        label="Domain 2 · Workload & Resourcing · Q2"
         value={v.workload}
         onChange={(x) => setV((s) => ({ ...s, workload: x }))}
       />
       <Question
         id="safety"
-        label="Domain 4 · Psychological Safety (20%)"
+        label="Domain 3 · Psychological Safety · Q3"
         value={v.safety}
         onChange={(x) => setV((s) => ({ ...s, safety: x }))}
       />
       <Question
         id="leadership"
-        label="Domain 5 · Leadership & Support (15%)"
+        label="Domain 4 · Leadership & Support · Q4"
         value={v.leadership}
         onChange={(x) => setV((s) => ({ ...s, leadership: x }))}
+      />
+      <Question
+        id="clarity"
+        label="Domain 5 · Clarity & Direction · Q5"
+        value={v.clarity}
+        onChange={(x) => setV((s) => ({ ...s, clarity: x }))}
       />
 
       <div className="fixed bottom-0 left-0 right-0 border-t border-black/10 bg-white/90 backdrop-blur px-4 py-3">

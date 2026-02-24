@@ -84,7 +84,7 @@ export default function AltPage() {
           <div className="bg-blue-50 rounded-lg p-8 w-full md:w-1/3">
             <h3 className="text-2xl font-semibold mb-2">$7,000</h3>
             <p className="text-gray-600 mb-4">3‑Month Pilot</p>
-            <p className="text-sm text-gray-500 mb-6">Includes weekly reporting and advisory review.</p>
+            <p className="text-sm text-gray-500 mb-6">Includes weekly reporting and review.</p>
             <a
               href="mailto:peta@beaconeffect.com.au?subject=Beacon%20Index%20Pilot%20Enquiry"
               className="inline-block bg-blue-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-800 transition"
@@ -97,10 +97,10 @@ export default function AltPage() {
             <p className="text-gray-600 mb-4">Per Quarter (Beyond Pilot)</p>
             <p className="text-sm text-gray-500 mb-6">Scalable to large teams and enterprise rollouts.</p>
             <a
-              href="mailto:peta@beaconeffect.com.au?subject=Beacon%20Index%20Advisory%20Enquiry"
+              href="mailto:peta@beaconeffect.com.au?subject=Beacon%20Index%20Enquiry"
               className="inline-block bg-yellow-400 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition"
             >
-              Talk to Advisory
+              Get in touch
             </a>
           </div>
         </div>
@@ -110,7 +110,7 @@ export default function AltPage() {
       <footer className="w-full bg-blue-900 py-12 text-blue-100 text-center">
         <p className="mb-4 text-lg font-semibold">Beacon Index — Measuring What Matters for Safer Workplaces</p>
         <p className="text-sm text-blue-300">
-          © {new Date().getFullYear()} Beacon Advisory. All rights reserved.
+          © {new Date().getFullYear()} Beacon Index. All rights reserved.
         </p>
       </footer>
     </main>

@@ -1,8 +1,9 @@
 import '../styles/globals.css';
 
 export const metadata = {
-  title: 'Beacon - Team Wellbeing Surveys',
-  description: 'Anonymous team wellbeing surveys for better workplace culture',
+  title: 'Beacon Index',
+  description:
+    'Beacon Index provides practical senior advisory and execution support across business transformation, digital initiatives, enterprise improvement and high-stakes special projects.',
 };
 
 export default function RootLayout({
