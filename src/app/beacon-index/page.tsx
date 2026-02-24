@@ -26,19 +26,19 @@ export default function BeaconIndexPage() {
         </div>
       </header>
 
-      {/* Hero — governance tone + scorecard (from beacon-index.vercel.app) */}
-      <section className="py-16 md:py-24 bg-[#F6FAFA] border-b border-[#E0E5E8]">
+      {/* Hero — credible governance + human warmth */}
+      <section className="py-16 md:py-24 bg-[#F2F7F5] border-b border-[#D7E5E0]">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid md:grid-cols-[1.2fr_0.8fr] gap-10 md:gap-14 items-center">
             <div>
               <p className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wide mb-4 border border-[#2A8C8A]/30 bg-[#2A8C8A]/10 text-[#0B1220]">
-                Serious governance instrument · Early strain detection
+                Governance-grade · Built for people
               </p>
               <h1 className="font-serif text-3xl md:text-4xl lg:text-[2.75rem] font-semibold text-[#0B1B2B] leading-tight mb-4" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
-                Psychosocial risk is a governance responsibility — not a sentiment metric.
+                See what&apos;s really going on — before it becomes a problem.
               </h1>
-              <p className="text-lg text-[#2E4057] max-w-[38ch] mb-8 leading-relaxed">
-                Beacon Index makes psychosocial risk visible at system level, with calibrated domains, defensible thresholds, and trend oversight designed for WHS governance.
+              <p className="text-lg text-[#2E4057] max-w-[42ch] mb-8 leading-relaxed">
+                Beacon Index makes psychosocial risk visible at system level: calibrated, defensible, and designed so leaders can act early. Serious about compliance — and about the people behind the numbers.
               </p>
               <div className="flex flex-wrap gap-3">
                 <a href="#methodology" className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-[#2F6F7E] text-white font-semibold text-sm hover:opacity-90 transition-opacity">
@@ -70,42 +70,42 @@ export default function BeaconIndexPage() {
         </div>
       </section>
 
-      {/* The Visibility Gap (from governance site) */}
-      <section id="visibility" className="py-16 md:py-20 bg-[#f4f7f6]">
+      {/* The Visibility Gap */}
+      <section id="visibility" className="py-16 md:py-20 bg-[#f6f9f7]">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="font-serif text-3xl font-semibold text-[#0B1B2B] mb-6" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
-            The Visibility Gap
+            The visibility gap
           </h2>
           <p className="text-[17px] text-[#2E4057] mb-4 leading-relaxed">
-            Most organisations detect psychosocial risk after escalation — through complaints, conflict, attrition, or claims.
+            Most organisations only see psychosocial risk after it shows up as complaints, conflict, or people leaving. That&apos;s hard on everyone — and it&apos;s not enough for modern WHS expectations.
           </p>
           <p className="text-[17px] text-[#2E4057] mb-4 leading-relaxed">
-            WHS expectations require ongoing identification, monitoring, and response. Reactive detection undermines duty of care and exposes organisations to regulatory scrutiny.
+            Ongoing identification, monitoring, and response aren&apos;t just compliance boxes to tick. They&apos;re how you close the gap between &ldquo;we care&rdquo; and &ldquo;we know what&apos;s going on.&rdquo;
           </p>
           <p className="text-[17px] text-[#2E4057] leading-relaxed">
-            Beacon Index provides structured, continuous visibility suitable for governance reporting — closing the gap between obligation and operational reality.
+            Beacon Index gives you structured, continuous visibility you can report on — and act on — with confidence.
           </p>
         </div>
       </section>
 
-      {/* See It in 60 Seconds (from governance site) */}
+      {/* See It in 60 Seconds */}
       <section className="py-16 md:py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6 flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
           <div className="flex-1">
             <h2 className="font-serif text-3xl font-semibold text-[#0B1B2B] mb-6" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
-              See It in 60 Seconds
+              See it in 60 seconds
             </h2>
             <p className="text-[17px] text-[#2E4057] mb-4 leading-relaxed">
-              Beacon Index is intentionally simple at the point of interaction. Five calibrated system-level questions. Mobile-first. Typically completed in under one minute.
+              We kept it simple on purpose: five calibrated questions, mobile-first, usually done in under a minute. Less burden for your people; a clear picture for your leaders.
             </p>
             <p className="text-[17px] text-[#2E4057] mb-4 leading-relaxed">
-              In executive briefings, leaders scan a QR code, complete the questions live, and immediately view the composite governance score within the calibrated risk bands.
+              In executive briefings, leaders can scan a QR code, complete the questions live, and see the composite score and risk band straight away. The heavy lifting — weighted domains, stability logic, de-identification, escalation triggers — happens behind the scenes.
             </p>
             <p className="text-[17px] text-[#2E4057] mb-4 leading-relaxed">
-              The simplicity at the surface contrasts with the modelling beneath — weighted domain scoring, stability logic, de-identification thresholds, and escalation triggers are applied automatically.
+              So you get governance-grade validation without turning the survey into a chore.
             </p>
             <p className="text-sm italic text-[#5a6b6b] mt-4">
-              Designed for governance validation — not employee sentiment tracking.
+              Built for governance — designed with people in mind.
             </p>
           </div>
           <div className="flex-shrink-0 w-full lg:w-[320px] bg-white border border-[#E0E5E8] rounded-xl p-8 shadow-sm border-t-4 border-t-[#2f7f7b] text-center">
@@ -117,49 +117,52 @@ export default function BeaconIndexPage() {
         </div>
       </section>
 
-      {/* Why Organisations Choose Beacon Index (from main app) */}
-      <section className="py-16 bg-[#f4f7f6]">
+      {/* Why Organisations Choose Beacon Index */}
+      <section className="py-16 bg-[#f6f9f7]">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl font-bold mb-12 text-center" style={{ color: '#0B1B2B' }}>
-            Why Organisations Choose Beacon Index
+          <h2 className="text-3xl font-bold mb-4 text-center" style={{ color: '#0B1B2B' }}>
+            Why organisations choose Beacon Index
           </h2>
+          <p className="text-center text-[17px] text-[#2E4057] max-w-2xl mx-auto mb-12 leading-relaxed">
+            Stay compliant and create workplaces where people can speak up and get support — with evidence, not guesswork.
+          </p>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center bg-white p-8 rounded-xl border border-[#E0E5E8]">
               <div className="inline-flex p-4 rounded-full mb-4 bg-[#2A8C8A]/10">
                 <MaterialIcon icon="speed" style={{ fontSize: '48px', color: '#2A8C8A' }} />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-[#0B1B2B]">Early Detection</h3>
+              <h3 className="text-xl font-bold mb-3 text-[#0B1B2B]">Early detection</h3>
               <p className="text-[#2E4057] text-sm leading-relaxed">
-                Weekly pulse checks identify issues within weeks. Understand how systems, processes, and culture impact psychological safety.
+                Weekly pulse checks surface issues within weeks — so you can respond before they escalate. See how systems, processes, and culture are really landing.
               </p>
             </div>
             <div className="text-center bg-white p-8 rounded-xl border border-[#E0E5E8]">
               <div className="inline-flex p-4 rounded-full mb-4 bg-[#2A8C8A]/10">
                 <MaterialIcon icon="psychology" style={{ fontSize: '48px', color: '#2A8C8A' }} />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-[#0B1B2B]">Evidence-Based</h3>
+              <h3 className="text-xl font-bold mb-3 text-[#0B1B2B]">Evidence-based</h3>
               <p className="text-[#2E4057] text-sm leading-relaxed">
-                Built on validated research from Google, Harvard, and leading institutions. Measures workplace systems and culture effectiveness.
+                Built on validated research from Google, Harvard, and leading institutions — so your numbers stand up and your people feel heard.
               </p>
             </div>
             <div className="text-center bg-white p-8 rounded-xl border border-[#E0E5E8]">
               <div className="inline-flex p-4 rounded-full mb-4 bg-[#2A8C8A]/10">
                 <MaterialIcon icon="gavel" style={{ fontSize: '48px', color: '#2A8C8A' }} />
               </div>
-              <h3 className="text-xl font-bold mb-3 text-[#0B1B2B]">Compliance Ready</h3>
+              <h3 className="text-xl font-bold mb-3 text-[#0B1B2B]">Compliance-ready</h3>
               <p className="text-[#2E4057] text-sm leading-relaxed">
-                Meet psychosocial safety obligations with documented evidence of how workplace systems, processes, and culture support psychological safety.
+                Meet psychosocial safety obligations with clear, documented evidence — and show how your workplace supports people, not just policies.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Methodology (in brief) — from governance site */}
+      {/* Methodology (in brief) */}
       <section id="methodology" className="py-16 md:py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="font-serif text-3xl font-semibold text-[#0B1B2B] mb-10" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
-            Methodology (in brief)
+            Methodology in brief
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="border border-[#D7E0E8] p-6 bg-white rounded-lg">
@@ -190,8 +193,8 @@ export default function BeaconIndexPage() {
         </div>
       </section>
 
-      {/* Governance Risk Bands — from governance site */}
-      <section id="governance" className="py-16 md:py-20 bg-[#f4f7f6]">
+      {/* Governance Risk Bands */}
+      <section id="governance" className="py-16 md:py-20 bg-[#f6f9f7]">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="font-serif text-3xl font-semibold text-[#0B1B2B] mb-6" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
             Governance Risk Bands (Default)
@@ -235,7 +238,7 @@ export default function BeaconIndexPage() {
         </div>
       </section>
 
-      {/* Explore Beacon Index — from main app */}
+      {/* Explore Beacon Index */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: '#0B1B2B' }}>
@@ -261,11 +264,11 @@ export default function BeaconIndexPage() {
         </div>
       </section>
 
-      {/* How It Works — from main app */}
-      <section className="py-16 bg-[#f4f7f6]">
+      {/* How It Works */}
+      <section className="py-16 bg-[#f6f9f7]">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl font-bold mb-12 text-center" style={{ color: '#0B1B2B' }}>
-            How It Works
+            How it works
           </h2>
           <div className="grid md:grid-cols-4 gap-8">
             <div className="bg-white p-6 rounded-xl border border-[#E0E5E8]">
@@ -292,14 +295,14 @@ export default function BeaconIndexPage() {
         </div>
       </section>
 
-      {/* Pilot — from governance site */}
+      {/* Pilot */}
       <section id="pilot" className="py-16 md:py-20 bg-white">
         <div className="max-w-3xl mx-auto px-6">
           <h2 className="font-serif text-3xl font-semibold text-[#0B1B2B] mb-6" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
-            Pilot (Governance Validation)
+            Run a pilot with us
           </h2>
           <p className="text-[17px] text-[#2E4057] mb-4">
-            <strong>This is a governance validation pilot — not a software trial.</strong>
+            We run a <strong>governance validation pilot</strong> — not a generic software trial. You get real data, real calibration, and a path to board-ready reporting.
           </p>
           <ul className="text-[16px] text-[#2E4057] space-y-2 pl-6 list-disc mb-8">
             <li>6–8 weeks</li>
@@ -314,10 +317,10 @@ export default function BeaconIndexPage() {
         </div>
       </section>
 
-      {/* Testimonial — from main app */}
-      <section className="py-16 bg-[#f4f7f6]">
+      {/* Testimonial */}
+      <section className="py-16 bg-[#f6f9f7]">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-2xl font-bold mb-8" style={{ color: '#0B1B2B' }}>Trusted by Forward-Thinking Organisations</h2>
+          <h2 className="text-2xl font-bold mb-8" style={{ color: '#0B1B2B' }}>Trusted by forward-thinking organisations</h2>
           <div className="bg-white p-8 rounded-2xl border-2 border-[#2A8C8A]/30 shadow-sm">
             <MaterialIcon icon="format_quote" style={{ fontSize: '40px', color: '#2A8C8A', marginBottom: '16px' }} />
             <p className="text-lg italic text-[#2E2E38] mb-4 leading-relaxed">
@@ -329,14 +332,14 @@ export default function BeaconIndexPage() {
         </div>
       </section>
 
-      {/* Contact — from governance site */}
-      <section id="contact" className="py-16 bg-[#F3F7FB] border-t border-[#D7E0E8] text-center">
+      {/* Contact */}
+      <section id="contact" className="py-16 bg-[#F2F7F5] border-t border-[#D7E5E0] text-center">
         <div className="max-w-2xl mx-auto px-6">
           <h3 className="font-serif text-xl font-semibold text-[#0B1B2B] mb-4" style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
-            Contact
+            Get in touch
           </h3>
           <p className="text-[17px] text-[#2E4057] mb-2">
-            Request the executive pack, pilot overview, or methodology summary.
+            We&apos;d love to hear from you. Request the executive pack, pilot overview, or methodology summary — or just say hello.
           </p>
           <a href="mailto:hello@beaconeffect.com.au" className="text-[#2F6F7E] font-semibold hover:underline">
             hello@beaconeffect.com.au
@@ -353,7 +356,7 @@ export default function BeaconIndexPage() {
       <footer className="bg-[#0B1B2B] py-12 text-center">
         <div className="max-w-6xl mx-auto px-6">
           <p className="text-lg text-[#D7E0E8] mb-6">
-            Structured data. Early signals. Defensible governance insight.
+            Early signals. Clear picture. Governance that cares about people.
           </p>
           <a href="#contact" className="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-[#2F6F7E] text-white font-semibold hover:opacity-90 transition-opacity">
             Request Executive Overview

@@ -33,31 +33,30 @@ export default function AboutPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#2B4162] via-[#5d89a9] to-[#64afac] py-20">
         <div className="max-w-4xl mx-auto px-6 text-center text-white">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">Early Detection for Psychosocial Risk</h1>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">Early detection for psychosocial risk</h1>
           <p className="text-xl leading-relaxed opacity-90">
-            A validated psychosocial pulse survey covering the key predictors of work stress, 
-            clarity, voice, and support — designed for early detection and rapid response.
+            A validated pulse survey that picks up the real predictors of work stress, clarity, voice, and support — so you can support people early, with evidence, not guesswork.
           </p>
         </div>
       </section>
 
-      {/* Research Foundation - Moved to Top */}
-      <section className="py-16 bg-gradient-to-br from-[#f4f4ee] to-white">
+      {/* Research Foundation */}
+      <section className="py-16 bg-gradient-to-br from-[#f5f5f0] to-white">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: '#2B4162' }}>
-            Built on Leading Research
+            Built on leading research
           </h2>
           <p className="text-center text-lg text-[#737A8C] mb-12 max-w-3xl mx-auto">
-            Beacon's methodology is informed by decades of validated research from Google, Harvard, and leading institutions on psychosocial risk, psychological safety, and organisational effectiveness.
+            We didn&apos;t invent the science — we built on decades of validated work from Google, Harvard, and leading institutions. So your numbers stand up, and your people feel the difference.
           </p>
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Academic Research */}
             <div className="bg-white p-8 rounded-xl border-2 shadow-sm" style={{ borderColor: '#5d89a9' }}>
               <MaterialIcon icon="school" style={{ fontSize: '48px', color: '#5d89a9', marginBottom: '16px' }} />
-              <h3 className="text-xl font-bold mb-4" style={{ color: '#2B4162' }}>Academic Research</h3>
+              <h3 className="text-xl font-bold mb-4" style={{ color: '#2B4162' }}>Academic research</h3>
               <p className="text-sm text-[#737A8C] mb-4">
-                Our methodology is informed by research from:
+                We lean on the best in the field:
               </p>
               <ul className="space-y-3 text-sm text-[#737A8C]">
                 <li className="flex items-start gap-2">
@@ -87,9 +86,9 @@ export default function AboutPage() {
             {/* Compliance Standards */}
             <div className="bg-white p-8 rounded-xl border-2 shadow-sm" style={{ borderColor: '#64afac' }}>
               <MaterialIcon icon="gavel" style={{ fontSize: '48px', color: '#64afac', marginBottom: '16px' }} />
-              <h3 className="text-xl font-bold mb-4" style={{ color: '#2B4162' }}>Compliance Standards</h3>
+              <h3 className="text-xl font-bold mb-4" style={{ color: '#2B4162' }}>Compliance standards</h3>
               <p className="text-sm text-[#737A8C] mb-4">
-                Beacon helps organisations meet their obligations under:
+                Beacon helps you meet your obligations under:
               </p>
               <ul className="space-y-2 text-sm text-[#737A8C]">
                 <li className="flex items-start gap-2">
@@ -115,9 +114,9 @@ export default function AboutPage() {
       </section>
 
       {/* The Problem */}
-      <section className="py-16 bg-[#f4f4ee]">
+      <section className="py-16 bg-[#f5f5f0]">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: '#2B4162' }}>The Challenge</h2>
+          <h2 className="text-3xl font-bold mb-8 text-center" style={{ color: '#2B4162' }}>The challenge</h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-white p-6 rounded-xl shadow-sm">
               <MaterialIcon icon="warning" style={{ fontSize: '48px', color: '#ea9999', marginBottom: '16px' }} />
@@ -146,7 +145,7 @@ export default function AboutPage() {
       {/* The Solution */}
       <section className="py-16">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl font-bold mb-12 text-center" style={{ color: '#2B4162' }}>How Beacon Helps</h2>
+          <h2 className="text-3xl font-bold mb-12 text-center" style={{ color: '#2B4162' }}>How Beacon helps</h2>
           
           <div className="grid md:grid-cols-3 gap-8 mb-12">
             <div className="text-center">
