@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
-export default function WellbeingPricingRedirect() {
+export default function BeaconIndexPricingPage() {
   redirect('/beacon-index');
 }
