@@ -12,627 +12,12 @@ import nextDynamic from 'next/dynamic';
 import { DemoQRCode } from '@/components/dashboard/DemoQRCode';
 import { getPeriodStartDate } from '@/lib/dateUtils';
 import DemoDashboardClient from './DemoDashboardClient';
-import ExecutiveOverviewOptionA from '@/components/dashboard/ExecutiveOverview-OptionA';
+import ExecutiveOverviewV2 from '@/components/dashboard/ExecutiveOverviewV2';
 import { generateExecutiveInsights } from '@/lib/executiveInsights';
 import { calculateWellbeingPercent } from '@/components/dashboard/scoreTheme';
+import { getData, getHierarchyData, getOrgStructure } from './dashboardData';
 
 const AdminTools = nextDynamic(() => import('@/components/dashboard/AdminTools').then(m => ({ default: m.AdminTools })), { ssr: false });
-
-type WellbeingRow = {
-  wk: string;
-  sentiment_avg: number;
-  clarity_avg: number;
-  workload_avg: number;
-  safety_avg: number;
-  leadership_avg: number;
-};
-
-type ResponseRow = {
-  submitted_at: string;
-  employee_id: string | null;
-  sentiment_5: number | null;
-  clarity_5: number | null;
-  workload_5: number | null;
-  safety_5: number | null;
-  leadership_5: number | null;
-  employees: {
-    division_id: string | null;
-    department_id: string | null;
-    team_id: string | null;
-  } | null;
-};
-
-type OrgFilter = {
-  divisionId?: string;
-  departmentId?: string;
-  teamId?: string;
-  selectedDepartments?: string[];
-};
-
-function applyResponseFilters<T extends { employees?: any }>(query: any, { divisionId, departmentId, teamId, selectedDepartments }: OrgFilter) {
-  if (teamId) {
-    return query.eq('employees.team_id', teamId);
-  }
-  if (selectedDepartments && selectedDepartments.length > 0) {
-    return query.in('employees.department_id', selectedDepartments);
-  }
-  if (departmentId) {
-    return query.eq('employees.department_id', departmentId);
-  }
-  if (divisionId) {
-    return query.eq('employees.division_id', divisionId);
-  }
-  return query;
-}
-
-function applyEmployeeFilters(query: any, { divisionId, departmentId, teamId, selectedDepartments }: OrgFilter) {
-  if (teamId) {
-    return query.eq('team_id', teamId);
-  }
-  if (selectedDepartments && selectedDepartments.length > 0) {
-    return query.in('department_id', selectedDepartments);
-  }
-  if (departmentId) {
-    return query.eq('department_id', departmentId);
-  }
-  if (divisionId) {
-    return query.eq('division_id', divisionId);
-  }
-  return query;
-}
-
-async function getData(
-  clientId: string,
-  {
-    period,
-    mode,
-    divisionId,
-    departmentId,
-    teamId,
-    selectedDepartments,
-  }: {
-    period?: string;
-    mode?: 'historical' | 'live';
-    divisionId?: string;
-    departmentId?: string;
-    teamId?: string;
-    selectedDepartments?: string[];
-  }
-) {
-  // Calculate date range based on period
-  let startDate: Date | undefined;
-  
-  if (mode === 'live') {
-    // Live mode: only show data from today
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    startDate = today;
-  } else {
-    // Historical mode: use period filter
-    startDate = period ? getPeriodStartDate(period) : undefined;
-  }
-
-  const baseSelect = `
-    submitted_at,
-    employee_id,
-    sentiment_5,
-    clarity_5,
-    workload_5,
-    safety_5,
-    leadership_5,
-    employees!inner(
-      division_id,
-      department_id,
-      team_id
-    )
-  `;
-
-  let responsesQuery = supabaseAdmin
-    .from('responses_v3')
-    .select(baseSelect)
-    .eq('client_id', clientId)
-    .order('submitted_at', { ascending: true });
-  
-  if (startDate) {
-    responsesQuery = responsesQuery.gte('submitted_at', startDate.toISOString());
-  }
-
-  responsesQuery = applyResponseFilters(responsesQuery, { divisionId, departmentId, teamId, selectedDepartments });
-
-  const { data: responses } = await responsesQuery;
-
-  const normalizedResponses: ResponseRow[] = (responses ?? []).map((r: any) => {
-    const employee = Array.isArray(r.employees) ? r.employees[0] : r.employees;
-    return {
-      submitted_at: r.submitted_at as string,
-      employee_id: r.employee_id ?? null,
-      sentiment_5: r.sentiment_5 ?? null,
-      clarity_5: r.clarity_5 ?? null,
-      workload_5: r.workload_5 ?? null,
-      safety_5: r.safety_5 ?? null,
-      leadership_5: r.leadership_5 ?? null,
-      employees: employee
-        ? {
-            division_id: employee.division_id ?? null,
-            department_id: employee.department_id ?? null,
-            team_id: employee.team_id ?? null,
-          }
-        : {
-            division_id: null,
-            department_id: null,
-            team_id: null,
-          },
-    };
-  });
-
-  const trends = (() => {
-    if (!normalizedResponses.length) return [] as WellbeingRow[];
-    const byWeek: Record<string, { n:number; s:number; c:number; w:number; sa:number; l:number }> = {};
-    for (const r of normalizedResponses) {
-      const submittedAt = r.submitted_at;
-      if (!submittedAt) continue;
-      const d = new Date(submittedAt);
-      const day = d.getUTCDay() || 7;
-      const monday = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - (day - 1)));
-      const key = monday.toISOString().slice(0, 10);
-      if (!byWeek[key]) {
-        byWeek[key] = { n: 0, s: 0, c: 0, w: 0, sa: 0, l: 0 };
-      }
-      const bucket = byWeek[key];
-      bucket.n += 1;
-      bucket.s += Number(r.sentiment_5 || 0);
-      bucket.c += Number(r.clarity_5 || 0);
-      bucket.w += Number(r.workload_5 || 0);
-      bucket.sa += Number(r.safety_5 || 0);
-      bucket.l += Number(r.leadership_5 || 0);
-    }
-    return Object.keys(byWeek)
-      .sort()
-      .map((key) => {
-        const bucket = byWeek[key];
-        return {
-          wk: new Date(key + 'T00:00:00.000Z').toISOString(),
-          sentiment_avg: bucket.s / bucket.n,
-          clarity_avg: bucket.c / bucket.n,
-          workload_avg: bucket.w / bucket.n,
-          safety_avg: bucket.sa / bucket.n,
-          leadership_avg: bucket.l / bucket.n,
-        };
-      });
-  })();
-
-  const recent = normalizedResponses.slice(-20).reverse();
-
-  const uniqueResponders = (() => {
-    if (!normalizedResponses.length) return 0;
-    const ids = new Set<string>();
-    for (const r of normalizedResponses) {
-      if (r.employee_id) {
-        ids.add(r.employee_id);
-      }
-    }
-    return ids.size;
-  })();
-
-  let employeeCountQuery = supabaseAdmin
-    .from('employees')
-    .select('id', { count: 'exact', head: true })
-    .eq('client_id', clientId)
-    .eq('active', true);
-  
-  employeeCountQuery = applyEmployeeFilters(employeeCountQuery, { divisionId, departmentId, teamId, selectedDepartments });
-
-  const { count: employeesTotal } = await employeeCountQuery;
-
-  return {
-    trends: trends as WellbeingRow[],
-    recent: recent as ResponseRow[],
-    responseRate: {
-      responded: uniqueResponders,
-      total: employeesTotal ?? uniqueResponders
-    }
-  };
-}
-
-async function getHierarchyData(clientId: string, divisionId?: string, departmentId?: string, teamId?: string, selectedDepartments?: string[], period?: string, mode?: 'historical' | 'live') {
-  let startDate: Date | undefined;
-  
-  if (mode === 'live') {
-    // Live mode: only show data from today
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    startDate = today;
-  } else {
-    // Historical mode: use period filter
-    startDate = period ? getPeriodStartDate(period) : undefined;
-  }
-
-  // Determine current drill-down level
-  let currentLevel: string;
-  let nextLevel: string | null = null;
-  
-  if (teamId) {
-    currentLevel = 'team';
-    // At team level, show individual responses
-    let query = supabaseAdmin
-      .from('responses_v3')
-      .select(`
-        submitted_at, 
-        sentiment_5, 
-        clarity_5, 
-        workload_5, 
-        safety_5, 
-        leadership_5,
-        employees!inner(team_id)
-      `)
-      .eq('client_id', clientId)
-      .eq('employees.team_id', teamId);
-    
-    if (startDate) query = query.gte('submitted_at', startDate.toISOString());
-    
-    const { data } = await query.order('submitted_at', { ascending: false }).limit(20);
-    return { data: data || [], currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
-    
-  } else if (selectedDepartments && selectedDepartments.length > 0) {
-    // Multi-select departments mode
-    currentLevel = 'department';
-    nextLevel = 'team';
-    
-    // Get all departments that are selected
-    const { data: selectedDepts } = await supabaseAdmin
-      .from('departments')
-      .select('department_id, department_name')
-      .in('department_id', selectedDepartments)
-      .eq('active', true);
-    
-    if (!selectedDepts || selectedDepts.length === 0) {
-      return { data: [], currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
-    }
-    
-    // Get teams across selected departments
-    const { data: teams } = await supabaseAdmin
-      .from('teams')
-      .select('team_id, team_name, department_id')
-      .in('department_id', selectedDepartments)
-      .eq('active', true);
-    
-    const teamIds = teams?.map(t => t.team_id) || [];
-    
-    let query = supabaseAdmin
-      .from('responses_v3')
-      .select(`
-        sentiment_5,
-        clarity_5,
-        workload_5,
-        safety_5,
-        leadership_5,
-        employees!inner(department_id, team_id)
-      `)
-      .eq('client_id', clientId)
-      .in('employees.department_id', selectedDepartments);
-    
-    if (startDate) query = query.gte('submitted_at', startDate.toISOString());
-    
-    const { data: responses } = await query;
-    
-    // Aggregate by department (across selected departments)
-    const aggregates: Record<string, any> = {};
-    selectedDepts.forEach(dept => {
-      aggregates[dept.department_id] = {
-        id: dept.department_id,
-        name: dept.department_name,
-        count: 0,
-        sentiment_sum: 0,
-        clarity_sum: 0,
-        workload_sum: 0,
-        safety_sum: 0,
-        leadership_sum: 0
-      };
-    });
-    
-    (responses || []).forEach((r: any) => {
-      const deptId = r.employees?.department_id;
-      if (deptId && aggregates[deptId]) {
-        aggregates[deptId].count += 1;
-        aggregates[deptId].sentiment_sum += r.sentiment_5 || 0;
-        aggregates[deptId].clarity_sum += r.clarity_5 || 0;
-        aggregates[deptId].workload_sum += r.workload_5 || 0;
-        aggregates[deptId].safety_sum += r.safety_5 || 0;
-        aggregates[deptId].leadership_sum += r.leadership_5 || 0;
-      }
-    });
-    
-    const data = Object.values(aggregates)
-      .filter((agg: any) => agg.count > 0)
-      .map((agg: any) => ({
-        id: agg.id,
-        name: agg.name,
-        response_count: agg.count,
-        sentiment_avg: agg.sentiment_sum / agg.count,
-        clarity_avg: agg.clarity_sum / agg.count,
-        workload_avg: agg.workload_sum / agg.count,
-        safety_avg: agg.safety_sum / agg.count,
-        leadership_avg: agg.leadership_sum / agg.count,
-        wellbeing_score:
-          (
-            (agg.sentiment_sum / agg.count) * 0.25 +
-            (agg.workload_sum / agg.count) * 0.25 +
-            (agg.leadership_sum / agg.count) * 0.20 +
-            (agg.safety_sum / agg.count) * 0.20 +
-            (agg.clarity_sum / agg.count) * 0.10
-          ) * 20
-      }));
-    
-    return { data, currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
-    
-  } else if (departmentId) {
-    currentLevel = 'department';
-    nextLevel = 'team';
-    
-    // Get teams in this department with aggregated scores
-    const { data: teams } = await supabaseAdmin
-      .from('teams')
-      .select('team_id, team_name')
-      .eq('department_id', departmentId)
-      .eq('active', true);
-    
-    if (!teams || teams.length === 0) {
-      return { data: [], currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
-    }
-    
-    const teamIds = teams.map(t => t.team_id);
-    
-    let query = supabaseAdmin
-      .from('responses_v3')
-      .select(`
-        sentiment_5,
-        clarity_5,
-        workload_5,
-        safety_5,
-        leadership_5,
-        employees!inner(team_id)
-      `)
-      .eq('client_id', clientId)
-      .in('employees.team_id', teamIds);
-    
-    if (startDate) query = query.gte('submitted_at', startDate.toISOString());
-    
-    const { data: responses } = await query;
-    
-    // Aggregate by team
-    const aggregates: Record<string, any> = {};
-    teams.forEach(team => {
-      aggregates[team.team_id] = {
-        id: team.team_id,
-        name: team.team_name,
-        count: 0,
-        sentiment_sum: 0,
-        clarity_sum: 0,
-        workload_sum: 0,
-        safety_sum: 0,
-        leadership_sum: 0
-      };
-    });
-    
-    (responses || []).forEach((r: any) => {
-      const teamId = r.employees?.team_id;
-      if (teamId && aggregates[teamId]) {
-        aggregates[teamId].count += 1;
-        aggregates[teamId].sentiment_sum += r.sentiment_5 || 0;
-        aggregates[teamId].clarity_sum += r.clarity_5 || 0;
-        aggregates[teamId].workload_sum += r.workload_5 || 0;
-        aggregates[teamId].safety_sum += r.safety_5 || 0;
-        aggregates[teamId].leadership_sum += r.leadership_5 || 0;
-      }
-    });
-    
-    const data = Object.values(aggregates)
-      .filter((agg: any) => agg.count > 0)
-      .map((agg: any) => ({
-        id: agg.id,
-        name: agg.name,
-        response_count: agg.count,
-        sentiment_avg: agg.sentiment_sum / agg.count,
-        clarity_avg: agg.clarity_sum / agg.count,
-        workload_avg: agg.workload_sum / agg.count,
-        safety_avg: agg.safety_sum / agg.count,
-        leadership_avg: agg.leadership_sum / agg.count,
-        wellbeing_score:
-          (
-            (agg.sentiment_sum / agg.count) * 0.25 +
-            (agg.workload_sum / agg.count) * 0.25 +
-            (agg.leadership_sum / agg.count) * 0.20 +
-            (agg.safety_sum / agg.count) * 0.20 +
-            (agg.clarity_sum / agg.count) * 0.10
-          ) * 20
-      }));
-    
-    return { data, currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
-    
-  } else if (divisionId) {
-    currentLevel = 'division';
-    nextLevel = 'department';
-    
-    // Get departments in this division with aggregated scores
-    const { data: departments } = await supabaseAdmin
-      .from('departments')
-      .select('department_id, department_name')
-      .eq('division_id', divisionId)
-      .eq('active', true);
-    
-    if (!departments || departments.length === 0) {
-      return { data: [], currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
-    }
-    
-    const deptIds = departments.map(d => d.department_id);
-    
-    let query = supabaseAdmin
-      .from('responses_v3')
-      .select(`
-        sentiment_5,
-        clarity_5,
-        workload_5,
-        safety_5,
-        leadership_5,
-        employees!inner(department_id)
-      `)
-      .eq('client_id', clientId)
-      .in('employees.department_id', deptIds);
-    
-    if (startDate) query = query.gte('submitted_at', startDate.toISOString());
-    
-    const { data: responses } = await query;
-    
-    // Aggregate by department
-    const aggregates: Record<string, any> = {};
-    departments.forEach(dept => {
-      aggregates[dept.department_id] = {
-        id: dept.department_id,
-        name: dept.department_name,
-        count: 0,
-        sentiment_sum: 0,
-        clarity_sum: 0,
-        workload_sum: 0,
-        safety_sum: 0,
-        leadership_sum: 0
-      };
-    });
-    
-    (responses || []).forEach((r: any) => {
-      const deptId = r.employees?.department_id;
-      if (deptId && aggregates[deptId]) {
-        aggregates[deptId].count += 1;
-        aggregates[deptId].sentiment_sum += r.sentiment_5 || 0;
-        aggregates[deptId].clarity_sum += r.clarity_5 || 0;
-        aggregates[deptId].workload_sum += r.workload_5 || 0;
-        aggregates[deptId].safety_sum += r.safety_5 || 0;
-        aggregates[deptId].leadership_sum += r.leadership_5 || 0;
-      }
-    });
-    
-    const data = Object.values(aggregates)
-      .filter((agg: any) => agg.count > 0)
-      .map((agg: any) => ({
-        id: agg.id,
-        name: agg.name,
-        response_count: agg.count,
-        sentiment_avg: agg.sentiment_sum / agg.count,
-        clarity_avg: agg.clarity_sum / agg.count,
-        workload_avg: agg.workload_sum / agg.count,
-        safety_avg: agg.safety_sum / agg.count,
-        leadership_avg: agg.leadership_sum / agg.count,
-        wellbeing_score:
-          (
-            (agg.sentiment_sum / agg.count) * 0.25 +
-            (agg.workload_sum / agg.count) * 0.25 +
-            (agg.leadership_sum / agg.count) * 0.20 +
-            (agg.safety_sum / agg.count) * 0.20 +
-            (agg.clarity_sum / agg.count) * 0.10
-          ) * 20
-      }));
-    
-    return { data, currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
-    
-  } else {
-    // Top level - show divisions
-    currentLevel = 'top';
-    nextLevel = 'division';
-    
-    const { data: divisions, error: divError } = await supabaseAdmin
-      .from('divisions')
-      .select('division_id, division_name')
-      .eq('client_id', clientId)
-      .eq('active', true);
-    
-    if (!divisions || divisions.length === 0) {
-      return { data: [], currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
-    }
-    
-    const divisionIds = divisions.map(d => d.division_id);
-    
-    // Get employee counts for each division
-    const { data: employeeCounts } = await supabaseAdmin
-      .from('employees')
-      .select('division_id')
-      .eq('client_id', clientId)
-      .in('division_id', divisionIds)
-      .eq('active', true);
-    
-    const employeeCountByDivision: Record<string, number> = {};
-    (employeeCounts || []).forEach((emp: any) => {
-      employeeCountByDivision[emp.division_id] = (employeeCountByDivision[emp.division_id] || 0) + 1;
-    });
-    
-    let query = supabaseAdmin
-      .from('responses_v3')
-      .select(`
-        sentiment_5,
-        clarity_5,
-        workload_5,
-        safety_5,
-        leadership_5,
-        employees!inner(division_id)
-      `)
-      .eq('client_id', clientId)
-      .in('employees.division_id', divisionIds);
-    
-    if (startDate) query = query.gte('submitted_at', startDate.toISOString());
-    
-    const { data: responses, error: respError } = await query;
-    
-    // Aggregate by division
-    const aggregates: Record<string, any> = {};
-    divisions.forEach(div => {
-      aggregates[div.division_id] = {
-        id: div.division_id,
-        name: div.division_name,
-        count: 0,
-        sentiment_sum: 0,
-        clarity_sum: 0,
-        workload_sum: 0,
-        safety_sum: 0,
-        leadership_sum: 0,
-        total_employees: employeeCountByDivision[div.division_id] || 0
-      };
-    });
-    
-    (responses || []).forEach((r: any) => {
-      const divId = r.employees?.division_id;
-      if (divId && aggregates[divId]) {
-        aggregates[divId].count += 1;
-        aggregates[divId].sentiment_sum += r.sentiment_5 || 0;
-        aggregates[divId].clarity_sum += r.clarity_5 || 0;
-        aggregates[divId].workload_sum += r.workload_5 || 0;
-        aggregates[divId].safety_sum += r.safety_5 || 0;
-        aggregates[divId].leadership_sum += r.leadership_5 || 0;
-      }
-    });
-    
-    const data = Object.values(aggregates)
-      .filter((agg: any) => agg.count > 0)
-      .map((agg: any) => ({
-        id: agg.id,
-        name: agg.name,
-        response_count: agg.count,
-        total_employees: agg.total_employees,
-        sentiment_avg: agg.sentiment_sum / agg.count,
-        clarity_avg: agg.clarity_sum / agg.count,
-        workload_avg: agg.workload_sum / agg.count,
-        safety_avg: agg.safety_sum / agg.count,
-        leadership_avg: agg.leadership_sum / agg.count,
-        wellbeing_score:
-          (
-            (agg.sentiment_sum / agg.count) * 0.25 +
-            (agg.workload_sum / agg.count) * 0.25 +
-            (agg.leadership_sum / agg.count) * 0.20 +
-            (agg.safety_sum / agg.count) * 0.20 +
-            (agg.clarity_sum / agg.count) * 0.10
-          ) * 20
-      }));
-    
-    return { data, currentLevel, nextLevel, hierarchyLevels: ['division', 'department', 'team'] };
-  }
-}
 
 export default async function Dashboard({ searchParams }:{ searchParams?: { [k:string]: string | string[] | undefined } }){
   const urlClient = (searchParams?.client as string | undefined) || undefined;
@@ -705,88 +90,11 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     selectedDepartments,
   });
   const hierarchyData = await getHierarchyData(clientId, divisionId, departmentId, teamId, selectedDepartments, period !== 'all' ? period : undefined, mode);
-  
-  // Fetch org structure for filter
-  const { data: divisionsRaw } = await supabaseAdmin
-    .from('divisions')
-    .select('division_id, division_name')
-    .eq('client_id', clientId)
-    .eq('active', true)
-    .order('division_name');
-  
-  const divisions = (divisionsRaw ?? []).map(div => ({
-    division_id: div.division_id,
-    division_name: div.division_name,
-  }));
-
+  const { divisions, departments, teams } = await getOrgStructure(clientId);
   const divisionLookup = new Map(divisions.map(div => [div.division_id, div.division_name]));
-
-  const { data: departmentsData } = await supabaseAdmin
-    .from('departments')
-    .select(`
-      department_id,
-      department_name,
-      division_id,
-      divisions!inner(division_name, client_id)
-    `)
-    .eq('divisions.client_id', clientId)
-    .eq('active', true)
-    .order('department_name');
-
-  const departments = (departmentsData ?? []).map(dept => {
-    const divisionRel = Array.isArray(dept.divisions) ? dept.divisions[0] : dept.divisions;
-    const divisionName = divisionRel?.division_name ?? divisionLookup.get(dept.division_id) ?? '';
-    return {
-      department_id: dept.department_id,
-      department_name: dept.department_name,
-      division_id: dept.division_id,
-      division_name: divisionName,
-      display_name: divisionName ? `${dept.department_name} · ${divisionName}` : dept.department_name,
-    };
-  });
-
   const departmentLookup = new Map(departments.map(dept => [dept.department_id, dept]));
-
-  const { data: teamsData } = await supabaseAdmin
-    .from('teams')
-    .select(`
-      team_id,
-      team_name,
-      department_id,
-      departments!inner(
-        department_name,
-        division_id,
-        divisions!inner(division_name, client_id)
-      )
-    `)
-    .eq('departments.divisions.client_id', clientId)
-    .eq('active', true)
-    .order('team_name');
-
-  const teams = (teamsData ?? []).map(team => {
-    const departmentRel = Array.isArray(team.departments) ? team.departments[0] : team.departments;
-    const divisionRelRaw = departmentRel?.divisions;
-    const divisionRel = Array.isArray(divisionRelRaw) ? divisionRelRaw[0] : divisionRelRaw;
-    const department = departmentLookup.get(team.department_id);
-    const departmentName = department?.department_name ?? departmentRel?.department_name ?? '';
-    const divisionId = department?.division_id ?? departmentRel?.division_id ?? '';
-    const divisionName = department?.division_name
-      ?? (divisionRel && typeof divisionRel.division_name === 'string' ? divisionRel.division_name : undefined)
-      ?? divisionLookup.get(divisionId)
-      ?? '';
-
-    return {
-      team_id: team.team_id,
-      team_name: team.team_name,
-      department_id: team.department_id,
-      department_name: departmentName,
-      division_id: divisionId,
-      division_name: divisionName,
-      display_name: departmentName && divisionName
-        ? `${team.team_name} · ${departmentName} / ${divisionName}`
-        : team.team_name,
-    };
-  });
+  const departmentsById = new Map(departments.map(dept => [dept.department_id, dept]));
+  const divisionsById = new Map(divisions.map(div => [div.division_id, div]));
 
   const startDateForFilters = (() => {
     if (mode === 'live') {
@@ -871,9 +179,6 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     );
     eligibleTeams = teams.filter(team => divisionDeptSet.has(team.department_id));
   }
-
-  const departmentsById = new Map(departments.map(dept => [dept.department_id, dept]));
-  const divisionsById = new Map((divisions ?? []).map(div => [div.division_id, div]));
 
   let attentionTeams: {
     id: string;
@@ -1087,7 +392,8 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
 
   return (
     <DashboardShell sidebar={Sidebar}>
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="min-h-full" style={{ background: '#0f1e28' }}>
+        <div className="max-w-6xl mx-auto space-y-6 p-4 lg:p-6">
         {/* Print Header - Only visible when printing */}
         <div className="hidden print:block mb-6 pb-4 border-b-2 border-[var(--navy)]">
           <div className="flex justify-between items-start">
@@ -1109,8 +415,8 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         <div className="print:hidden">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-[var(--text-primary)]">Beacon Index Dashboard</h1>
-              <p className="text-sm text-[var(--text-muted)]">
+              <h1 className="text-2xl font-bold text-[#e2e8f0]">Beacon Index Dashboard</h1>
+              <p className="text-sm text-[#94a3b8]">
                 Whole of business | Last updated: {reportDate} | {responseRate.responded} responses out of {responseRate.total} team members ({Math.round(participationPercent)}% response rate)
               </p>
             </div>
@@ -1120,8 +426,8 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         {trends.length === 0 && recent.length === 0 ? (
           <DemoDashboardClient />
         ) : (
-          <ExecutiveOverviewOptionA
-            overallScore={overallScore}
+          <ExecutiveOverviewV2
+            overallScore={overallScore ?? 0}
             previousScore={previousScore}
             trendSeries={trendSeries}
             questionScores={questionScores}
@@ -1134,23 +440,23 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
           />
         )}
 
-        <section className="bg-white rounded-2xl border border-[#e2e8f0] shadow-sm p-6 space-y-4">
+        <section className="rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: '#1a2632' }}>
           <div>
-            <h2 className="text-xl font-semibold text-[var(--text-primary)]">New Client Onboarding Checklist</h2>
-            <p className="text-sm text-[var(--text-muted)]">
+            <h2 className="text-xl font-semibold text-[#e2e8f0]">New Client Onboarding Checklist</h2>
+            <p className="text-sm text-[#94a3b8]">
               Use this intake workflow with prospective clients to capture every configuration detail before go-live. It
               mirrors the admin onboarding form so you can demo the process directly from this dashboard.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-4 text-sm text-[var(--text-primary)]">
-            <ul className="space-y-2 list-disc list-inside">
+          <div className="grid md:grid-cols-2 gap-4 text-sm text-[#e2e8f0]">
+            <ul className="space-y-2 list-disc list-inside text-[#cbd5e1]">
               <li>Company &amp; primary contact information</li>
               <li>Integrations/API credentials (HRIS, identity, payroll)</li>
               <li>Hierarchy upload (divisions → departments → teams → employees)</li>
               <li>Branding assets, colours, and logo placements</li>
               <li>Dashboard modules &amp; customised survey questions</li>
             </ul>
-            <ul className="space-y-2 list-disc list-inside">
+            <ul className="space-y-2 list-disc list-inside text-[#cbd5e1]">
               <li>Survey cadence, reminder schedule, and reporting recipients</li>
               <li>High-risk support workflow approvals</li>
               <li>Compliance notes &amp; data-retention expectations</li>
@@ -1164,13 +470,14 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
                 Open onboarding intake form
               </a>
             </Button>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="border-slate-500 text-slate-200 hover:bg-white/10">
               <a href="/templates/hierarchy-template.csv" download>
                 Download hierarchy template
               </a>
             </Button>
           </div>
         </section>
+        </div>
       </div>
     </DashboardShell>
   );

@@ -2,101 +2,19 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { cookies } from 'next/headers';
-import { supabaseAdmin } from '@/lib/supabase';
 import { DashboardShell } from '@/components/layout/DashboardShell';
 import { getPeriodStartDate } from '@/lib/dateUtils';
 import { calculateWellbeingPercent } from '@/components/dashboard/scoreTheme';
-import { DashboardDesignV2Client } from './DashboardDesignV2Client';
-
-async function getV2Data(clientId: string, period?: string) {
-  const startDate = period ? getPeriodStartDate(period) : undefined;
-
-  let query = supabaseAdmin
-    .from('responses_v3')
-    .select('submitted_at, sentiment_5, clarity_5, workload_5, safety_5, leadership_5')
-    .eq('client_id', clientId)
-    .order('submitted_at', { ascending: true });
-
-  if (startDate) {
-    query = query.gte('submitted_at', startDate.toISOString());
-  }
-
-  const { data: responses } = await query;
-
-  if (!responses?.length) {
-    return {
-      overallScore: 0,
-      domainScores: {
-        experience: 0,
-        workload: 0,
-        safety: 0,
-        leadership: 0,
-        clarity: 0,
-      },
-    };
-  }
-
-  const byWeek: Record<string, { n: number; s: number; c: number; w: number; sa: number; l: number }> = {};
-  for (const r of responses) {
-    const submittedAt = r.submitted_at;
-    if (!submittedAt) continue;
-    const d = new Date(submittedAt);
-    const day = d.getUTCDay() || 7;
-    const monday = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - (day - 1)));
-    const key = monday.toISOString().slice(0, 10);
-    if (!byWeek[key]) byWeek[key] = { n: 0, s: 0, c: 0, w: 0, sa: 0, l: 0 };
-    const b = byWeek[key];
-    b.n += 1;
-    b.s += Number(r.sentiment_5 ?? 0);
-    b.c += Number(r.clarity_5 ?? 0);
-    b.w += Number(r.workload_5 ?? 0);
-    b.sa += Number(r.safety_5 ?? 0);
-    b.l += Number(r.leadership_5 ?? 0);
-  }
-
-  const sortedWeeks = Object.keys(byWeek).sort();
-  const latestKey = sortedWeeks[sortedWeeks.length - 1];
-  const bucket = latestKey ? byWeek[latestKey] : null;
-
-  if (!bucket || bucket.n === 0) {
-    return {
-      overallScore: 0,
-      domainScores: {
-        experience: 0,
-        workload: 0,
-        safety: 0,
-        leadership: 0,
-        clarity: 0,
-      },
-    };
-  }
-
-  const sentiment_avg = bucket.s / bucket.n;
-  const clarity_avg = bucket.c / bucket.n;
-  const workload_avg = bucket.w / bucket.n;
-  const safety_avg = bucket.sa / bucket.n;
-  const leadership_avg = bucket.l / bucket.n;
-
-  const overallScore =
-    calculateWellbeingPercent({
-      sentiment: sentiment_avg,
-      workload: workload_avg,
-      safety: safety_avg,
-      leadership: leadership_avg,
-      clarity: clarity_avg,
-    }) ?? 0;
-
-  return {
-    overallScore,
-    domainScores: {
-      experience: sentiment_avg,
-      workload: workload_avg,
-      safety: safety_avg,
-      leadership: leadership_avg,
-      clarity: clarity_avg,
-    },
-  };
-}
+import { generateExecutiveInsights } from '@/lib/executiveInsights';
+import {
+  getData,
+  getHierarchyData,
+  getOrgStructure,
+  getAttentionTeams,
+  type WellbeingRow,
+} from '../dashboardData';
+import ExecutiveOverviewV2 from '@/components/dashboard/ExecutiveOverviewV2';
+import { Button } from '@/components/ui/button';
 
 export default async function DashboardV2Page({
   searchParams,
@@ -104,6 +22,7 @@ export default async function DashboardV2Page({
   searchParams?: { [k: string]: string | string[] | undefined };
 }) {
   const period = (searchParams?.period as string | undefined) || 'all';
+  const mode = (searchParams?.mode as 'historical' | 'live' | undefined) || 'historical';
   const urlClient = (searchParams?.client as string | undefined) || undefined;
   const clientId = urlClient || (process.env.NEXT_PUBLIC_DASHBOARD_CLIENT_ID ?? '');
 
@@ -149,7 +68,88 @@ export default async function DashboardV2Page({
     );
   }
 
-  const data = await getV2Data(clientId, period !== 'all' ? period : undefined);
+  const [{ trends, recent, responseRate }, hierarchyData, { divisions, departments, teams }] = await Promise.all([
+    getData(clientId, {
+      period: period !== 'all' ? period : undefined,
+      mode,
+    }),
+    getHierarchyData(clientId, undefined, undefined, undefined, undefined, period !== 'all' ? period : undefined, mode),
+    getOrgStructure(clientId),
+  ]);
+
+  const startDateForFilters =
+    mode === 'live'
+      ? (() => {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          return today;
+        })()
+      : period && period !== 'all'
+        ? getPeriodStartDate(period)
+        : undefined;
+
+  const attentionTeams = await getAttentionTeams(clientId, startDateForFilters, teams, departments, divisions);
+
+  const latestRow = trends.length ? trends[trends.length - 1] : undefined;
+  const previousRow = trends.length > 1 ? trends[trends.length - 2] : undefined;
+
+  const trendSeries = trends.map((t: WellbeingRow) => ({
+    label: new Date(t.wk).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+    wellbeing:
+      calculateWellbeingPercent({
+        sentiment: t.sentiment_avg,
+        workload: t.workload_avg,
+        safety: t.safety_avg,
+        leadership: t.leadership_avg,
+        clarity: t.clarity_avg,
+      }) ?? 0,
+    safety: (t.safety_avg ?? 0) * 20,
+  }));
+
+  const questionScores = {
+    sentiment: latestRow?.sentiment_avg ?? 0,
+    clarity: latestRow?.clarity_avg ?? 0,
+    workload: latestRow?.workload_avg ?? 0,
+    safety: latestRow?.safety_avg ?? 0,
+    leadership: latestRow?.leadership_avg ?? 0,
+  } as const;
+
+  const overallScore =
+    latestRow != null
+      ? calculateWellbeingPercent({
+          sentiment: latestRow.sentiment_avg,
+          workload: latestRow.workload_avg,
+          safety: latestRow.safety_avg,
+          leadership: latestRow.leadership_avg,
+          clarity: latestRow.clarity_avg,
+        })
+      : undefined;
+
+  const previousScore =
+    previousRow != null
+      ? calculateWellbeingPercent({
+          sentiment: previousRow.sentiment_avg,
+          workload: previousRow.workload_avg,
+          safety: previousRow.safety_avg,
+          leadership: previousRow.leadership_avg,
+          clarity: previousRow.clarity_avg,
+        })
+      : undefined;
+
+  const participationPercent = responseRate.total > 0 ? (responseRate.responded / responseRate.total) * 100 : 0;
+
+  const tableData = hierarchyData.currentLevel === 'team' ? [] : (hierarchyData.data ?? []);
+  const tableTitle =
+    hierarchyData.currentLevel === 'division'
+      ? 'Departments'
+      : hierarchyData.currentLevel === 'department'
+        ? 'Teams'
+        : 'Divisions';
+
+  const executiveInsights = generateExecutiveInsights(trends, {
+    data: tableData,
+    currentLevel: hierarchyData.currentLevel,
+  });
 
   const Sidebar = (
     <div className="space-y-2">
@@ -164,12 +164,53 @@ export default async function DashboardV2Page({
 
   return (
     <DashboardShell sidebar={Sidebar}>
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Beacon Index · Design v2</h1>
-          <span className="text-sm text-[var(--text-muted)]">Compare with current dashboard</span>
+      <div className="min-h-full" style={{ background: '#0f1e28' }}>
+        <div className="max-w-6xl mx-auto space-y-6 p-4 lg:p-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-[#e2e8f0]">Beacon Index · Design v2</h1>
+            <span className="text-sm text-[#94a3b8]">All sections in new design for comparison</span>
+          </div>
+
+          {trends.length === 0 && recent.length === 0 ? (
+            <div className="rounded-2xl p-8 text-center" style={{ background: '#1a2632' }}>
+              <p className="text-[#94a3b8]">No response data yet. Complete a survey to see the dashboard.</p>
+            </div>
+          ) : (
+            <>
+              <ExecutiveOverviewV2
+                overallScore={overallScore ?? 0}
+                previousScore={previousScore}
+                trendSeries={trendSeries}
+                questionScores={questionScores}
+                participationRate={participationPercent}
+                teams={attentionTeams.slice(0, 12)}
+                divisions={tableData as any}
+                insights={executiveInsights}
+                tableTitle={tableTitle}
+                attentionLabel="Which Teams Need Attention"
+              />
+
+              <section className="rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: '#1a2632' }}>
+                <h2 className="text-xl font-semibold text-[#e2e8f0]">New Client Onboarding Checklist</h2>
+                <p className="text-sm text-[#94a3b8]">
+                  Use this intake workflow with prospective clients to capture every configuration detail before go-live.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <Button asChild>
+                    <a href="/admin/onboarding" target="_blank" rel="noopener noreferrer">
+                      Open onboarding intake form
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline" className="border-slate-500 text-slate-200 hover:bg-white/10">
+                    <a href="/templates/hierarchy-template.csv" download>
+                      Download hierarchy template
+                    </a>
+                  </Button>
+                </div>
+              </section>
+            </>
+          )}
         </div>
-        <DashboardDesignV2Client data={data} />
       </div>
     </DashboardShell>
   );
