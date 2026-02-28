@@ -44,7 +44,8 @@ export async function POST(req: NextRequest) {
     const parsed = schema.safeParse(body);
     
     if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
+      const msg = parsed.error.errors.map(e => e.message).join('; ') || 'Invalid request';
+      return NextResponse.json({ error: 'validation_error', details: msg }, { status: 400 });
     }
 
     // Validate token
@@ -58,17 +59,38 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'invalid_or_expired_token' }, { status: 400 });
     }
 
-    // Write response (exclude raw token string from insert)
-    const { token: _token, ...responseFields } = parsed.data as any;
-    const { error: insErr } = await supabaseAdmin.from('responses_v3').insert({
+    // Build insert payload: only include defined values (avoid sending undefined to DB)
+    const { token: _token, ...rest } = parsed.data;
+    const payload: Record<string, unknown> = {
       token_id: tok.id,
       client_id: tok.client_id,
       employee_id: tok.employee_id,
-      ...responseFields
-    });
+      sentiment_3: rest.sentiment_3,
+      sentiment_5: rest.sentiment_5,
+      clarity_3: rest.clarity_3,
+      clarity_5: rest.clarity_5,
+      workload_3: rest.workload_3,
+      workload_5: rest.workload_5,
+      safety_3: rest.safety_3,
+      safety_5: rest.safety_5,
+      leadership_3: rest.leadership_3,
+      leadership_5: rest.leadership_5,
+      support_requested: rest.support_requested ?? false,
+      high_risk_flag: rest.high_risk_flag ?? false,
+      risk_factors: rest.risk_factors ?? [],
+      meta: rest.meta ?? {}
+    };
+    if (rest.support_contacts != null && Array.isArray(rest.support_contacts)) payload.support_contacts = rest.support_contacts;
+    if (rest.support_contact_method != null && rest.support_contact_method !== '') payload.support_contact_method = rest.support_contact_method;
+    if (rest.support_contact_value != null && rest.support_contact_value !== '') payload.support_contact_value = rest.support_contact_value;
+    if (rest.support_timeframe != null && rest.support_timeframe !== '') payload.support_timeframe = rest.support_timeframe;
+    if (rest.support_other_details != null && rest.support_other_details !== '') payload.support_other_details = rest.support_other_details;
+
+    const { error: insErr } = await supabaseAdmin.from('responses_v3').insert(payload);
 
     if (insErr) {
-      return NextResponse.json({ error: insErr.message }, { status: 500 });
+      console.error('responses_v3 insert error:', insErr);
+      return NextResponse.json({ error: 'save_failed', details: insErr.message }, { status: 500 });
     }
 
     // Consume token

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Question } from './Question';
 import { SupportPath, SupportRequestData } from './SupportPath';
-import { map3to5 } from '@/lib/scoring';
+import { map3to5, normaliseSurveyResponses } from '@/lib/scoring';
 
 export function SurveyForm({ token }: { token: string }) {
   const [v, setV] = useState<
@@ -45,32 +45,36 @@ export function SurveyForm({ token }: { token: string }) {
       return;
     }
 
+    const safe = normaliseSurveyResponses(v as Record<string, unknown>);
     setIsSubmitting(true);
-    
     try {
       const body = {
         token,
-        sentiment_3: v.sentiment,
-        sentiment_5: map3to5(v.sentiment),
-        clarity_3: v.clarity,
-        clarity_5: map3to5(v.clarity),
-        workload_3: v.workload,
-        workload_5: map3to5(v.workload),
-        safety_3: v.safety,
-        safety_5: map3to5(v.safety),
-        leadership_3: v.leadership,
-        leadership_5: map3to5(v.leadership),
-        // Add support request data if provided
-        support_requested: supportData?.requested || false,
-        support_contacts: supportData?.contacts || [],
-        support_contact_method: supportData?.contactMethod,
-        support_contact_value: supportData?.contactValue,
-        support_timeframe: supportData?.timeframe,
-        support_other_details: supportData?.otherDetails,
+        sentiment_3: safe.sentiment,
+        sentiment_5: map3to5(safe.sentiment),
+        clarity_3: safe.clarity,
+        clarity_5: map3to5(safe.clarity),
+        workload_3: safe.workload,
+        workload_5: map3to5(safe.workload),
+        safety_3: safe.safety,
+        safety_5: map3to5(safe.safety),
+        leadership_3: safe.leadership,
+        leadership_5: map3to5(safe.leadership),
+        support_requested: supportData?.requested ?? false,
+        support_contacts: Array.isArray(supportData?.contacts) ? supportData.contacts : [],
+        support_contact_method: supportData?.contactMethod ?? undefined,
+        support_contact_value: supportData?.contactValue ?? undefined,
+        support_timeframe: supportData?.timeframe ?? undefined,
+        support_other_details: supportData?.otherDetails ?? undefined,
         high_risk_flag: riskFactors.length > 0,
         risk_factors: riskFactors,
         meta: { ui_version: 'v3.1', channel: 'web' }
       };
+
+      const isDemoLog = typeof window !== 'undefined' && window.location.search.includes('log=1');
+      if (isDemoLog) {
+        console.log('[Beacon Survey] Submitting payload:', JSON.stringify(body, null, 2));
+      }
 
       const response = await fetch('/api/responses', {
         method: 'POST',
@@ -78,14 +82,39 @@ export function SurveyForm({ token }: { token: string }) {
         body: JSON.stringify(body)
       });
 
+      if (isDemoLog) {
+        console.log('[Beacon Survey] Response status:', response.status, response.statusText);
+        const clone = response.clone();
+        clone.text().then((t) => {
+          try {
+            console.log('[Beacon Survey] Response body:', JSON.parse(t));
+          } catch {
+            console.log('[Beacon Survey] Response body (raw):', t?.slice(0, 500));
+          }
+        });
+      }
+
       if (!response.ok) {
-        throw new Error('Failed to submit survey');
+        let message = 'Something went wrong. Please try again.';
+        try {
+          const errorData = await response.json();
+          if (errorData?.error === 'invalid_or_expired_token') {
+            message = 'This survey link has expired or is invalid. Please request a new link from your organisation.';
+          } else if (typeof errorData?.details === 'string') message = errorData.details;
+          else if (typeof errorData?.error === 'string') message = errorData.error;
+        } catch {
+          if (response.status >= 500) message = 'Our system is temporarily busy. Please try again in a moment.';
+        }
+        throw new Error(message);
       }
 
       window.location.href = '/thanks';
     } catch (error) {
-      console.error('Submission error:', error);
-      alert('Failed to submit survey. Please try again.');
+      console.error('[Beacon Survey] Submission error:', error);
+      if (typeof window !== 'undefined' && window.location.search.includes('log=1')) {
+        console.error('[Beacon Survey] Error details:', error instanceof Error ? error.message : String(error));
+      }
+      alert(error instanceof Error ? error.message : 'Failed to submit survey. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
