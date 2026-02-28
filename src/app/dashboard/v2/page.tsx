@@ -164,16 +164,16 @@ export default async function DashboardV2Page({
 
   return (
     <DashboardShell sidebar={Sidebar}>
-      <div className="min-h-full" style={{ background: '#0f1e28' }}>
+      <div className="min-h-full bg-[#F2F7F5]">
         <div className="max-w-6xl mx-auto space-y-6 p-4 lg:p-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-[#e2e8f0]">Beacon Index · Design v2</h1>
-            <span className="text-sm text-[#94a3b8]">All sections in new design for comparison</span>
+            <h1 className="text-2xl font-bold text-[#0B1B2B]">Beacon Index · Design v2</h1>
+            <span className="text-sm text-[#2E4057]">All sections in Beacon Index style for comparison</span>
           </div>
 
           {trends.length === 0 && recent.length === 0 ? (
-            <div className="rounded-2xl p-8 text-center" style={{ background: '#1a2632' }}>
-              <p className="text-[#94a3b8]">No response data yet. Complete a survey to see the dashboard.</p>
+            <div className="rounded-xl border border-[#E0E5E8] bg-white p-8 text-center shadow-sm">
+              <p className="text-[#2E4057]">No response data yet. Complete a survey to see the dashboard.</p>
             </div>
           ) : (
             <>
@@ -190,9 +190,9 @@ export default async function DashboardV2Page({
                 attentionLabel="Which Teams Need Attention"
               />
 
-              <section className="rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: '#1a2632' }}>
-                <h2 className="text-xl font-semibold text-[#e2e8f0]">New Client Onboarding Checklist</h2>
-                <p className="text-sm text-[#94a3b8]">
+              <section className="rounded-xl border border-[#E0E5E8] bg-white p-6 space-y-4 shadow-sm border-t-4" style={{ borderTopColor: '#2F6F7E' }}>
+                <h2 className="text-xl font-semibold text-[#0B1B2B]">New Client Onboarding Checklist</h2>
+                <p className="text-sm text-[#2E4057]">
                   Use this intake workflow with prospective clients to capture every configuration detail before go-live.
                 </p>
                 <div className="flex flex-wrap gap-3">
@@ -201,7 +201,7 @@ export default async function DashboardV2Page({
                       Open onboarding intake form
                     </a>
                   </Button>
-                  <Button asChild variant="outline" className="border-slate-500 text-slate-200 hover:bg-white/10">
+                  <Button asChild variant="outline" className="border-[#D7E0E8] text-[#2F6F7E] hover:bg-[#2F6F7E]/5">
                     <a href="/templates/hierarchy-template.csv" download>
                       Download hierarchy template
                     </a>

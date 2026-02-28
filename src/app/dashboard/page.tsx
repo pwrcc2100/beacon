@@ -392,7 +392,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
 
   return (
     <DashboardShell sidebar={Sidebar}>
-      <div className="min-h-full" style={{ background: '#0f1e28' }}>
+      <div className="min-h-full bg-[#F2F7F5]">
         <div className="max-w-6xl mx-auto space-y-6 p-4 lg:p-6">
         {/* Print Header - Only visible when printing */}
         <div className="hidden print:block mb-6 pb-4 border-b-2 border-[var(--navy)]">
@@ -415,8 +415,8 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         <div className="print:hidden">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-[#e2e8f0]">Beacon Index Dashboard</h1>
-              <p className="text-sm text-[#94a3b8]">
+              <h1 className="text-2xl font-bold text-[#0B1B2B]">Beacon Index Dashboard</h1>
+              <p className="text-sm text-[#2E4057]">
                 Whole of business | Last updated: {reportDate} | {responseRate.responded} responses out of {responseRate.total} team members ({Math.round(participationPercent)}% response rate)
               </p>
             </div>
@@ -440,23 +440,23 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
           />
         )}
 
-        <section className="rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: '#1a2632' }}>
+        <section className="rounded-xl border border-[#E0E5E8] bg-white p-6 space-y-4 shadow-sm border-t-4" style={{ borderTopColor: '#2F6F7E' }}>
           <div>
-            <h2 className="text-xl font-semibold text-[#e2e8f0]">New Client Onboarding Checklist</h2>
-            <p className="text-sm text-[#94a3b8]">
+            <h2 className="text-xl font-semibold text-[#0B1B2B]">New Client Onboarding Checklist</h2>
+            <p className="text-sm text-[#2E4057]">
               Use this intake workflow with prospective clients to capture every configuration detail before go-live. It
               mirrors the admin onboarding form so you can demo the process directly from this dashboard.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-4 text-sm text-[#e2e8f0]">
-            <ul className="space-y-2 list-disc list-inside text-[#cbd5e1]">
+          <div className="grid md:grid-cols-2 gap-4 text-sm text-[#2E4057]">
+            <ul className="space-y-2 list-disc list-inside">
               <li>Company &amp; primary contact information</li>
               <li>Integrations/API credentials (HRIS, identity, payroll)</li>
               <li>Hierarchy upload (divisions → departments → teams → employees)</li>
               <li>Branding assets, colours, and logo placements</li>
               <li>Dashboard modules &amp; customised survey questions</li>
             </ul>
-            <ul className="space-y-2 list-disc list-inside text-[#cbd5e1]">
+            <ul className="space-y-2 list-disc list-inside">
               <li>Survey cadence, reminder schedule, and reporting recipients</li>
               <li>High-risk support workflow approvals</li>
               <li>Compliance notes &amp; data-retention expectations</li>
@@ -470,7 +470,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
                 Open onboarding intake form
               </a>
             </Button>
-            <Button asChild variant="outline" className="border-slate-500 text-slate-200 hover:bg-white/10">
+            <Button asChild variant="outline" className="border-[#D7E0E8] text-[#2F6F7E] hover:bg-[#2F6F7E]/5">
               <a href="/templates/hierarchy-template.csv" download>
                 Download hierarchy template
               </a>

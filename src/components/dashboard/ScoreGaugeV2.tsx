@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 
-const GAUGE_BG = '#0f1e28';
 const RADIUS = 80;
 const STROKE = 12;
 const circumference = 2 * Math.PI * RADIUS;
@@ -14,11 +13,12 @@ function getRiskLabel(score: number): string {
   return 'Elevated risk';
 }
 
-export function ScoreGaugeV2({ score, animate = true }: { score: number; animate?: boolean }) {
+export function ScoreGaugeV2({ score, animate = true, variant = 'light' }: { score: number; animate?: boolean; variant?: 'light' | 'dark' }) {
   const [displayScore, setDisplayScore] = useState(animate ? 0 : score);
   const value = Math.max(0, Math.min(100, score));
   const progress = value / 100;
   const riskLabel = getRiskLabel(value);
+  const isLight = variant === 'light';
 
   useEffect(() => {
     if (!animate) {
@@ -39,12 +39,17 @@ export function ScoreGaugeV2({ score, animate = true }: { score: number; animate
   }, [score, animate]);
 
   const dashOffset = circumference * (1 - progress);
+  const gaugeBg = isLight ? '#ffffff' : '#0f1e28';
+  const trackStroke = isLight ? '#E0E5E8' : '#1a2632';
+  const scoreColor = isLight ? '#0B1B2B' : '#e2e8f0';
+  const badgeBg = value >= 70 ? (isLight ? '#d1fae5' : 'rgba(34, 197, 94, 0.2)') : value >= 60 ? (isLight ? '#ffedd5' : 'rgba(249, 115, 22, 0.2)') : (isLight ? '#fee2e2' : 'rgba(239, 68, 68, 0.2)');
+  const badgeColor = value >= 70 ? (isLight ? '#065f46' : '#86efac') : value >= 60 ? (isLight ? '#9a3412' : '#fdba74') : (isLight ? '#991b1b' : '#fca5a5');
 
   return (
     <div className="flex flex-col items-center">
       <div
-        className="relative rounded-full flex items-center justify-center"
-        style={{ width: RADIUS * 2 + STROKE * 2, height: RADIUS * 2 + STROKE * 2, background: GAUGE_BG }}
+        className="relative rounded-full flex items-center justify-center border border-[#E0E5E8]"
+        style={{ width: RADIUS * 2 + STROKE * 2, height: RADIUS * 2 + STROKE * 2, background: gaugeBg, boxShadow: isLight ? '0 1px 3px rgba(0,0,0,0.06)' : 'none' }}
       >
         <svg
           width={RADIUS * 2 + STROKE * 2}
@@ -54,9 +59,9 @@ export function ScoreGaugeV2({ score, animate = true }: { score: number; animate
         >
           <defs>
             <linearGradient id="gaugeGradientV2" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#3b82f6" />
-              <stop offset="50%" stopColor="#f97316" />
-              <stop offset="100%" stopColor="#c2410c" />
+              <stop offset="0%" stopColor="#2A8C8A" />
+              <stop offset="50%" stopColor="#2F6F7E" />
+              <stop offset="100%" stopColor="#2B4162" />
             </linearGradient>
           </defs>
           <circle
@@ -64,7 +69,7 @@ export function ScoreGaugeV2({ score, animate = true }: { score: number; animate
             cy={RADIUS + STROKE}
             r={RADIUS}
             fill="none"
-            stroke="#1a2632"
+            stroke={trackStroke}
             strokeWidth={STROKE}
           />
           <circle
@@ -82,17 +87,14 @@ export function ScoreGaugeV2({ score, animate = true }: { score: number; animate
         </svg>
         <span
           className="text-4xl font-bold tabular-nums"
-          style={{ color: '#e2e8f0', zIndex: 1 }}
+          style={{ color: scoreColor, zIndex: 1 }}
         >
           {displayScore}
         </span>
       </div>
       <span
         className="mt-3 text-sm font-medium px-3 py-1 rounded-full"
-        style={{
-          background: value >= 70 ? 'rgba(34, 197, 94, 0.2)' : value >= 60 ? 'rgba(249, 115, 22, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-          color: value >= 70 ? '#86efac' : value >= 60 ? '#fdba74' : '#fca5a5',
-        }}
+        style={{ background: badgeBg, color: badgeColor }}
       >
         {riskLabel}
       </span>
