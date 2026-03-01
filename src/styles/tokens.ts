@@ -5,9 +5,11 @@
  */
 
 export const tokens = {
-  // Surfaces (layered depth)
+  // Surfaces (layered depth — not flat black)
   bg: '#0d1117',
+  bgGradientStart: '#111920',
   surface: '#161b22',
+  surfaceElevated: '#1c2128',
   surfaceAlt: '#21262d',
 
   // Text
@@ -15,16 +17,18 @@ export const tokens = {
   textMuted: '#8b949e',
   textSubtle: '#6e7681',
 
-  // Borders
+  // Borders (subtle, 1px)
   border: '#30363d',
   borderSubtle: '#21262d',
+  borderInner: 'rgba(255,255,255,0.04)',
 
-  // Semantic
-  accent: '#58a6ff',
-  accent2: '#79c0ff',
+  // Semantic — restrained; strong red/orange only for risk
+  accent: '#6b9bd1',
+  accent2: '#8badd4',
   success: '#3fb950',
   warning: '#d29922',
   danger: '#f85149',
+  risk: '#e85d4a',
 
   // Chart / score (consistent with surfaces)
   gaugeTrack: '#21262d',
@@ -67,11 +71,12 @@ export const tokens = {
     xl: 16,
   },
 
-  // Shadows (subtle depth)
+  // Shadows (soft, layered depth)
   shadow: {
-    sm: '0 1px 2px rgba(0,0,0,0.25)',
-    md: '0 4px 12px rgba(0,0,0,0.3)',
-    lg: '0 8px 24px rgba(0,0,0,0.35)',
+    sm: '0 1px 2px rgba(0,0,0,0.2)',
+    soft: '0 2px 8px rgba(0,0,0,0.25)',
+    md: '0 4px 12px rgba(0,0,0,0.28)',
+    lg: '0 8px 24px rgba(0,0,0,0.32)',
   },
 } as const;
 

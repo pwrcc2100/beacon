@@ -11,9 +11,14 @@ import {
   getOrgStructure,
   getAttentionTeams,
   type WellbeingRow,
+  type AttentionTeam,
 } from '../dashboardData';
+import { RISK_THRESHOLD } from '@/lib/dashboardConstants';
 import { DashboardV2View } from '@/components/dashboard/DashboardV2View';
 import { DashboardV2Empty, DashboardV2Error } from '@/components/dashboard/DashboardV2States';
+
+/** Level 1 hierarchy label (e.g. Division, Region, Project). Replace with config/metadata when available. */
+const LEVEL1_LABEL = 'Division';
 
 function getPeriodLabel(period: string): string {
   switch (period) {
@@ -31,6 +36,7 @@ export default async function DashboardV2Page({
 }) {
   const period = (searchParams?.period as string | undefined) || 'all';
   const mode = (searchParams?.mode as 'historical' | 'live' | undefined) || 'historical';
+  const divisionId = (searchParams?.division_id as string | undefined) || undefined;
   const urlClient = (searchParams?.client as string | undefined) || undefined;
   const clientId = urlClient || (process.env.NEXT_PUBLIC_DASHBOARD_CLIENT_ID ?? '');
 
@@ -89,27 +95,43 @@ export default async function DashboardV2Page({
   let responseRate = { responded: 0, total: 0 };
   let hierarchyData: { data: unknown[]; currentLevel: string } = { data: [], currentLevel: 'top' };
   let executiveInsights: ReturnType<typeof generateExecutiveInsights> = [];
+  let attentionTeams: AttentionTeam[] = [];
+  let divisions: { division_id: string; division_name: string }[] = [];
   let errorMessage: string | null = null;
 
   try {
-    const [dataResult, hierarchyResult, orgResult] = await Promise.all([
+    const orgResult = await getOrgStructure(clientId);
+    divisions = orgResult.divisions;
+    const { departments, teams } = orgResult;
+    const eligibleTeams = divisionId
+      ? teams.filter((t) => t.division_id === divisionId)
+      : teams;
+
+    const [dataResult, hierarchyResult] = await Promise.all([
       getData(clientId, {
         period: period !== 'all' ? period : undefined,
         mode,
+        divisionId: divisionId ?? undefined,
       }),
-      getHierarchyData(clientId, undefined, undefined, undefined, undefined, period !== 'all' ? period : undefined, mode),
-      getOrgStructure(clientId),
+      getHierarchyData(
+        clientId,
+        divisionId ?? undefined,
+        undefined,
+        undefined,
+        undefined,
+        period !== 'all' ? period : undefined,
+        mode
+      ),
     ]);
     trends = dataResult.trends;
     recent = dataResult.recent;
     responseRate = dataResult.responseRate;
     hierarchyData = hierarchyResult as typeof hierarchyData;
-    const { divisions, departments, teams } = orgResult;
     const startDateForFilters =
       mode === 'live'
         ? (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })()
         : period && period !== 'all' ? getPeriodStartDate(period) : undefined;
-    await getAttentionTeams(clientId, startDateForFilters, teams, departments, divisions);
+    attentionTeams = await getAttentionTeams(clientId, startDateForFilters, eligibleTeams, departments, divisions);
     const tableData = hierarchyData.currentLevel === 'team' ? [] : (hierarchyData.data ?? []);
     executiveInsights = generateExecutiveInsights(trends, { data: tableData, currentLevel: hierarchyData.currentLevel });
   } catch (err) {
@@ -172,6 +194,8 @@ export default async function DashboardV2Page({
   };
 
   const exportUrl = `/api/download?client_id=${encodeURIComponent(clientId)}`;
+  const teamsRequiringAttentionCount = attentionTeams.filter((t) => t.wellbeing < RISK_THRESHOLD).length;
+  const level1Options = divisions.map((d) => ({ value: d.division_id, label: d.division_name }));
 
   if (errorMessage) {
     return (
@@ -197,10 +221,16 @@ export default async function DashboardV2Page({
           previousScore,
           domainScores,
           participationPercent,
+          previousParticipationPercent: null,
+          teamsRequiringAttentionCount,
           trendSeries,
           insights: executiveInsights,
+          attentionTeams,
           period,
           periodLabel: getPeriodLabel(period),
+          level1Label: LEVEL1_LABEL,
+          level1Options,
+          currentLevel1Id: divisionId ?? null,
         }}
         clientId={clientId}
         exportUrl={exportUrl}

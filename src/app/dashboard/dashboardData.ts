@@ -448,6 +448,12 @@ export type AttentionTeam = {
   divisionName?: string;
   departmentName?: string;
   wellbeing: number;
+  /** Response count in period */
+  responseCount?: number;
+  /** Total employees in team (for participation %) */
+  totalEmployees?: number;
+  /** Participation % (0–100) when totalEmployees is set */
+  participationPercent?: number;
 };
 
 export async function getAttentionTeams(
@@ -496,6 +502,18 @@ export async function getAttentionTeams(
   const departmentLookup = new Map(departments.map((d) => [d.department_id, d]));
   const divisionById = new Map(divisions.map((d) => [d.division_id, d]));
 
+  const { data: empCounts } = await supabaseAdmin
+    .from('employees')
+    .select('team_id')
+    .eq('client_id', clientId)
+    .in('team_id', teamIds)
+    .eq('active', true);
+  const totalByTeam: Record<string, number> = {};
+  (empCounts || []).forEach((r: any) => {
+    const tid = r.team_id;
+    if (tid) totalByTeam[tid] = (totalByTeam[tid] || 0) + 1;
+  });
+
   return Object.entries(aggregates)
     .filter(([, agg]) => agg.count > 0)
     .map(([id, agg]) => {
@@ -508,6 +526,11 @@ export async function getAttentionTeams(
       const suffixParts: string[] = [];
       if (divisionName) suffixParts.push(divisionName);
       if (departmentName) suffixParts.push(departmentName);
+      const totalEmployees = totalByTeam[id];
+      const participationPercent =
+        totalEmployees != null && totalEmployees > 0
+          ? Math.round((agg.count / totalEmployees) * 100)
+          : undefined;
       return {
         id,
         name: baseName,
@@ -521,6 +544,9 @@ export async function getAttentionTeams(
             (agg.leadership / agg.count) * 0.2 +
             (agg.clarity / agg.count) * 0.1) *
           20,
+        responseCount: agg.count,
+        totalEmployees,
+        participationPercent,
       };
     });
 }
