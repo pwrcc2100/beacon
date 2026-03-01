@@ -569,4 +569,150 @@ export function getDecisionGuidance(
   }));
 }
 
+// ——— Cockpit: pattern engine, pressure tiles, control tiles ———
+
+export type PressurePattern = 'Systemic' | 'Persistent' | 'Emerging' | 'Volatile' | 'Localised';
+
+export type PressureTileData = {
+  key: (typeof DOMAIN_KEYS)[number];
+  label: string;
+  pattern: PressurePattern;
+  score100: number;
+  delta: number;
+  persistencePeriods: number;
+  breadthPct: number;
+  teamsBelow60: number;
+  totalTeams: number;
+};
+
+function assignPattern(row: DomainHeatRow): PressurePattern {
+  if (row.isSystemic) return 'Systemic';
+  if (row.consecutivePeriodsBelow60 >= 2) return 'Persistent';
+  if (row.score100 < BELOW_TOLERANCE && row.delta < 0) return 'Emerging';
+  if (Math.abs(row.delta) >= 12) return 'Volatile';
+  if (row.totalTeams > 0 && row.teamsBelow60 / row.totalTeams < 0.2) return 'Localised';
+  return row.score100 < 70 ? 'Emerging' : 'Localised';
+}
+
+/** Top 2 pressure domains by pattern engine (systemic first, then by severity + trend). */
+export function getTopPressureDomains(
+  domainHeatRows: DomainHeatRow[],
+  _teamScores: number[]
+): PressureTileData[] {
+  const withPattern = domainHeatRows.map((row) => ({
+    ...row,
+    pattern: assignPattern(row),
+    breadthPct: row.totalTeams > 0 ? (row.teamsBelow60 / row.totalTeams) * 100 : 0,
+  }));
+  const priority = (d: typeof withPattern[0]) => {
+    if (d.pattern === 'Systemic') return 100;
+    if (d.pattern === 'Persistent') return 85;
+    if (d.pattern === 'Emerging') return 70;
+    if (d.pattern === 'Volatile') return 55;
+    return 40 - d.score100 / 100;
+  };
+  withPattern.sort((a, b) => priority(b) - priority(a));
+  return withPattern.slice(0, 2).map((d) => ({
+    key: d.key,
+    label: d.label,
+    pattern: d.pattern,
+    score100: d.score100,
+    delta: d.delta,
+    persistencePeriods: d.consecutivePeriodsBelow60,
+    breadthPct: d.breadthPct,
+    teamsBelow60: d.teamsBelow60,
+    totalTeams: d.totalTeams,
+  }));
+}
+
+export type ControlTileData = {
+  leverTitle: string;
+  rationale: string;
+  steps: string[];
+  impactWindow: string;
+  successSignal: string;
+  domainKey: (typeof DOMAIN_KEYS)[number];
+};
+
+function rationaleForPattern(pattern: PressurePattern): string {
+  switch (pattern) {
+    case 'Systemic':
+      return 'Triggered by: breadth + persistence + below tolerance';
+    case 'Persistent':
+      return 'Triggered by: persistence across periods';
+    case 'Emerging':
+      return 'Triggered by: breadth + decline';
+    case 'Volatile':
+      return 'Triggered by: high period-on-period change';
+    case 'Localised':
+      return 'Triggered by: localised strain';
+    default:
+      return 'Triggered by: strain signal';
+  }
+}
+
+/** One control tile per pressure domain: lever, rationale, steps, impact, success signal. */
+export function getControlForPressure(
+  domainKey: (typeof DOMAIN_KEYS)[number],
+  pattern: PressurePattern
+): ControlTileData {
+  const t = ACTION_TEMPLATES[domainKey];
+  const steps = [t.steps[0], t.steps[1]].filter(Boolean);
+  return {
+    leverTitle: t.title,
+    rationale: rationaleForPattern(pattern),
+    steps,
+    impactWindow: t.timeframe,
+    successSignal: t.successCue,
+    domainKey,
+  };
+}
+
+/** Risk label for system state: Low / Watch / Elevated */
+export function getRiskLabelShort(score: number): 'Low' | 'Watch' | 'Elevated' {
+  if (score >= 80) return 'Low';
+  if (score >= 70) return 'Watch';
+  return 'Elevated';
+}
+
+/** One-sentence executive verdict for boardroom. */
+export function getExecutiveVerdictSentence(systemicDomainCount: number, totalTeams: number): string {
+  if (systemicDomainCount > 0) {
+    return `Systemic strain detected in ${systemicDomainCount} domain${systemicDomainCount === 1 ? '' : 's'} across ${totalTeams} teams.`;
+  }
+  return `Exposure within acceptable range across ${totalTeams} teams.`;
+}
+
+/** One short sentence: "What to say tomorrow" for a lever card. */
+export function getWhatToSayTomorrow(
+  domainLabel: string,
+  pattern: PressurePattern,
+  teamsImpacted: number
+): string {
+  if (pattern === 'Systemic') {
+    return `We're prioritising ${domainLabel} this week; ${teamsImpacted} teams need support.`;
+  }
+  if (pattern === 'Persistent') {
+    return `We're watching ${domainLabel} and acting in the next 7 days.`;
+  }
+  return `We're focusing on ${domainLabel} where strain is concentrated.`;
+}
+
+/** One-liner: what changed this period (for supporting evidence). */
+export function getWhatChangedThisPeriod(
+  domainHeatRows: DomainHeatRow[],
+  _previousDomainScores?: Record<string, number | undefined> | null
+): string {
+  const declined = domainHeatRows.filter((d) => d.delta < 0).sort((a, b) => a.delta - b.delta);
+  const below60 = domainHeatRows.filter((d) => d.score100 < 60);
+  if (declined.length === 0 && below60.length === 0) return 'No material change this period.';
+  const parts: string[] = [];
+  if (declined.length > 0) {
+    const top = declined[0];
+    parts.push(`${top.label} down ${Math.abs(top.delta)} pts`);
+  }
+  if (below60.length > 0) parts.push(`${below60.length} domain${below60.length === 1 ? '' : 's'} below 60`);
+  return parts.join('; ') + '.';
+}
+
 export { DOMAIN_KEYS, DOMAIN_LABELS };
