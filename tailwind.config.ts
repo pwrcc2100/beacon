@@ -58,13 +58,38 @@ const config: Config = {
           },
           navy: '#2B4162', 
           sage: '#A7D6A2'
+        },
+        /* Beacon Index app (dashboard/survey) — use inside .beacon-app */
+        bi: {
+          bg: 'var(--bi-bg)',
+          surface: 'var(--bi-surface)',
+          surfaceAlt: 'var(--bi-surface-alt)',
+          text: 'var(--bi-text)',
+          textMuted: 'var(--bi-text-muted)',
+          textSubtle: 'var(--bi-text-subtle)',
+          border: 'var(--bi-border)',
+          borderSubtle: 'var(--bi-border-subtle)',
+          accent: 'var(--bi-accent)',
+          accent2: 'var(--bi-accent2)',
+          success: 'var(--bi-success)',
+          warning: 'var(--bi-warning)',
+          danger: 'var(--bi-danger)',
         }
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
-        beacon: 'var(--radius)' 
+        beacon: 'var(--radius)',
+        'bi-sm': 'var(--bi-radius-sm)',
+        'bi-md': 'var(--bi-radius-md)',
+        'bi-lg': 'var(--bi-radius-lg)',
+        'bi-xl': 'var(--bi-radius-xl)',
+      },
+      boxShadow: {
+        'bi-sm': 'var(--bi-shadow-sm)',
+        'bi-md': 'var(--bi-shadow-md)',
+        'bi-lg': 'var(--bi-shadow-lg)',
       }
     },
   },

@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import './tokens.css';
+@import './beacon-app.css';
 
 @layer base {
   :root {
