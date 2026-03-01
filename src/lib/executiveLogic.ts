@@ -455,4 +455,118 @@ export function buildExecutiveRiskStatement(params: {
   return `${riskBandLabel} driven by ${driver} ${primaryDomainLabel}${teamPhrase}.`;
 }
 
+// ——— 3-layer hierarchy: Exposure verdict & domain heat panel ———
+
+/** Count domains with score < 60 for 2 consecutive periods (current + previous). */
+export function getSystemicDomainCount(
+  domainScoresCurrent: Record<string, number | undefined>,
+  domainScoresPrevious?: Record<string, number | undefined> | null
+): number {
+  let count = 0;
+  for (const key of DOMAIN_KEYS) {
+    const score100 = to100(domainScoresCurrent[key]);
+    const prev100 = to100(domainScoresPrevious?.[key]);
+    if (score100 < BELOW_TOLERANCE && prev100 < BELOW_TOLERANCE) count++;
+  }
+  return count;
+}
+
+/**
+ * One-line exposure verdict, e.g. "Systemic strain detected in 2 domains across 32 teams."
+ */
+export function buildExposureVerdict(params: {
+  systemicDomainCount: number;
+  totalTeams: number;
+  participationLabel: string;
+}): string {
+  const { systemicDomainCount, totalTeams, participationLabel } = params;
+  if (systemicDomainCount > 0) {
+    return `Systemic strain detected in ${systemicDomainCount} domain${systemicDomainCount === 1 ? '' : 's'} across ${totalTeams} teams.`;
+  }
+  const teamPhrase = totalTeams > 0 ? ` across ${totalTeams} team${totalTeams === 1 ? '' : 's'}` : '';
+  return `Exposure within acceptable range${teamPhrase}.`;
+}
+
+export type DomainHeatRow = {
+  key: (typeof DOMAIN_KEYS)[number];
+  label: string;
+  score100: number;
+  delta: number;
+  /** Consecutive periods below 60 (we only have 2 periods of data). */
+  consecutivePeriodsBelow60: number;
+  teamsBelow60: number;
+  totalTeams: number;
+  /** Participation confidence level for the report. */
+  participationLevel: 'high' | 'moderate' | 'low';
+  isSystemic: boolean;
+};
+
+/**
+ * Rows for the Risk Concentration heat panel. Systemic domains first, then by score ascending.
+ */
+export function computeDomainHeatPanel(params: {
+  domainScoresCurrent: Record<string, number | undefined>;
+  domainScoresPrevious?: Record<string, number | undefined> | null;
+  teamScores: number[];
+  participationLevel: 'high' | 'moderate' | 'low';
+}): DomainHeatRow[] {
+  const { domainScoresCurrent, domainScoresPrevious, teamScores, participationLevel } = params;
+  const totalTeams = teamScores.length;
+  const teamsBelow60 = teamScores.filter((s) => s < BELOW_TOLERANCE).length;
+  const participationNotLow = participationLevel !== 'low';
+
+  const rows: DomainHeatRow[] = DOMAIN_KEYS.map((key) => {
+    const score100 = to100(domainScoresCurrent[key]);
+    const prev100 = to100(domainScoresPrevious?.[key]);
+    const delta = computeDelta(score100, prev100);
+    const twoPeriodsBelow = score100 < BELOW_TOLERANCE && prev100 < BELOW_TOLERANCE;
+    const breadthOk = totalTeams === 0 || teamsBelow60 >= 3 || teamsBelow60 / totalTeams >= 0.3;
+    const isSystemic = twoPeriodsBelow && breadthOk && participationNotLow;
+    const consecutivePeriodsBelow60 = twoPeriodsBelow ? 2 : score100 < BELOW_TOLERANCE ? 1 : 0;
+
+    return {
+      key,
+      label: DOMAIN_LABELS[key],
+      score100,
+      delta,
+      consecutivePeriodsBelow60,
+      teamsBelow60,
+      totalTeams,
+      participationLevel,
+      isSystemic,
+    };
+  });
+
+  rows.sort((a, b) => {
+    if (a.isSystemic !== b.isSystemic) return a.isSystemic ? -1 : 1;
+    return a.score100 - b.score100;
+  });
+  return rows;
+}
+
+export type DecisionGuidanceItem = {
+  title: string;
+  scope: string;
+  timeHorizon: string;
+  successSignal: string;
+  domainKey: (typeof DOMAIN_KEYS)[number] | null;
+};
+
+/** 1–2 high-leverage behaviour shifts with scope, time horizon, success signal. */
+export function getDecisionGuidance(
+  primaryDomain: DomainPriorityItem | null,
+  secondaryDomain: DomainPriorityItem | null,
+  teamsImpactedCount: number
+): DecisionGuidanceItem[] {
+  const tiles = getActionTiles(primaryDomain, secondaryDomain);
+  const scope = teamsImpactedCount > 0 ? `${teamsImpactedCount} team${teamsImpactedCount === 1 ? '' : 's'} impacted` : 'Organisation-wide';
+  return tiles.slice(0, 2).map((t) => ({
+    title: t.title,
+    scope,
+    timeHorizon: t.timeframe,
+    successSignal: t.successCue,
+    domainKey: t.domainKey,
+  }));
+}
+
 export { DOMAIN_KEYS, DOMAIN_LABELS };

@@ -12,6 +12,8 @@ import {
   type WellbeingRow,
   type AttentionTeam,
 } from '../dashboardData';
+import { getClientConfig } from '@/lib/config/getClientConfig';
+import { defaultThresholds } from '@/lib/config/defaultThresholds';
 import { DashboardV3View } from '@/components/dashboard/DashboardV3View';
 
 function getPeriodLabel(period: string): string {
@@ -89,12 +91,15 @@ export default async function DashboardV3Page({
   let attentionTeams: AttentionTeam[] = [];
   let divisions: { division_id: string; division_name: string }[] = [];
   let errorMessage: string | null = null;
+  let riskThresholds: Awaited<ReturnType<typeof getClientConfig>> = defaultThresholds;
 
   try {
     const orgResult = await getOrgStructure(clientId);
     divisions = orgResult.divisions;
     const { departments, teams } = orgResult;
     const eligibleTeams = divisionId ? teams.filter((t) => t.division_id === divisionId) : teams;
+
+    riskThresholds = await getClientConfig(clientId);
 
     const [dataResult, hierarchyResult] = await Promise.all([
       getData(clientId, {
@@ -230,6 +235,7 @@ export default async function DashboardV3Page({
         attentionTeams,
         trendSeries,
         periodLabel: getPeriodLabel(period),
+        risk_thresholds: riskThresholds,
       }}
       clientId={clientId}
     />

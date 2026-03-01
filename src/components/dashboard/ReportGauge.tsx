@@ -1,22 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { getVisualBand } from '@/lib/visualBand';
 
 const RADIUS = 80;
 const STROKE = 12;
-
-function getRiskLabel(score: number): string {
-  if (score >= 80) return 'Low risk';
-  if (score >= 70) return 'Within tolerance';
-  if (score >= 60) return 'Emerging risk';
-  return 'Elevated risk';
-}
-
-function getFillColor(score: number): string {
-  if (score >= 70) return '#0d7d4c';
-  if (score >= 50) return '#b45309';
-  return '#c53030';
-}
 
 export interface ReportGaugeProps {
   score: number;
@@ -28,9 +16,10 @@ export function ReportGauge({ score, animate = true, size = RADIUS }: ReportGaug
   const [displayScore, setDisplayScore] = useState(animate ? 0 : score);
   const value = Math.max(0, Math.min(100, score));
   const progress = value / 100;
-  const riskLabel = getRiskLabel(value);
+  const band = getVisualBand(value);
   const strokeWidth = Math.max(10, (STROKE / RADIUS) * size);
   const circ = 2 * Math.PI * size;
+  const dashOffset = circ * (1 - progress);
 
   useEffect(() => {
     if (!animate) {
@@ -49,17 +38,23 @@ export function ReportGauge({ score, animate = true, size = RADIUS }: ReportGaug
     requestAnimationFrame(tick);
   }, [score, animate]);
 
-  const dashOffset = circ * (1 - progress);
-  const fillColor = getFillColor(value);
+  const center = size + strokeWidth;
+  const shadowStroke = strokeWidth + 2;
+  const angle = progress * 2 * Math.PI - Math.PI / 2;
+  const dotX = center + size * Math.cos(angle);
+  const dotY = center + size * Math.sin(angle);
+  const gradientId = `gauge-${band.band}-${size}`;
 
   return (
     <div className="flex flex-col items-center">
       <div
-        className="relative rounded-full flex items-center justify-center bg-white"
+        className="relative rounded-full flex items-center justify-center"
         style={{
           width: size * 2 + strokeWidth * 2,
           height: size * 2 + strokeWidth * 2,
-          boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+          background: 'var(--surface)',
+          boxShadow: 'var(--shadow-soft)',
+          border: '1px solid var(--stroke-soft)',
         }}
       >
         <svg
@@ -68,37 +63,75 @@ export function ReportGauge({ score, animate = true, size = RADIUS }: ReportGaug
           className="-rotate-90"
           style={{ position: 'absolute', top: 0, left: 0 }}
         >
+          <defs>
+            <linearGradient id={`${gradientId}-ok`} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#7dd3fc" />
+              <stop offset="55%" stopColor="#38bdf8" />
+              <stop offset="100%" stopColor="#0284c7" />
+            </linearGradient>
+            <linearGradient id={`${gradientId}-warn`} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#f6c453" />
+              <stop offset="60%" stopColor="#f59e0b" />
+              <stop offset="100%" stopColor="#b45309" />
+            </linearGradient>
+            <linearGradient id={`${gradientId}-risk`} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#ff6b6b" />
+              <stop offset="55%" stopColor="#e63946" />
+              <stop offset="100%" stopColor="#b5172a" />
+            </linearGradient>
+          </defs>
+          {/* Track */}
           <circle
-            cx={size + strokeWidth}
-            cy={size + strokeWidth}
+            cx={center}
+            cy={center}
             r={size}
             fill="none"
-            stroke="#e5e7eb"
+            stroke="var(--bar-track)"
             strokeWidth={strokeWidth}
           />
+          {/* Depth shadow arc (behind progress) */}
           <circle
-            cx={size + strokeWidth}
-            cy={size + strokeWidth}
+            cx={center}
+            cy={center}
             r={size}
             fill="none"
-            stroke={fillColor}
+            stroke="rgba(0,0,0,0.06)"
+            strokeWidth={shadowStroke}
+            strokeLinecap="round"
+            strokeDasharray={circ}
+            strokeDashoffset={dashOffset}
+          />
+          {/* Progress arc with gradient */}
+          <circle
+            cx={center}
+            cy={center}
+            r={size}
+            fill="none"
+            stroke={`url(#${gradientId}-${band.band})`}
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeDasharray={circ}
             strokeDashoffset={dashOffset}
             style={{ transition: 'stroke-dashoffset 0.5s ease-out' }}
           />
+          {/* Highlight dot at arc end */}
+          {progress > 0.02 && progress < 0.98 && (
+            <circle cx={dotX} cy={dotY} r={strokeWidth / 3} fill="rgba(255,255,255,0.25)" />
+          )}
         </svg>
         <span className="text-4xl font-semibold tabular-nums text-neutral-800 z-[1]">
           {displayScore}
         </span>
       </div>
       <span
-        className={`mt-2 text-xs font-medium px-2.5 py-1 rounded-md ${
-          value >= 70 ? 'bg-emerald-100 text-emerald-800' : value >= 60 ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'
-        }`}
+        className="mt-2 text-xs font-medium px-2.5 py-1 rounded-full border border-[var(--stroke-soft)]"
+        style={{
+          background: band.gradientVar,
+          color: band.band === 'risk' ? 'white' : band.band === 'warn' ? '#78350f' : '#0c4a6e',
+          boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.35)',
+        }}
       >
-        {riskLabel}
+        {band.label}
       </span>
     </div>
   );
