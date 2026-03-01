@@ -81,6 +81,7 @@ export function DashboardV2View({ data, clientId, exportUrl }: DashboardV2ViewPr
             domainScores={data.domainScores}
             previousDomainScores={data.previousDomainScores ?? null}
             participationPercent={data.participationPercent}
+            previousParticipationPercent={data.previousParticipationPercent ?? null}
             attentionTeams={data.attentionTeams}
             trendSeries={data.trendSeries}
             periodLabel={data.periodLabel}
