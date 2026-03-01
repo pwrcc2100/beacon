@@ -1,9 +1,8 @@
 'use client';
 
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo } from 'react';
 import { RiskGauge } from './RiskGauge';
 import { computeDelta, getRiskBand } from '@/lib/riskLogic';
-import type { BehaviourShift } from '@/lib/riskLogic';
 import {
   computeDomainPriority,
   computeTeamPriority,
@@ -11,10 +10,14 @@ import {
   computeEscalationSignal,
   getActionTiles,
 } from '@/lib/executiveLogic';
-import { ExecutiveFocusStrip } from './ExecutiveFocusStrip';
+import { TalkingPointsStrip } from './TalkingPointsStrip';
+import type { TalkingPoint } from './TalkingPointsStrip';
 import { ActionTiles } from './ActionTiles';
 import type { AttentionTeam } from '@/app/dashboard/dashboardData';
 import type { DomainScores } from './DomainBars';
+import type { DomainPriorityItem } from '@/lib/executiveLogic';
+import type { TeamPriorityItem } from '@/lib/executiveLogic';
+import type { ParticipationConfidenceResult, EscalationResult } from '@/lib/executiveLogic';
 
 export type ExecutiveSummaryProps = {
   overallScore: number;
@@ -28,38 +31,45 @@ export type ExecutiveSummaryProps = {
   periodLabel?: string;
 };
 
-function buildSpeakingScript(props: {
+function buildTalkingPoints(props: {
   riskBandLabel: string;
-  domainsAtRisk: { label: string }[];
-  teamsAtRisk: { teamName: string }[];
-  participationConfidenceLabel: string;
-  participationTone: string;
-  behaviourShifts: BehaviourShift[];
-}): string[] {
-  const lines: string[] = [];
-  const exposure =
-    props.riskBandLabel === 'Low risk'
-      ? 'Current exposure is within acceptable range.'
-      : `We are in a ${props.riskBandLabel.toLowerCase()} position; focus on the areas below.`;
-  lines.push(exposure);
-  if (props.domainsAtRisk.length > 0) {
-    const names = props.domainsAtRisk.map((d) => d.label).join(' and ');
-    lines.push(`Concentration of strain: ${names}.`);
-  }
-  if (props.teamsAtRisk.length > 0) {
-    const names = props.teamsAtRisk.map((t) => t.teamName).join(', ');
-    lines.push(`Teams to prioritise: ${names}.`);
-  }
-  if (props.participationTone !== 'calm') {
-    lines.push(
-      `Interpretation caution: ${props.participationConfidenceLabel.toLowerCase()} — participation below target may mask underlying strain.`
-    );
-  }
-  if (props.behaviourShifts.length > 0) {
-    const shifts = props.behaviourShifts.map((s) => s.title).join('; ');
-    lines.push(`This period, trial: ${shifts}.`);
-  }
-  return lines.slice(0, 5);
+  primaryDomain: DomainPriorityItem | null;
+  teamsByPriority: TeamPriorityItem[];
+  participation: ParticipationConfidenceResult;
+}): TalkingPoint[] {
+  const { riskBandLabel, primaryDomain, teamsByPriority, participation } = props;
+  const points: TalkingPoint[] = [];
+
+  points.push({
+    label: 'Position',
+    lines: [
+      riskBandLabel === 'Low risk'
+        ? 'Within acceptable range.'
+        : `${riskBandLabel}. Focus on actions below.`,
+    ],
+  });
+
+  points.push({
+    label: 'Concentration',
+    lines: primaryDomain
+      ? [primaryDomain.label, primaryDomain.whyShort]
+      : ['No domain below tolerance.'],
+  });
+
+  const teamNames = teamsByPriority.slice(0, 3).map((t) => t.teamName);
+  points.push({
+    label: 'Teams',
+    lines: teamNames.length > 0 ? [teamNames.join(', ')] : ['No teams below threshold.'],
+  });
+
+  points.push({
+    label: 'Confidence',
+    lines: participation.caution
+      ? [participation.label, participation.caution]
+      : [participation.label],
+  });
+
+  return points.slice(0, 4);
 }
 
 export function ExecutiveSummary({
@@ -71,10 +81,7 @@ export function ExecutiveSummary({
   previousParticipationPercent,
   attentionTeams,
   trendSeries,
-  periodLabel = 'this period',
 }: ExecutiveSummaryProps) {
-  const [scriptOpen, setScriptOpen] = useState(false);
-
   const score100 = Math.max(0, Math.min(100, overallScore));
   const delta = useMemo(() => computeDelta(score100, previousScore ?? undefined), [score100, previousScore]);
   const riskBand = useMemo(() => getRiskBand(score100), [score100]);
@@ -132,140 +139,165 @@ export function ExecutiveSummary({
     [domainPriority.primaryDomain, domainPriority.secondaryDomain]
   );
 
-  const behaviourShiftsForScript: BehaviourShift[] = useMemo(
+  const talkingPoints = useMemo(
     () =>
-      actionTiles.map((t) => ({
-        title: t.title,
-        steps: t.steps,
-        timeframe: t.timeframe,
-      })),
-    [actionTiles]
-  );
-
-  const speakingLines = useMemo(
-    () =>
-      buildSpeakingScript({
+      buildTalkingPoints({
         riskBandLabel: riskBand.label,
-        domainsAtRisk: domainPriority.domainsRanked.filter((d) => d.score100 < 70).slice(0, 2),
-        teamsAtRisk: teamsByPriority.slice(0, 3),
-        participationConfidenceLabel: participation.label,
-        participationTone: participation.level === 'high' ? 'calm' : 'cautious',
-        behaviourShifts: behaviourShiftsForScript,
+        primaryDomain: domainPriority.primaryDomain,
+        teamsByPriority,
+        participation,
       }),
-    [riskBand.label, domainPriority.domainsRanked, teamsByPriority, participation, behaviourShiftsForScript]
+    [riskBand.label, domainPriority.primaryDomain, teamsByPriority, participation]
   );
-
-  const handleCopyScript = useCallback(() => {
-    const text = speakingLines.join('\n');
-    void navigator.clipboard.writeText(text);
-  }, [speakingLines]);
 
   const teamsRequiringAttentionCount = attentionTeams.filter((t) => t.wellbeing < 60).length;
   const domainsAtRiskCount = domainPriority.domainsRanked.filter((d) => d.score100 < 70).length;
   const hasLimitedSignal = participation.level === 'low' && attentionTeams.length < 3;
+  const topTeams = teamsByPriority.slice(0, 3);
+  const escalationReasonsShow = escalation.reasons.slice(0, 2);
 
   return (
-    <section className="rounded-bi-lg bg-bi-surfaceSection p-6 md:p-8 shadow-bi-soft border border-bi-borderSubtle">
-      <h2 className="text-xl font-semibold text-bi-text tracking-tight mb-6">
+    <section className="rounded-bi-lg bg-bi-surfaceSection p-5 md:p-6 shadow-bi-soft border border-bi-borderSubtle max-h-[85vh] overflow-y-auto">
+      <h2 className="text-lg font-semibold text-bi-text tracking-tight mb-4">
         Executive Summary
       </h2>
 
-      {/* Risk Snapshot row: gauge + callouts */}
-      <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-6 md:gap-8 items-start mb-6">
+      {/* Snapshot: gauge + callouts — tight */}
+      <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-4 md:gap-5 items-start mb-4">
         <div className="flex flex-col items-center md:items-start">
-          <RiskGauge score={overallScore} animate size={88} />
-          <div className="mt-2 flex items-center gap-2 flex-wrap justify-center md:justify-start">
+          <RiskGauge score={overallScore} animate size={76} />
+          <div className="mt-1.5 flex items-center gap-2 flex-wrap justify-center md:justify-start">
             {previousScore != null && (
               <span
-                className={`text-sm font-medium tabular-nums ${
+                className={`text-xs font-medium tabular-nums ${
                   delta > 0 ? 'text-bi-success' : delta < 0 ? 'text-bi-danger' : 'text-bi-textMuted'
                 }`}
               >
-                {delta > 0 ? '+' : ''}{delta} vs previous
+                {delta > 0 ? '+' : ''}{delta}
               </span>
             )}
-            <span className="text-sm text-bi-textMuted">{riskBand.label}</span>
+            <span className="text-xs text-bi-textMuted">{riskBand.label}</span>
           </div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div className="rounded-bi-lg bg-bi-surfaceCard border border-bi-borderSubtle p-4 shadow-bi-sm">
-            <p className="text-2xl md:text-3xl font-semibold tabular-nums text-bi-text">
-              {teamsRequiringAttentionCount}
-            </p>
-            <p className="text-sm text-bi-textMuted mt-1">Teams requiring attention</p>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="rounded-bi-md bg-bi-surfaceCard border border-bi-borderSubtle p-3 shadow-bi-sm">
+            <p className="text-xl font-semibold tabular-nums text-bi-text">{teamsRequiringAttentionCount}</p>
+            <p className="text-xs text-bi-textMuted mt-0.5">Teams</p>
           </div>
-          <div className="rounded-bi-lg bg-bi-surfaceCard border border-bi-borderSubtle p-4 shadow-bi-sm">
-            <p className="text-2xl md:text-3xl font-semibold tabular-nums text-bi-text">
-              {domainsAtRiskCount}
-            </p>
-            <p className="text-sm text-bi-textMuted mt-1">Domains at risk</p>
+          <div className="rounded-bi-md bg-bi-surfaceCard border border-bi-borderSubtle p-3 shadow-bi-sm">
+            <p className="text-xl font-semibold tabular-nums text-bi-text">{domainsAtRiskCount}</p>
+            <p className="text-xs text-bi-textMuted mt-0.5">Domains</p>
           </div>
-          <div className="rounded-bi-lg bg-bi-surfaceCard border border-bi-borderSubtle p-4 shadow-bi-sm col-span-2 md:col-span-1">
-            <p className="text-lg font-semibold text-bi-text">{participation.label}</p>
-            <p className="text-sm text-bi-textMuted mt-1">{Math.round(participationPercent)}% participation</p>
+          <div className="rounded-bi-md bg-bi-surfaceCard border border-bi-borderSubtle p-3 shadow-bi-sm">
+            <p className="text-sm font-semibold text-bi-text">{participation.label}</p>
+            <p className="text-xs text-bi-textMuted mt-0.5">{Math.round(participationPercent)}%</p>
           </div>
         </div>
       </div>
 
       {hasLimitedSignal && (
-        <div className="rounded-bi-md bg-bi-warning/10 border border-bi-warning/30 px-4 py-3 mb-6">
-          <p className="text-sm text-bi-text">
-            Limited signal — small sample and low participation. Interpret with caution.
-          </p>
+        <div className="rounded-bi-md bg-bi-warning/10 border border-bi-warning/30 px-3 py-2 mb-3">
+          <p className="text-xs text-bi-text">Limited signal — interpret with caution.</p>
         </div>
       )}
 
-      {/* Executive Focus Strip — 4 tiles */}
-      <div className="mb-6">
-        <ExecutiveFocusStrip
-          primaryDomain={domainPriority.primaryDomain}
-          teamsByPriority={teamsByPriority}
-          participation={participation}
-          escalation={escalation}
-        />
-        <p className="text-xs text-bi-textSubtle mt-3">
-          Trajectory signal only — not a prediction of incidents or claims.
-        </p>
-      </div>
-
-      {/* What to say tomorrow — collapsible, Copy script */}
-      <div className="rounded-bi-lg bg-bi-surfaceCard border border-bi-borderSubtle shadow-bi-sm mb-6 overflow-hidden">
-        <button
-          type="button"
-          onClick={() => setScriptOpen(!scriptOpen)}
-          className="w-full flex items-center justify-between p-4 text-left hover:bg-bi-surfaceAlt/50 transition-colors"
-        >
-          <h3 className="text-base font-semibold text-bi-text">What to say tomorrow</h3>
-          <span className="text-sm text-bi-textMuted">{scriptOpen ? 'Hide' : 'View'}</span>
-        </button>
-        {scriptOpen && (
-          <div className="px-4 pb-4 pt-0 border-t border-bi-borderSeparator">
-            <div className="space-y-2 mt-3">
-              {speakingLines.length > 0 ? (
-                speakingLines.map((line, i) => (
-                  <p key={i} className="text-sm text-bi-text leading-relaxed">
-                    {line}
-                  </p>
-                ))
-              ) : (
-                <p className="text-sm text-bi-textMuted">Insufficient data to generate a script.</p>
-              )}
-            </div>
-            <button
-              type="button"
-              onClick={handleCopyScript}
-              className="mt-3 rounded-bi-md border border-bi-borderSubtle bg-bi-surfaceAlt px-3 py-2 text-sm font-medium text-bi-text hover:bg-bi-surfaceAlt/80"
-            >
-              Copy script
-            </button>
+      {/* Tighter 3-tile row: Teams to watch, Participation, Escalation */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+        <div className="rounded-bi-md bg-bi-surfaceCard border border-bi-borderSubtle p-3 shadow-bi-sm">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-bi-textMuted mb-1.5">Teams to watch</p>
+          <p className="text-lg font-bold tabular-nums text-bi-text">{teamsByPriority.length}</p>
+          <div className="mt-1.5 flex flex-wrap gap-1">
+            {topTeams.map((t) => (
+              <span
+                key={t.teamId}
+                className="inline-flex items-center gap-1 rounded-full bg-bi-surfaceAlt px-1.5 py-0.5 text-[11px] text-bi-text truncate max-w-[120px]"
+                title={t.teamName}
+              >
+                <span className="truncate">{t.teamName}</span>
+                <span className="tabular-nums text-bi-textMuted shrink-0">{Math.round(t.score)}</span>
+              </span>
+            ))}
           </div>
-        )}
+        </div>
+        <div className="rounded-bi-md bg-bi-surfaceCard border border-bi-borderSubtle p-3 shadow-bi-sm">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-bi-textMuted mb-1.5">Participation</p>
+          <p className="text-sm font-semibold text-bi-text">{participation.label}</p>
+          <div className="mt-1 h-1.5 rounded-full bg-bi-surfaceAlt overflow-hidden">
+            <div
+              className="h-full rounded-full"
+              style={{
+                width: `${participation.rate}%`,
+                backgroundColor:
+                  participation.level === 'high' ? 'var(--bi-success)' : participation.level === 'moderate' ? 'var(--bi-warning)' : 'var(--bi-danger)',
+              }}
+            />
+          </div>
+          {participation.caution && <p className="text-[10px] text-bi-textMuted mt-1">{participation.caution}</p>}
+        </div>
+        <div className="rounded-bi-md bg-bi-surfaceCard border border-bi-borderSubtle p-3 shadow-bi-sm">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-bi-textMuted mb-1.5">Escalation</p>
+          <span
+            className={`inline-flex rounded-full px-1.5 py-0.5 text-[11px] font-medium ${
+              escalation.level === 'High' ? 'bg-bi-danger/20 text-bi-danger' : escalation.level === 'Moderate' ? 'bg-bi-warning/20 text-bi-warning' : 'bg-bi-surfaceAlt text-bi-textMuted'
+            }`}
+          >
+            {escalation.level}
+          </span>
+          {escalationReasonsShow.length > 0 && (
+            <ul className="mt-1 text-[11px] text-bi-textMuted space-y-0.5">
+              {escalationReasonsShow.map((r, i) => (
+                <li key={i}>{r}</li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
 
-      {/* What to change this week — 2 Action Tiles */}
-      <div className="mb-6">
-        <h3 className="text-base font-semibold text-bi-text mb-3">What to change this week</h3>
-        <ActionTiles tiles={actionTiles} />
+      <p className="text-[10px] text-bi-textSubtle mb-4">
+        Trajectory signal only — not a prediction of incidents or claims.
+      </p>
+
+      {/* 2-column: Left = Primary Focus + Talking Points | Right = Action Tiles */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+        <div className="flex flex-col gap-4 min-h-0">
+          {/* Primary Focus tile — full width of left col */}
+          <div className="rounded-bi-lg bg-bi-surfaceCard border border-bi-borderSubtle p-4 shadow-bi-sm">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-bi-textMuted mb-2">Primary focus</p>
+            {domainPriority.primaryDomain ? (
+              <>
+                <p className="text-base font-semibold text-bi-text">{domainPriority.primaryDomain.label}</p>
+                <div className="flex items-center gap-2 mt-1.5">
+                  <span className="text-xl font-bold tabular-nums text-bi-text">
+                    {Math.round(domainPriority.primaryDomain.score100)}
+                  </span>
+                  {domainPriority.primaryDomain.delta !== 0 && (
+                    <span
+                      className={`text-xs font-medium tabular-nums ${
+                        domainPriority.primaryDomain.delta > 0 ? 'text-bi-success' : 'text-bi-danger'
+                      }`}
+                    >
+                      {domainPriority.primaryDomain.delta > 0 ? '+' : ''}{domainPriority.primaryDomain.delta}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-bi-textMuted mt-1">{domainPriority.primaryDomain.whyShort}</p>
+              </>
+            ) : (
+              <p className="text-sm text-bi-textMuted">No domain below tolerance</p>
+            )}
+          </div>
+
+          {/* Talking Points strip */}
+          <div>
+            <TalkingPointsStrip points={talkingPoints} />
+          </div>
+        </div>
+
+        {/* Right: 2 Action Tiles stacked */}
+        <div className="flex flex-col gap-3">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-bi-textMuted">What to change this week</p>
+          <ActionTiles tiles={actionTiles} stacked />
+        </div>
       </div>
     </section>
   );
