@@ -1,3 +1,8 @@
+export type SystemicThresholds = {
+  minConsecutive: number;
+  minTeamsPct: number;
+};
+
 export type RiskThresholds = {
   /** Score below this: team "requires attention". */
   team_attention: number;
@@ -13,6 +18,10 @@ export type RiskThresholds = {
   range_high: number;
   /** Std dev above this: high variance. */
   variance_high: number;
+  /** Operational risk pattern logic (Systemic decline, Localised persistent, etc.). */
+  systemic?: SystemicThresholds;
+  /** |Δ| above this with no persistence → Volatile. */
+  volatilityThreshold?: number;
 };
 
 export const defaultThresholds: RiskThresholds = {
@@ -23,4 +32,6 @@ export const defaultThresholds: RiskThresholds = {
   consecutive_declines: 3,
   range_high: 30,
   variance_high: 12,
+  systemic: { minConsecutive: 2, minTeamsPct: 30 },
+  volatilityThreshold: 10,
 };
