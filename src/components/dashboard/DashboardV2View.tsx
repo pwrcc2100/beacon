@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { RiskGauge } from './RiskGauge';
 import { DomainBars, type DomainScores } from './DomainBars';
 import { FilterBar, type Level1Option } from './FilterBar';
@@ -42,7 +41,6 @@ const PERIOD_OPTIONS = [
 ];
 
 export function DashboardV2View({ data, clientId, exportUrl }: DashboardV2ViewProps) {
-  const router = useRouter();
   const whatChanged = data.insights.find((i) => i.type === 'positive' || i.type === 'warning') ?? data.insights[0];
   const recommended = data.insights.filter((i) => i.type === 'warning' || i.type === 'attention').slice(0, 3);
 
