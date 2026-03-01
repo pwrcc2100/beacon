@@ -14,7 +14,7 @@ const BiCard = React.forwardRef<HTMLDivElement, BiCardProps>(
     <div
       ref={ref}
       className={cn(
-        'rounded-bi-lg border border-bi-border bg-bi-surface text-bi-text shadow-bi-sm',
+        'rounded-bi-lg bg-bi-surfaceCard text-bi-text shadow-bi-sm',
         className
       )}
       {...props}
@@ -41,7 +41,7 @@ const BiCardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={cn('text-base font-semibold leading-none tracking-tight text-bi-text', className)}
+    className={cn('text-[15px] font-semibold leading-snug tracking-tight text-bi-text', className)}
     {...props}
   />
 ));
@@ -51,7 +51,7 @@ const BiCardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn('text-sm text-bi-textMuted', className)} {...props} />
+  <p ref={ref} className={cn('bi-body-muted', className)} {...props} />
 ));
 BiCardDescription.displayName = 'BiCardDescription';
 

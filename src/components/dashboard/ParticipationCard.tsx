@@ -18,13 +18,11 @@ export function ParticipationCard({
   const showWarning = participationPercent < PARTICIPATION_WARNING_THRESHOLD;
 
   return (
-    <div className="rounded-bi-lg border border-bi-border bg-bi-surface-elevated p-5 shadow-bi-soft ring-1 ring-inset ring-bi-borderInner">
-      <p className="text-xs font-medium uppercase tracking-wider text-bi-textMuted">
-        Participation rate
-      </p>
-      <p className="mt-2 text-3xl font-semibold tabular-nums text-bi-text">
+    <div className="rounded-bi-lg bg-bi-surfaceCard border border-bi-borderSubtle p-5 shadow-bi-sm">
+      <p className="text-4xl md:text-5xl font-semibold tabular-nums text-bi-text leading-none">
         {Math.round(participationPercent)}%
       </p>
+      <p className="mt-2 text-sm text-bi-textMuted">Participation</p>
       {trend != null && (
         <p className="mt-1 text-sm text-bi-textMuted">
           {trend >= 0 ? '+' : ''}
@@ -32,13 +30,7 @@ export function ParticipationCard({
         </p>
       )}
       {showWarning && (
-        <span
-          className="mt-3 inline-block rounded-bi-sm px-2 py-1 text-xs font-medium"
-          style={{
-            background: 'var(--bi-warning)',
-            color: 'var(--bi-bg)',
-          }}
-        >
+        <span className="mt-3 inline-block rounded-bi-sm px-2 py-1 text-xs font-medium bg-bi-warning text-white">
           Below target
         </span>
       )}

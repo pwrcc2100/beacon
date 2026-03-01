@@ -29,3 +29,15 @@ export function getScoreStatusLabel(score: number): (typeof SCORE_STATUS_LABELS)
 export function isBelowRiskThreshold(score: number): boolean {
   return score < RISK_THRESHOLD;
 }
+
+/** One-line interpretation for the composite score (hero / summary). */
+export const SCORE_INTERPRETATION: Record<string, string> = {
+  [SCORE_STATUS_LABELS.low]: 'Low risk — standard monitoring.',
+  [SCORE_STATUS_LABELS.withinTolerance]: 'Within tolerance — trend monitoring recommended.',
+  [SCORE_STATUS_LABELS.emerging]: 'Emerging risk — targeted review recommended.',
+  [SCORE_STATUS_LABELS.elevated]: 'Elevated risk — monitor and intervene early.',
+};
+
+export function getScoreInterpretation(score: number): string {
+  return SCORE_INTERPRETATION[getScoreStatusLabel(score)] ?? SCORE_INTERPRETATION[SCORE_STATUS_LABELS.elevated];
+}

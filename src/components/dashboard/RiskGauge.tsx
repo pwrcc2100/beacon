@@ -58,11 +58,10 @@ export function RiskGauge({ score, animate = true, size = RADIUS }: RiskGaugePro
   return (
     <div className="flex flex-col items-center">
       <div
-        className="relative rounded-full flex items-center justify-center border border-bi-border shadow-bi-sm"
+        className="relative rounded-full flex items-center justify-center bg-bi-surfaceCard shadow-bi-sm"
         style={{
           width: size * 2 + strokeWidth * 2,
           height: size * 2 + strokeWidth * 2,
-          background: tokens.surface,
         }}
       >
         <svg
@@ -92,19 +91,14 @@ export function RiskGauge({ score, animate = true, size = RADIUS }: RiskGaugePro
             style={{ transition: 'stroke-dashoffset 0.5s ease-out' }}
           />
         </svg>
-        <span
-          className="text-3xl font-semibold tabular-nums"
-          style={{ color: tokens.text, zIndex: 1 }}
-        >
+        <span className="text-3xl font-semibold tabular-nums text-bi-text z-[1]">
           {displayScore}
         </span>
       </div>
       <span
-        className="mt-2 text-xs font-medium px-2.5 py-1 rounded-md"
-        style={{
-          background: value >= 70 ? `${tokens.success}22` : value >= 60 ? `${tokens.warning}22` : `${tokens.danger}22`,
-          color: value >= 70 ? tokens.success : value >= 60 ? tokens.warning : tokens.danger,
-        }}
+        className={`mt-2 bi-caption font-medium px-2.5 py-1 rounded-bi-sm ${
+          value >= 70 ? 'bg-bi-success/20 text-bi-success' : value >= 60 ? 'bg-bi-warning/20 text-bi-warning' : 'bg-bi-danger/20 text-bi-danger'
+        }`}
       >
         {riskLabel}
       </span>
