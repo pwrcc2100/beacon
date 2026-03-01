@@ -193,6 +193,17 @@ export default async function DashboardV2Page({
     clarity: questionScores.clarity,
   };
 
+  const previousDomainScores =
+    previousRow != null
+      ? {
+          experience: previousRow.sentiment_avg,
+          workload: previousRow.workload_avg,
+          safety: previousRow.safety_avg,
+          leadership: previousRow.leadership_avg,
+          clarity: previousRow.clarity_avg,
+        }
+      : null;
+
   const exportUrl = `/api/download?client_id=${encodeURIComponent(clientId)}`;
   const teamsRequiringAttentionCount = attentionTeams.filter((t) => t.wellbeing < RISK_THRESHOLD).length;
   const level1Options = divisions.map((d) => ({ value: d.division_id, label: d.division_name }));
@@ -218,8 +229,9 @@ export default async function DashboardV2Page({
       <DashboardV2View
         data={{
           overallScore: overallScore ?? 0,
-          previousScore,
+          previousScore: previousScore ?? null,
           domainScores,
+          previousDomainScores,
           participationPercent,
           previousParticipationPercent: null,
           teamsRequiringAttentionCount,

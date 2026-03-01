@@ -61,9 +61,9 @@ export function TeamRiskGrid({ teams }: TeamRiskGridProps) {
   }
 
   return (
-    <div className="p-5 md:p-6">
-      {/* Controls: sort + filter */}
-      <div className="flex flex-wrap items-center gap-4 mb-6">
+    <div className="flex flex-col h-full">
+      {/* Controls: sort + filter — fixed above scroll */}
+      <div className="flex flex-wrap items-center gap-4 p-4 md:p-5 border-b border-bi-borderSeparator shrink-0">
         <div className="flex items-center gap-2">
           <span className="bi-caption text-bi-textMuted">Sort:</span>
           <button
@@ -85,8 +85,9 @@ export function TeamRiskGrid({ teams }: TeamRiskGridProps) {
         </label>
       </div>
 
-      {/* List of team row cards */}
-      <ul className="space-y-3 list-none p-0 m-0">
+      {/* Scrollable list of team row cards */}
+      <div className="overflow-y-auto min-h-0 flex-1" style={{ maxHeight: '420px' }}>
+        <ul className="space-y-3 list-none p-4 md:p-5 m-0">
         {sorted.map((team) => {
           const score = Math.round(team.wellbeing);
           const percent = Math.max(0, Math.min(100, team.wellbeing));
@@ -147,7 +148,8 @@ export function TeamRiskGrid({ teams }: TeamRiskGridProps) {
             </li>
           );
         })}
-      </ul>
+        </ul>
+      </div>
     </div>
   );
 }

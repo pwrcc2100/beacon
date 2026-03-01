@@ -1,20 +1,18 @@
 'use client';
 
-import { RiskGauge } from './RiskGauge';
+import { ExecutiveSummary } from './ExecutiveSummary';
 import { DomainBars, type DomainScores } from './DomainBars';
 import { FilterBar, type Level1Option } from './FilterBar';
-import { ParticipationCard } from './ParticipationCard';
-import { TeamsRequiringAttentionCard } from './TeamsRequiringAttentionCard';
 import { TeamRiskGrid } from './TeamRiskGrid';
 import { BiCard, BiCardHeader, BiCardTitle, BiCardContent } from '@/components/ui/bi-card';
-import { getScoreInterpretation } from '@/lib/dashboardConstants';
 import type { ExecutiveInsight } from '@/lib/executiveInsights';
 import type { AttentionTeam } from '@/app/dashboard/dashboardData';
 
 export type DashboardV2Data = {
   overallScore: number;
-  previousScore?: number;
+  previousScore?: number | null;
   domainScores: DomainScores;
+  previousDomainScores?: Partial<DomainScores> | null;
   participationPercent: number;
   previousParticipationPercent?: number | null;
   teamsRequiringAttentionCount: number;
@@ -76,73 +74,66 @@ export function DashboardV2View({ data, clientId, exportUrl }: DashboardV2ViewPr
 
       <main className="flex-1 p-6 md:p-8">
         <div className="max-w-5xl mx-auto space-y-10">
-          {/* 1. Summary — hero: gauge (largest) + interpretation + two stat callouts */}
-          <section className="rounded-bi-lg bg-bi-surfaceSection p-6 md:p-8 shadow-bi-soft border border-bi-borderSubtle">
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 md:gap-10 items-center">
-              {/* Gauge: main visual weight + one-line interpretation */}
-              <div className="flex flex-col items-center md:items-start text-center md:text-left">
-                <RiskGauge score={data.overallScore} animate size={88} />
-                <p className="mt-4 text-base text-bi-textMuted max-w-md">
-                  {getScoreInterpretation(data.overallScore)}
-                </p>
-              </div>
-              {/* Two stat callouts */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 sm:min-w-[200px]">
-                <ParticipationCard
-                  participationPercent={data.participationPercent}
-                  previousParticipationPercent={data.previousParticipationPercent}
-                />
-                <TeamsRequiringAttentionCard count={data.teamsRequiringAttentionCount} />
-              </div>
-            </div>
+          {/* 1. Executive Summary — decision instrument (primary focus) */}
+          <ExecutiveSummary
+            overallScore={data.overallScore}
+            previousScore={data.previousScore ?? null}
+            domainScores={data.domainScores}
+            previousDomainScores={data.previousDomainScores ?? null}
+            participationPercent={data.participationPercent}
+            attentionTeams={data.attentionTeams}
+            trendSeries={data.trendSeries}
+            periodLabel={data.periodLabel}
+          />
 
-            {/* Domain breakdown — same section, below hero */}
-            <div className="mt-8 pt-8 border-t border-bi-borderSeparator">
-              <p className="text-sm text-bi-textMuted mb-3">Domain breakdown</p>
-              <div className="rounded-bi-lg bg-bi-surfaceCard border border-bi-borderSubtle p-4 shadow-bi-sm">
-                <DomainBars scores={data.domainScores} compact />
-              </div>
-            </div>
-          </section>
-
-          {/* 2. Insight & action — section + cards */}
+          {/* 2. Supporting evidence: Domain breakdown (1/3) + What changed / Actions (2/3) */}
           <section className="rounded-bi-lg bg-bi-surfaceSection p-5 md:p-6 shadow-bi-soft border border-bi-borderSubtle">
-            <h2 className="text-xl font-semibold text-bi-text tracking-tight mb-4">
-              Insights & actions
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <BiCard className="rounded-bi-lg bg-bi-surfaceCard border border-bi-borderSubtle shadow-bi-sm overflow-hidden">
-                <BiCardHeader className="pb-2">
-                  <BiCardTitle className="text-base font-semibold text-bi-text">
-                    What changed this week
-                  </BiCardTitle>
-                </BiCardHeader>
-                <BiCardContent>
-                  <p className="bi-body-muted leading-relaxed">
-                    {whatChanged ? whatChanged.text : 'Complete another pulse to see week-over-week changes.'}
-                  </p>
-                </BiCardContent>
-              </BiCard>
-              <BiCard className="rounded-bi-lg bg-bi-surfaceCard border border-bi-borderSubtle shadow-bi-sm overflow-hidden">
-                <BiCardHeader className="pb-2">
-                  <BiCardTitle className="text-base font-semibold text-bi-text">
-                    Recommended actions
-                  </BiCardTitle>
-                </BiCardHeader>
-                <BiCardContent>
-                  {recommended.length > 0 ? (
-                    <ul className="space-y-2 bi-body-muted leading-relaxed">
-                      {recommended.map((insight, i) => (
-                        <li key={i}>{insight.text}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="bi-body-muted">
-                      No specific actions right now. Keep monitoring your next pulse.
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Left: Domain breakdown — 1/3 */}
+              <div className="md:col-span-1">
+                <p className="text-sm text-bi-textMuted mb-3">Domain breakdown</p>
+                <div className="rounded-bi-lg bg-bi-surfaceCard border border-bi-borderSubtle p-4 shadow-bi-sm">
+                  <DomainBars scores={data.domainScores} compact />
+                </div>
+              </div>
+              {/* Right: Recommendations stacked — 2/3 */}
+              <div className="md:col-span-2 flex flex-col gap-4">
+                <BiCard className="rounded-bi-lg bg-bi-surfaceCard border border-bi-borderSubtle shadow-bi-sm overflow-hidden flex-1">
+                  <BiCardHeader className="pb-2">
+                    <BiCardTitle className="text-base font-semibold text-bi-text">
+                      What changed this period
+                    </BiCardTitle>
+                  </BiCardHeader>
+                  <BiCardContent>
+                    <p className="bi-body-muted leading-relaxed">
+                      {whatChanged ? whatChanged.text : 'Complete another pulse to see period-over-period changes.'}
                     </p>
-                  )}
-                </BiCardContent>
-              </BiCard>
+                    <p className="mt-2 text-xs text-bi-textSubtle">
+                      For leadership focus and behaviour shifts, see Executive Summary above.
+                    </p>
+                  </BiCardContent>
+                </BiCard>
+                <BiCard className="rounded-bi-lg bg-bi-surfaceCard border border-bi-borderSubtle shadow-bi-sm overflow-hidden flex-1">
+                  <BiCardHeader className="pb-2">
+                    <BiCardTitle className="text-base font-semibold text-bi-text">
+                      Recommended actions
+                    </BiCardTitle>
+                  </BiCardHeader>
+                  <BiCardContent>
+                    {recommended.length > 0 ? (
+                      <ul className="space-y-2 bi-body-muted leading-relaxed">
+                        {recommended.map((insight, i) => (
+                          <li key={i}>{insight.text}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="bi-body-muted">
+                        No additional actions beyond the behaviour shifts in Executive Summary.
+                      </p>
+                    )}
+                  </BiCardContent>
+                </BiCard>
+              </div>
             </div>
           </section>
 
