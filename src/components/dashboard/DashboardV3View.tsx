@@ -6,14 +6,16 @@ import { ReportDomainBars } from './ReportDomainBars';
 import { ReportTeamRiskList } from './ReportTeamRiskList';
 import { getScoreInterpretation, getScoreStatusLabel } from '@/lib/dashboardConstants';
 import {
+  computePrimaryFocusSystemic,
   computeDomainPriority,
   computeTeamPriority,
   computeParticipationConfidence,
   getActionTiles,
+  buildExecutiveRiskStatement,
 } from '@/lib/executiveLogic';
 import type { AttentionTeam } from '@/app/dashboard/dashboardData';
 import type { DomainScores } from './DomainBars';
-import type { TalkingPoint } from './TalkingPointsStrip';
+import type { ReasonFlag } from '@/lib/executiveLogic';
 
 export type DashboardV3Data = {
   overallScore: number;
@@ -32,41 +34,20 @@ type DashboardV3ViewProps = {
   clientId: string;
 };
 
-function truncate(str: string, maxLen: number): string {
-  if (str.length <= maxLen) return str;
-  return str.slice(0, maxLen - 1).trim() + '…';
-}
-
-function buildTalkingPoints(props: {
-  riskBandLabel: string;
-  primaryDomain: { label: string; whyShort: string } | null;
-  teamNames: string[];
-  participationLabel: string;
-  participationCaution: string | null;
-}): TalkingPoint[] {
-  const { riskBandLabel, primaryDomain, teamNames, participationLabel, participationCaution } = props;
-  const teamsLine = teamNames.length > 0
-    ? truncate(teamNames.slice(0, 3).map((n) => truncate(n, 18)).join(', '), 42)
-    : 'No teams below threshold.';
-  const confidenceLine2 = participationCaution ? truncate(participationCaution, 50) : null;
-  return [
-    {
-      label: 'Position',
-      lines: [riskBandLabel === 'Low risk' ? 'Within acceptable range.' : `${riskBandLabel}. Focus on actions below.`],
-    },
-    {
-      label: 'Concentration',
-      lines: primaryDomain ? [primaryDomain.label, primaryDomain.whyShort] : ['No domain below tolerance.'],
-    },
-    {
-      label: 'Teams',
-      lines: [teamsLine],
-    },
-    {
-      label: 'Confidence',
-      lines: confidenceLine2 ? [participationLabel, confidenceLine2] : [participationLabel],
-    },
-  ];
+function ReasonFlagPill({ flag }: { flag: ReasonFlag }) {
+  const iconMap = {
+    trend: '↓',
+    lowest: '◆',
+    teams: '👥',
+    periods: '↻',
+    variance: 'σ',
+  };
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-neutral-200/80 px-2 py-0.5 text-[11px] font-medium text-neutral-700">
+      <span className="opacity-70" aria-hidden>{iconMap[flag.icon]}</span>
+      {flag.label}
+    </span>
+  );
 }
 
 export function DashboardV3View({ data, clientId }: DashboardV3ViewProps) {
@@ -84,6 +65,23 @@ export function DashboardV3View({ data, clientId }: DashboardV3ViewProps) {
   const domainPriority = useMemo(
     () => computeDomainPriority(currentDomains, data.previousDomainScores ?? undefined),
     [currentDomains, data.previousDomainScores]
+  );
+
+  const teamScoresRaw = useMemo(
+    () => data.attentionTeams.map((t) => t.wellbeing),
+    [data.attentionTeams]
+  );
+
+  const primaryFocus = useMemo(
+    () =>
+      computePrimaryFocusSystemic({
+        domainScoresCurrent: currentDomains,
+        domainScoresPrevious: data.previousDomainScores ?? undefined,
+        teamScores: teamScoresRaw,
+        participationPercent: data.participationPercent,
+        trendSeries: data.trendSeries,
+      }),
+    [currentDomains, data.previousDomainScores, teamScoresRaw, data.participationPercent, data.trendSeries]
   );
 
   const teamScoresForPriority = useMemo(
@@ -111,33 +109,31 @@ export function DashboardV3View({ data, clientId }: DashboardV3ViewProps) {
     [data.participationPercent, participationDelta]
   );
 
+  const primaryForActions = primaryFocus?.domain ?? domainPriority.primaryDomain;
+  const secondaryForActions = domainPriority.domainsRanked.find((d) => d.key !== primaryForActions?.key) ?? domainPriority.secondaryDomain;
   const actionTiles = useMemo(
-    () => getActionTiles(domainPriority.primaryDomain, domainPriority.secondaryDomain),
-    [domainPriority.primaryDomain, domainPriority.secondaryDomain]
+    () => getActionTiles(primaryForActions, secondaryForActions ?? null),
+    [primaryForActions, secondaryForActions]
   );
 
   const riskBandLabel = useMemo(() => getScoreStatusLabel(data.overallScore), [data.overallScore]);
 
-  const talkingPoints = useMemo(
-    () =>
-      buildTalkingPoints({
-        riskBandLabel,
-        primaryDomain: domainPriority.primaryDomain,
-        teamNames: teamsByPriority.map((t) => t.teamName),
-        participationLabel: participation.label,
-        participationCaution: participation.caution,
-      }),
-    [riskBandLabel, domainPriority.primaryDomain, teamsByPriority, participation]
-  );
-
-  const interpretation = getScoreInterpretation(data.overallScore);
   const teamsRequiringAttentionCount = data.attentionTeams.filter((t) => t.wellbeing < 60).length;
   const domainsAtRiskCount = domainPriority.domainsRanked.filter((d) => d.score100 < 70).length;
 
-  const handleCopyTalkingPoints = () => {
-    const text = talkingPoints.map((p) => `${p.label}\n${p.lines.join('\n')}`).join('\n\n');
-    void navigator.clipboard.writeText(text);
-  };
+  const executiveRiskStatement = useMemo(() => {
+    const label = primaryFocus?.domain?.label ?? domainPriority.primaryDomain?.label ?? 'overall wellbeing';
+    const trendDirection =
+      (primaryFocus?.domain?.delta ?? 0) < 0 ? 'declining' : (primaryFocus?.domain?.delta ?? 0) > 0 ? 'improving' : 'stable';
+    return buildExecutiveRiskStatement({
+      riskBandLabel,
+      primaryDomainLabel: label,
+      teamsBelow60: teamsRequiringAttentionCount,
+      trendDirection,
+    });
+  }, [riskBandLabel, primaryFocus?.domain?.label, primaryFocus?.domain?.delta, domainPriority.primaryDomain?.label, teamsRequiringAttentionCount]);
+
+  const interpretation = getScoreInterpretation(data.overallScore);
 
   return (
     <div className="min-h-screen bg-neutral-100 text-neutral-800">
@@ -154,88 +150,112 @@ export function DashboardV3View({ data, clientId }: DashboardV3ViewProps) {
       </header>
 
       {/* Single unified executive canvas */}
-      <main className="max-w-5xl mx-auto px-4 py-4">
+      <main className="max-w-5xl mx-auto px-4 py-3">
         <div className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
-          <div className="p-5 md:p-6 space-y-4">
-            {/* ROW 1: Gauge left, 3 metric tiles right */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-neutral-100">
-              <div className="flex flex-col items-center md:items-start">
-                <ReportGauge score={data.overallScore} animate size={92} />
-                <p className="mt-3 text-sm text-neutral-600 max-w-xs text-center md:text-left">
+          <div className="p-3 md:p-4 space-y-3">
+            {/* ROW 1: Executive Snapshot — gauge + 3 metrics in one tight row, ~25–30vh max */}
+            <div
+              className="flex flex-row items-center justify-between gap-3 py-2 border-b border-neutral-100 min-h-0 max-h-[30vh]"
+              style={{ paddingTop: '0.4rem', paddingBottom: '0.4rem' }}
+            >
+              <div className="flex flex-row items-center gap-3 flex-shrink-0">
+                <ReportGauge score={data.overallScore} animate size={72} />
+                <p className="text-sm text-neutral-600 max-w-[200px] leading-tight hidden sm:block">
                   {interpretation}
                 </p>
               </div>
-              <div className="grid grid-cols-3 gap-3 flex-shrink-0">
-                <div className="bg-neutral-50 rounded-lg px-3 py-3 text-center">
-                  <p className="text-xl font-semibold text-neutral-900 tabular-nums">{teamsRequiringAttentionCount}</p>
-                  <p className="text-[11px] text-neutral-500 mt-0.5">Teams</p>
+              <div className="grid grid-cols-3 gap-2 flex-shrink-0">
+                <div className="bg-neutral-50 rounded-lg px-2 py-2 text-center">
+                  <p className="text-lg font-semibold text-neutral-900 tabular-nums">{teamsRequiringAttentionCount}</p>
+                  <p className="text-[10px] text-neutral-500">Teams</p>
                 </div>
-                <div className="bg-neutral-50 rounded-lg px-3 py-3 text-center">
-                  <p className="text-xl font-semibold text-neutral-900 tabular-nums">{domainsAtRiskCount}</p>
-                  <p className="text-[11px] text-neutral-500 mt-0.5">Domains</p>
+                <div className="bg-neutral-50 rounded-lg px-2 py-2 text-center">
+                  <p className="text-lg font-semibold text-neutral-900 tabular-nums">{domainsAtRiskCount}</p>
+                  <p className="text-[10px] text-neutral-500">Domains</p>
                 </div>
-                <div className="bg-neutral-50 rounded-lg px-3 py-3 text-center">
-                  <p className="text-base font-semibold text-neutral-900">{participation.label}</p>
-                  <p className="text-[11px] text-neutral-500 mt-0.5">{Math.round(data.participationPercent)}%</p>
+                <div className="bg-neutral-50 rounded-lg px-2 py-2 text-center">
+                  <p className="text-sm font-semibold text-neutral-900">{participation.label}</p>
+                  <p className="text-[10px] text-neutral-500">{Math.round(data.participationPercent)}%</p>
                 </div>
               </div>
             </div>
 
-            {/* ROW 2: Primary Focus banner — full width, strong typography */}
-            <div className="bg-neutral-50 rounded-lg px-4 py-4 border-l-4 border-neutral-300">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 mb-1">Primary focus</p>
-              {domainPriority.primaryDomain ? (
+            {/* ROW 2: Primary Focus — domain, score, trend, badge, reason flags */}
+            <div className="bg-neutral-50 rounded-lg px-4 py-3 border-l-4 border-neutral-400">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 mb-1.5">Primary focus</p>
+              {primaryFocus ? (
                 <>
-                  <p className="text-2xl md:text-3xl font-bold text-neutral-900 tracking-tight">
-                    {domainPriority.primaryDomain.label}
-                  </p>
+                  <div className="flex flex-wrap items-baseline gap-2">
+                    <p className="text-xl md:text-2xl font-bold text-neutral-900 tracking-tight">
+                      {primaryFocus.domain.label}
+                    </p>
+                    {primaryFocus.type === 'systemic' && (
+                      <span className="rounded bg-red-100 text-red-800 text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5">
+                        Systemic risk
+                      </span>
+                    )}
+                    {primaryFocus.type === 'emerging' && (
+                      <span className="rounded bg-amber-100 text-amber-800 text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5">
+                        Emerging signal
+                      </span>
+                    )}
+                    {primaryFocus.domain.score100 < 60 && primaryFocus.type !== 'systemic' && primaryFocus.type !== 'emerging' && (
+                      <span className="rounded bg-amber-100 text-amber-800 text-[10px] font-semibold px-1.5 py-0.5">
+                        Below tolerance
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-baseline gap-2 mt-1">
-                    <span className="text-3xl font-bold text-neutral-900 tabular-nums">
-                      {Math.round(domainPriority.primaryDomain.score100)}
+                    <span className="text-2xl font-bold text-neutral-900 tabular-nums">
+                      {Math.round(primaryFocus.domain.score100)}
                     </span>
-                    {domainPriority.primaryDomain.delta !== 0 && (
+                    {primaryFocus.domain.delta !== 0 && (
                       <span
-                        className={`text-base font-semibold tabular-nums ${
-                          domainPriority.primaryDomain.delta > 0 ? 'text-emerald-600' : 'text-red-600'
+                        className={`text-sm font-semibold tabular-nums ${
+                          primaryFocus.domain.delta > 0 ? 'text-emerald-600' : 'text-red-600'
                         }`}
                       >
+                        {primaryFocus.domain.delta > 0 ? '↑' : '↓'} {primaryFocus.domain.delta > 0 ? '+' : ''}{primaryFocus.domain.delta}
+                      </span>
+                    )}
+                  </div>
+                  {(primaryFocus.persistenceLabel || primaryFocus.breadthLabel) && (
+                    <p className="text-xs text-neutral-600 mt-1">
+                      {[primaryFocus.persistenceLabel, primaryFocus.breadthLabel].filter(Boolean).join(' · ')}
+                    </p>
+                  )}
+                  {primaryFocus.reasonFlags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {primaryFocus.reasonFlags.map((f) => (
+                        <ReasonFlagPill key={f.id} flag={f} />
+                      ))}
+                    </div>
+                  )}
+                </>
+              ) : domainPriority.primaryDomain ? (
+                <>
+                  <p className="text-xl font-bold text-neutral-900">{domainPriority.primaryDomain.label}</p>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="text-2xl font-bold tabular-nums">{Math.round(domainPriority.primaryDomain.score100)}</span>
+                    {domainPriority.primaryDomain.delta !== 0 && (
+                      <span className={domainPriority.primaryDomain.delta > 0 ? 'text-emerald-600' : 'text-red-600'}>
                         {domainPriority.primaryDomain.delta > 0 ? '+' : ''}{domainPriority.primaryDomain.delta}
                       </span>
                     )}
                   </div>
-                  <p className="text-sm font-medium text-neutral-600 mt-1">
-                    {domainPriority.primaryDomain.whyShort}
-                  </p>
+                  <p className="text-sm text-neutral-600 mt-1">{domainPriority.primaryDomain.whyShort}</p>
                 </>
               ) : (
                 <p className="text-neutral-600 font-medium">No domain below tolerance.</p>
               )}
             </div>
 
-            {/* ROW 3: Talking Points — 4 equal-width cards, compact, max 2 lines */}
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400">Talking points</span>
-              <button
-                type="button"
-                onClick={handleCopyTalkingPoints}
-                className="text-[11px] font-medium text-neutral-500 hover:text-neutral-700"
-              >
-                Copy
-              </button>
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-              {talkingPoints.map((p, i) => (
-                <div key={i} className="rounded-md bg-neutral-50 border border-neutral-100 px-3 py-2.5 min-h-0">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 mb-1">{p.label}</p>
-                  <p className="text-xs text-neutral-800 leading-snug line-clamp-2" title={p.lines[0]}>{p.lines[0]}</p>
-                  {p.lines[1] && (
-                    <p className="text-[11px] text-neutral-500 leading-snug line-clamp-2 mt-0.5" title={p.lines[1]}>{p.lines[1]}</p>
-                  )}
-                </div>
-              ))}
-            </div>
+            {/* Executive Risk Statement — single line under Primary Focus */}
+            <p className="text-sm font-medium text-neutral-700 leading-snug">
+              {executiveRiskStatement}
+            </p>
 
-            {/* ROW 4: Two ActionTiles side by side */}
+            {/* ROW 3: Two ActionTiles side by side */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {actionTiles.map((tile, i) => (
                 <div key={i} className="rounded-lg border border-neutral-200 bg-neutral-50/50 px-4 py-3">
@@ -252,7 +272,7 @@ export function DashboardV3View({ data, clientId }: DashboardV3ViewProps) {
               ))}
             </div>
 
-            {/* ROW 5: Supporting evidence — domain left, team list right */}
+            {/* ROW 4: Supporting evidence — domain left, team list right */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-2 border-t border-neutral-100">
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400 mb-2">Domain breakdown</p>

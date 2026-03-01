@@ -292,4 +292,167 @@ export function getActionTiles(
   return tiles.slice(0, 2);
 }
 
+// ——— Primary Focus: systemic criteria & reason flags ———
+
+const BELOW_TOLERANCE = 60;
+const PARTICIPATION_NOT_LOW = 50;
+
+export type PrimaryFocusType = 'systemic' | 'emerging' | 'focus';
+
+export type ReasonFlag = {
+  id: string;
+  label: string;
+  icon: 'trend' | 'lowest' | 'teams' | 'periods' | 'variance';
+};
+
+export type PrimaryFocusResult = {
+  domain: DomainPriorityItem;
+  type: PrimaryFocusType;
+  /** e.g. "3 consecutive periods" */
+  persistenceLabel: string | null;
+  /** e.g. "5 teams below tolerance" */
+  breadthLabel: string | null;
+  reasonFlags: ReasonFlag[];
+};
+
+/**
+ * Systemic Risk: score < 60 for 2 consecutive periods AND (30%+ teams or 3+ teams) below 60 AND participation >= 50%.
+ * Emerging Signal: single-period drop (current < 60, declined).
+ * Selection: 1) Systemic domains, 2) largest sustained decline, 3) lowest score.
+ */
+export function computePrimaryFocusSystemic(params: {
+  domainScoresCurrent: Record<string, number | undefined>;
+  domainScoresPrevious?: Record<string, number | undefined> | null;
+  teamScores: number[];
+  participationPercent: number;
+  trendSeries?: Array<{ wellbeing: number }>;
+}): PrimaryFocusResult | null {
+  const { domainScoresCurrent, domainScoresPrevious, teamScores, participationPercent } = params;
+  const totalTeams = teamScores.length;
+  const teamsBelow60 = teamScores.filter((s) => s < BELOW_TOLERANCE).length;
+  const participationNotLow = participationPercent >= PARTICIPATION_NOT_LOW;
+
+  const domainsWithScores: (DomainPriorityItem & { prev100: number })[] = DOMAIN_KEYS.map((key) => {
+    const score100 = to100(domainScoresCurrent[key]);
+    const prev100 = to100(domainScoresPrevious?.[key]);
+    const delta = computeDelta(score100, prev100);
+    const severity = score100 < 70 ? clamp((70 - score100) / 70, 0, 1) : 0;
+    const trend = delta < 0 ? clamp(-delta / 20, 0, 1) : 0;
+    const priorityScore = 0.55 * severity + 0.35 * trend;
+    let whyShort = '';
+    if (score100 < 70 && delta < 0) whyShort = 'Below tolerance and declining';
+    else if (score100 < 70) whyShort = 'Below tolerance';
+    else if (delta < 0) whyShort = 'Declining';
+    return {
+      key,
+      label: DOMAIN_LABELS[key],
+      score100,
+      delta,
+      priorityScore,
+      whyShort: whyShort || 'Monitor',
+      prev100,
+    };
+  });
+
+  const twoPeriodsBelow60 = (d: { score100: number; prev100: number }) =>
+    d.score100 < BELOW_TOLERANCE && d.prev100 < BELOW_TOLERANCE;
+  const breadthOk = totalTeams === 0 || teamsBelow60 >= 3 || teamsBelow60 / totalTeams >= 0.3;
+
+  // 1) Systemic: all three conditions
+  const systemic = domainsWithScores.filter(
+    (d) => twoPeriodsBelow60(d) && breadthOk && participationNotLow
+  );
+  if (systemic.length > 0) {
+    systemic.sort((a, b) => a.score100 - b.score100);
+    const d = systemic[0];
+    const persistenceCount = 2; // we only have 2 periods
+    const persistenceLabel = `${persistenceCount} consecutive periods below 60`;
+    const breadthLabel = teamsBelow60 > 0 ? `${teamsBelow60} teams below tolerance` : null;
+    const domain: DomainPriorityItem = { ...d, prev100: undefined } as DomainPriorityItem;
+    return {
+      domain,
+      type: 'systemic',
+      persistenceLabel,
+      breadthLabel,
+      reasonFlags: getPrimaryFocusReasonFlags(domain, domainsWithScores, teamsBelow60, totalTeams, teamScores, true),
+    };
+  }
+
+  // 2) Emerging: single period drop (current < 60, declined) or largest decline
+  const withDecline = domainsWithScores.filter((d) => d.score100 < 70 && d.delta < 0);
+  if (withDecline.length > 0) {
+    withDecline.sort((a, b) => a.delta - b.delta); // most negative first
+    const d = withDecline[0];
+    const domain: DomainPriorityItem = { ...d, prev100: undefined } as DomainPriorityItem;
+    const isEmerging = d.score100 < BELOW_TOLERANCE;
+    return {
+      domain,
+      type: isEmerging ? 'emerging' : 'focus',
+      persistenceLabel: null,
+      breadthLabel: teamsBelow60 > 0 ? `${teamsBelow60} teams below tolerance` : null,
+      reasonFlags: getPrimaryFocusReasonFlags(domain, domainsWithScores, teamsBelow60, totalTeams, teamScores, false),
+    };
+  }
+
+  // 3) Lowest domain score
+  const sorted = [...domainsWithScores].sort((a, b) => a.score100 - b.score100);
+  const lowest = sorted[0];
+  if (!lowest) return null;
+  const domain: DomainPriorityItem = { ...lowest, prev100: undefined } as DomainPriorityItem;
+  return {
+    domain,
+    type: 'focus',
+    persistenceLabel: null,
+    breadthLabel: teamsBelow60 > 0 ? `${teamsBelow60} teams below tolerance` : null,
+    reasonFlags: getPrimaryFocusReasonFlags(domain, domainsWithScores, teamsBelow60, totalTeams, teamScores, false),
+  };
+}
+
+function getPrimaryFocusReasonFlags(
+  primary: DomainPriorityItem,
+  allDomains: (DomainPriorityItem & { prev100?: number })[],
+  teamsBelow60: number,
+  totalTeams: number,
+  teamScores: number[],
+  isSystemic: boolean
+): ReasonFlag[] {
+  const flags: ReasonFlag[] = [];
+  const isLowest = allDomains.every((d) => d.key === primary.key || d.score100 >= primary.score100);
+  const sortedByDelta = [...allDomains].sort((a, b) => a.delta - b.delta);
+  const isLargestDecline = sortedByDelta[0]?.key === primary.key && primary.delta < 0;
+  const primaryWithPrev = allDomains.find((d) => d.key === primary.key);
+  const prev100 = primaryWithPrev?.prev100;
+  const twoPeriodsBelow =
+    primary.score100 < BELOW_TOLERANCE && prev100 != null && prev100 < BELOW_TOLERANCE;
+
+  if (isLowest) flags.push({ id: 'lowest', label: 'Lowest domain score', icon: 'lowest' });
+  if (isLargestDecline) flags.push({ id: 'decline', label: 'Largest decline this period', icon: 'trend' });
+  if (teamsBelow60 > 0) flags.push({ id: 'teams', label: `${teamsBelow60} teams below tolerance`, icon: 'teams' });
+  if (twoPeriodsBelow || isSystemic) flags.push({ id: 'periods', label: '2 consecutive periods below 60', icon: 'periods' });
+  if (teamScores.length >= 2) {
+    const range = Math.max(...teamScores) - Math.min(...teamScores);
+    if (range > RANGE_HIGH_THRESHOLD) flags.push({ id: 'variance', label: 'High variance across teams', icon: 'variance' });
+  }
+
+  return flags.slice(0, 3);
+}
+
+/**
+ * One-line executive risk statement, e.g. "Elevated risk driven by declining Workload & Resourcing across 5 teams."
+ */
+export function buildExecutiveRiskStatement(params: {
+  riskBandLabel: string;
+  primaryDomainLabel: string;
+  teamsBelow60: number;
+  trendDirection: 'declining' | 'stable' | 'improving';
+}): string {
+  const { riskBandLabel, primaryDomainLabel, teamsBelow60, trendDirection } = params;
+  if (riskBandLabel === 'Low risk' || riskBandLabel === 'Within tolerance') {
+    return 'Risk within acceptable range.';
+  }
+  const driver = trendDirection === 'declining' ? 'declining' : trendDirection === 'improving' ? 'improving' : 'current strain in';
+  const teamPhrase = teamsBelow60 > 0 ? ` across ${teamsBelow60} team${teamsBelow60 === 1 ? '' : 's'}` : '';
+  return `${riskBandLabel} driven by ${driver} ${primaryDomainLabel}${teamPhrase}.`;
+}
+
 export { DOMAIN_KEYS, DOMAIN_LABELS };
