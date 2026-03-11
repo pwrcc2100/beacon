@@ -313,6 +313,7 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
       <div className="space-y-2">
         <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
         <a href="/dashboard" className="block px-3 py-2 rounded bg-black/5 font-medium">Overview</a>
+        <a href="/dashboard-control-room" className="block px-3 py-2 rounded hover:bg-black/5">Control Room</a>
         <a href="/dashboard/v2" className="block px-3 py-2 rounded hover:bg-black/5">Design v2</a>
         <a href="/dashboard/trends" className="block px-3 py-2 rounded hover:bg-black/5">Trends</a>
         <a href="/dashboard/group-leader" className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
@@ -413,11 +414,11 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
         </div>
 
         <div className="print:hidden">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-[#0B1B2B]">Beacon Index Dashboard</h1>
-              <p className="text-sm text-[#2E4057]">
-                Whole of business | Last updated: {reportDate} | {responseRate.responded} responses out of {responseRate.total} team members ({Math.round(participationPercent)}% response rate)
+              <h1 className="text-2xl font-bold tracking-tight text-[#0B1B2B]">Beacon Index Dashboard</h1>
+              <p className="mt-1 text-sm text-[#2E4057] leading-relaxed">
+                Whole of business · Last updated: {reportDate} · {responseRate.responded} responses ({Math.round(participationPercent)}% participation)
               </p>
             </div>
           </div>

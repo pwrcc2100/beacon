@@ -22,6 +22,7 @@ export const Gauge = ({ value }: { value: number }) => {
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (value / 100) * circumference;
   const color = scoreToHex(value);
+  const bandLabel = scoreToBandLabel(value);
 
   return (
     <div className="relative flex flex-col items-center justify-center h-28">
@@ -54,9 +55,12 @@ export const Gauge = ({ value }: { value: number }) => {
         transition={{ delay: 0.3, duration: 0.5 }}
         className="relative text-center"
       >
-        <div className="text-2xl font-bold">{Math.round(value)}</div>
-        <div className="text-xs text-zinc-400">wellbeing</div>
+        <div className="text-2xl font-bold tracking-tighter text-zinc-100">{Math.round(value)}</div>
+        <div className="text-[8px] text-zinc-500 font-mono uppercase">/100</div>
       </motion.div>
+      <div className="absolute bottom-0 text-[8px] font-bold uppercase tracking-widest" style={{ color }}>
+        Band: {bandLabel}
+      </div>
     </div>
   );
 };

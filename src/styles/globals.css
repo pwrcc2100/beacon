@@ -7,6 +7,8 @@
 
 @layer base {
   :root {
+    --control-room-bg: #0a141a;
+    --control-room-card: #111e26;
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -54,7 +56,7 @@
 
 @layer components {
   .control-room-card {
-    @apply bg-[#1f4a5f]/60 border border-white/10 rounded-xl backdrop-blur-xl shadow-2xl transition-all duration-300 hover:-translate-y-[1px] hover:shadow-2xl;
+    @apply bg-[#111e26]/60 border border-white/5 rounded-xl backdrop-blur-xl shadow-2xl transition-all duration-300 hover:-translate-y-[1px] hover:shadow-2xl;
     @apply text-white;
     box-shadow:
       0 6px 18px rgba(0,0,0,0.18),
@@ -66,7 +68,7 @@
   }
   
   .metric-value {
-    @apply text-3xl font-semibold tracking-tight;
+    @apply text-3xl font-semibold tracking-tight text-zinc-100;
   }
   
   .status-badge {

@@ -63,11 +63,11 @@ function MetricCardV2({
 }) {
   return (
     <div
-      className="rounded-xl p-5 border shadow-sm"
+      className="rounded-xl p-5 border shadow-sm transition-shadow hover:shadow-md"
       style={{ background: CARD_BG, borderColor: CARD_BORDER }}
     >
       <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: TEXT_SUBTLE }}>{label}</p>
-      <p className="mt-3 text-2xl font-bold tabular-nums" style={{ color }}>
+      <p className="mt-3 text-2xl font-bold tabular-nums tracking-tight" style={{ color }}>
         {value}
       </p>
       {trend && <p className="mt-1 text-xs" style={{ color: TEXT_SUBTLE }}>{trend}</p>}
@@ -117,10 +117,10 @@ export default function ExecutiveOverviewV2({
   return (
     <div className="space-y-8 rounded-2xl p-6 md:p-8 border shadow-sm" style={{ background: SECTION_BG, borderColor: CARD_BORDER }}>
       <div>
-        <h2 className="text-xl font-semibold md:text-2xl" style={{ color: TEXT_PRIMARY }}>
+        <h2 className="text-xl font-semibold md:text-2xl tracking-tight" style={{ color: TEXT_PRIMARY }}>
           Beacon Index Overview
         </h2>
-        <p className="mt-1 text-sm" style={{ color: TEXT_MUTED }}>
+        <p className="mt-1.5 text-sm leading-relaxed" style={{ color: TEXT_MUTED }}>
           Latest check-in insights across sentiment, workload, support, safety and leadership.
         </p>
       </div>

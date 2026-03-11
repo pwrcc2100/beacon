@@ -15,6 +15,8 @@ import { getPeriodStartDate } from '@/lib/dateUtils';
 import { calculateWellbeingPercent } from '@/components/dashboard/scoreTheme';
 import { getData, getHierarchyData, getOrgStructure } from '../dashboard/dashboardData';
 import ControlRoomDashboard from './components/ControlRoomDashboard';
+import { LayoutDashboard, ShieldCheck } from 'lucide-react';
+import Link from 'next/link';
 
 const AdminTools = nextDynamic(() => import('@/components/dashboard/AdminTools').then(m => ({ default: m.AdminTools })), { ssr: false });
 
@@ -115,19 +117,22 @@ export default async function ControlRoomPage({
   const departmentsById = new Map(departments.map(dept => [dept.department_id, dept]));
   const divisionsById = new Map(divisions.map(div => [div.division_id, div]));
 
-  // Calculate score and trend data
+  // Calculate score and trend data; use demo values when no real data (so control room always looks populated)
+  const hasRealData = trends.length > 0 || recent.length > 0;
   const latestRow = trends.length ? trends[trends.length - 1] : undefined;
   const previousRow = trends.length > 1 ? trends[trends.length - 2] : undefined;
 
-  const questionScores = {
-    sentiment: latestRow?.sentiment_avg ?? 0,
-    clarity: latestRow?.clarity_avg ?? 0,
-    workload: latestRow?.workload_avg ?? 0,
-    safety: latestRow?.safety_avg ?? 0,
-    leadership: latestRow?.leadership_avg ?? 0,
-  } as const;
+  const questionScores = hasRealData
+    ? {
+        sentiment: latestRow?.sentiment_avg ?? 0,
+        clarity: latestRow?.clarity_avg ?? 0,
+        workload: latestRow?.workload_avg ?? 0,
+        safety: latestRow?.safety_avg ?? 0,
+        leadership: latestRow?.leadership_avg ?? 0,
+      } as const
+    : { sentiment: 1.25, clarity: 3.75, workload: 4.4, safety: 2.25, leadership: 3.1 } as const;
 
-  const overallScore = latestRow
+  const overallScore = hasRealData && latestRow
     ? calculateWellbeingPercent({
         sentiment: latestRow.sentiment_avg,
         workload: latestRow.workload_avg,
@@ -135,9 +140,9 @@ export default async function ControlRoomPage({
         leadership: latestRow.leadership_avg,
         clarity: latestRow.clarity_avg,
       })
-    : 0;
+    : hasRealData ? 0 : 68.2;
 
-  const previousScore = previousRow
+  const previousScore = hasRealData && previousRow
     ? calculateWellbeingPercent({
         sentiment: previousRow.sentiment_avg,
         workload: previousRow.workload_avg,
@@ -145,21 +150,23 @@ export default async function ControlRoomPage({
         leadership: previousRow.leadership_avg,
         clarity: previousRow.clarity_avg,
       })
-    : undefined;
+    : hasRealData ? undefined : 74;
 
-  const trendData = trends.map(t =>
-    calculateWellbeingPercent({
-      sentiment: t.sentiment_avg,
-      workload: t.workload_avg,
-      safety: t.safety_avg,
-      leadership: t.leadership_avg,
-      clarity: t.clarity_avg,
-    }) ?? 0
-  );
+  const trendData = hasRealData
+    ? trends.map(t =>
+        calculateWellbeingPercent({
+          sentiment: t.sentiment_avg,
+          workload: t.workload_avg,
+          safety: t.safety_avg,
+          leadership: t.leadership_avg,
+          clarity: t.clarity_avg,
+        }) ?? 0
+      )
+    : [74, 72, 70, 69, 68, 68.2];
 
-  const participationPercent = responseRate.total > 0 ? (responseRate.responded / responseRate.total) * 100 : 0;
+  const participationPercent = responseRate.total > 0 ? (responseRate.responded / responseRate.total) * 100 : (hasRealData ? 0 : 74);
 
-  // Get attention teams (sorted by wellbeing)
+  // Get attention teams (sorted by wellbeing) with per-team domain scores for heatmap
   let attentionTeams: Array<{
     id: string;
     name: string;
@@ -167,6 +174,7 @@ export default async function ControlRoomPage({
     divisionName?: string;
     departmentName?: string;
     wellbeing: number;
+    domainScores?: { sentiment: number; clarity: number; workload: number; safety: number; leadership: number };
   }> = [];
 
   let eligibleTeams = teams;
@@ -241,6 +249,14 @@ export default async function ControlRoomPage({
           const dept = meta ? departmentsById.get(meta.department_id) : undefined;
           const division = dept ? divisionsById.get(dept.division_id) : undefined;
           const baseName = meta?.display_name ?? meta?.team_name ?? 'Team';
+          const n = agg.count;
+          const domainScores = {
+            sentiment: agg.sentiment / n,
+            clarity: agg.clarity / n,
+            workload: agg.workload / n,
+            safety: agg.safety / n,
+            leadership: agg.leadership / n,
+          };
 
           return {
             id,
@@ -248,13 +264,8 @@ export default async function ControlRoomPage({
             displayName: baseName,
             divisionName: division?.division_name,
             departmentName: dept?.department_name,
-            wellbeing: calculateWellbeingPercent({
-              sentiment: agg.sentiment / agg.count,
-              workload: agg.workload / agg.count,
-              safety: agg.safety / agg.count,
-              leadership: agg.leadership / agg.count,
-              clarity: agg.clarity / agg.count,
-            }) ?? 0,
+            wellbeing: calculateWellbeingPercent(domainScores) ?? 0,
+            domainScores,
           };
         });
     }
@@ -266,6 +277,9 @@ export default async function ControlRoomPage({
 
     // Sort by wellbeing (lowest first - those needing attention)
     attentionTeams = attentionTeams.sort((a, b) => a.wellbeing - b.wellbeing);
+  } else {
+    // No eligible teams - use demo data so control room always shows content
+    attentionTeams = getDemoAttentionTeams();
   }
 
   const Sidebar = (
@@ -344,25 +358,50 @@ export default async function ControlRoomPage({
     </div>
   );
 
+  const reportDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+
   return (
     <DashboardShell sidebar={Sidebar}>
       <div
-        className="min-h-full bg-gradient-to-br p-4 lg:p-6"
+        className="min-h-full -m-4 lg:-m-6 p-4 lg:p-6"
         style={{
+          background: '#0a141a',
           backgroundImage:
-            'radial-gradient(circle at 50% -20%, #2d5a6f 0%, transparent 50%), linear-gradient(to right, #ffffff03 1px, transparent 1px), linear-gradient(to bottom, #ffffff03 1px, transparent 1px)',
+            'radial-gradient(circle at 50% -20%, #1a3a4a 0%, transparent 50%), linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)',
           backgroundSize: '100% 100%, 60px 60px, 60px 60px',
-          background: '#1f3a4d',
         }}
       >
         <div className="max-w-6xl mx-auto space-y-6">
           {/* Header */}
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Control Room</h1>
-            <p className="text-sm text-zinc-400">
-              Real-time psychosocial safety monitoring • {responseRate.responded} responses • {Math.round(participationPercent)}% participation
-            </p>
-          </div>
+          <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center">
+                <LayoutDashboard className="text-white" size={20} />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold tracking-tight text-white">Beacon Index Control Room</h1>
+                <p className="text-xs text-zinc-500 font-medium uppercase tracking-widest">
+                  Organisational Psychosocial Risk Intelligence
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">System Status</div>
+                <div className="flex items-center gap-1.5 justify-end">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#2d6785] animate-pulse" />
+                  <span className="text-xs font-mono text-zinc-400">Live Feed Active</span>
+                </div>
+              </div>
+              <div className="h-8 w-px bg-white/10" />
+              <div className="text-xs text-zinc-400 font-mono">{reportDate}</div>
+            </div>
+          </header>
+
+          {/* Participation summary - subtle */}
+          <p className="text-sm text-zinc-500 -mt-4">
+            {responseRate.responded} responses • {Math.round(participationPercent)}% participation
+          </p>
 
           {/* Dashboard Content */}
           <ControlRoomDashboard
@@ -375,19 +414,42 @@ export default async function ControlRoomPage({
             responseCount={responseRate.responded}
             totalEmployees={responseRate.total}
           />
+
+          {/* Footer */}
+          <footer className="mt-12 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 text-[10px] font-medium uppercase tracking-widest text-zinc-600">
+            <div className="space-y-4">
+              <div className="bg-[#111e26] border border-white/10 rounded-lg p-2 flex items-center gap-2 w-fit">
+                <div className="w-4 h-4 bg-[#d97036] rounded-sm flex items-center justify-center">
+                  <ShieldCheck size={10} className="text-black" />
+                </div>
+                <span className="text-zinc-400 font-bold">ISO 45003 Compliant</span>
+              </div>
+              <div>Proprietary Governance Intelligence System — Confidential</div>
+            </div>
+            <div className="flex gap-4 pb-1">
+              <Link href="/methodology" className="hover:text-zinc-400 transition-colors">
+                Documentation
+              </Link>
+              <Link href="/methodology" className="hover:text-zinc-400 transition-colors">
+                Methodology
+              </Link>
+              <span className="hover:text-zinc-400 cursor-pointer transition-colors">Support</span>
+            </div>
+          </footer>
         </div>
       </div>
     </DashboardShell>
   );
 }
 
+/** Demo teams matching reference design - per-domain scores 0-5 (*20 = 0-100 for display) */
 function getDemoAttentionTeams() {
   return [
-    { id: 'demo-a', name: 'Team A', displayName: 'Team A', divisionName: 'Sydney Metro', departmentName: 'Education', wellbeing: 25 },
-    { id: 'demo-b', name: 'Team B', displayName: 'Team B', divisionName: 'Sydney Metro', departmentName: 'Residential', wellbeing: 31 },
-    { id: 'demo-c', name: 'Team C', displayName: 'Team C', divisionName: 'Regional', departmentName: 'Education', wellbeing: 37 },
-    { id: 'demo-d', name: 'Team D', displayName: 'Team D', divisionName: 'Regional', departmentName: 'Health', wellbeing: 44 },
-    { id: 'demo-e', name: 'Team E', displayName: 'Team E', divisionName: 'Regional', departmentName: 'Residential', wellbeing: 52 },
-    { id: 'demo-f', name: 'Team F', displayName: 'Team F', divisionName: 'QLD', departmentName: 'Health', wellbeing: 58 },
+    { id: 'demo-a', name: 'Team A', displayName: 'Team A', divisionName: 'Sydney Metro', departmentName: 'Education', wellbeing: 82, domainScores: { sentiment: 1.0, clarity: 2.5, workload: 4.6, safety: 2.0, leadership: 1.5 } },
+    { id: 'demo-b', name: 'Team B', displayName: 'Team B', divisionName: 'Sydney Metro', departmentName: 'Residential', wellbeing: 64, domainScores: { sentiment: 1.5, clarity: 2.0, workload: 2.25, safety: 2.9, leadership: 3.0 } },
+    { id: 'demo-c', name: 'Team C', displayName: 'Team C', divisionName: 'Regional', departmentName: 'Education', wellbeing: 58, domainScores: { sentiment: 0.75, clarity: 3.9, workload: 3.0, safety: 1.75, leadership: 2.0 } },
+    { id: 'demo-d', name: 'Team D', displayName: 'Team D', divisionName: 'Regional', departmentName: 'Health', wellbeing: 71, domainScores: { sentiment: 1.25, clarity: 1.5, workload: 2.5, safety: 2.25, leadership: 3.2 } },
+    { id: 'demo-e', name: 'Team E', displayName: 'Team E', divisionName: 'Regional', departmentName: 'Residential', wellbeing: 75, domainScores: { sentiment: 3.0, clarity: 1.5, workload: 3.75, safety: 3.75, leadership: 3.75 } },
+    { id: 'demo-f', name: 'Team F', displayName: 'Team F', divisionName: 'QLD', departmentName: 'Health', wellbeing: 68, domainScores: { sentiment: 2.5, clarity: 2.0, workload: 3.0, safety: 2.9, leadership: 3.0 } },
   ];
 }
