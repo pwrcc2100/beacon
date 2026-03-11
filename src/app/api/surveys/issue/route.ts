@@ -14,7 +14,9 @@ const schema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    console.log('Request Body:', body);
     const { client_id, employee_id, ttl_days, channel, base_url } = schema.parse(body);
+    console.log('Parsed Schema:', { client_id, employee_id, ttl_days, channel, base_url });
 
     const valid_until = new Date(Date.now() + ttl_days * 864e5).toISOString();
     

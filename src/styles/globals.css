@@ -52,6 +52,28 @@
   }
 }
 
+@layer components {
+  .control-room-card {
+    @apply bg-[#1f4a5f]/60 border border-white/10 rounded-xl backdrop-blur-xl shadow-2xl transition-all duration-300 hover:-translate-y-[1px] hover:shadow-2xl;
+    @apply text-white;
+    box-shadow:
+      0 6px 18px rgba(0,0,0,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+  
+  .metric-label {
+    @apply text-xs font-bold uppercase tracking-widest text-zinc-400;
+  }
+  
+  .metric-value {
+    @apply text-3xl font-semibold tracking-tight;
+  }
+  
+  .status-badge {
+    @apply px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;

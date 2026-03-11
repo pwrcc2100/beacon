@@ -76,7 +76,7 @@ export default function DemoSurveyPage() {
               </div>
             )}
             <p className="text-sm text-gray-500">
-              You can now view your response on the <a href="/demo-dashboard" className="text-blue-600 hover:underline">Demo Dashboard</a>.
+              You can now view your response on the <a href="/dashboard-control-room?client=036802fb-215b-4a54-9d6e-9826043a6645" className="text-blue-600 hover:underline">Control Room Dashboard</a>.
             </p>
           </div>
         </div>

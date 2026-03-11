@@ -1,0 +1,15 @@
+@layer base {
+  body {
+    @apply font-sans antialiased overflow-x-hidden;
+
+    /* warm neutral canvas */
+    background-color: #e7eaee;
+
+    /* subtle enterprise grid */
+    background-image:
+      linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
+
+    background-size: 80px 80px;
+  }
+}

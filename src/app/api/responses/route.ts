@@ -48,6 +48,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'validation_error', details: msg }, { status: 400 });
     }
 
+    // Add detailed logging for debugging
+    console.log('Request body:', body);
+    console.log('Parsed schema:', parsed);
+
     // Validate token
     const { data: tok, error: tokErr } = await supabaseAdmin
       .from('tokens')
@@ -58,6 +62,9 @@ export async function POST(req: NextRequest) {
     if (tokErr || !tok || tok.status !== 'issued' || new Date(tok.valid_until) < new Date()) {
       return NextResponse.json({ error: 'invalid_or_expired_token' }, { status: 400 });
     }
+
+    // Log token validation
+    console.log('Token validation result:', tok, tokErr);
 
     // Build insert payload: only include defined values (avoid sending undefined to DB)
     const { token: _token, ...rest } = parsed.data;
@@ -86,11 +93,16 @@ export async function POST(req: NextRequest) {
     if (rest.support_timeframe != null && rest.support_timeframe !== '') payload.support_timeframe = rest.support_timeframe;
     if (rest.support_other_details != null && rest.support_other_details !== '') payload.support_other_details = rest.support_other_details;
 
+    // Log payload before insertion
+    console.log('Payload for insertion:', payload);
+
     const { error: insErr } = await supabaseAdmin.from('responses_v3').insert(payload);
 
     if (insErr) {
-      console.error('responses_v3 insert error:', insErr);
+      console.error('Database insertion error:', insErr);
       return NextResponse.json({ error: 'save_failed', details: insErr.message }, { status: 500 });
+    } else {
+      console.log('Database insertion successful');
     }
 
     // Consume token
@@ -98,6 +110,9 @@ export async function POST(req: NextRequest) {
       .from('tokens')
       .update({ status: 'consumed', consumed_at: new Date().toISOString() })
       .eq('id', tok.id);
+
+    // Log token consumption
+    console.log('Token consumption update for token ID:', tok.id);
 
     return NextResponse.json({ ok: true });
   } catch (error) {
