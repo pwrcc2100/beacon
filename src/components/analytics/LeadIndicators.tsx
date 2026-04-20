@@ -18,12 +18,12 @@ type Props = {
 export function LeadIndicators({ responses }: Props) {
   if (responses.length === 0) {
     return (
-      <Card>
+      <Card className="control-room-card border-white/10">
         <CardHeader>
           <CardTitle>Lead Indicators: Early Warning Signals</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">No data available yet</p>
+          <p className="text-zinc-400">No data available yet</p>
         </CardContent>
       </Card>
     );
@@ -98,10 +98,10 @@ export function LeadIndicators({ responses }: Props) {
   };
 
   return (
-    <Card>
+    <Card className="control-room-card border-white/10">
       <CardHeader>
         <CardTitle>Lead Indicators: What Predicts Wellbeing?</CardTitle>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-zinc-400 mt-1">
           These metrics tell you what factors most strongly influence overall team wellbeing
         </p>
       </CardHeader>
@@ -110,19 +110,19 @@ export function LeadIndicators({ responses }: Props) {
           {indicators.map((indicator, i) => {
             const strength = getStrength(indicator.correlation);
             return (
-              <div key={i} className="border rounded-lg p-4 space-y-2">
+              <div key={i} className="border border-white/10 rounded-lg p-4 space-y-2">
                 <div className="flex items-center justify-between">
-                  <div className="font-semibold text-base">{indicator.name}</div>
+                  <div className="font-semibold text-base text-white">{indicator.name}</div>
                   <div className="flex items-center gap-2">
                     <Badge style={{ backgroundColor: strength.color, color: 'white' }}>
                       {strength.label}
                     </Badge>
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm text-zinc-400">
                       r = {indicator.correlation.toFixed(2)}
                     </span>
                   </div>
                 </div>
-                <div className="bg-blue-50 border border-blue-200 rounded p-3 text-sm text-blue-900">
+                <div className="bg-[#2d6785]/20 border border-[#2d6785]/40 rounded p-3 text-sm text-zinc-300">
                   <span className="font-medium">💡 What this means: </span>
                   {indicator.insight}
                 </div>
@@ -131,9 +131,9 @@ export function LeadIndicators({ responses }: Props) {
           })}
         </div>
 
-        <div className="mt-6 bg-slate-50 border border-slate-200 rounded-lg p-4 text-sm">
-          <div className="font-semibold mb-2">How to Use Lead Indicators:</div>
-          <ul className="space-y-1 text-slate-700">
+        <div className="mt-6 bg-white/5 border border-white/10 rounded-lg p-4 text-sm text-zinc-300">
+          <div className="font-semibold mb-2 text-white">How to Use Lead Indicators:</div>
+          <ul className="space-y-1">
             <li>• <strong>Strong correlations (r &gt; 0.5)</strong> indicate these factors are key drivers you can act on</li>
             <li>• <strong>Negative correlations</strong> mean as that factor worsens, wellbeing drops</li>
             <li>• <strong>Watch for changes:</strong> A sudden drop in a lead indicator often predicts wellbeing issues 2-4 weeks later</li>

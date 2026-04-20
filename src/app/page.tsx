@@ -1,191 +1,296 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 
-import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicFooter } from '@/components/layout/PublicFooter';
-import { MaterialIcon } from '@/components/ui/MaterialIcon';
+import { PublicHeader } from '@/components/layout/PublicHeader';
+import { ContactForm } from '@/components/marketing/ContactForm';
 
 export const metadata: Metadata = {
   title: 'Beacon Advisory',
   description:
-    'Beacon Advisory provides practical senior advisory and execution support across business transformation, digital initiatives, enterprise improvement and high-stakes special projects.',
+    'Project-based operational support — scoped, delivered and embedded in your business.',
 };
 
-const areasOfExpertise = [
-  { icon: 'business', title: 'Business Improvement', description: 'Process optimisation, lean methodologies, continuous improvement' },
-  { icon: 'devices', title: 'Digital Transformation', description: 'Technology strategy, system modernization, cloud migration' },
-  { icon: 'analytics', title: 'Data & Analytics', description: 'Business intelligence, reporting, data-driven decision making' },
-  { icon: 'groups', title: 'Change Management', description: 'Stakeholder engagement, training, adoption strategies' },
-  { icon: 'construction', title: 'Construction Tech', description: 'Industry-specific solutions, safety systems, project management' },
-  { icon: 'shield', title: 'Compliance & Risk', description: 'Regulatory compliance, risk management, audit preparation' },
+const navy = '#1B2B4B';
+const gold = '#C9A84C';
+const offWhite = '#F4F1EC';
+const body = '#333333';
+
+const LINKEDIN = 'https://www.linkedin.com/in/peta-wilson-4769361';
+
+const whatTiles = [
+  {
+    title: "The system that should exist but doesn't.",
+    body: 'You know you need it. Finding the right one, configuring it for how you actually operate and embedding it into your business.',
+  },
+  {
+    title: "The process nobody's written down.",
+    body: "It lives in someone's head. Getting it documented means the business can grow, scale and operate consistently — not just when that person is in the room.",
+  },
+  {
+    title: 'The project without an owner.',
+    body: 'Important enough to matter, complex enough to warrant dedicated focus.',
+  },
+  {
+    title: "The operations that haven't kept pace with your growth.",
+    body: 'The business has grown. Time to make sure the systems, reporting and processes behind it are built for where you are now.',
+  },
+  {
+    title: 'AI that actually fits your business.',
+    body: 'Every business needs a different approach to AI. I help you identify what will actually work for yours — solutions that complement how you operate.',
+  },
 ] as const;
 
-const testimonials = [
+const steps = [
   {
-    quote: 'Exceptional leadership in driving digital transformation initiatives. Demonstrated strategic thinking and ability to deliver complex technology projects on time and within budget.',
-    author: 'Senior Executive',
-    role: 'Richard Crookes Constructions',
+    n: '1',
+    title: 'Start a conversation',
+    body: "Tell me what's on your mind — no brief required, just a conversation.",
   },
   {
-    quote: 'Outstanding ability to translate complex technical concepts into actionable business strategies. A trusted advisor who consistently delivers results.',
-    author: 'Technology Partner',
-    role: 'Industry Consultant',
+    n: '2',
+    title: 'We define it together',
+    body: "Not every challenge arrives fully formed. I'll work with you to understand what's actually needed and translate it into a clear scope of work.",
   },
   {
-    quote: 'Innovative approach to problem-solving and deep expertise in business process improvement. Instrumental in driving operational excellence across the organisation.',
-    author: 'Operations Director',
-    role: 'Construction Industry',
+    n: '3',
+    title: 'I deliver it',
+    body: "I own it start to finish and make sure it's properly embedded before I hand it over.",
   },
-  {
-    quote: 'Recognized industry leader with proven track record in technology excellence. Award-winning contributions to innovation and digital transformation.',
-    author: 'HammerTech',
-    role: 'Technology Excellence Award 2024',
-  },
+] as const;
+
+const aboutCallouts = [
+  'HammerTech Technology Excellence Award 2024 (AU/NZ)',
+  'Certified Scrum Product Owner',
+  'Certificate in Business Analysis — Lumify Work (BABOK)',
 ] as const;
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div
+      className="beacon-marketing min-h-[100dvh] min-h-screen flex flex-col bg-white text-[#333333]"
+      style={{
+        colorScheme: 'light',
+        /* Inline so content stays visible if Tailwind fails or html.dark paints a dark body behind transparent layers */
+        backgroundColor: '#ffffff',
+        color: '#333333',
+        minHeight: '100dvh',
+      }}
+      data-marketing-root
+    >
       <PublicHeader />
 
       <main className="flex-1">
-        {/* Hero */}
-        <section className="bg-[#f8f9fb]">
-          <div className="max-w-5xl mx-auto px-6 py-24">
-            <div className="space-y-6 text-center md:text-left">
-              <p className="text-xs font-semibold tracking-[0.3em] uppercase text-[#5d89a9]">
-                Beacon Advisory
-              </p>
-              <h1 className="text-3xl md:text-5xl font-semibold text-[#2B4162] leading-tight">
-                Practical advisory solutions that improve performance, reduce risk & provide insights to enable informed decisions.
-              </h1>
-              <p className="text-lg md:text-xl text-[#465164] leading-relaxed max-w-3xl">
-                Beacon Advisory provides senior advisory and execution support for organisations navigating complex
-                transformation, digital initiatives, enterprise improvement and high-stakes special projects. Our work
-                brings clarity, structure and delivery discipline to executive initiatives that demand practical
-                leadership and results.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-                <a
-                  href="mailto:hello@beaconeffect.com.au"
-                  className="inline-flex items-center justify-center gap-2 rounded-md bg-[#2B4162] px-6 py-3 text-sm font-semibold text-white hover:bg-[#23334c] transition-colors"
-                >
-                  <MaterialIcon icon="mail" style={{ fontSize: '18px' }} />
-                  Start a Conversation
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/peta-wilson-4769361"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-md border border-[#2B4162] px-6 py-3 text-sm font-semibold text-[#2B4162] hover:bg-[#f1f3f7] transition-colors"
-                >
-                  <MaterialIcon icon="person" style={{ fontSize: '18px' }} />
-                  Connect on LinkedIn
-                </a>
-              </div>
+        {/* SECTION 1 — HERO */}
+        <section
+          className="w-full px-4 sm:px-6 py-12 md:py-16 lg:py-14 min-h-0"
+          style={{ backgroundColor: navy }}
+        >
+          <div className="max-w-4xl mx-auto text-center lg:text-left">
+            <h1
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold leading-tight tracking-tight"
+              style={{ color: '#ffffff' }}
+            >
+              The operations partner businesses call when something important needs to get done —{' '}
+              <span style={{ color: gold }}>so you can finally exhale.</span>
+            </h1>
+            <p
+              className="mt-4 md:mt-5 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0"
+              style={{ color: '#ffffff' }}
+            >
+              Project-based operational support — scoped, delivered and embedded in your business.
+            </p>
+            <div className="mt-6 md:mt-8">
+              <a
+                href="#contact"
+                className="inline-flex items-center justify-center rounded-md px-6 py-3 text-sm font-semibold transition-opacity hover:opacity-90"
+                style={{ backgroundColor: gold, color: navy }}
+              >
+                Start a conversation
+              </a>
             </div>
           </div>
         </section>
 
-        {/* Advisory Services */}
-        <section id="advisory" className="py-20 bg-[#f8f9fb] scroll-mt-20">
-          <div className="max-w-6xl mx-auto px-6 space-y-12">
-            <h2 className="text-2xl font-semibold text-[#2B4162]">Advisory Services</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {areasOfExpertise.map((area) => (
-                <div key={area.title} className="bg-white border border-[#e6e8ed] rounded-xl p-6">
-                  <div className="flex justify-center mb-4">
-                    <MaterialIcon icon={area.icon} style={{ fontSize: '48px', color: '#6B9AC4' }} />
-                  </div>
-                  <h3 className="text-xl font-semibold text-[#2B4162] text-center mb-3">
-                    {area.title}
+        {/* SECTION 2 — WHO IT'S FOR */}
+        <section
+          id="whos-it-for"
+          className="scroll-mt-24 py-14 md:py-16 lg:py-20 px-4 sm:px-6"
+          style={{ backgroundColor: offWhite }}
+        >
+          <p
+            className="text-center text-base md:text-lg leading-relaxed max-w-[700px] mx-auto"
+            style={{ color: body }}
+          >
+            You&apos;re running a business — managing the team, serving clients, keeping everything moving. The
+            operational stuff that needs sorting, building or fixing keeps getting pushed down the list because
+            there&apos;s no one to own it. That&apos;s where Beacon Advisory comes in.
+          </p>
+        </section>
+
+        {/* SECTION 3 — WHAT I WORK ON */}
+        <section
+          id="what-i-work-on"
+          className="scroll-mt-24 py-14 md:py-16 lg:py-20 px-4 sm:px-6 bg-white"
+          style={{ backgroundColor: '#ffffff' }}
+        >
+          <div className="max-w-5xl mx-auto">
+            <p
+              className="text-xs font-semibold tracking-[0.2em] uppercase mb-2"
+              style={{ color: gold }}
+            >
+              WHAT I WORK ON
+            </p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-10 md:mb-12" style={{ color: navy }}>
+              What I work on
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-5 md:gap-6">
+              {whatTiles.map((tile) => (
+                <div
+                  key={tile.title}
+                  className="bg-white rounded-lg p-6 md:p-7 pl-6 shadow-sm border border-black/[0.06]"
+                  style={{
+                    backgroundColor: '#ffffff',
+                    borderStyle: 'solid',
+                    borderWidth: 1,
+                    borderColor: 'rgba(0, 0, 0, 0.06)',
+                    borderLeftWidth: 4,
+                    borderLeftColor: gold,
+                  }}
+                >
+                  <h3 className="text-lg font-semibold mb-3" style={{ color: navy }}>
+                    {tile.title}
                   </h3>
-                  <p className="text-[#6B7C93] text-center leading-relaxed">
-                    {area.description}
+                  <p className="text-sm md:text-base leading-relaxed" style={{ color: body }}>
+                    {tile.body}
                   </p>
                 </div>
               ))}
             </div>
-            <p className="text-lg md:text-xl text-[#2B4162] font-medium leading-relaxed w-full max-w-none">
-              Let Beacon Advisory handle the important initiatives that don't align with anyone's primary role. We take a tactical approach—engage, execute, and hand over—allowing your high performers to focus on what they do best. Don't dilute your team's effectiveness by assigning critical projects outside their core expertise simply because they're capable. Let them excel in their roles while we deliver the initiatives that matter.
-            </p>
           </div>
         </section>
 
-        {/* Testimonials */}
-        <section className="py-20 bg-white border-y border-[#e6e8ed]">
-          <div className="max-w-6xl mx-auto px-6 space-y-8">
-            <h2 className="text-2xl font-semibold text-[#2B4162]">Testimonials</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              {testimonials.map((testimonial, idx) => (
-                <div key={idx} className="bg-[#f8f9fb] border border-[#e6e8ed] rounded-xl p-6 shadow-sm">
-                  <MaterialIcon icon="format_quote" style={{ fontSize: '28px', color: '#5d89a9', marginBottom: '12px' }} />
-                  <p className="text-sm text-[#465164] italic leading-relaxed mb-4">"{testimonial.quote}"</p>
-                  <div className="text-xs font-semibold text-[#2B4162]">{testimonial.author}</div>
-                  <div className="text-xs text-[#586273]">{testimonial.role}</div>
+        {/* SECTION 4 — HOW IT WORKS */}
+        <section
+          id="how-it-works"
+          className="scroll-mt-24 py-14 md:py-16 lg:py-20 px-4 sm:px-6"
+          style={{ backgroundColor: navy }}
+        >
+          <div className="max-w-5xl mx-auto">
+            <p className="text-xs font-semibold tracking-[0.2em] uppercase mb-2" style={{ color: gold }}>
+              HOW IT WORKS
+            </p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-10 md:mb-14" style={{ color: '#ffffff' }}>
+              How it works
+            </h2>
+            <div className="grid md:grid-cols-3 gap-10 md:gap-8">
+              {steps.map((step) => (
+                <div key={step.n} className="text-center md:text-left">
+                  <div
+                    className="mx-auto md:mx-0 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold mb-4"
+                    style={{ backgroundColor: gold, color: navy }}
+                  >
+                    {step.n}
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2" style={{ color: '#ffffff' }}>
+                    {step.title}
+                  </h3>
+                  <p className="text-sm md:text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                    {step.body}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-20 bg-[#2B4162]">
-          <div className="max-w-4xl mx-auto px-6 text-center space-y-6 text-white">
-            <h2 className="text-3xl font-semibold">Let's Discuss Your Challenge</h2>
-            <p className="text-base text-white/80 leading-relaxed">
-              Whether you need strategic advice, technology solutions, or interim leadership—let's explore how we can help your organisation succeed.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a
-                href="mailto:hello@beaconeffect.com.au"
-                className="inline-flex items-center justify-center gap-2 rounded-md bg-white px-6 py-3 text-sm font-semibold text-[#2B4162] hover:bg-[#f1f3f7] transition-colors"
-              >
-                <MaterialIcon icon="mail" style={{ fontSize: '18px' }} />
-                Schedule Consultation
-              </a>
-              <a
-                href="https://www.linkedin.com/in/peta-wilson-4769361"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-md border border-white px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
-              >
-                <MaterialIcon icon="person" style={{ fontSize: '18px' }} />
-                Connect on LinkedIn
-              </a>
+        {/* SECTION 5 — WHY BEACON ADVISORY */}
+        <section
+          id="about-peta"
+          className="scroll-mt-24 py-14 md:py-16 lg:py-20 px-4 sm:px-6"
+          style={{ backgroundColor: offWhite }}
+        >
+          <div className="max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-10 md:gap-12 md:items-start">
+              <div className="beacon-portrait-wrap">
+                <Image
+                  src="/peta-wilson.png"
+                  alt="Peta Wilson — professional portrait, smiling, wearing a white sleeveless top against a soft navy background"
+                  width={480}
+                  height={600}
+                  sizes="(max-width: 768px) 90vw, 400px"
+                  className="beacon-portrait-img"
+                  priority
+                />
+              </div>
+              <div className="space-y-6">
+                <div>
+                  <p className="text-xs font-semibold tracking-[0.2em] uppercase mb-2" style={{ color: gold }}>
+                    ABOUT PETA
+                  </p>
+                  <h2 className="text-2xl md:text-3xl font-bold" style={{ color: navy }}>
+                    Why Beacon Advisory
+                  </h2>
+                </div>
+                <div className="space-y-4 text-base md:text-lg leading-relaxed" style={{ color: body }}>
+                  <p>
+                    Most businesses reach a point where the operational side can&apos;t keep up — the systems are
+                    patchy, the processes live in people&apos;s heads, and the projects that would actually move things
+                    forward keep getting deferred because nobody has time to own them.
+                  </p>
+                  <p>
+                    I&apos;ve spent 20 years solving exactly that — most of it inside a construction business that grew
+                    from 120 people to more than 900. Every function. Every stage of growth. Building the
+                    infrastructure that let the business keep moving.
+                  </p>
+                  <p>
+                    I know what it takes to make things work in a real business, not just on paper. That&apos;s what I
+                    bring to yours.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-3 max-w-xl">
+                  {aboutCallouts.map((label) => (
+                    <div
+                      key={label}
+                      className="rounded-md px-4 py-3 text-sm font-semibold leading-snug"
+                      style={{ backgroundColor: `${gold}22`, color: navy, border: `1px solid ${gold}55` }}
+                    >
+                      {label}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Recognition & Awards */}
-        <section className="py-20 bg-[#f8f9fb] border-t border-[#e6e8ed]">
-          <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-2xl font-semibold text-[#2B4162] mb-8">Recognition & Awards</h2>
-            <p className="text-sm text-[#465164] mb-8">Industry-recognized expertise in technology and business transformation</p>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="border border-[#e6e8ed] rounded-xl p-6 bg-white">
-                <div className="flex items-center gap-3 mb-3">
-                  <MaterialIcon icon="emoji_events" style={{ fontSize: '32px', color: '#5d89a9' }} />
-                  <h3 className="text-lg font-semibold text-[#2B4162]">HammerTech Award</h3>
-                </div>
-                <p className="text-sm text-[#465164] mb-2">Technology Excellence</p>
-                <p className="text-xs text-[#737A8C]">Australia & New Zealand 2024</p>
-              </div>
-              <div className="border border-[#e6e8ed] rounded-xl p-6 bg-white">
-                <div className="flex items-center gap-3 mb-3">
-                  <MaterialIcon icon="verified" style={{ fontSize: '32px', color: '#5d89a9' }} />
-                  <h3 className="text-lg font-semibold text-[#2B4162]">Head of Business Improvement</h3>
-                </div>
-                <p className="text-sm text-[#465164] mb-2">RCC (Richard Crookes Constructions)</p>
-                <p className="text-xs text-[#737A8C]">Leading digital transformation initiatives</p>
-              </div>
-              <div className="border border-[#e6e8ed] rounded-xl p-6 bg-white">
-                <div className="flex items-center gap-3 mb-3">
-                  <MaterialIcon icon="campaign" style={{ fontSize: '32px', color: '#5d89a9' }} />
-                  <h3 className="text-lg font-semibold text-[#2B4162]">Industry Thought Leader</h3>
-                </div>
-                <p className="text-sm text-[#465164] mb-2">Featured by multiple consultants</p>
-                <p className="text-xs text-[#737A8C]">Interviews on technology & innovation</p>
-              </div>
+        {/* SECTION 6 — CONTACT */}
+        <section
+          id="contact"
+          className="scroll-mt-24 py-14 md:py-20 px-4 sm:px-6 bg-white pb-20"
+          style={{ backgroundColor: '#ffffff' }}
+        >
+          <div className="max-w-5xl mx-auto">
+            <p className="text-xs font-semibold tracking-[0.2em] uppercase mb-2" style={{ color: gold }}>
+              GET IN TOUCH
+            </p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: navy }}>
+              Let&apos;s talk.
+            </h2>
+            <p className="text-base mb-8 md:mb-10" style={{ color: body }}>
+              No agenda, no brief required.
+            </p>
+
+            <ContactForm />
+
+            <div className="beacon-inline-links">
+              <a href="mailto:peta@beaconeffect.com.au">peta@beaconeffect.com.au</a>
+              <span className="hidden sm:inline text-[#333333]/35" aria-hidden>
+                ·
+              </span>
+              <a href={LINKEDIN} target="_blank" rel="noopener noreferrer">
+                LinkedIn
+              </a>
             </div>
           </div>
         </section>

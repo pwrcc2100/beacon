@@ -210,22 +210,22 @@ export default function BeaconIndexPage() {
                 </tr>
               </thead>
               <tbody className="bg-white">
-                <tr className="border-b border-[#D7E0E8] border-l-4 border-l-[#2F6F7E]">
+                <tr className="band-ok border-b border-[#D7E0E8] border-l-4 border-l-[#2d6785]">
                   <td className="py-3 px-4 font-semibold font-serif text-[15px]">≥ 80</td>
                   <td className="py-3 px-4 text-[15px]">Low risk</td>
                   <td className="py-3 px-4 text-[15px]">Standard monitoring</td>
                 </tr>
-                <tr className="border-b border-[#D7E0E8] border-l-4 border-l-[#4C6A88]">
+                <tr className="band-tolerance border-b border-[#D7E0E8] border-l-4 border-l-[#b8860b]">
                   <td className="py-3 px-4 font-semibold font-serif text-[15px]">70–79</td>
                   <td className="py-3 px-4 text-[15px]">Within tolerance</td>
                   <td className="py-3 px-4 text-[15px]">Trend review</td>
                 </tr>
-                <tr className="border-b border-[#D7E0E8] border-l-4 border-l-[#A87B2F]">
+                <tr className="band-warn border-b border-[#D7E0E8] border-l-4 border-l-[#d97036]">
                   <td className="py-3 px-4 font-semibold font-serif text-[15px]">60–69</td>
                   <td className="py-3 px-4 text-[15px]">Emerging risk</td>
                   <td className="py-3 px-4 text-[15px]">Targeted review</td>
                 </tr>
-                <tr className="border-b border-[#D7E0E8] border-l-4 border-l-[#8A3A3A]">
+                <tr className="band-risk border-b border-[#D7E0E8] border-l-4 border-l-[#8b3a3a]">
                   <td className="py-3 px-4 font-semibold font-serif text-[15px]">&lt; 60</td>
                   <td className="py-3 px-4 text-[15px]">Elevated risk</td>
                   <td className="py-3 px-4 text-[15px]">Structured intervention</td>

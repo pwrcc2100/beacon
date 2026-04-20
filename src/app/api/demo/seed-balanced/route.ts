@@ -360,54 +360,53 @@ export async function POST(req: NextRequest) {
         const daysAgo = randInt(0, 180);
         const submittedAt = new Date(now.getTime() - daysAgo * 86400000);
 
-        // Create varied score distributions:
-        // - QLD divisions: High scores (thriving) - 4-5 range
-        // - Sydney Metro: Mixed scores - some high, some medium
-        // - Regional: Medium to low scores
-        let sentiment5, clarity5, workload5, safety5, leadership5;
+        // Balanced distribution across all 4 risk bands (Beacon Index palette):
+        // ≥80 Low | 70–79 Within tolerance | 60–69 Emerging | <60 Elevated
+        // Composite = (sentiment*0.25 + workload*0.25 + leadership*0.2 + safety*0.2 + clarity*0.1) * 20
+        const bandByDept: Record<string, { lo: number; hi: number }> = {
+          'Sydney Metro:Aged Care': { lo: 4, hi: 5 },       // Low (≥80)
+          'Sydney Metro:Residential': { lo: 3, hi: 4 },     // Within (70–79)
+          'Sydney Metro:Health': { lo: 3, hi: 3 },        // Emerging (60–69)
+          'Sydney Metro:Education': { lo: 1, hi: 2 },       // Elevated (<60)
+          'Regional:Aged Care': { lo: 4, hi: 5 },
+          'Regional:Residential': { lo: 3, hi: 4 },
+          'Regional:Health': { lo: 3, hi: 3 },
+          'Regional:Education': { lo: 1, hi: 2 },
+          'QLD:Aged Care': { lo: 4, hi: 5 },
+          'QLD:Residential': { lo: 3, hi: 4 },
+          'QLD:Health': { lo: 3, hi: 3 },
+          'QLD:Education': { lo: 1, hi: 2 },
+        };
+        const band = bandByDept[`${divisionName}:${departmentName}`] ?? { lo: 3, hi: 4 };
         
-        if (divisionName === 'QLD') {
-          // QLD: Thriving scores (70%+ = 4-5 on 5-point scale)
-          sentiment5 = randInt(4, 5);
-          clarity5 = randInt(4, 5);
-          workload5 = randInt(4, 5);
-          safety5 = randInt(4, 5);
-          leadership5 = randInt(4, 5);
-        } else if (divisionName === 'Sydney Metro' && departmentName === 'Health') {
-          // Sydney Metro Health: Also thriving
-          sentiment5 = randInt(4, 5);
-          clarity5 = randInt(4, 5);
-          workload5 = randInt(4, 5);
-          safety5 = randInt(4, 5);
-          leadership5 = randInt(4, 5);
-        } else if (divisionName === 'Sydney Metro' && departmentName === 'Education') {
-          // Sydney Metro Education: Critical - needs attention (1-2 range for RED)
-          sentiment5 = randInt(1, 2);
-          clarity5 = randInt(1, 2);
-          workload5 = randInt(1, 2);
-          safety5 = randInt(1, 2);
-          leadership5 = randInt(1, 2);
-        } else if (divisionName === 'Sydney Metro') {
-          // Other Sydney Metro departments: Mixed (2-4 range for ORANGE)
-          sentiment5 = randInt(2, 4);
-          clarity5 = randInt(2, 4);
-          workload5 = randInt(2, 4);
-          safety5 = randInt(2, 4);
-          leadership5 = randInt(2, 4);
-        } else if (divisionName === 'Regional NSW') {
-          // Regional NSW: Critical scores (1-2 range for RED)
-          sentiment5 = randInt(1, 2);
-          clarity5 = randInt(1, 2);
-          workload5 = randInt(1, 2);
-          safety5 = randInt(1, 2);
-          leadership5 = randInt(1, 2);
+        // For Aged Care (≥80 range), ensure scores consistently produce composite >80
+        // Minimum composite of 80 requires weighted average of 4.0
+        // To guarantee >80, we need weighted average >4.0, so use scores that average >4
+        const isAgedCare = departmentName === 'Aged Care';
+        let sentiment5: number, clarity5: number, workload5: number, safety5: number, leadership5: number;
+        
+        if (isAgedCare) {
+          // For Aged Care, ensure at least 3 out of 5 dimensions are 5, rest are 4
+          // This guarantees composite >80: (5+5+5+4+4)/5 = 4.6 * 20 = 92
+          const scores = [5, 5, 5, 4, 4];
+          // Shuffle to randomize which dimensions get 5 vs 4
+          for (let i = scores.length - 1; i > 0; i--) {
+            const j = randInt(0, i);
+            [scores[i], scores[j]] = [scores[j], scores[i]];
+          }
+          sentiment5 = scores[0];
+          workload5 = scores[1];
+          leadership5 = scores[2];
+          safety5 = scores[3];
+          clarity5 = scores[4];
         } else {
-          // Other Regional: Lower scores (2-3 range for ORANGE)
-          sentiment5 = randInt(2, 3);
-          clarity5 = randInt(2, 3);
-          workload5 = randInt(2, 3);
-          safety5 = randInt(2, 3);
-          leadership5 = randInt(2, 3);
+          // For other departments, use the original random pick logic
+          const pick = () => randInt(band.lo, band.hi);
+          sentiment5 = pick();
+          clarity5 = pick();
+          workload5 = pick();
+          safety5 = pick();
+          leadership5 = pick();
         }
 
         const tokenId = crypto.randomUUID();

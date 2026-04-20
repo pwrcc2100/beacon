@@ -1,4 +1,5 @@
 'use client';
+import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 
 type Props = {
@@ -20,6 +21,9 @@ export function TimePeriodFilter({
   teamId,
   selectedDepartments = []
 }: Props) {
+  const pathname = usePathname();
+  const basePath = pathname || '/dashboard';
+
   const buildUrl = (period: string) => {
     const params = new URLSearchParams();
     params.set('client', clientId);
@@ -35,7 +39,7 @@ export function TimePeriodFilter({
     if (selectedDepartments.length > 0) {
       selectedDepartments.forEach(id => params.append('dept', id));
     }
-    return `/dashboard?${params.toString()}`;
+    return `${basePath}?${params.toString()}`;
   };
 
   const periods = [

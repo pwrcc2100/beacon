@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 
 type Props = {
   clientId: string;
-  endpoint: 'seed' | 'seed-with-departments' | 'seed-balanced';
+  endpoint: 'seed' | 'seed-with-departments' | 'seed-balanced' | 'seed-historical-trends';
   label: string;
 };
 
@@ -56,8 +56,10 @@ export function GenerateDemoDataButton({ clientId, endpoint, label }: Props) {
       const verified = data.verifiedInDatabase !== undefined ? ` (${data.verifiedInDatabase} verified in database)` : '';
       const employeesInfo = data.employeesWithDivision !== undefined ? ` | ${data.employeesWithDivision} employees with divisions` : '';
       const structure = data.structure ? ` | Structure: ${data.structure.divisions} divisions, ${data.structure.departments} departments, ${data.structure.teams} teams` : '';
+      const trendInfo = data.weeksGenerated ? ` | ${data.weeksGenerated} weeks of historical data (${data.responsesPerWeek} responses/week)` : '';
+      const trendPattern = data.trendPattern ? ` | Trend: ${data.trendPattern.start} → ${data.trendPattern.lowest} → ${data.trendPattern.current}` : '';
       
-      let successMessage = `✅ Success! Generated ${inserted} records${verified}${employeesInfo}${structure}.`;
+      let successMessage = `✅ Success! Generated ${inserted} records${verified}${employeesInfo}${structure}${trendInfo}${trendPattern}.`;
       
       if (data.errors && data.errors.length > 0) {
         console.warn('Some batches had errors:', data.errors);

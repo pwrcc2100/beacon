@@ -15,6 +15,8 @@ import {
 import { getClientConfig } from '@/lib/config/getClientConfig';
 import { defaultThresholds } from '@/lib/config/defaultThresholds';
 import { DashboardV4View } from '@/components/dashboard/DashboardV4View';
+import { DashboardShell } from '@/components/layout/DashboardShell';
+import { ControlRoomLayout } from '@/components/layout/ControlRoomLayout';
 
 function getPeriodLabel(period: string): string {
   switch (period) {
@@ -198,32 +200,44 @@ export default async function DashboardV4Page({
         }
       : null;
 
+  const V4Sidebar = (
+    <div className="space-y-2">
+      <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
+      <a href="/dashboard-control-room" className="block px-3 py-2 rounded hover:bg-black/5">Control Room</a>
+      <a href="/executive-summary" className="block px-3 py-2 rounded hover:bg-black/5">Executive Summary</a>
+      <a href="/dashboard/group-leader" className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
+      <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
+    </div>
+  );
+
   if (errorMessage) {
     return (
-      <div className="min-h-screen bg-neutral-100 flex items-center justify-center p-6">
-        <div className="rounded-xl bg-white p-6 border border-neutral-200 text-center">
-          <p className="text-neutral-700">{errorMessage}</p>
-          <a href="/dashboard" className="mt-4 inline-block text-sm text-neutral-600 underline">← Dashboard</a>
-        </div>
-      </div>
+      <DashboardShell sidebar={V4Sidebar}>
+        <ControlRoomLayout title="Dashboard V4" subtitle="Beacon Index">
+          <p className="text-zinc-400">{errorMessage}</p>
+          <a href="/dashboard" className="mt-4 inline-block text-sm text-[#3d8a9e] hover:underline">← Dashboard</a>
+        </ControlRoomLayout>
+      </DashboardShell>
     );
   }
 
   if (trends.length === 0) {
     return (
-      <div className="min-h-screen bg-neutral-100 flex items-center justify-center p-6">
-        <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-8 max-w-md text-center">
-          <p className="font-medium text-neutral-900 mb-1">No data yet</p>
-          <p className="text-sm text-neutral-600 mb-6">
+      <DashboardShell sidebar={V4Sidebar}>
+        <ControlRoomLayout title="Dashboard V4" subtitle="Beacon Index">
+          <p className="font-medium text-white mb-1">No data yet</p>
+          <p className="text-sm text-zinc-400 mb-6">
             Once your team completes the weekly pulse, your composite score and domain breakdown will appear here.
           </p>
-          <a href="/dashboard" className="text-sm text-neutral-600 underline">← Dashboard</a>
-        </div>
-      </div>
+          <a href="/dashboard" className="text-sm text-[#3d8a9e] hover:underline">← Dashboard</a>
+        </ControlRoomLayout>
+      </DashboardShell>
     );
   }
 
   return (
+    <DashboardShell sidebar={V4Sidebar}>
+      <ControlRoomLayout title="Beacon Index" subtitle="Dashboard V4">
     <DashboardV4View
       data={{
         overallScore: overallScore ?? 0,
@@ -239,5 +253,7 @@ export default async function DashboardV4Page({
       }}
       clientId={clientId}
     />
+      </ControlRoomLayout>
+    </DashboardShell>
   );
 }

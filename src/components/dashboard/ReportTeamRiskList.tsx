@@ -59,7 +59,7 @@ export function ReportTeamRiskList({ teams, maxItems = 10 }: ReportTeamRiskListP
               className="text-[10px] font-medium px-2 py-0.5 rounded-full border border-[var(--stroke-soft)]"
               style={{
                 background: band.gradientVar,
-                color: band.band === 'risk' ? 'white' : band.band === 'warn' ? '#78350f' : '#0c4a6e',
+                color: band.band === 'risk' ? 'white' : band.band === 'warn' || band.band === 'tolerance' ? '#78350f' : '#0c4a6e',
                 boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.35)',
               }}
             >

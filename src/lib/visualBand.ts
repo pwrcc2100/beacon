@@ -1,9 +1,9 @@
 /**
  * Maps a 0–100 score to a visual band for gradients and badges.
- * Consistent band-to-gradient mapping: ok (≥80), 70–79 ok, warn (60–69), risk (<60).
+ * Beacon Index palette: ok (≥80), tolerance (70–79), warn (60–69), risk (<60).
  */
 
-export type VisualBand = 'ok' | 'warn' | 'risk';
+export type VisualBand = 'ok' | 'tolerance' | 'warn' | 'risk';
 
 export type GetVisualBandResult = {
   label: string;
@@ -17,6 +17,11 @@ const BANDS: Record<VisualBand, { label: string; gradientVar: string; textClass:
     label: 'Low risk',
     gradientVar: 'var(--grad-ok)',
     textClass: 'text-[#0c4a6e]',
+  },
+  tolerance: {
+    label: 'Within tolerance',
+    gradientVar: 'var(--grad-tolerance)',
+    textClass: 'text-[#78350f]',
   },
   warn: {
     label: 'Emerging risk',
@@ -32,13 +37,13 @@ const BANDS: Record<VisualBand, { label: string; gradientVar: string; textClass:
 
 /**
  * Returns { label, gradientVar, textClass } for the score band.
- * >= 80 => ok; 70–79 => ok; 60–69 => warn; < 60 => risk.
+ * >= 80 => ok; 70–79 => tolerance; 60–69 => warn; < 60 => risk.
  */
 export function getVisualBand(score: number): GetVisualBandResult {
   const value = Math.max(0, Math.min(100, score));
   let band: VisualBand;
   if (value >= 80) band = 'ok';
-  else if (value >= 70) band = 'ok';
+  else if (value >= 70) band = 'tolerance';
   else if (value >= 60) band = 'warn';
   else band = 'risk';
 

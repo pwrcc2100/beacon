@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
 import { DashboardShell } from '@/components/layout/DashboardShell';
+import { ControlRoomLayout } from '@/components/layout/ControlRoomLayout';
 import { getPeriodStartDate } from '@/lib/dateUtils';
 import {
   calculateWellbeingPercent,
@@ -86,7 +87,8 @@ async function getTeamSummaries(
     return [] as TeamSummary[];
   }
 
-  let responsesQuery = supabaseAdmin
+  // Fetch responses for current period (for Beacon Index and domain scores)
+  let currentPeriodQuery = supabaseAdmin
     .from('responses_v3')
     .select(`
       submitted_at,
@@ -101,10 +103,30 @@ async function getTeamSummaries(
     .in('employees.team_id', teamIds);
 
   if (startDate) {
-    responsesQuery = responsesQuery.gte('submitted_at', startDate.toISOString());
+    currentPeriodQuery = currentPeriodQuery.gte('submitted_at', startDate.toISOString());
   }
 
-  const { data: responses } = await responsesQuery;
+  const { data: currentPeriodResponses } = await currentPeriodQuery;
+
+  // Fetch responses for last 6 weeks (for historical trend, regardless of period filter)
+  const sixWeeksAgo = new Date();
+  sixWeeksAgo.setDate(sixWeeksAgo.getDate() - 42); // 6 weeks = 42 days
+  sixWeeksAgo.setHours(0, 0, 0, 0);
+
+  const { data: historicalResponses } = await supabaseAdmin
+    .from('responses_v3')
+    .select(`
+      submitted_at,
+      sentiment_5,
+      clarity_5,
+      workload_5,
+      safety_5,
+      leadership_5,
+      employees!inner(team_id)
+    `)
+    .eq('client_id', clientId)
+    .in('employees.team_id', teamIds)
+    .gte('submitted_at', sixWeeksAgo.toISOString());
 
   type WeeklyBucket = {
     count: number;
@@ -137,7 +159,37 @@ async function getTeamSummaries(
     });
   });
 
-  (responses ?? []).forEach(response => {
+  // Helper function to add response to weekly buckets
+  const addToWeeklyBucket = (response: any, teamId: string, sixWeeksAgoDate: Date) => {
+    const summary = summaryMap.get(teamId);
+    if (!summary || !response.submitted_at) return;
+
+    const d = new Date(response.submitted_at);
+    // Check if date is valid and within last 6 weeks
+    if (isNaN(d.getTime()) || d < sixWeeksAgoDate) return;
+    
+    const day = d.getUTCDay() || 7;
+    const monday = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - (day - 1)));
+    const key = monday.toISOString().slice(0, 10);
+    const bucket = summary.weekly.get(key) ?? {
+      count: 0,
+      sentiment: 0,
+      workload: 0,
+      safety: 0,
+      leadership: 0,
+      clarity: 0,
+    };
+    bucket.count += 1;
+    bucket.sentiment += Number(response.sentiment_5 ?? 0);
+    bucket.workload += Number(response.workload_5 ?? 0);
+    bucket.safety += Number(response.safety_5 ?? 0);
+    bucket.leadership += Number(response.leadership_5 ?? 0);
+    bucket.clarity += Number(response.clarity_5 ?? 0);
+    summary.weekly.set(key, bucket);
+  };
+
+  // Process current period responses for Beacon Index and domain scores
+  (currentPeriodResponses ?? []).forEach(response => {
     const employees = Array.isArray(response.employees) ? response.employees[0] : response.employees;
     const teamId = employees?.team_id as string | undefined;
     if (!teamId) return;
@@ -151,27 +203,19 @@ async function getTeamSummaries(
     summary.leadership += Number(response.leadership_5 ?? 0);
     summary.clarity += Number(response.clarity_5 ?? 0);
 
-    if (response.submitted_at) {
-      const d = new Date(response.submitted_at);
-      const day = d.getUTCDay() || 7;
-      const monday = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - (day - 1)));
-      const key = monday.toISOString().slice(0, 10);
-      const bucket = summary.weekly.get(key) ?? {
-        count: 0,
-        sentiment: 0,
-        workload: 0,
-        safety: 0,
-        leadership: 0,
-        clarity: 0,
-      };
-      bucket.count += 1;
-      bucket.sentiment += Number(response.sentiment_5 ?? 0);
-      bucket.workload += Number(response.workload_5 ?? 0);
-      bucket.safety += Number(response.safety_5 ?? 0);
-      bucket.leadership += Number(response.leadership_5 ?? 0);
-      bucket.clarity += Number(response.clarity_5 ?? 0);
-      summary.weekly.set(key, bucket);
-    }
+    // Also add to weekly buckets if within last 6 weeks
+    addToWeeklyBucket(response, teamId, sixWeeksAgo);
+  });
+
+  // Process historical responses for trend graph (last 6 weeks)
+  // This includes ALL responses from the last 6 weeks, which may overlap with current period
+  (historicalResponses ?? []).forEach(response => {
+    const employees = Array.isArray(response.employees) ? response.employees[0] : response.employees;
+    const teamId = employees?.team_id as string | undefined;
+    if (!teamId) return;
+    
+    // Add to weekly buckets for trend
+    addToWeeklyBucket(response, teamId, sixWeeksAgo);
   });
 
   const summaries: TeamSummary[] = filteredTeams.map(team => {
@@ -189,7 +233,7 @@ async function getTeamSummaries(
         })
       : undefined;
 
-    const weeklyPoints = Array.from(summary.weekly.entries())
+    let weeklyPoints = Array.from(summary.weekly.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([weekStart, bucket]) => {
         const score =
@@ -215,7 +259,24 @@ async function getTeamSummaries(
           value: Number(score.toFixed(1)),
         };
       })
-      .slice(-12);
+      .slice(-6); // Show last 6 periods for historical trend
+
+    // Fallback: If no trend data but we have current period data, create at least one point
+    if (weeklyPoints.length === 0 && summary.count > 0 && indexPercent !== undefined) {
+      const today = new Date();
+      const day = today.getUTCDay() || 7;
+      const monday = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() - (day - 1)));
+      const weekStart = monday.toISOString().slice(0, 10);
+      const label = monday.toLocaleDateString('en-AU', {
+        day: 'numeric',
+        month: 'short',
+      });
+      weeklyPoints = [{
+        iso: weekStart,
+        label,
+        value: Number(indexPercent.toFixed(1)),
+      }];
+    }
 
     const dept = Array.isArray(team.departments) ? team.departments[0] : team.departments;
     const division = dept ? (Array.isArray(dept.divisions) ? dept.divisions[0] : dept?.divisions) : undefined;
@@ -290,16 +351,24 @@ export default async function GroupLeaderDashboard({ searchParams }: { searchPar
     );
   }
 
-  const teamSummaries = getDemoTeamSummaries();
+  let teamSummaries = await getTeamSummaries(clientId, period, mode, divisionId, departmentId);
+  
+  // Only use demo data if NO teams exist at all (not just if teams have no responses)
+  // This ensures real data is always shown when available
+  const hasRealTeams = teamSummaries.length > 0;
+  const hasRealData = teamSummaries.some(t => t.responseCount > 0 || t.indexPercent !== undefined);
+  
+  if (!hasRealTeams || (!hasRealData && teamSummaries.length === 0)) {
+    teamSummaries = getDemoTeamSummaries();
+  }
 
   const Sidebar = (
     <div className="space-y-4">
       <div className="space-y-2">
         <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
-        <a href="/dashboard" className="block px-3 py-2 rounded hover:bg-black/5">Overview</a>
-        <a href="/dashboard/trends" className="block px-3 py-2 rounded hover:bg-black/5">Trends</a>
+        <a href="/dashboard-control-room" className="block px-3 py-2 rounded hover:bg-black/5">Control Room</a>
+        <a href="/executive-summary" className="block px-3 py-2 rounded hover:bg-black/5">Executive Summary</a>
         <a href="/dashboard/group-leader" className="block px-3 py-2 rounded bg-black/5 font-medium">Group Leader View</a>
-        <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Advanced Analytics</a>
         <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
       </div>
       
@@ -312,16 +381,14 @@ export default async function GroupLeaderDashboard({ searchParams }: { searchPar
 
   return (
     <DashboardShell sidebar={Sidebar}>
-      <div className="max-w-6xl mx-auto space-y-8">
+      <ControlRoomLayout
+        title="Team Insights Dashboard"
+        subtitle="Beacon Index"
+        headerExtra={`Beacon Index by team · period: ${period === 'all' ? 'All time' : period}`}
+      >
+        <div className="space-y-8">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div>
-            <div className="text-lg font-semibold text-[var(--text-muted)] uppercase tracking-widest">Beacon Index</div>
-            <div className="text-3xl md:text-4xl font-black text-[var(--text-primary)] leading-tight">Team Insights Dashboard</div>
-            <p className="text-sm text-[var(--text-muted)] mt-2">
-              Beacon Index by team · period: {period === 'all' ? 'All time' : period}
-            </p>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
+          <div className="flex items-center gap-2 text-sm text-zinc-400">
             <span className="inline-flex items-center gap-2">
               <span className="h-3 w-3 rounded-full" style={{ backgroundColor: getScoreStatus(80).color }} /> Thriving
             </span>
@@ -335,13 +402,14 @@ export default async function GroupLeaderDashboard({ searchParams }: { searchPar
         </div>
 
         {teamSummaries.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-[#CBD5E1] bg-[#F8FAFF] p-6 text-sm text-[var(--text-muted)]">
+          <div className="control-room-card rounded-xl border border-dashed border-white/20 p-6 text-sm text-zinc-400">
             No team responses yet for this selection. Generate demo data or adjust the division/department filter.
           </div>
         ) : (
           <GroupLeaderGrid teams={teamSummaries} />
         )}
-      </div>
+        </div>
+      </ControlRoomLayout>
     </DashboardShell>
   );
 }

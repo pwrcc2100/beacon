@@ -20,17 +20,17 @@ export function TrendCard({ heading, description, data, color }:{ heading:string
     xAxis: {
       type: 'category',
       data: data.map(d => d.wk),
-      axisLine: { lineStyle: { color: '#e5e7eb' } },
-      axisLabel: { fontSize: 10, color: '#6b7280' }
+      axisLine: { lineStyle: { color: 'rgba(255,255,255,0.2)' } },
+      axisLabel: { fontSize: 10, color: '#a1a1aa' }
     },
     yAxis: {
       type: 'value',
       min: 1,
       max: 5,
       interval: 1,
-      axisLine: { lineStyle: { color: '#e5e7eb' } },
-      axisLabel: { fontSize: 10, color: '#6b7280' },
-      splitLine: { lineStyle: { color: '#f3f4f6' } }
+      axisLine: { lineStyle: { color: 'rgba(255,255,255,0.2)' } },
+      axisLabel: { fontSize: 10, color: '#a1a1aa' },
+      splitLine: { lineStyle: { color: 'rgba(255,255,255,0.08)' } }
     },
     series: [{
       data: data.map(d => d.value),
@@ -42,27 +42,27 @@ export function TrendCard({ heading, description, data, color }:{ heading:string
     }],
     tooltip: {
       trigger: 'axis',
-      backgroundColor: 'rgba(255,255,255,0.95)',
-      borderColor: '#e5e7eb',
-      textStyle: { color: '#374151', fontSize: 12 }
+      backgroundColor: 'rgba(17,24,39,0.95)',
+      borderColor: 'rgba(255,255,255,0.2)',
+      textStyle: { color: '#e4e4e7', fontSize: 12 }
     }
   };
 
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm border border-black/5">
+    <div className="control-room-card border-white/10 rounded-lg p-4">
       <div className="mb-3">
         <div className="flex items-center justify-between mb-1">
-          <div className="text-sm font-medium text-[var(--text-primary)]">{heading}</div>
+          <div className="text-sm font-medium text-white">{heading}</div>
           {delta !== undefined && (
             <Badge variant="secondary" style={{ color: deltaColor }}>
               {deltaLabel} vs last wk
             </Badge>
           )}
         </div>
-        <div className="text-xs text-muted-foreground">{description}</div>
+        <div className="text-xs text-zinc-400">{description}</div>
       </div>
       {!mounted ? (
-        <div style={{height:180}} className="flex items-center justify-center text-sm text-[var(--text-muted)]">Loading chart...</div>
+        <div style={{height:180}} className="flex items-center justify-center text-sm text-zinc-400">Loading chart...</div>
       ) : (
         <ReactECharts option={option} style={{ height: 180 }} opts={{ renderer: 'svg' }} />
       )}

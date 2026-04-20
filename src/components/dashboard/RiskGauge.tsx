@@ -65,19 +65,20 @@ export function RiskGauge({ score, animate = true, size = RADIUS }: RiskGaugePro
         >
           <defs>
             <linearGradient id={`${gradientId}-ok`} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#7dd3fc" />
-              <stop offset="55%" stopColor="#38bdf8" />
-              <stop offset="100%" stopColor="#0284c7" />
+              <stop offset="0%" stopColor="#2d6785" />
+              <stop offset="100%" stopColor="#3d8a9e" />
+            </linearGradient>
+            <linearGradient id={`${gradientId}-tolerance`} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#b8860b" />
+              <stop offset="100%" stopColor="#d4a84b" />
             </linearGradient>
             <linearGradient id={`${gradientId}-warn`} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#f6c453" />
-              <stop offset="60%" stopColor="#f59e0b" />
-              <stop offset="100%" stopColor="#b45309" />
+              <stop offset="0%" stopColor="#d97036" />
+              <stop offset="100%" stopColor="#e8904d" />
             </linearGradient>
             <linearGradient id={`${gradientId}-risk`} x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#ff6b6b" />
-              <stop offset="55%" stopColor="#e63946" />
-              <stop offset="100%" stopColor="#b5172a" />
+              <stop offset="0%" stopColor="#8b3a3a" />
+              <stop offset="100%" stopColor="#a64b4b" />
             </linearGradient>
           </defs>
           <circle
@@ -123,7 +124,7 @@ export function RiskGauge({ score, animate = true, size = RADIUS }: RiskGaugePro
         className="mt-2 text-xs font-medium px-2.5 py-1 rounded-full border border-[var(--stroke-soft)]"
         style={{
           background: band.gradientVar,
-          color: band.band === 'risk' ? 'white' : band.band === 'warn' ? '#78350f' : '#0c4a6e',
+          color: band.band === 'risk' ? 'white' : band.band === 'warn' || band.band === 'tolerance' ? '#78350f' : '#0c4a6e',
           boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.35)',
         }}
       >

@@ -3,6 +3,7 @@ export const revalidate = 0;
 import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
 import { DashboardShell } from '@/components/layout/DashboardShell';
+import { ControlRoomLayout } from '@/components/layout/ControlRoomLayout';
 import { PrintButton } from '@/components/ui/PrintButton';
 import { Button } from '@/components/ui/button';
 import { EnhancedOrganisationFilterClient } from '@/components/dashboard/EnhancedOrganisationFilterClient';
@@ -61,22 +62,21 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
       );
     }
   }
-  if(!clientId) {
+  if (!clientId) {
+    const NoClientSidebar = (
+      <div className="space-y-2">
+        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
+        <a href="/dashboard-control-room" className="block px-3 py-2 rounded hover:bg-black/5">Control Room</a>
+        <a href="/executive-summary" className="block px-3 py-2 rounded hover:bg-black/5">Executive Summary</a>
+        <a href="/dashboard/group-leader" className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
+        <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
+      </div>
+    );
     return (
-      <DashboardShell sidebar={
-        <div className="space-y-2">
-          <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
-          <a href="/dashboard" className="block px-3 py-2 rounded bg-black/5 font-medium">Overview</a>
-          <a href="/dashboard/dash-login" className="text-primary hover:underline text-sm">Admin Login</a>
-        </div>
-      }>
-        <div className="max-w-6xl mx-auto space-y-6">
-          <div>
-            <h1 className="text-2xl font-bold mb-2 text-[var(--text-primary)]">Dashboard</h1>
-            <p className="text-[var(--text-muted)] mb-6">Set NEXT_PUBLIC_DASHBOARD_CLIENT_ID in your environment to view data.</p>
-          </div>
-          
-        </div>
+      <DashboardShell sidebar={NoClientSidebar}>
+        <ControlRoomLayout title="Beacon Index Dashboard" subtitle="Organisational Psychosocial Risk Intelligence">
+          <p className="text-zinc-400">Set NEXT_PUBLIC_DASHBOARD_CLIENT_ID in your environment to view data.</p>
+        </ControlRoomLayout>
       </DashboardShell>
     );
   }
@@ -312,12 +312,9 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
     <div className="space-y-4">
       <div className="space-y-2">
         <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
-        <a href="/dashboard" className="block px-3 py-2 rounded bg-black/5 font-medium">Overview</a>
         <a href="/dashboard-control-room" className="block px-3 py-2 rounded hover:bg-black/5">Control Room</a>
-        <a href="/dashboard/v2" className="block px-3 py-2 rounded hover:bg-black/5">Design v2</a>
-        <a href="/dashboard/trends" className="block px-3 py-2 rounded hover:bg-black/5">Trends</a>
+        <a href="/executive-summary" className="block px-3 py-2 rounded hover:bg-black/5">Executive Summary</a>
         <a href="/dashboard/group-leader" className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
-        <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Advanced Analytics</a>
         <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
       </div>
       
@@ -393,8 +390,11 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
 
   return (
     <DashboardShell sidebar={Sidebar}>
-      <div className="min-h-full bg-[#F2F7F5]">
-        <div className="max-w-6xl mx-auto space-y-6 p-4 lg:p-6">
+      <ControlRoomLayout
+        title="Beacon Index Dashboard"
+        subtitle="Organisational Psychosocial Risk Intelligence"
+        headerExtra={`Whole of business · Last updated: ${reportDate} · ${responseRate.responded} responses (${Math.round(participationPercent)}% participation)`}
+      >
         {/* Print Header - Only visible when printing */}
         <div className="hidden print:block mb-6 pb-4 border-b-2 border-[var(--navy)]">
           <div className="flex justify-between items-start">
@@ -413,17 +413,6 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
           </div>
         </div>
 
-        <div className="print:hidden">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-[#0B1B2B]">Beacon Index Dashboard</h1>
-              <p className="mt-1 text-sm text-[#2E4057] leading-relaxed">
-                Whole of business · Last updated: {reportDate} · {responseRate.responded} responses ({Math.round(participationPercent)}% participation)
-              </p>
-            </div>
-          </div>
-        </div>
-
         {trends.length === 0 && recent.length === 0 ? (
           <DemoDashboardClient />
         ) : (
@@ -438,18 +427,19 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
             insights={executiveInsights}
             tableTitle={tableTitle}
             attentionLabel="Which Teams Need Attention"
+            variant="dark"
           />
         )}
 
-        <section className="rounded-xl border border-[#E0E5E8] bg-white p-6 space-y-4 shadow-sm border-t-4" style={{ borderTopColor: '#2F6F7E' }}>
+        <section className="control-room-card p-6 space-y-4 border-l-4 border-[#d97036]">
           <div>
-            <h2 className="text-xl font-semibold text-[#0B1B2B]">New Client Onboarding Checklist</h2>
-            <p className="text-sm text-[#2E4057]">
+            <h2 className="text-xl font-semibold text-white">New Client Onboarding Checklist</h2>
+            <p className="text-sm text-zinc-300">
               Use this intake workflow with prospective clients to capture every configuration detail before go-live. It
               mirrors the admin onboarding form so you can demo the process directly from this dashboard.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-4 text-sm text-[#2E4057]">
+          <div className="grid md:grid-cols-2 gap-4 text-sm text-zinc-300">
             <ul className="space-y-2 list-disc list-inside">
               <li>Company &amp; primary contact information</li>
               <li>Integrations/API credentials (HRIS, identity, payroll)</li>
@@ -471,15 +461,14 @@ export default async function Dashboard({ searchParams }:{ searchParams?: { [k:s
                 Open onboarding intake form
               </a>
             </Button>
-            <Button asChild variant="outline" className="border-[#D7E0E8] text-[#2F6F7E] hover:bg-[#2F6F7E]/5">
+            <Button asChild variant="outline" className="border-white/20 text-zinc-300 hover:bg-white/10">
               <a href="/templates/hierarchy-template.csv" download>
                 Download hierarchy template
               </a>
             </Button>
           </div>
         </section>
-        </div>
-      </div>
+      </ControlRoomLayout>
     </DashboardShell>
   );
 }

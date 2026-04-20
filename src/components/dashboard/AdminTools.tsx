@@ -43,6 +43,7 @@ export function AdminTools({ clientId }: AdminToolsProps) {
       <div className="space-y-2">
         <SetupHierarchyButton clientId={clientId} />
         <GenerateDemoDataButton clientId={clientId} endpoint="seed-balanced" label="Generate Balanced Demo Records" />
+        <GenerateDemoDataButton clientId={clientId} endpoint="seed-historical-trends" label="Generate 6 Months Historical Trends" />
         <ClearDemoDataButton clientId={clientId} />
       </div>
     </div>

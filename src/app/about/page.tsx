@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-[100dvh] min-h-screen flex flex-col bg-white text-[#333333]" style={{ colorScheme: 'light' }}>
       <PublicHeader />
 
       <main className="flex-1">
@@ -29,7 +29,7 @@ export default function AboutPage() {
               <div className="flex-shrink-0 mx-auto md:mx-0">
                 <Image
                   src="/peta-wilson.png"
-                  alt="Peta Wilson"
+                  alt="Peta Wilson — professional portrait, smiling, wearing a white sleeveless top against a soft navy background"
                   width={280}
                   height={280}
                   className="rounded-xl object-cover object-top aspect-square w-[240px] h-[240px] md:w-[280px] md:h-[280px]"

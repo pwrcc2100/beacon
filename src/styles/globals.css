@@ -4,11 +4,11 @@
 
 @import './tokens.css';
 @import './beacon-app.css';
+@import './marketing.css';
 
 @layer base {
   :root {
-    --control-room-bg: #0a141a;
-    --control-room-card: #111e26;
+    /* shadcn/ui — light theme (required whenever html does not have .dark) */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -28,10 +28,24 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+
+    --control-room-bg: #f0f4f8;
+    --control-room-bg-gradient: #e8eef4;
+    --control-room-card-bg: 210 20% 98% / 0.85;
+    --control-room-card-border: 210 20% 85% / 0.8;
+    --control-room-card-fg: 210 25% 12%;
+    --control-room-accent: 210 25% 10%;
+    --control-room-grid: rgba(0,0,0,0.06);
   }
 
   .dark {
+    --control-room-bg: #0a141a;
+    --control-room-bg-gradient: #1a3a4a;
+    --control-room-card-bg: 210 25% 10% / 0.6;
+    --control-room-card-border: 0 0% 100% / 0.05;
+    --control-room-card-fg: 0 0% 100%;
+    --control-room-accent: #111e26;
+    --control-room-grid: rgba(255,255,255,0.03);
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -56,24 +70,46 @@
 
 @layer components {
   .control-room-card {
-    @apply bg-[#111e26]/60 border border-white/5 rounded-xl backdrop-blur-xl shadow-2xl transition-all duration-300 hover:-translate-y-[1px] hover:shadow-2xl;
-    @apply text-white;
+    @apply rounded-xl backdrop-blur-xl shadow-2xl transition-all duration-300 hover:-translate-y-[1px] hover:shadow-2xl;
+    /* Override Card's bg-white; use !important so Tailwind utilities don't override */
+    background-color: hsl(var(--control-room-card-bg)) !important;
+    border: 1px solid hsl(var(--control-room-card-border)) !important;
+    color: hsl(var(--control-room-card-fg)) !important;
     box-shadow:
       0 6px 18px rgba(0,0,0,0.18),
       inset 0 1px 0 rgba(255,255,255,0.04);
   }
   
+  .control-room-text-muted {
+    @apply text-zinc-600 dark:text-zinc-400;
+  }
+  .control-room-text-soft {
+    @apply text-zinc-500 dark:text-zinc-300;
+  }
+  .control-room-text-bright {
+    @apply text-zinc-800 dark:text-zinc-100;
+  }
   .metric-label {
-    @apply text-xs font-bold uppercase tracking-widest text-zinc-400;
+    @apply text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400;
   }
   
   .metric-value {
-    @apply text-3xl font-semibold tracking-tight text-zinc-100;
+    @apply text-3xl font-semibold tracking-tight text-zinc-800 dark:text-zinc-100;
   }
   
   .status-badge {
     @apply px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border;
   }
+
+  /* Risk band styling — matches tokens.css / visualBand.ts palette */
+  .band-ok { background-color: rgb(45 103 133 / 0.15); color: #0c4a6e; }
+  .dark .band-ok { background-color: rgb(45 103 133 / 0.25); color: #7dd3f0; }
+  .band-tolerance { background-color: rgb(184 134 11 / 0.15); color: #78350f; }
+  .dark .band-tolerance { background-color: rgb(184 134 11 / 0.25); color: #fcd34d; }
+  .band-warn { background-color: rgb(217 112 54 / 0.15); color: #78350f; }
+  .dark .band-warn { background-color: rgb(217 112 54 / 0.25); color: #fdba74; }
+  .band-risk { background-color: rgb(139 58 58 / 0.2); color: #7f1d1d; }
+  .dark .band-risk { background-color: rgb(139 58 58 / 0.35); color: #fca5a5; }
 }
 
 @layer base {

@@ -6,7 +6,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className = "", ...props }, ref) => (
     <div
       ref={ref}
-      className={`rounded-lg border bg-white text-slate-950 shadow-sm ${className}`}
+      className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`}
       {...props}
     />
   )
@@ -45,7 +45,7 @@ export const CardDescription = React.forwardRef<HTMLParagraphElement, CardDescri
   ({ className = "", ...props }, ref) => (
     <p
       ref={ref}
-      className={`text-sm text-slate-500 ${className}`}
+      className={`text-sm text-muted-foreground ${className}`}
       {...props}
     />
   )

@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "clean": "rm -rf .next node_modules/.cache",
+    "dev": "WATCHPACK_POLLING=true next dev",
+    "dev:clean": "pnpm run clean && WATCHPACK_POLLING=true next dev",
+    "dev:3001": "WATCHPACK_POLLING=true next dev -p 3001",
+    "dev:fast": "next dev",
     "build": "next build",
     "start": "next start -p 3001",
     "lint": "next lint"

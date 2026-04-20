@@ -1,8 +1,46 @@
 'use client';
 
-import { motion } from 'motion/react';
 import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts';
 import { scoreToBandLabel, scoreToGradient, scoreToHex } from '../utils/scoreHelpers';
+
+function MotionDiv({
+  animate,
+  initial: _initial,
+  transition: _transition,
+  style,
+  children,
+  ...props
+}: any) {
+  const resolvedStyle = {
+    ...style,
+    ...(animate?.width ? { width: animate.width } : {}),
+  };
+
+  return (
+    <div {...props} style={resolvedStyle}>
+      {children}
+    </div>
+  );
+}
+
+function MotionCircle({
+  animate,
+  initial: _initial,
+  transition: _transition,
+  ...props
+}: any) {
+  return (
+    <circle
+      {...props}
+      strokeDashoffset={animate?.strokeDashoffset ?? props.strokeDashoffset}
+    />
+  );
+}
+
+const motion = {
+  div: MotionDiv,
+  circle: MotionCircle,
+} as const;
 
 export const StatusBadge = ({ score }: { score: number }) => {
   const label = scoreToBandLabel(score);
@@ -25,40 +63,42 @@ export const Gauge = ({ value }: { value: number }) => {
   const bandLabel = scoreToBandLabel(value);
 
   return (
-    <div className="relative flex flex-col items-center justify-center h-28">
-      <svg width="120" height="120" className="absolute" viewBox="0 0 120 120">
-        <circle
-          cx="60"
-          cy="60"
-          r={radius}
-          fill="none"
-          stroke="rgba(255,255,255,0.1)"
-          strokeWidth="8"
-        />
-        <motion.circle
-          cx="60"
-          cy="60"
-          r={radius}
-          fill="none"
-          stroke={color}
-          strokeWidth="8"
-          strokeDasharray={circumference}
-          strokeDashoffset={circumference}
-          animate={{ strokeDashoffset }}
-          transition={{ duration: 1.5, ease: 'easeOut' }}
-          strokeLinecap="round"
-        />
-      </svg>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-        className="relative text-center"
-      >
-        <div className="text-2xl font-bold tracking-tighter text-zinc-100">{Math.round(value)}</div>
-        <div className="text-[8px] text-zinc-500 font-mono uppercase">/100</div>
-      </motion.div>
-      <div className="absolute bottom-0 text-[8px] font-bold uppercase tracking-widest" style={{ color }}>
+    <div className="flex flex-col items-center">
+      <div className="relative flex flex-col items-center justify-center h-24 w-24">
+        <svg width="120" height="120" className="absolute" viewBox="0 0 120 120">
+          <circle
+            cx="60"
+            cy="60"
+            r={radius}
+            fill="none"
+            stroke="rgba(255,255,255,0.1)"
+            strokeWidth="8"
+          />
+          <motion.circle
+            cx="60"
+            cy="60"
+            r={radius}
+            fill="none"
+            stroke={color}
+            strokeWidth="8"
+            strokeDasharray={circumference}
+            strokeDashoffset={circumference}
+            animate={{ strokeDashoffset }}
+            transition={{ duration: 1.5, ease: 'easeOut' }}
+            strokeLinecap="round"
+          />
+        </svg>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="relative text-center"
+        >
+          <div className="text-2xl font-bold tracking-tighter control-room-text-bright">{Math.round(value)}</div>
+          <div className="text-[8px] control-room-text-muted font-mono uppercase">/100</div>
+        </motion.div>
+      </div>
+      <div className="mt-2 text-[8px] font-bold uppercase tracking-widest" style={{ color }}>
         Band: {bandLabel}
       </div>
     </div>
@@ -82,7 +122,8 @@ export const TrendSparkline = ({ data, score }: { data: number[]; score: number 
             dataKey="value"
             stroke={color}
             strokeWidth={2}
-            dot={false}
+            dot={{ fill: color, r: 2, strokeWidth: 0 }}
+            activeDot={{ r: 3 }}
             isAnimationActive={false}
           />
         </LineChart>
@@ -95,7 +136,7 @@ export const PressureGradientBar = ({ value }: { value: number }) => {
   const gradient = scoreToGradient(value);
 
   return (
-    <div className="w-full h-2.5 bg-white/10 rounded-full overflow-hidden relative">
+    <div className="w-full h-2.5 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden relative">
       <motion.div
         initial={{ width: 0 }}
         animate={{ width: `${value}%` }}

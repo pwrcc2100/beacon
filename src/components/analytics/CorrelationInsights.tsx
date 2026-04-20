@@ -21,12 +21,12 @@ export function CorrelationInsights({ responses }: Props) {
 
   if (responses.length === 0) {
     return (
-      <Card>
+      <Card className="control-room-card border-white/10">
         <CardHeader>
           <CardTitle>Correlation Patterns</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">No data available yet</p>
+          <p className="text-zinc-400">No data available yet</p>
         </CardContent>
       </Card>
     );
@@ -107,10 +107,10 @@ export function CorrelationInsights({ responses }: Props) {
   ];
 
   return (
-    <Card>
+    <Card className="control-room-card border-white/10">
       <CardHeader>
         <CardTitle>How Metrics Relate to Wellbeing</CardTitle>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-zinc-400 mt-1">
           Understanding which factors drive overall wellbeing in your organisation
         </p>
       </CardHeader>
@@ -119,8 +119,8 @@ export function CorrelationInsights({ responses }: Props) {
           {insights.map((insight, i) => (
             <div key={i} className="space-y-3">
               <div>
-                <div className="font-semibold text-base mb-1">{insight.title}</div>
-                <div className="text-xs text-muted-foreground">{insight.description}</div>
+                <div className="font-semibold text-base mb-1 text-white">{insight.title}</div>
+                <div className="text-xs text-zinc-400">{insight.description}</div>
               </div>
               {mounted ? (
                 <ReactECharts
@@ -134,20 +134,20 @@ export function CorrelationInsights({ responses }: Props) {
                   opts={{ renderer: 'svg' }}
                 />
               ) : (
-                <div style={{ height: 220 }} className="flex items-center justify-center bg-gray-50 rounded">
+                <div style={{ height: 220 }} className="flex items-center justify-center bg-white/5 rounded text-zinc-400">
                   Loading chart...
                 </div>
               )}
-              <div className="bg-amber-50 border border-amber-200 rounded p-2 text-xs text-amber-900">
+              <div className="bg-amber-900/30 border border-amber-600/50 rounded p-2 text-xs text-amber-200">
                 <strong>Pattern:</strong> {insight.interpretation}
               </div>
             </div>
           ))}
         </div>
 
-        <div className="mt-6 bg-indigo-50 border-l-4 border-indigo-500 p-4">
-          <div className="font-semibold text-indigo-900 mb-2">💡 Executive Takeaway</div>
-          <p className="text-sm text-indigo-800">
+        <div className="mt-6 bg-[#2d6785]/20 border-l-4 border-[#2d6785] p-4">
+          <div className="font-semibold text-white mb-2">💡 Executive Takeaway</div>
+          <p className="text-sm text-zinc-300">
             These scatter plots show relationships between factors. A clear upward or downward line indicates a strong, predictable relationship. 
             Scattered dots mean the relationship is weak or inconsistent. Focus your interventions on the factors showing the strongest patterns.
           </p>

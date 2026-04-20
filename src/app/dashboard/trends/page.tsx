@@ -5,6 +5,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { DashboardShell } from '@/components/layout/DashboardShell';
+import { ControlRoomLayout } from '@/components/layout/ControlRoomLayout';
 import { TrendCard } from '@/components/charts/TrendCard';
 import { WellbeingGauge } from '@/components/charts/WellbeingGauge';
 
@@ -142,9 +143,9 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
   const Sidebar = (
     <div className="space-y-2">
       <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
-      <a href="/dashboard" className="block px-3 py-2 rounded hover:bg-black/5">Overview</a>
-      <a href="/dashboard/trends" className="block px-3 py-2 rounded bg-black/5 font-medium">Trends</a>
-      <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Advanced Analytics</a>
+      <a href="/dashboard-control-room" className="block px-3 py-2 rounded hover:bg-black/5">Control Room</a>
+      <a href="/executive-summary" className="block px-3 py-2 rounded hover:bg-black/5">Executive Summary</a>
+      <a href="/dashboard/group-leader" className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
       <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
     </div>
   );
@@ -153,12 +154,12 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
 
   return (
     <DashboardShell sidebar={Sidebar}>
-      <div className="max-w-6xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Wellbeing Trends</h1>
-          <p className="text-sm text-[var(--text-muted)]">Client: {clientId}</p>
-        </div>
-
+      <ControlRoomLayout
+        title="Wellbeing Trends"
+        subtitle="Organisational Psychosocial Risk Intelligence"
+        headerExtra={`Client: ${clientId}`}
+      >
+        <div className="space-y-6">
         {/* Period Filter */}
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-sm font-medium">View:</span>
@@ -191,7 +192,7 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
             />
           </div>
           <div className="lg:col-span-2">
-            <Card className="h-full">
+            <Card className="h-full control-room-card border-white/10">
               <CardHeader>
                 <CardTitle className="text-lg">About {periodLabel}</CardTitle>
               </CardHeader>
@@ -222,13 +223,14 @@ export default async function TrendsPage({ searchParams }:{ searchParams?: { [k:
         </div>
 
         {trends.length === 0 && (
-          <Card>
+          <Card className="control-room-card border-white/10">
             <CardContent className="text-center py-8">
               <p className="text-[var(--text-muted)]">No trend data available for this period yet.</p>
             </CardContent>
           </Card>
         )}
-      </div>
+        </div>
+      </ControlRoomLayout>
     </DashboardShell>
   );
 }

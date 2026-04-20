@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { DataModeToggle } from '@/components/dashboard/DataModeToggle';
 
 type Props = {
@@ -13,18 +13,25 @@ type Props = {
 
 export function DataModeToggleClient({ currentMode, clientId, period, divisionId, departmentId, teamId }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
+  const basePath = pathname || '/dashboard';
 
   const handleModeChange = (mode: 'historical' | 'live') => {
     const params = new URLSearchParams();
     params.set('mode', mode);
     params.set('client', clientId);
-    
+
     if (period !== 'all') params.set('period', period);
     if (divisionId) params.set('division_id', divisionId);
     if (departmentId) params.set('department_id', departmentId);
     if (teamId) params.set('team_id', teamId);
-    
-    router.push(`/dashboard?${params.toString()}`);
+
+    if (typeof window !== 'undefined') {
+      const currentParams = new URLSearchParams(window.location.search);
+      currentParams.getAll('selected_departments').forEach((id) => params.append('selected_departments', id));
+    }
+
+    router.push(`${basePath}?${params.toString()}`);
   };
 
   return (

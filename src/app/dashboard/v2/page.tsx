@@ -16,6 +16,8 @@ import {
 import { RISK_THRESHOLD } from '@/lib/dashboardConstants';
 import { DashboardV2View } from '@/components/dashboard/DashboardV2View';
 import { DashboardV2Empty, DashboardV2Error } from '@/components/dashboard/DashboardV2States';
+import { DashboardShell } from '@/components/layout/DashboardShell';
+import { ControlRoomLayout } from '@/components/layout/ControlRoomLayout';
 
 /** Level 1 hierarchy label (e.g. Division, Region, Project). Replace with config/metadata when available. */
 const LEVEL1_LABEL = 'Division';
@@ -208,24 +210,39 @@ export default async function DashboardV2Page({
   const teamsRequiringAttentionCount = attentionTeams.filter((t) => t.wellbeing < RISK_THRESHOLD).length;
   const level1Options = divisions.map((d) => ({ value: d.division_id, label: d.division_name }));
 
+  const V2Sidebar = (
+    <div className="space-y-2">
+      <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
+      <a href="/dashboard-control-room" className="block px-3 py-2 rounded hover:bg-black/5">Control Room</a>
+      <a href="/executive-summary" className="block px-3 py-2 rounded hover:bg-black/5">Executive Summary</a>
+      <a href="/dashboard/group-leader" className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
+      <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
+    </div>
+  );
+
   if (errorMessage) {
     return (
-      <div className="beacon-app min-h-screen">
-        <DashboardV2Error message={errorMessage} />
-      </div>
+      <DashboardShell sidebar={V2Sidebar}>
+        <ControlRoomLayout title="Dashboard V2" subtitle="Beacon Index">
+          <DashboardV2Error message={errorMessage} />
+        </ControlRoomLayout>
+      </DashboardShell>
     );
   }
 
   if (trends.length === 0 && recent.length === 0) {
     return (
-      <div className="beacon-app min-h-screen">
-        <DashboardV2Empty />
-      </div>
+      <DashboardShell sidebar={V2Sidebar}>
+        <ControlRoomLayout title="Dashboard V2" subtitle="Beacon Index">
+          <DashboardV2Empty />
+        </ControlRoomLayout>
+      </DashboardShell>
     );
   }
 
   return (
-    <div className="beacon-app min-h-screen">
+    <DashboardShell sidebar={V2Sidebar}>
+      <ControlRoomLayout title="Beacon Index" subtitle="Dashboard V2">
       <DashboardV2View
         data={{
           overallScore: overallScore ?? 0,
@@ -247,6 +264,7 @@ export default async function DashboardV2Page({
         clientId={clientId}
         exportUrl={exportUrl}
       />
-    </div>
+      </ControlRoomLayout>
+    </DashboardShell>
   );
 }

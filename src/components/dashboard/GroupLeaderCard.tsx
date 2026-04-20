@@ -34,7 +34,7 @@ type GroupLeaderCardProps = {
 
 function Sparkline({ points, color }: { points: { label: string; value: number }[]; color: string }) {
   if (points.length === 0) {
-    return <div className="text-xs text-muted-foreground">No trend data yet</div>;
+    return <div className="text-xs text-zinc-400">No trend data yet</div>;
   }
 
   const padding = 6;
@@ -56,13 +56,13 @@ function Sparkline({ points, color }: { points: { label: string; value: number }
 
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-24">
-      <path d={`M${padding},${height - padding} L${width - padding},${height - padding}`} stroke="#E2E8F0" strokeWidth={1.5} fill="none" />
+      <path d={`M${padding},${height - padding} L${width - padding},${height - padding}`} stroke="rgba(255,255,255,0.2)" strokeWidth={1.5} fill="none" />
       <path d={path} stroke={color} strokeWidth={2.5} fill="none" strokeLinecap="round" />
       {points.map((point, index) => {
         const x = padding + index * step;
         const y = height - padding - ((point.value - min) / range) * (height - padding * 2);
         return (
-          <circle key={index} cx={x} cy={y} r={3} fill="#fff" stroke={color} strokeWidth={1.5}>
+          <circle key={index} cx={x} cy={y} r={3} fill="#111e26" stroke={color} strokeWidth={1.5}>
             <title>{point.label}</title>
           </circle>
         );
@@ -78,14 +78,14 @@ export function GroupLeaderCard({ teamName, indexPercent, questionScores, histor
   const periodEnd = historicalPoints[historicalPoints.length - 1]?.label;
 
   return (
-    <div className="flex flex-col gap-6 rounded-[28px] border border-[#E2E8F0] bg-white p-6 shadow-sm">
+    <div className="flex flex-col gap-6 rounded-[28px] control-room-card border-white/10 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] font-semibold">Team</div>
-          <div className="text-xl font-semibold text-[var(--text-primary)]">{teamName}</div>
+          <div className="text-xs uppercase tracking-wide text-zinc-400 font-semibold">Team</div>
+          <div className="text-xl font-semibold text-white">{teamName}</div>
         </div>
         <div className="flex flex-col items-end gap-1">
-          <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] font-semibold">Beacon Index</div>
+          <div className="text-xs uppercase tracking-wide text-zinc-400 font-semibold">Beacon Index</div>
           <div className="relative h-12 w-12">
             <span
               className="absolute inset-0 rounded-full border border-black/10 shadow-sm"
@@ -100,7 +100,7 @@ export function GroupLeaderCard({ teamName, indexPercent, questionScores, histor
       </div>
 
       <div>
-        <h3 className="text-base font-semibold text-[var(--text-primary)] mb-4">Beacon Index Inputs</h3>
+        <h3 className="text-base font-semibold text-white mb-4">Beacon Index Inputs</h3>
         <div className="space-y-3">
           {QUESTION_COPY.map(({ key, label, description }) => {
             const value = questionScores[key];
@@ -110,18 +110,18 @@ export function GroupLeaderCard({ teamName, indexPercent, questionScores, histor
 
             return (
               <div key={key} className="space-y-1">
-                <div className="flex items-center justify-between text-xs font-semibold text-[var(--text-primary)]">
+                <div className="flex items-center justify-between text-xs font-semibold text-white">
                   <div className="flex items-center gap-2">
                     <span className="inline-flex items-center justify-center rounded-full px-3 py-1 text-white" style={{ backgroundColor: status.color }}>
                       {label}
                     </span>
-                    <span className="font-medium text-[var(--text-muted)]">{description}</span>
+                    <span className="font-medium text-zinc-400">{description}</span>
                   </div>
-                  <span className="text-xs font-semibold text-[var(--text-muted)]">
+                  <span className="text-xs font-semibold text-zinc-400">
                     {hasValue ? `${Math.round(percent)}%` : '—'}
                   </span>
                 </div>
-                <div className="h-2 rounded-full bg-[#E2E8F0] overflow-hidden">
+                <div className="h-2 rounded-full bg-white/10 overflow-hidden">
                   <div
                     className="h-full rounded-full"
                     style={{
@@ -138,16 +138,16 @@ export function GroupLeaderCard({ teamName, indexPercent, questionScores, histor
       </div>
 
       <div className="space-y-2">
-        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)]">Historical Index</div>
+        <div className="text-xs uppercase tracking-wide text-zinc-400">Historical Index</div>
         <Sparkline points={historicalPoints} color={indexStatus.color ?? SCORE_COLORS.thriving} />
-        <div className="flex items-center justify-between text-[0.7rem] text-[var(--text-muted)]">
+        <div className="flex items-center justify-between text-[0.7rem] text-zinc-400">
           <span>{periodStart ? `Start: ${periodStart}` : 'No data'}</span>
           <span>{periodEnd && periodEnd !== periodStart ? `Latest: ${periodEnd}` : periodEnd ? `Latest: ${periodEnd}` : ''}</span>
         </div>
       </div>
 
-      <div className="rounded-[18px] border border-dashed border-[#CBD5E1] bg-[#F8FAFF] px-4 py-3 text-sm text-[var(--text-muted)]">
-        <span className="font-medium text-[var(--text-primary)]">Insight:</span> {insight}
+      <div className="rounded-[18px] border border-dashed border-white/20 bg-white/5 px-4 py-3 text-sm text-zinc-300">
+        <span className="font-medium text-white">Insight:</span> {insight}
       </div>
     </div>
   );

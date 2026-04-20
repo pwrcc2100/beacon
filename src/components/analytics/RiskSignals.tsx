@@ -18,12 +18,12 @@ type Props = {
 export function RiskSignals({ responses }: Props) {
   if (responses.length === 0) {
     return (
-      <Card>
+      <Card className="control-room-card border-white/10">
         <CardHeader>
           <CardTitle>Risk Signals</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">No data available yet</p>
+          <p className="text-zinc-400">No data available yet</p>
         </CardContent>
       </Card>
     );
@@ -36,12 +36,12 @@ export function RiskSignals({ responses }: Props) {
 
   if (recentResponses.length === 0) {
     return (
-      <Card>
+      <Card className="control-room-card border-white/10">
         <CardHeader>
           <CardTitle>Risk Signals (Last 7 Days)</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">No recent responses in the last 7 days</p>
+          <p className="text-zinc-400">No recent responses in the last 7 days</p>
         </CardContent>
       </Card>
     );
@@ -106,27 +106,27 @@ export function RiskSignals({ responses }: Props) {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'high': return { bg: '#fee2e2', border: '#dc2626', text: '#991b1b', label: 'HIGH RISK' };
-      case 'medium': return { bg: '#fef3c7', border: '#f59e0b', text: '#92400e', label: 'MODERATE' };
-      default: return { bg: '#d1fae5', border: '#10b981', text: '#065f46', label: 'LOW RISK' };
+      case 'high': return { bg: 'rgba(127,29,29,0.4)', border: '#dc2626', text: '#fca5a5', label: 'HIGH RISK' };
+      case 'medium': return { bg: 'rgba(120,53,15,0.4)', border: '#f59e0b', text: '#fcd34d', label: 'MODERATE' };
+      default: return { bg: 'rgba(6,78,59,0.4)', border: '#10b981', text: '#6ee7b7', label: 'LOW RISK' };
     }
   };
 
   const highRiskCount = signals.filter(s => s.severity === 'high').length;
 
   return (
-    <Card>
+    <Card className="control-room-card border-white/10">
       <CardHeader>
         <CardTitle>Risk Signals (Last 7 Days)</CardTitle>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-zinc-400 mt-1">
           Immediate concerns requiring attention - based on {total} recent responses
         </p>
       </CardHeader>
       <CardContent>
         {highRiskCount > 0 && (
-          <div className="mb-6 bg-red-50 border-l-4 border-red-600 p-4">
-            <div className="font-semibold text-red-900 text-lg mb-1">🚨 {highRiskCount} High-Risk Signal{highRiskCount > 1 ? 's' : ''} Detected</div>
-            <p className="text-sm text-red-800">
+          <div className="mb-6 bg-red-900/40 border-l-4 border-red-500 p-4">
+            <div className="font-semibold text-red-200 text-lg mb-1">🚨 {highRiskCount} High-Risk Signal{highRiskCount > 1 ? 's' : ''} Detected</div>
+            <p className="text-sm text-red-200/90">
               These require immediate leadership action. Review details below and assign owners for follow-up.
             </p>
           </div>
@@ -162,9 +162,9 @@ export function RiskSignals({ responses }: Props) {
           })}
         </div>
 
-        <div className="mt-6 bg-slate-50 border border-slate-200 rounded-lg p-4 text-sm">
-          <div className="font-semibold mb-2">Using Risk Signals Effectively:</div>
-          <ul className="space-y-1 text-slate-700">
+        <div className="mt-6 bg-white/5 border border-white/10 rounded-lg p-4 text-sm text-zinc-300">
+          <div className="font-semibold mb-2 text-white">Using Risk Signals Effectively:</div>
+          <ul className="space-y-1">
             <li>• <strong>High Risk (&gt;30%):</strong> Urgent action required. Assign leadership owner and set 48-hour follow-up.</li>
             <li>• <strong>Moderate Risk (15-30%):</strong> Monitor closely. Plan intervention within 1 week.</li>
             <li>• <strong>Low Risk (&lt;15%):</strong> Maintain current approach. Continue regular check-ins.</li>

@@ -4,6 +4,7 @@ export const revalidate = 0;
 import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
 import { DashboardShell } from '@/components/layout/DashboardShell';
+import { ControlRoomLayout } from '@/components/layout/ControlRoomLayout';
 import { PrintButton } from '@/components/ui/PrintButton';
 import { Button } from '@/components/ui/button';
 import { EnhancedOrganisationFilterClient } from '@/components/dashboard/EnhancedOrganisationFilterClient';
@@ -45,10 +46,9 @@ export default async function DashboardEnhanced({ searchParams }: { searchParams
   if (!clientId) {
     return (
       <DashboardShell sidebar={<div className="text-sm text-slate-600">No client ID configured</div>}>
-        <div className="max-w-6xl mx-auto space-y-6">
-          <h1 className="text-2xl font-bold">Enhanced Dashboard</h1>
-          <p className="text-slate-600">Set NEXT_PUBLIC_DASHBOARD_CLIENT_ID in your environment to view data.</p>
-        </div>
+        <ControlRoomLayout title="Enhanced Dashboard" subtitle="WebinarReady">
+          <p className="text-zinc-400">Set NEXT_PUBLIC_DASHBOARD_CLIENT_ID in your environment to view data.</p>
+        </ControlRoomLayout>
       </DashboardShell>
     );
   }
@@ -58,18 +58,20 @@ export default async function DashboardEnhanced({ searchParams }: { searchParams
     <DashboardShell sidebar={
       <div className="space-y-4">
         <div className="text-xs uppercase tracking-wide text-slate-500 mb-2">Navigation</div>
-        <a href="/dashboard" className="block px-3 py-2 rounded hover:bg-black/5">Current Dashboard</a>
-        <a href="/dashboard/enhanced" className="block px-3 py-2 rounded bg-black/5 font-medium">Enhanced Dashboard</a>
-        <a href="/dashboard/trends" className="block px-3 py-2 rounded hover:bg-black/5">Trends</a>
+        <a href="/dashboard-control-room" className="block px-3 py-2 rounded hover:bg-black/5">Control Room</a>
+        <a href="/executive-summary" className="block px-3 py-2 rounded hover:bg-black/5">Executive Summary</a>
+        <a href="/dashboard/group-leader" className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
+        <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
       </div>
     }>
-      <div className="max-w-6xl mx-auto space-y-6">
-        <div className="bg-blue-50 border-l-4 border-blue-600 p-6 rounded-lg">
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">📸 Enhanced Dashboard (WebinarReady)</h1>
-          <p className="text-slate-700 mb-4">
+      <ControlRoomLayout title="Enhanced Dashboard" subtitle="WebinarReady">
+        <div className="space-y-6">
+        <div className="control-room-card border-l-4 border-[#d97036] p-6 rounded-lg">
+          <h1 className="text-2xl font-bold text-white mb-2">📸 Enhanced Dashboard (WebinarReady)</h1>
+          <p className="text-zinc-300 mb-4">
             This is the new enhanced version with:
           </p>
-          <ul className="space-y-2 text-sm text-slate-700 list-disc list-inside">
+          <ul className="space-y-2 text-sm text-zinc-300 list-disc list-inside">
             <li><strong>Executive Summary Panel:</strong> Auto-generates 3 insights (What's changing, Where to focus, What to do next)</li>
             <li><strong>Operational KPIs:</strong> "Overall Risk Signal (Beacon Index)" with compliance-ready tooltips</li>
             <li><strong>Leading Indicators (Drivers):</strong> Driver-based view with Primary/Secondary driver labels</li>
@@ -77,12 +79,12 @@ export default async function DashboardEnhanced({ searchParams }: { searchParams
             <li><strong>Share View Mode:</strong> Screenshot-friendly toggle (hides nav, adds footer note)</li>
           </ul>
           
-          <div className="mt-6 p-4 bg-white border border-slate-200 rounded">
-            <h3 className="font-semibold text-slate-900 mb-2">Integration Instructions:</h3>
-            <ol className="space-y-2 text-sm text-slate-700 list-decimal list-inside">
-              <li>Copy the data fetching logic from <code className="bg-slate-100 px-1 rounded">/dashboard/page.tsx</code></li>
-              <li>Replace <code className="bg-slate-100 px-1 rounded">ExecutiveOverviewOptionA</code> with <code className="bg-slate-100 px-1 rounded">ExecutiveOverviewEnhanced</code></li>
-              <li>Pass the <code className="bg-slate-100 px-1 rounded">responseRate</code> prop (needs {`{ responded, total }`} shape)</li>
+          <div className="mt-6 p-4 bg-white/5 border border-white/10 rounded">
+            <h3 className="font-semibold text-white mb-2">Integration Instructions:</h3>
+            <ol className="space-y-2 text-sm text-zinc-300 list-decimal list-inside">
+              <li>Copy the data fetching logic from <code className="bg-white/10 px-1 rounded">/dashboard/page.tsx</code></li>
+              <li>Replace <code className="bg-white/10 px-1 rounded">ExecutiveOverviewOptionA</code> with <code className="bg-white/10 px-1 rounded">ExecutiveOverviewEnhanced</code></li>
+              <li>Pass the <code className="bg-white/10 px-1 rounded">responseRate</code> prop (needs {`{ responded, total }`} shape)</li>
               <li>Test with demo data to verify all 3 executive summary statements generate correctly</li>
             </ol>
           </div>
@@ -96,7 +98,7 @@ export default async function DashboardEnhanced({ searchParams }: { searchParams
             </a>
             <a 
               href="https://github.com/yourusername/beacon/blob/main/src/components/dashboard/ExecutiveOverview-Enhanced.tsx" 
-              className="inline-flex items-center px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors"
+              className="inline-flex items-center px-4 py-2 bg-white/10 border border-white/20 text-zinc-300 rounded-lg hover:bg-white/20 transition-colors"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -106,8 +108,8 @@ export default async function DashboardEnhanced({ searchParams }: { searchParams
         </div>
 
         {/* Demo of the component with sample data */}
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
-          <h2 className="text-lg font-semibold mb-4">Component Preview (Sample Data)</h2>
+        <div className="control-room-card rounded-lg p-6">
+          <h2 className="text-lg font-semibold mb-4 text-white">Component Preview (Sample Data)</h2>
           <ExecutiveOverviewEnhanced
             overallScore={72}
             previousScore={68}
@@ -134,7 +136,8 @@ export default async function DashboardEnhanced({ searchParams }: { searchParams
             insights={[]}
           />
         </div>
-      </div>
+        </div>
+      </ControlRoomLayout>
     </DashboardShell>
   );
 }

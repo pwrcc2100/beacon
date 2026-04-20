@@ -22,12 +22,12 @@ export function TrendComparison({ weeklyTrends }: Props) {
 
   if (weeklyTrends.length === 0) {
     return (
-      <Card>
+      <Card className="control-room-card border-white/10">
         <CardHeader>
           <CardTitle>Multi-Metric Trends</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground">No trend data available yet</p>
+          <p className="text-zinc-400">No trend data available yet</p>
         </CardContent>
       </Card>
     );
@@ -118,10 +118,10 @@ export function TrendComparison({ weeklyTrends }: Props) {
     .map(([metric, _]) => metric)[0];
 
   return (
-    <Card>
+    <Card className="control-room-card border-white/10">
       <CardHeader>
         <CardTitle>Comparing All Metrics Over Time</CardTitle>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-zinc-400 mt-1">
           Watch for which metrics drop first - they're your early warning system
         </p>
       </CardHeader>
@@ -133,15 +133,15 @@ export function TrendComparison({ weeklyTrends }: Props) {
             opts={{ renderer: 'svg' }}
           />
         ) : (
-          <div style={{ height: 400 }} className="flex items-center justify-center bg-gray-50 rounded">
+          <div style={{ height: 400 }} className="flex items-center justify-center bg-white/5 rounded text-zinc-400">
             Loading chart...
           </div>
         )}
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <div className="font-semibold text-green-900 mb-2">✅ What to Look For (Good Signs)</div>
-            <ul className="text-sm text-green-800 space-y-1">
+          <div className="bg-emerald-900/30 border border-emerald-600/50 rounded-lg p-4">
+            <div className="font-semibold text-emerald-200 mb-2">✅ What to Look For (Good Signs)</div>
+            <ul className="text-sm text-emerald-200/90 space-y-1">
               <li>• Lines moving upward together</li>
               <li>• All metrics above 3.5 (70%)</li>
               <li>• Psychological Safety tracking with or above Sentiment</li>
@@ -149,9 +149,9 @@ export function TrendComparison({ weeklyTrends }: Props) {
             </ul>
           </div>
 
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="font-semibold text-red-900 mb-2">⚠️ Warning Signs</div>
-            <ul className="text-sm text-red-800 space-y-1">
+          <div className="bg-red-900/30 border border-red-600/50 rounded-lg p-4">
+            <div className="font-semibold text-red-200 mb-2">⚠️ Warning Signs</div>
+            <ul className="text-sm text-red-200/90 space-y-1">
               <li>• <strong>Workload or Clarity drops first</strong> → Sentiment will follow in 2-3 weeks</li>
               <li>• Widening gap between metrics (inconsistent experience)</li>
               <li>• Psychological Safety declining (people pulling back)</li>
@@ -161,9 +161,9 @@ export function TrendComparison({ weeklyTrends }: Props) {
         </div>
 
         {leadingIndicator && sentimentChange < 0 && (
-          <div className="mt-4 bg-orange-50 border-l-4 border-orange-500 p-4">
-            <div className="font-semibold text-orange-900 mb-1">🚨 Predictive Alert</div>
-            <p className="text-sm text-orange-800">
+          <div className="mt-4 bg-amber-900/30 border-l-4 border-amber-500 p-4">
+            <div className="font-semibold text-amber-200 mb-1">🚨 Predictive Alert</div>
+            <p className="text-sm text-amber-200/90">
               <strong>{leadingIndicator.charAt(0).toUpperCase() + leadingIndicator.slice(1)}</strong> has dropped significantly in the last 3 weeks, 
               and sentiment is also declining. This suggests {leadingIndicator} issues are driving the wellbeing drop. 
               Address {leadingIndicator} concerns to stabilise overall wellbeing.

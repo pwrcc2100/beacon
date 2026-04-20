@@ -13,10 +13,10 @@ import nextDynamic from 'next/dynamic';
 import { DemoQRCode } from '@/components/dashboard/DemoQRCode';
 import { getPeriodStartDate } from '@/lib/dateUtils';
 import { calculateWellbeingPercent } from '@/components/dashboard/scoreTheme';
+import { evaluateBeaconSignals } from '@/lib/beaconSignals';
 import { getData, getHierarchyData, getOrgStructure } from '../dashboard/dashboardData';
 import ControlRoomDashboard from './components/ControlRoomDashboard';
-import { LayoutDashboard, ShieldCheck } from 'lucide-react';
-import Link from 'next/link';
+import { ControlRoomLayout } from '@/components/layout/ControlRoomLayout';
 
 const AdminTools = nextDynamic(() => import('@/components/dashboard/AdminTools').then(m => ({ default: m.AdminTools })), { ssr: false });
 
@@ -70,23 +70,20 @@ export default async function ControlRoomPage({
 
   // No client ID
   if (!clientId) {
+    const NoClientSidebar = (
+      <div className="space-y-2">
+        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
+        <a href="/dashboard-control-room" className="block px-3 py-2 rounded bg-black/5 font-medium">Control Room</a>
+        <a href="/executive-summary" className="block px-3 py-2 rounded hover:bg-black/5">Executive Summary</a>
+        <a href="/dashboard/group-leader" className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
+        <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
+      </div>
+    );
     return (
-      <DashboardShell
-        sidebar={
-          <div className="space-y-2">
-            <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
-            <a href="/dashboard" className="block px-3 py-2 rounded hover:bg-black/5">Classic View</a>
-            <a href="/dashboard-control-room" className="block px-3 py-2 rounded bg-black/5 font-medium">Control Room</a>
-            <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Analytics</a>
-          </div>
-        }
-      >
-        <div className="max-w-6xl mx-auto space-y-6 p-4 lg:p-6">
-          <div>
-            <h1 className="text-2xl font-bold mb-2 text-[var(--text-primary)]">Control Room Dashboard</h1>
-            <p className="text-[var(--text-muted)] mb-6">Set NEXT_PUBLIC_DASHBOARD_CLIENT_ID in your environment to view data.</p>
-          </div>
-        </div>
+      <DashboardShell sidebar={NoClientSidebar}>
+        <ControlRoomLayout title="Control Room Dashboard" subtitle="Organisational Psychosocial Risk Intelligence">
+          <p className="text-zinc-400">Set NEXT_PUBLIC_DASHBOARD_CLIENT_ID in your environment to view data.</p>
+        </ControlRoomLayout>
       </DashboardShell>
     );
   }
@@ -165,6 +162,11 @@ export default async function ControlRoomPage({
     : [74, 72, 70, 69, 68, 68.2];
 
   const participationPercent = responseRate.total > 0 ? (responseRate.responded / responseRate.total) * 100 : (hasRealData ? 0 : 74);
+  const beaconSignals = evaluateBeaconSignals({
+    overallScore: overallScore ?? 0,
+    questionScores,
+    trends,
+  });
 
   // Get attention teams (sorted by wellbeing) with per-team domain scores for heatmap
   let attentionTeams: Array<{
@@ -196,12 +198,26 @@ export default async function ControlRoomPage({
 
   if (eligibleTeams.length > 0) {
     const teamIds = eligibleTeams.map(team => team.team_id);
-    const { data: teamResponses } = await supabaseAdmin
+    let teamResponsesQuery = supabaseAdmin
       .from('responses_v3')
-      .select('sentiment_5, clarity_5, workload_5, safety_5, leadership_5, employees!inner(team_id)')
+      .select('sentiment_5, clarity_5, workload_5, safety_5, leadership_5, submitted_at, employees!inner(team_id)')
       .eq('client_id', clientId)
-      .in('employees.team_id', teamIds)
-      .limit(10000);
+      .in('employees.team_id', teamIds);
+
+    // Apply period and mode filters (same as getData) so heatmap aligns with filters
+    const startDate = (() => {
+      if (mode === 'live') {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return today;
+      }
+      return period && period !== 'all' ? getPeriodStartDate(period) : undefined;
+    })();
+    if (startDate) {
+      teamResponsesQuery = teamResponsesQuery.gte('submitted_at', startDate.toISOString());
+    }
+
+    const { data: teamResponses } = await teamResponsesQuery.limit(10000);
 
     if (teamResponses && teamResponses.length > 0) {
       // Aggregate by team
@@ -286,9 +302,10 @@ export default async function ControlRoomPage({
     <div className="space-y-4">
       <div className="space-y-2">
         <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
-        <a href="/dashboard" className="block px-3 py-2 rounded hover:bg-black/5">Classic View</a>
         <a href="/dashboard-control-room" className="block px-3 py-2 rounded bg-black/5 font-medium">Control Room</a>
-        <a href="/analytics" className="block px-3 py-2 rounded hover:bg-black/5">Advanced Analytics</a>
+        <a href="/executive-summary" className="block px-3 py-2 rounded hover:bg-black/5">Executive Summary</a>
+        <a href="/dashboard/group-leader" className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
+        <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
       </div>
 
       {/* Filters Section */}
@@ -358,86 +375,25 @@ export default async function ControlRoomPage({
     </div>
   );
 
-  const reportDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
-
   return (
     <DashboardShell sidebar={Sidebar}>
-      <div
-        className="min-h-full -m-4 lg:-m-6 p-4 lg:p-6"
-        style={{
-          background: '#0a141a',
-          backgroundImage:
-            'radial-gradient(circle at 50% -20%, #1a3a4a 0%, transparent 50%), linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)',
-          backgroundSize: '100% 100%, 60px 60px, 60px 60px',
-        }}
+      <ControlRoomLayout
+        title="Beacon Index Control Room"
+        subtitle="Organisational Psychosocial Risk Intelligence"
+        headerExtra={`${responseRate.responded} responses • ${Math.round(participationPercent)}% participation`}
       >
-        <div className="max-w-6xl mx-auto space-y-6">
-          {/* Header */}
-          <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/5 border border-white/10 rounded-lg flex items-center justify-center">
-                <LayoutDashboard className="text-white" size={20} />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold tracking-tight text-white">Beacon Index Control Room</h1>
-                <p className="text-xs text-zinc-500 font-medium uppercase tracking-widest">
-                  Organisational Psychosocial Risk Intelligence
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <div className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">System Status</div>
-                <div className="flex items-center gap-1.5 justify-end">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#2d6785] animate-pulse" />
-                  <span className="text-xs font-mono text-zinc-400">Live Feed Active</span>
-                </div>
-              </div>
-              <div className="h-8 w-px bg-white/10" />
-              <div className="text-xs text-zinc-400 font-mono">{reportDate}</div>
-            </div>
-          </header>
-
-          {/* Participation summary - subtle */}
-          <p className="text-sm text-zinc-500 -mt-4">
-            {responseRate.responded} responses • {Math.round(participationPercent)}% participation
-          </p>
-
-          {/* Dashboard Content */}
-          <ControlRoomDashboard
-            overallScore={overallScore ?? 0}
-            previousScore={previousScore}
-            trendData={trendData}
-            questionScores={questionScores}
-            participationRate={participationPercent}
-            teams={attentionTeams.slice(0, 20)}
-            responseCount={responseRate.responded}
-            totalEmployees={responseRate.total}
-          />
-
-          {/* Footer */}
-          <footer className="mt-12 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 text-[10px] font-medium uppercase tracking-widest text-zinc-600">
-            <div className="space-y-4">
-              <div className="bg-[#111e26] border border-white/10 rounded-lg p-2 flex items-center gap-2 w-fit">
-                <div className="w-4 h-4 bg-[#d97036] rounded-sm flex items-center justify-center">
-                  <ShieldCheck size={10} className="text-black" />
-                </div>
-                <span className="text-zinc-400 font-bold">ISO 45003 Compliant</span>
-              </div>
-              <div>Proprietary Governance Intelligence System — Confidential</div>
-            </div>
-            <div className="flex gap-4 pb-1">
-              <Link href="/methodology" className="hover:text-zinc-400 transition-colors">
-                Documentation
-              </Link>
-              <Link href="/methodology" className="hover:text-zinc-400 transition-colors">
-                Methodology
-              </Link>
-              <span className="hover:text-zinc-400 cursor-pointer transition-colors">Support</span>
-            </div>
-          </footer>
-        </div>
-      </div>
+        <ControlRoomDashboard
+          overallScore={overallScore ?? 0}
+          previousScore={previousScore}
+          trendData={trendData}
+          questionScores={questionScores}
+          beaconSignals={beaconSignals}
+          participationRate={participationPercent}
+          teams={attentionTeams.slice(0, 20)}
+          responseCount={responseRate.responded}
+          totalEmployees={responseRate.total}
+        />
+      </ControlRoomLayout>
     </DashboardShell>
   );
 }

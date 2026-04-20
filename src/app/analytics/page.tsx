@@ -4,6 +4,7 @@ export const revalidate = 0;
 import { supabaseAdmin } from '@/lib/supabase';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { DashboardShell } from '@/components/layout/DashboardShell';
+import { ControlRoomLayout } from '@/components/layout/ControlRoomLayout';
 import { LeadIndicators } from '@/components/analytics/LeadIndicators';
 import { CorrelationInsights } from '@/components/analytics/CorrelationInsights';
 import { TrendComparison } from '@/components/analytics/TrendComparison';
@@ -49,33 +50,27 @@ export default async function AnalyticsPage() {
   const Sidebar = (
     <div className="space-y-2">
       <div className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Navigation</div>
-      <a href="/dashboard" className="block px-3 py-2 rounded hover:bg-black/5">Overview</a>
-      <a href="/dashboard/trends" className="block px-3 py-2 rounded hover:bg-black/5">Trends</a>
-      <a href="/analytics" className="block px-3 py-2 rounded bg-black/5 font-medium">Analytics</a>
+      <a href="/dashboard-control-room" className="block px-3 py-2 rounded hover:bg-black/5">Control Room</a>
+      <a href="/executive-summary" className="block px-3 py-2 rounded hover:bg-black/5">Executive Summary</a>
+      <a href="/dashboard/group-leader" className="block px-3 py-2 rounded hover:bg-black/5">Group Leader View</a>
       <a href="/methodology" className="block px-3 py-2 rounded hover:bg-black/5">Methodology</a>
     </div>
   );
 
   return (
     <DashboardShell sidebar={Sidebar}>
-      <div className="max-w-7xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Predictive Analytics</h1>
-          <p className="text-sm text-muted-foreground">Understanding what drives wellbeing and identifying early warning signals</p>
+      <ControlRoomLayout
+        title="Predictive Analytics"
+        subtitle="Organisational Psychosocial Risk Intelligence"
+        headerExtra="Understanding what drives wellbeing and identifying early warning signals"
+      >
+        <div className="space-y-6">
+          <LeadIndicators responses={data.responses} />
+          <CorrelationInsights responses={data.responses} />
+          <TrendComparison weeklyTrends={data.weeklyTrends} />
+          <RiskSignals responses={data.responses} />
         </div>
-
-        {/* Lead Indicators */}
-        <LeadIndicators responses={data.responses} />
-
-        {/* Correlation Insights */}
-        <CorrelationInsights responses={data.responses} />
-
-        {/* Trend Comparison */}
-        <TrendComparison weeklyTrends={data.weeklyTrends} />
-
-        {/* Risk Signals */}
-        <RiskSignals responses={data.responses} />
-      </div>
+      </ControlRoomLayout>
     </DashboardShell>
   );
 }

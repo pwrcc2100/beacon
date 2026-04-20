@@ -4,16 +4,16 @@ export const SCORE_THRESHOLDS = {
 } as const;
 
 export const SCORE_COLORS = {
-  thriving: '#1A936F',
-  watch: '#F4A259',
-  alert: '#E63946',
+  thriving: '#2d6785',
+  watch: '#b8860b',
+  alert: '#8b3a3a',
   neutral: '#94A3B8',
 } as const;
 
 export const SCORE_BACKGROUNDS = {
-  thriving: '#E6F4EA',
-  watch: '#FFF4E6',
-  alert: '#FDEAE7',
+  thriving: '#e8f2f5',
+  watch: '#fdf6e9',
+  alert: '#f8e8e8',
   neutral: '#F1F5F9',
 } as const;
 

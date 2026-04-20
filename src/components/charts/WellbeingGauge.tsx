@@ -76,7 +76,7 @@ export function WellbeingGauge({ sentiment, workload, safety, leadership, clarit
         },
         axisLabel: {
           distance: -40,
-          color: '#2E2E38',
+          color: '#a1a1aa',
           fontSize: 12,
           formatter: (value: number) => {
             if (value === 0 || value === 50 || value === 100) {
@@ -112,21 +112,21 @@ export function WellbeingGauge({ sentiment, workload, safety, leadership, clarit
   };
 
   return (
-    <Card className="h-full flex flex-col" style={{ borderColor: gaugeColor, border: `2px solid ${gaugeColor || SCORE_COLORS.neutral}` }}>
+    <Card className="h-full flex flex-col control-room-card border-white/10" style={{ borderColor: gaugeColor, border: `2px solid ${gaugeColor || SCORE_COLORS.neutral}` }}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-lg font-semibold">Overall Wellbeing Score</CardTitle>
+        <CardTitle className="text-lg font-semibold text-white">Overall Wellbeing Score</CardTitle>
         <div className="h-6 w-6 rounded-full" style={{ backgroundColor: gaugeColor }} />
       </CardHeader>
       <CardContent className="flex-1 flex flex-col justify-between">
         {!mounted ? (
-          <div style={{ height: 200 }} className="flex items-center justify-center text-sm text-muted-foreground">
+          <div style={{ height: 200 }} className="flex items-center justify-center text-sm text-zinc-400">
             Loading gauge...
           </div>
         ) : (
           <ReactECharts option={option} style={{ height: 200 }} opts={{ renderer: 'svg' }} />
         )}
         
-        <div className="mt-1 text-[10px] text-muted-foreground space-y-0.5">
+        <div className="mt-1 text-[10px] text-zinc-400 space-y-0.5">
           <div className="font-medium">Weighting Formula:</div>
           <div className="grid grid-cols-2 gap-x-2 gap-y-0">
             <div>• Sentiment: 25%</div>

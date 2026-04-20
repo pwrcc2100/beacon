@@ -1,5 +1,5 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { EnhancedOrganisationFilter } from './EnhancedOrganisationFilter';
 
 type Division = {
@@ -45,6 +45,8 @@ export function EnhancedOrganisationFilterClient({
   teams
 }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
+  const basePath = pathname || '/dashboard';
 
   const buildBaseParams = () => {
     const params = new URLSearchParams();
@@ -78,7 +80,7 @@ export function EnhancedOrganisationFilterClient({
       }
     }
 
-    router.push(`/dashboard?${params.toString()}`);
+    router.push(`${basePath}?${params.toString()}`);
   };
 
   const handleDepartmentMultiChange = (selected: string[]) => {
@@ -86,12 +88,12 @@ export function EnhancedOrganisationFilterClient({
     selected.forEach(deptId => {
       params.append('selected_departments', deptId);
     });
-    router.push(`/dashboard?${params.toString()}`);
+    router.push(`${basePath}?${params.toString()}`);
   };
 
   const handleClearDepartments = () => {
     const params = buildBaseParams();
-    router.push(`/dashboard?${params.toString()}`);
+    router.push(`${basePath}?${params.toString()}`);
   };
 
   return (

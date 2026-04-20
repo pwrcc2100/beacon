@@ -2,6 +2,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { DashboardShell } from '@/components/layout/DashboardShell';
+import { ControlRoomLayout } from '@/components/layout/ControlRoomLayout';
 import { WellbeingGauge } from '@/components/charts/WellbeingGauge';
 
 async function getParticipantData(token: string) {
@@ -42,22 +43,28 @@ export default async function ParticipantPage({ params }: { params: { token: str
   const response = await getParticipantData(params.token);
 
   if (!response) {
+    const Sidebar = (
+      <div className="space-y-2">
+        <div className="text-xs uppercase tracking-wide text-[var(--text-muted)] mb-2">Navigation</div>
+        <a href="/dashboard" className="block px-3 py-2 rounded hover:bg-black/5">Dashboard</a>
+      </div>
+    );
     return (
-      <main className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <Card>
+      <DashboardShell sidebar={Sidebar}>
+        <ControlRoomLayout title="Survey Not Found" subtitle="Participant View">
+          <Card className="control-room-card border-white/10 max-w-2xl mx-auto">
             <CardContent className="py-12 text-center">
-              <h2 className="text-2xl font-bold mb-4">Survey Not Found</h2>
-              <p className="text-muted-foreground mb-4">
+              <h2 className="text-2xl font-bold mb-4 text-white">Survey Not Found</h2>
+              <p className="text-zinc-400 mb-4">
                 No response found for this token. Please complete the survey first.
               </p>
-              <a href={`/survey/${params.token}`} className="text-primary hover:underline">
+              <a href={`/survey/${params.token}`} className="text-[#3d8a9e] hover:underline font-medium">
                 Complete Survey →
               </a>
             </CardContent>
           </Card>
-        </div>
-      </main>
+        </ControlRoomLayout>
+      </DashboardShell>
     );
   }
 
@@ -85,18 +92,14 @@ export default async function ParticipantPage({ params }: { params: { token: str
 
   return (
     <DashboardShell sidebar={Sidebar}>
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">
-            Your Response
-          </h1>
-          <p className="text-sm text-[var(--text-muted)]">
-            Submitted: {new Date(response.submitted_at || response.created_at).toLocaleString()}
-          </p>
-        </div>
-
+      <ControlRoomLayout
+        title="Your Response"
+        subtitle="Participant View"
+        headerExtra={`Submitted: ${new Date(response.submitted_at || response.created_at).toLocaleString()}`}
+      >
+        <div className="space-y-6">
         {/* Overall Score */}
-        <Card>
+        <Card className="control-room-card border-white/10">
           <CardHeader>
             <CardTitle>Your Beacon Index Score</CardTitle>
           </CardHeader>
@@ -115,7 +118,7 @@ export default async function ParticipantPage({ params }: { params: { token: str
               <div className="text-4xl font-bold mb-2" style={{ color: overallScore >= 70 ? '#64afac' : overallScore >= 50 ? '#5d89a9' : '#ea9999' }}>
                 {overallScore.toFixed(0)}%
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-zinc-400">
                 {overallScore >= 70 ? 'Healthy' : overallScore >= 50 ? 'Moderate' : 'Needs Attention'}
               </p>
             </div>
@@ -124,7 +127,7 @@ export default async function ParticipantPage({ params }: { params: { token: str
 
         {/* Individual Scores */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card>
+          <Card className="control-room-card border-white/10">
             <CardHeader>
               <CardTitle className="text-base">Experience / Overall Sentiment</CardTitle>
             </CardHeader>
@@ -138,13 +141,13 @@ export default async function ParticipantPage({ params }: { params: { token: str
                   {(sentiment5 * 20).toFixed(0)}%
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-zinc-400 mt-2">
                 "How are you feeling about work this week?"
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="control-room-card border-white/10">
             <CardHeader>
               <CardTitle className="text-base">Workload & Resourcing</CardTitle>
             </CardHeader>
@@ -158,13 +161,13 @@ export default async function ParticipantPage({ params }: { params: { token: str
                   {(workload5 * 20).toFixed(0)}%
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-zinc-400 mt-2">
                 "How manageable is your current workload?"
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="control-room-card border-white/10">
             <CardHeader>
               <CardTitle className="text-base">Clarity & Direction</CardTitle>
             </CardHeader>
@@ -178,13 +181,13 @@ export default async function ParticipantPage({ params }: { params: { token: str
                   {(clarity5 * 20).toFixed(0)}%
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-zinc-400 mt-2">
                 "How clear are you on your priorities and what’s expected of you?"
               </p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="control-room-card border-white/10">
             <CardHeader>
               <CardTitle className="text-base">Psychological Safety</CardTitle>
             </CardHeader>
@@ -198,13 +201,13 @@ export default async function ParticipantPage({ params }: { params: { token: str
                   {(safety5 * 20).toFixed(0)}%
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-zinc-400 mt-2">
                 "How comfortable do you feel raising concerns when something isn’t right?"
               </p>
             </CardContent>
           </Card>
 
-          <Card className="md:col-span-2">
+          <Card className="md:col-span-2 control-room-card border-white/10">
             <CardHeader>
               <CardTitle className="text-base">Leadership & Support</CardTitle>
             </CardHeader>
@@ -218,7 +221,7 @@ export default async function ParticipantPage({ params }: { params: { token: str
                   {(leadership5 * 20).toFixed(0)}%
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-zinc-400 mt-2">
                 "How supported do you feel by your immediate leadership?"
               </p>
             </CardContent>
@@ -227,12 +230,12 @@ export default async function ParticipantPage({ params }: { params: { token: str
 
         {/* Support Request Info */}
         {response.support_requested && (
-          <Card className="bg-blue-50 border-blue-200">
+          <Card className="control-room-card border-[#2d6785]/50 border-l-4 border-l-[#2d6785]">
             <CardHeader>
               <CardTitle className="text-base">Support Request Submitted</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-2">
+              <p className="text-sm text-zinc-400 mb-2">
                 You requested support on: {new Date(response.submitted_at || response.created_at).toLocaleDateString()}
               </p>
               {response.support_contacts && (
@@ -245,7 +248,7 @@ export default async function ParticipantPage({ params }: { params: { token: str
                   <strong>Preferred timeframe:</strong> {response.support_timeframe}
                 </p>
               )}
-              <p className="text-sm text-muted-foreground mt-2">
+              <p className="text-sm text-zinc-400 mt-2">
                 Someone will reach out to you within your specified timeframe.
               </p>
             </CardContent>
@@ -260,12 +263,13 @@ export default async function ParticipantPage({ params }: { params: { token: str
             </div>
           </a>
           <a href="/thanks" className="flex-1">
-            <div className="px-4 py-3 border border-gray-300 rounded-lg text-center font-semibold hover:bg-gray-50 transition-colors">
+            <div className="px-4 py-3 border border-white/20 rounded-lg text-center font-semibold hover:bg-white/10 transition-colors text-white">
               Back to Thank You
             </div>
           </a>
         </div>
-      </div>
+        </div>
+      </ControlRoomLayout>
     </DashboardShell>
   );
 }

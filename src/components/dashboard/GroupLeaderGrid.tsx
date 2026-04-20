@@ -26,7 +26,7 @@ export function GroupLeaderGrid({ teams, limit = 12 }: Props) {
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <div className="inline-flex rounded-md border border-black/10 overflow-hidden">
+        <div className="inline-flex rounded-md border border-white/10 overflow-hidden">
           <Button
             type="button"
             variant={sortMode === 'score' ? 'default' : 'ghost'}
@@ -46,8 +46,8 @@ export function GroupLeaderGrid({ teams, limit = 12 }: Props) {
             Sort A–Z
           </Button>
         </div>
-        <div className="text-sm text-[var(--text-muted)]">
-          Showing <span className="font-semibold text-[var(--text-primary)]">{sortedTeams.length}</span> teams
+        <div className="text-sm text-zinc-400">
+          Showing <span className="font-semibold text-white">{sortedTeams.length}</span> teams
         </div>
       </div>
 

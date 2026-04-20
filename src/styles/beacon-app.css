@@ -1,9 +1,12 @@
 /**
  * Beacon Index app — light theme (beaconindex.com.au).
  * Soft off-white background, subtle shadows and borders.
+ *
+ * Tokens live on :root so Tailwind `bg-bi-*` / `text-bi-*` work anywhere (e.g. Skeleton,
+ * loading states) — not only under `.beacon-app`.
  */
 
-.beacon-app {
+:root {
   --bi-bg: #f4f5f7;
   --bi-bg-gradient-start: #f8f9fb;
   --bi-bg-gradient-end: #f4f5f7;
