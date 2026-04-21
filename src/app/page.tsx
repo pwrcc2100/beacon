@@ -212,13 +212,13 @@ export default function HomePage() {
         >
           <div className="max-w-5xl mx-auto">
             <div className="grid md:grid-cols-2 gap-10 md:gap-12 md:items-start">
-              <div className="beacon-portrait-wrap">
+              <div className="beacon-portrait-wrap shrink-0 justify-self-start">
                 <Image
                   src="/peta-wilson.png"
                   alt="Peta Wilson — professional portrait, smiling, wearing a white sleeveless top against a soft navy background"
-                  width={480}
-                  height={600}
-                  sizes="(max-width: 768px) 90vw, 400px"
+                  width={250}
+                  height={312}
+                  sizes="(max-width: 767px) 200px, 250px"
                   className="beacon-portrait-img"
                   priority
                 />

@@ -397,6 +397,22 @@ footer.beacon-public-footer .beacon-public-footer-legal {
   }
 }
 
+/* Why Beacon Advisory (#about-peta): modest headshot (~200–250px), supporting the copy column */
+#about-peta .beacon-portrait-wrap {
+  width: 100%;
+  max-width: 12.5rem; /* 200px */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 768px) {
+  #about-peta .beacon-portrait-wrap {
+    max-width: 15.625rem; /* 250px */
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
 .beacon-portrait-img {
   display: block;
   width: 100%;
