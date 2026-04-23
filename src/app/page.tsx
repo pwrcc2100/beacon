@@ -257,9 +257,9 @@ export default function HomePage() {
                 <p>
                   I spent 16 years inside Richard Crookes Constructions as it grew from 120 people to more than 900 —
                   building the systems, processes and infrastructure that kept pace with that growth across every
-                  function. I understand how construction businesses operate, what the operational pressures look like
+                  function. I understand how businesses operate under pressure, what the operational challenges look like
                   from the inside, and how to design solutions that actually work in a fast-moving environment where
-                  delivery is always the priority.
+                  the success of the business is always the priority.
                 </p>
                 <p>
                   I now work independently through Beacon Advisory, coming into businesses to assess what&apos;s
