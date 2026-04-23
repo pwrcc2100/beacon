@@ -18,44 +18,95 @@ const body = '#333333';
 
 const LINKEDIN = 'https://www.linkedin.com/in/peta-wilson-4769361';
 
+function BeaconTile({ title, text }: { readonly title: string; readonly text: string }) {
+  return (
+    <div
+      className="bg-white rounded-lg p-6 md:p-7 pl-6 shadow-sm border border-black/[0.06]"
+      style={{
+        backgroundColor: '#ffffff',
+        borderStyle: 'solid',
+        borderWidth: 1,
+        borderColor: 'rgba(0, 0, 0, 0.06)',
+        borderLeftWidth: 4,
+        borderLeftColor: gold,
+      }}
+    >
+      <h3 className="text-lg font-semibold mb-3" style={{ color: navy }}>
+        {title}
+      </h3>
+      <p className="text-sm md:text-base leading-relaxed" style={{ color: body }}>
+        {text}
+      </p>
+    </div>
+  );
+}
+
+const whyWorkWithMeTiles = [
+  {
+    title: 'Front end rigour',
+    text: 'Significant investment in discovery and definition — clear objectives, reverse brief, genuine stakeholder engagement on their terms. No solution is recommended before the current state is properly understood. Skip this phase and the implementation will struggle, regardless of how good the solution is.',
+  },
+  {
+    title: 'Challenges the status quo',
+    text: "I don't just validate what people think they need. I ask the uncomfortable questions, pressure test assumptions, and recommend what's appropriate to satisfy the original brief.",
+  },
+  {
+    title: 'Bridges business and technology',
+    text: 'Translates between business need and technology solution in both directions — understanding what the business actually needs before touching a tool, and what technology can realistically deliver before investing in it.',
+  },
+  {
+    title: 'Sequenced to readiness',
+    text: "Recommendations are prioritised based not just on what's needed, but on what the business has the capacity and maturity to absorb. The right initiative at the wrong time creates more problems than it solves.",
+  },
+  {
+    title: 'Hands-on, not advisory',
+    text: "I don't just tell you what to do. I own the work, stay close until it's properly embedded, and hand it over with the team running it — not just a report sitting in a folder.",
+  },
+] as const;
+
 const whatTiles = [
   {
-    title: "The system that should exist but doesn't.",
-    body: 'You know you need it. Finding the right one, configuring it for how you actually operate and embedding it into your business.',
+    title: "A system that should exist but doesn't.",
+    text: 'You know you need it. Finding the right one, configuring it for how you actually operate and embedding it into your business is not feasible with current resources.',
   },
   {
-    title: "The process nobody's written down.",
-    body: "It lives in someone's head. Getting it documented means the business can grow, scale and operate consistently — not just when that person is in the room.",
+    title: 'Processes not documented.',
+    text: 'Documented, accessible processes are what allow a business to operate consistently, scale effectively and reduce reliance on key individuals. If it only works when the right person is in the room — it\'s a risk.',
   },
   {
-    title: 'The project without an owner.',
-    body: 'Important enough to matter, complex enough to warrant dedicated focus.',
+    title: 'A project without an owner.',
+    text: 'Important enough to matter, complex enough to warrant dedicated focus.',
   },
   {
-    title: "The operations that haven't kept pace with your growth.",
-    body: 'The business has grown. Time to make sure the systems, reporting and processes behind it are built for where you are now.',
+    title: "Operations that haven't kept pace with growth.",
+    text: 'The business has grown. Time to make sure the systems, reporting and processes behind it are built for where you are now.',
   },
   {
     title: 'AI that actually fits your business.',
-    body: 'Every business needs a different approach to AI. I help you identify what will actually work for yours — solutions that complement how you operate.',
+    text: 'Every business needs a different approach to AI. I help you cut through the hype and find what actually works for yours — avoiding expensive mistakes and adopting AI in a way that genuinely suits and strengthens the business.',
   },
 ] as const;
 
 const steps = [
   {
-    n: '1',
-    title: 'Start a conversation',
-    body: "Tell me what's on your mind — no brief required, just a conversation.",
+    n: '01',
+    title: 'Understand',
+    body: "What's needed, who the stakeholders are, what success looks like. No assumptions, no solutions before the problem is defined.",
   },
   {
-    n: '2',
-    title: 'We define it together',
-    body: "Not every challenge arrives fully formed. I'll work with you to understand what's actually needed and translate it into a clear scope of work.",
+    n: '02',
+    title: 'Define',
+    body: 'Current state mapped, gaps identified, scope locked. A clear picture of where things are before deciding where they need to go.',
   },
   {
-    n: '3',
-    title: 'I deliver it',
-    body: "I own it start to finish and make sure it's properly embedded before I hand it over.",
+    n: '03',
+    title: 'Recommend',
+    body: 'A practical, prioritised approach — specific to this business, sequenced to what can be absorbed or delivered.',
+  },
+  {
+    n: '04',
+    title: 'Deliver — optional',
+    body: 'Own the execution end to end, or hand over a plan that can be implemented internally. Available for ongoing support.',
   },
 ] as const;
 
@@ -68,22 +119,21 @@ const aboutCallouts = [
 export default function HomePage() {
   return (
     <div
-      className="beacon-marketing min-h-[100dvh] min-h-screen flex flex-col bg-white text-[#333333]"
+      className="beacon-marketing bg-white text-[#333333]"
       style={{
         colorScheme: 'light',
         /* Inline so content stays visible if Tailwind fails or html.dark paints a dark body behind transparent layers */
         backgroundColor: '#ffffff',
         color: '#333333',
-        minHeight: '100dvh',
       }}
       data-marketing-root
     >
       <PublicHeader />
 
-      <main className="flex-1">
+      <main>
         {/* SECTION 1 — HERO */}
         <section
-          className="w-full px-4 sm:px-6 py-12 md:py-16 lg:py-14 min-h-0"
+          className="w-full px-4 sm:px-6 py-8 md:py-10 lg:py-9 min-h-0"
           style={{ backgroundColor: navy }}
         >
           <div className="max-w-4xl mx-auto text-center lg:text-left">
@@ -91,9 +141,14 @@ export default function HomePage() {
               className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold leading-tight tracking-tight"
               style={{ color: '#ffffff' }}
             >
-              The operations partner businesses call when something important needs to get done —{' '}
-              <span style={{ color: gold }}>so you can finally exhale.</span>
+              I&apos;m the person businesses call when something important needs to happen.
             </h1>
+            <p
+              className="mt-3 text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto lg:mx-0 leading-snug"
+              style={{ color: '#ffffff' }}
+            >
+              When there&apos;s no obvious home for it, or it sits outside current teams&apos; remit.
+            </p>
             <p
               className="mt-4 md:mt-5 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0"
               style={{ color: '#ffffff' }}
@@ -112,26 +167,10 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* SECTION 2 — WHO IT'S FOR */}
+        {/* SECTION 2 — WHY WORK WITH ME */}
         <section
-          id="whos-it-for"
-          className="scroll-mt-24 py-14 md:py-16 lg:py-20 px-4 sm:px-6"
-          style={{ backgroundColor: offWhite }}
-        >
-          <p
-            className="text-center text-base md:text-lg leading-relaxed max-w-[700px] mx-auto"
-            style={{ color: body }}
-          >
-            You&apos;re running a business — managing the team, serving clients, keeping everything moving. The
-            operational stuff that needs sorting, building or fixing keeps getting pushed down the list because
-            there&apos;s no one to own it. That&apos;s where Beacon Advisory comes in.
-          </p>
-        </section>
-
-        {/* SECTION 3 — WHAT I WORK ON */}
-        <section
-          id="what-i-work-on"
-          className="scroll-mt-24 py-14 md:py-16 lg:py-20 px-4 sm:px-6 bg-white"
+          id="why-work-with-me"
+          className="scroll-mt-20 py-9 md:py-10 lg:py-12 px-4 sm:px-6 bg-white"
           style={{ backgroundColor: '#ffffff' }}
         >
           <div className="max-w-5xl mx-auto">
@@ -139,55 +178,138 @@ export default function HomePage() {
               className="text-xs font-semibold tracking-[0.2em] uppercase mb-2"
               style={{ color: gold }}
             >
-              WHAT I WORK ON
+              WHY WORK WITH ME
             </p>
-            <h2 className="text-2xl md:text-3xl font-bold mb-10 md:mb-12" style={{ color: navy }}>
-              What I work on
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8" style={{ color: navy }}>
+              Why work with me
+            </h2>
+            <div className="grid md:grid-cols-3 gap-5 md:gap-6">
+              {whyWorkWithMeTiles.slice(0, 3).map((tile) => (
+                <BeaconTile key={tile.title} title={tile.title} text={tile.text} />
+              ))}
+            </div>
+            <div className="mt-5 md:mt-6 w-full md:w-2/3 md:mx-auto grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
+              {whyWorkWithMeTiles.slice(3).map((tile) => (
+                <BeaconTile key={tile.title} title={tile.title} text={tile.text} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 3 — WHEN TO CALL ME IN */}
+        <section
+          id="when-to-call-me-in"
+          className="scroll-mt-20 py-9 md:py-10 lg:py-12 px-4 sm:px-6"
+          style={{ backgroundColor: offWhite }}
+        >
+          <div className="max-w-5xl mx-auto">
+            <p
+              className="text-xs font-semibold tracking-[0.2em] uppercase mb-2"
+              style={{ color: gold }}
+            >
+              WHEN TO CALL ME IN
+            </p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8" style={{ color: navy }}>
+              When to call me in
             </h2>
             <div className="grid sm:grid-cols-2 gap-5 md:gap-6">
-              {whatTiles.map((tile) => (
+              {whatTiles.slice(0, 4).map((tile) => (
+                <BeaconTile key={tile.title} title={tile.title} text={tile.text} />
+              ))}
+            </div>
+            <div className="mt-5 md:mt-6 w-full max-w-5xl mx-auto">
+              <BeaconTile title={whatTiles[4].title} text={whatTiles[4].text} />
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 4 — ABOUT PETA */}
+        <section
+          id="about-peta"
+          className="scroll-mt-20 py-9 md:py-10 lg:py-12 px-4 sm:px-6 bg-white"
+          style={{ backgroundColor: '#ffffff' }}
+        >
+          <div className="max-w-5xl mx-auto">
+            <p className="text-xs font-semibold tracking-[0.2em] uppercase mb-2" style={{ color: gold }}>
+              ABOUT PETA
+            </p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8" style={{ color: navy }}>
+              Why Beacon Advisory
+            </h2>
+            <div className="beacon-about-bio flow-root">
+              <div className="beacon-portrait-wrap beacon-about-float">
+                <Image
+                  src="/peta-wilson.png"
+                  alt="Peta Wilson — professional portrait, smiling, wearing a white sleeveless top against a soft navy background"
+                  width={600}
+                  height={600}
+                  sizes="(max-width: 639px) 200px, 250px"
+                  className="beacon-portrait-img beacon-portrait-img--about-square"
+                  priority
+                />
+              </div>
+              <div className="space-y-4 text-base md:text-lg leading-relaxed beacon-about-prose" style={{ color: body }}>
+                <p>
+                  I&apos;m the person businesses call when something important needs to happen and there&apos;s no
+                  obvious home for it — an operations partner working behind the scenes, so leadership can focus on the
+                  front.
+                </p>
+                <p>
+                  I spent 16 years inside Richard Crookes Constructions as it grew from 120 people to more than 900 —
+                  building the systems, processes and infrastructure that kept pace with that growth across every
+                  function. I understand how construction businesses operate, what the operational pressures look like
+                  from the inside, and how to design solutions that actually work in a fast-moving environment where
+                  delivery is always the priority.
+                </p>
+                <p>
+                  I now work independently through Beacon Advisory, coming into businesses to assess what&apos;s
+                  actually happening, design practical solutions and implement them — underpinned by a BABOK-qualified
+                  approach to requirements analysis, ensuring solutions are designed around what&apos;s actually needed,
+                  not just what&apos;s initially presented.
+                </p>
+                <p>
+                  Previous engagements have spanned software selection and implementation, systems integration, process
+                  design, workforce planning, reporting infrastructure, communications platforms, project delivery and
+                  office relocations — across industries, business sizes and functions.
+                </p>
+                <p>
+                  I don&apos;t just advise — I do the work, stay close until it&apos;s embedded, and hand it over
+                  properly. So you can finally exhale.
+                </p>
+              </div>
+            </div>
+            <div className="mt-8 flex w-full flex-col gap-3 beacon-about-credentials">
+              {aboutCallouts.map((label) => (
                 <div
-                  key={tile.title}
-                  className="bg-white rounded-lg p-6 md:p-7 pl-6 shadow-sm border border-black/[0.06]"
-                  style={{
-                    backgroundColor: '#ffffff',
-                    borderStyle: 'solid',
-                    borderWidth: 1,
-                    borderColor: 'rgba(0, 0, 0, 0.06)',
-                    borderLeftWidth: 4,
-                    borderLeftColor: gold,
-                  }}
+                  key={label}
+                  className="rounded-md px-4 py-3 text-sm font-semibold leading-snug"
+                  style={{ backgroundColor: `${gold}22`, color: navy, border: `1px solid ${gold}55` }}
                 >
-                  <h3 className="text-lg font-semibold mb-3" style={{ color: navy }}>
-                    {tile.title}
-                  </h3>
-                  <p className="text-sm md:text-base leading-relaxed" style={{ color: body }}>
-                    {tile.body}
-                  </p>
+                  {label}
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* SECTION 4 — HOW IT WORKS */}
+        {/* SECTION 5 — HOW I WORK */}
         <section
           id="how-it-works"
-          className="scroll-mt-24 py-14 md:py-16 lg:py-20 px-4 sm:px-6"
+          className="scroll-mt-20 py-9 md:py-10 lg:py-12 px-4 sm:px-6"
           style={{ backgroundColor: navy }}
         >
           <div className="max-w-5xl mx-auto">
             <p className="text-xs font-semibold tracking-[0.2em] uppercase mb-2" style={{ color: gold }}>
-              HOW IT WORKS
+              HOW I WORK
             </p>
-            <h2 className="text-2xl md:text-3xl font-bold mb-10 md:mb-14" style={{ color: '#ffffff' }}>
-              How it works
+            <h2 className="text-2xl md:text-3xl font-bold mb-7 md:mb-9" style={{ color: '#ffffff' }}>
+              How I Work
             </h2>
-            <div className="grid md:grid-cols-3 gap-10 md:gap-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-7">
               {steps.map((step) => (
                 <div key={step.n} className="text-center md:text-left">
                   <div
-                    className="mx-auto md:mx-0 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold mb-4"
+                    className="mx-auto md:mx-0 w-12 h-12 rounded-full flex items-center justify-center text-base font-bold mb-4"
                     style={{ backgroundColor: gold, color: navy }}
                   >
                     {step.n}
@@ -201,89 +323,38 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-
-        {/* SECTION 5 — WHY BEACON ADVISORY */}
-        <section
-          id="about-peta"
-          className="scroll-mt-24 py-14 md:py-16 lg:py-20 px-4 sm:px-6"
-          style={{ backgroundColor: offWhite }}
-        >
-          <div className="max-w-5xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-10 md:gap-12 md:items-start">
-              <div className="beacon-portrait-wrap shrink-0 justify-self-start">
-                <Image
-                  src="/peta-wilson.png"
-                  alt="Peta Wilson — professional portrait, smiling, wearing a white sleeveless top against a soft navy background"
-                  width={250}
-                  height={312}
-                  sizes="(max-width: 767px) 200px, 250px"
-                  className="beacon-portrait-img"
-                  priority
-                />
-              </div>
-              <div className="space-y-6">
-                <div>
-                  <p className="text-xs font-semibold tracking-[0.2em] uppercase mb-2" style={{ color: gold }}>
-                    ABOUT PETA
-                  </p>
-                  <h2 className="text-2xl md:text-3xl font-bold" style={{ color: navy }}>
-                    Why Beacon Advisory
-                  </h2>
-                </div>
-                <div className="space-y-4 text-base md:text-lg leading-relaxed" style={{ color: body }}>
-                  <p>
-                    Most businesses reach a point where the operational side can&apos;t keep up — the systems are
-                    patchy, the processes live in people&apos;s heads, and the projects that would actually move things
-                    forward keep getting deferred because nobody has time to own them.
-                  </p>
-                  <p>
-                    I&apos;ve spent 20 years solving exactly that — most of it inside a construction business that grew
-                    from 120 people to more than 900. Every function. Every stage of growth. Building the
-                    infrastructure that let the business keep moving.
-                  </p>
-                  <p>
-                    I know what it takes to make things work in a real business, not just on paper. That&apos;s what I
-                    bring to yours.
-                  </p>
-                </div>
-                <div className="flex flex-col gap-3 max-w-xl">
-                  {aboutCallouts.map((label) => (
-                    <div
-                      key={label}
-                      className="rounded-md px-4 py-3 text-sm font-semibold leading-snug"
-                      style={{ backgroundColor: `${gold}22`, color: navy, border: `1px solid ${gold}55` }}
-                    >
-                      {label}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <p
+              className="mt-7 md:mt-8 text-sm md:text-base leading-relaxed text-center md:text-left italic"
+              style={{ color: 'rgba(255,255,255,0.9)' }}
+            >
+              Stages 1–3 deliver a clear, evidence-based picture of current state and a prioritised roadmap. Stage 4
+              can be scoped separately or taken on internally.
+            </p>
           </div>
         </section>
 
         {/* SECTION 6 — CONTACT */}
         <section
           id="contact"
-          className="scroll-mt-24 py-14 md:py-20 px-4 sm:px-6 bg-white pb-20"
+          className="scroll-mt-20 py-9 md:py-10 lg:py-12 px-4 sm:px-6 bg-white"
           style={{ backgroundColor: '#ffffff' }}
         >
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-5xl mx-auto flex flex-col items-center text-center">
             <p className="text-xs font-semibold tracking-[0.2em] uppercase mb-2" style={{ color: gold }}>
               GET IN TOUCH
             </p>
             <h2 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: navy }}>
               Let&apos;s talk.
             </h2>
-            <p className="text-base mb-8 md:mb-10" style={{ color: body }}>
+            <p className="text-base mb-6 md:mb-7 max-w-2xl" style={{ color: body }}>
               No agenda, no brief required.
             </p>
 
-            <ContactForm />
+            <div className="beacon-contact-form-wrap w-full max-w-4xl md:max-w-none md:w-[min(100%,42rem)] lg:w-[min(100%,48rem)]">
+              <ContactForm />
+            </div>
 
-            <div className="beacon-inline-links">
+            <div className="beacon-inline-links w-full max-w-4xl md:max-w-none md:w-[min(100%,42rem)] lg:w-[min(100%,48rem)] justify-center sm:justify-center">
               <a href="mailto:peta@beaconeffect.com.au">peta@beaconeffect.com.au</a>
               <span className="hidden sm:inline text-[#333333]/35" aria-hidden>
                 ·

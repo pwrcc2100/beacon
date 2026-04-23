@@ -7,9 +7,9 @@
  */
 
 const navLinks = [
-  { href: '/#whos-it-for', label: "Who It's For" },
-  { href: '/#what-i-work-on', label: 'What I Work On' },
-  { href: '/#how-it-works', label: 'How It Works' },
+  { href: '/#why-work-with-me', label: 'Why work with me' },
+  { href: '/#when-to-call-me-in', label: 'When to call me in' },
+  { href: '/#how-it-works', label: 'How I Work' },
   { href: '/#about-peta', label: 'About Peta' },
 ] as const;
 
