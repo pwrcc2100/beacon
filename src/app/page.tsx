@@ -167,7 +167,34 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* SECTION 2 — WHY WORK WITH ME */}
+        {/* SECTION 2 — WHEN TO CALL ME IN */}
+        <section
+          id="when-to-call-me-in"
+          className="scroll-mt-20 py-9 md:py-10 lg:py-12 px-4 sm:px-6"
+          style={{ backgroundColor: offWhite }}
+        >
+          <div className="max-w-5xl mx-auto">
+            <p
+              className="text-xs font-semibold tracking-[0.2em] uppercase mb-2"
+              style={{ color: gold }}
+            >
+              WHEN TO CALL ME IN
+            </p>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8" style={{ color: navy }}>
+              When to call me in
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-5 md:gap-6">
+              {whatTiles.slice(0, 4).map((tile) => (
+                <BeaconTile key={tile.title} title={tile.title} text={tile.text} />
+              ))}
+            </div>
+            <div className="mt-5 md:mt-6 w-full max-w-5xl mx-auto">
+              <BeaconTile title={whatTiles[4].title} text={whatTiles[4].text} />
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 3 — WHY WORK WITH ME */}
         <section
           id="why-work-with-me"
           className="scroll-mt-20 py-9 md:py-10 lg:py-12 px-4 sm:px-6 bg-white"
@@ -192,33 +219,6 @@ export default function HomePage() {
               {whyWorkWithMeTiles.slice(3).map((tile) => (
                 <BeaconTile key={tile.title} title={tile.title} text={tile.text} />
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* SECTION 3 — WHEN TO CALL ME IN */}
-        <section
-          id="when-to-call-me-in"
-          className="scroll-mt-20 py-9 md:py-10 lg:py-12 px-4 sm:px-6"
-          style={{ backgroundColor: offWhite }}
-        >
-          <div className="max-w-5xl mx-auto">
-            <p
-              className="text-xs font-semibold tracking-[0.2em] uppercase mb-2"
-              style={{ color: gold }}
-            >
-              WHEN TO CALL ME IN
-            </p>
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8" style={{ color: navy }}>
-              When to call me in
-            </h2>
-            <div className="grid sm:grid-cols-2 gap-5 md:gap-6">
-              {whatTiles.slice(0, 4).map((tile) => (
-                <BeaconTile key={tile.title} title={tile.title} text={tile.text} />
-              ))}
-            </div>
-            <div className="mt-5 md:mt-6 w-full max-w-5xl mx-auto">
-              <BeaconTile title={whatTiles[4].title} text={whatTiles[4].text} />
             </div>
           </div>
         </section>

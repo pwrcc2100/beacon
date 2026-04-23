@@ -7,8 +7,8 @@
  */
 
 const navLinks = [
-  { href: '/#why-work-with-me', label: 'Why work with me' },
   { href: '/#when-to-call-me-in', label: 'When to call me in' },
+  { href: '/#why-work-with-me', label: 'Why work with me' },
   { href: '/#how-it-works', label: 'How I Work' },
   { href: '/#about-peta', label: 'About Peta' },
 ] as const;
